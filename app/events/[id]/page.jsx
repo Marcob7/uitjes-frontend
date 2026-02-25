@@ -1,4 +1,5 @@
 // app/events/[id]/page.jsx
+export const runtime = "edge";
 import { apiGet } from "@/lib/api";
 
 export default async function EventDetailPage({ params }) {
@@ -43,11 +44,19 @@ export default async function EventDetailPage({ params }) {
           {event.is_free ? "Gratis" : event.price_min ? `Vanaf €${event.price_min}` : "Onbekend"}
         </p>
 
-        {event.source_url ? (
-          <p style={{ marginTop: 12 }}>
-          <a href={`/events/${event.id}`}>Bekijk detail</a>
-          </p>
-        ) : null}
+      {event.source_url ? (
+  <p style={{ marginTop: 12 }}>
+    <a className="underline" href={event.source_url} target="_blank" rel="noreferrer">
+      Bekijk bron
+    </a>
+  </p>
+) : null}
+
+<p style={{ marginTop: 12 }}>
+  <a className="underline" href="/events">
+    Terug naar events
+  </a>
+</p>
       </div>
     </main>
   );
