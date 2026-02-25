@@ -65,16 +65,16 @@ export default function EventCard({
         <div className="mt-2 flex items-center gap-3">
           {/* Link naar detailpagina binnen je app */}
           {showDetailLink ? (
-            <a
-              href={`/events/${event.id}`}
-              className="
-                text-sm font-semibold underline underline-offset-4
-                text-neutral-900 hover:text-neutral-700
-                dark:text-neutral-100 dark:hover:text-neutral-300
-              "
-            >
-              Bekijk detail
-            </a>
+      <a
+  href={`/events?id=${event.id}`}
+  className="
+    text-sm font-semibold underline underline-offset-4
+    text-neutral-900 hover:text-neutral-700
+    dark:text-neutral-100 dark:hover:text-neutral-300
+  "
+>
+  Bekijk detail
+</a>
           ) : null}
 
           {/* Favorieten knop (localStorage) */}
