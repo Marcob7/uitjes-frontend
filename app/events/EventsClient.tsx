@@ -1,0 +1,16 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+
+export default function EventsClient() {
+  const searchParams = useSearchParams();
+  const q = searchParams.get("q") || "";
+
+  return (
+    <main style={{ padding: 24 }}>
+      <h1>Events</h1>
+      <p>Zoekterm: {q}</p>
+      {/* hier komt jouw echte lijst */}
+    </main>
+  );
+}

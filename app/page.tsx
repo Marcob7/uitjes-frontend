@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import EventList from "@/components/EventList";
 import AuthBlock from "@/components/AuthBlock";
 import { apiGet } from "@/lib/api";
+import { Suspense } from "react";
+import EventsClient from "@/app/events/EventsClient";
 
 export default function Home() {
   const city = "apeldoorn";
@@ -20,7 +22,9 @@ export default function Home() {
   return (
     <main style={{ padding: 24 }}>
       <AuthBlock />
-
+   <Suspense fallback={<p>Laden…</p>}>
+      <EventsClient />
+    </Suspense>
       <h1 className="text-2xl font-semibold">Events Planner</h1>
 
       <p style={{ marginTop: 8, marginBottom: 16 }}>
