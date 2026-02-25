@@ -7,10 +7,10 @@ export default function EventsClient() {
   const q = searchParams.get("q") || "";
 
   return (
-    <main style={{ padding: 24 }}>
+    <main>
       <h1>Events</h1>
       <p>Zoekterm: {q}</p>
-      {/* hier komt jouw echte lijst */}
+      {/* jouw lijst/filters hier */}
     </main>
   );
 }
