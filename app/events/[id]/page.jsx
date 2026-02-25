@@ -47,7 +47,7 @@ export default async function EventDetailPage({ params }) {
       {event.source_url ? (
   <p style={{ marginTop: 12 }}>
     <a className="underline" href={event.source_url} target="_blank" rel="noreferrer">
-      Bekijk bron
+      Bekijk bron(nen)
     </a>
   </p>
 ) : null}
