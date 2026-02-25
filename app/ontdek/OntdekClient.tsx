@@ -21,7 +21,6 @@ function useDebouncedValue(value, delay = 350) {
 export default function OntdekPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const LIMIT = 20;
 
   // URL -> state defaults
