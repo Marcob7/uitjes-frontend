@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { API_BASE } from "@/lib/api";
 export default function MeTest() {
 const [me, setMe] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/auth/user/", {
-      credentials: "include",
-    })
+    fetch(`${API_BASE}/api/auth/user/`, { credentials: "include" })
       .then(async (res) => {
         if (res.status === 401 || res.status === 403) return null;
         if (!res.ok) throw new Error("me request failed");
