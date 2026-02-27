@@ -21,7 +21,7 @@ export default function AuthBlock() {
     window.location.href = `${API_BASE}/accounts/logout/`;
   }
 
-  if (loading) return <p>Account laden…</p>;
+  if (loading) return <p>Account laden</p>;
 
   if (!me) {
     return (
