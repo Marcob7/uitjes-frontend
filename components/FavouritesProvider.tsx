@@ -1,7 +1,14 @@
 // @ts-nocheck
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { apiGetAuth, apiFetchAuth } from "@/lib/api";
 
 const FavoritesContext = createContext(null);
@@ -10,6 +17,9 @@ export function FavoritesProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState(null);
   const [favoriteIds, setFavoriteIds] = useState(new Set());
+
+  // Voorkomt dubbele refresh in dev (React StrictMode kan useEffect 2x triggeren)
+  const didInit = useRef(false);
 
   async function refresh() {
     setLoading(true);
@@ -37,6 +47,8 @@ export function FavoritesProvider({ children }) {
   }
 
   useEffect(() => {
+    if (didInit.current) return;
+    didInit.current = true;
     refresh();
   }, []);
 
@@ -50,6 +62,8 @@ export function FavoritesProvider({ children }) {
 
       // Voeg toe
       add: async (eventId) => {
+        // Tijdens initial load is me nog null, maar user kan wel ingelogd zijn
+        if (loading) return { ok: false, reason: "loading" };
         if (!me) return { ok: false, reason: "not_logged_in" };
 
         const r = await apiFetchAuth("/api/favorites/add/", {
@@ -78,6 +92,7 @@ export function FavoritesProvider({ children }) {
 
       // Verwijder
       remove: async (eventId) => {
+        if (loading) return { ok: false, reason: "loading" };
         if (!me) return { ok: false, reason: "not_logged_in" };
 
         const r = await apiFetchAuth(`/api/favorites/${eventId}/`, {
