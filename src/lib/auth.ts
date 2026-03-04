@@ -1,9 +1,9 @@
-// src/lib/auth.ts
-const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import { API_BASE } from "@/lib/api";
+
 export async function fetchMe() {
-  
-   const res = await fetch(`${base}/api/auth/user/`, {
+  const res = await fetch(`${API_BASE}/api/auth/user/`, {
     credentials: "include",
+    cache: "no-store",
   });
 
   if (res.status === 401 || res.status === 403) return null;

@@ -14,18 +14,22 @@ export function FavoritesProvider({ children }) {
   async function refresh() {
     setLoading(true);
 
+    // Wie ben ik?
     const user = await apiGetAuth("/api/auth/user/");
     setMe(user);
 
+    // Niet ingelogd → reset favorieten
     if (!user) {
       setFavoriteIds(new Set());
       setLoading(false);
       return;
     }
 
+    // Favorieten ophalen
     const favs = await apiGetAuth("/api/favorites/");
     const ids = Array.isArray(favs) ? favs.map((f) => f.event_id) : [];
     setFavoriteIds(new Set(ids));
+
     setLoading(false);
   }
 
@@ -37,6 +41,8 @@ export function FavoritesProvider({ children }) {
     return {
       loading,
       me,
+
+      // Check of een event in favorieten zit
       isFavorite: (eventId) => favoriteIds.has(eventId),
 
       // Voeg toe
@@ -48,8 +54,16 @@ export function FavoritesProvider({ children }) {
           body: JSON.stringify({ event_id: eventId }),
         });
 
-        if (!r.ok) return { ok: false, reason: r.auth === false ? "not_logged_in" : "failed" };
+        if (!r.ok) {
+          return {
+            ok: false,
+            reason: r.auth === false ? "not_logged_in" : "failed",
+            status: r.status,
+            data: r.data,
+          };
+        }
 
+        // Optimistic update in state
         setFavoriteIds((prev) => {
           const next = new Set(prev);
           next.add(eventId);
@@ -67,8 +81,16 @@ export function FavoritesProvider({ children }) {
           method: "DELETE",
         });
 
-        if (!r.ok) return { ok: false, reason: r.auth === false ? "not_logged_in" : "failed" };
+        if (!r.ok) {
+          return {
+            ok: false,
+            reason: r.auth === false ? "not_logged_in" : "failed",
+            status: r.status,
+            data: r.data,
+          };
+        }
 
+        // Optimistic update in state
         setFavoriteIds((prev) => {
           const next = new Set(prev);
           next.delete(eventId);
@@ -78,6 +100,7 @@ export function FavoritesProvider({ children }) {
         return { ok: true };
       },
 
+      // Handig om na login/logout opnieuw te syncen
       refresh,
     };
   }, [loading, me, favoriteIds]);
