@@ -14,16 +14,19 @@ export function FavoritesProvider({ children }) {
   async function refresh() {
     setLoading(true);
 
-    // Wie ben ik?
-    const user = await apiGetAuth("/api/auth/user/");
-    setMe(user);
+    // Haal huidige user op via backend session (Google login)
+    // Verwacht: { is_authenticated: boolean, user: {...} | null }
+    const meRes = await apiGetAuth("/api/me/");
 
     // Niet ingelogd → reset favorieten
-    if (!user) {
+    if (!meRes || meRes.is_authenticated === false || !meRes.user) {
+      setMe(null);
       setFavoriteIds(new Set());
       setLoading(false);
       return;
     }
+
+    setMe(meRes.user);
 
     // Favorieten ophalen
     const favs = await apiGetAuth("/api/favorites/");
