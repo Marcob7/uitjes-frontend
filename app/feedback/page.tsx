@@ -2,13 +2,15 @@
 "use client";
 
 import { useState } from "react";
-
-// Dit formulier post feedback naar Django/DRF.
-// We houden het MVP-simpel: message verplicht, email optioneel.
-// Django doet de echte validatie (bijv. min_length=10), maar we geven ook basic UX feedback.
+import { apiFetchAuth } from "@/lib/api";
 
 type ApiError =
-  | { message?: string[]; email?: string[]; page_url?: string[]; detail?: string }
+  | {
+      message?: string[];
+      email?: string[];
+      page_url?: string[];
+      detail?: string;
+    }
   | string;
 
 export default function FeedbackPage() {
@@ -16,13 +18,20 @@ export default function FeedbackPage() {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
 
+  // Honeypot: echte gebruikers vullen dit niet in
+  const [website, setWebsite] = useState("");
+
+  // Tijd waarop formulier geladen is
+  const [formStartedAt] = useState(() => Date.now());
+
   // UI state
   const [loading, setLoading] = useState(false);
   const [successId, setSuccessId] = useState<number | null>(null);
   const [errorText, setErrorText] = useState<string>("");
 
-  // Kleine client-side check: voorkomt onnodige request (backend check blijft leidend)
-  const messageTooShort = message.trim().length > 0 && message.trim().length < 10;
+  // Kleine client-side check: voorkomt onnodige request
+  const messageTooShort =
+    message.trim().length > 0 && message.trim().length < 10;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,7 +40,7 @@ export default function FeedbackPage() {
     setErrorText("");
     setSuccessId(null);
 
-    // Simpele UX-validatie (backend blijft de waarheid)
+    // Simpele UX-validatie
     if (message.trim().length < 10) {
       setErrorText("Je bericht moet minimaal 10 tekens zijn.");
       return;
@@ -40,49 +49,31 @@ export default function FeedbackPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/feedback/`, {
+      const r = await apiFetchAuth("/api/feedback/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json", // DRF kan de body dan als JSON lezen
-        },
         body: JSON.stringify({
-          // message is verplicht (jouw serializer)
           message: message.trim(),
-
-          // email is optioneel; stuur alleen als er iets ingevuld is
           email: email.trim() ? email.trim() : "",
-
-          // page_url is optioneel; handig voor jou om te zien waar iemand feedback gaf
           page_url: window.location.href,
+
+          // Anti-spam
+          website, // moet leeg blijven
+          form_started_at: formStartedAt,
         }),
       });
 
-      // Als het misgaat (400/500), willen we de response lezen en toonbaar maken
-      if (!res.ok) {
-        const contentType = res.headers.get("content-type") || "";
-
-        // Vaak stuurt DRF JSON errors terug bij 400; bij 500 in dev krijg je soms HTML
-        if (contentType.includes("application/json")) {
-          const data = (await res.json()) as ApiError;
-          setErrorText(formatApiError(data));
-        } else {
-          const text = await res.text();
-          setErrorText(`Fout (${res.status}). Backend gaf geen JSON terug.\n${text.slice(0, 300)}…`);
-        }
-
+      if (!r.ok) {
+        setErrorText(formatApiError(r.data as ApiError));
         setLoading(false);
         return;
       }
 
-      // Succes: DRF stuurt meestal het object terug met id
-      const data = await res.json();
-      setSuccessId(data.id ?? null);
-
-      // Form leegmaken na succes
+      // Succes
+      setSuccessId(r.data?.id ?? null);
       setMessage("");
       setEmail("");
+      setWebsite("");
     } catch (err: any) {
-      // Netwerkfout: Django uit, verkeerde URL, CORS, etc.
       setErrorText(`Netwerkfout: ${err?.message ?? "Onbekende fout"}`);
     } finally {
       setLoading(false);
@@ -94,10 +85,10 @@ export default function FeedbackPage() {
       <h1>Feedback</h1>
 
       <p style={{ marginTop: 8, marginBottom: 16 }}>
-        Heb je een suggestie of mis je iets? Laat het weten. Dit komt direct bij ons binnen.
+        Heb je een suggestie of mis je iets? Laat het weten. Dit komt direct bij
+        ons binnen.
       </p>
 
-      {/* Succesmelding */}
       {successId !== null ? (
         <div
           style={{
@@ -112,7 +103,6 @@ export default function FeedbackPage() {
         </div>
       ) : null}
 
-      {/* Foutmelding */}
       {errorText ? (
         <div
           style={{
@@ -121,7 +111,7 @@ export default function FeedbackPage() {
             padding: 12,
             borderRadius: 8,
             marginBottom: 16,
-            whiteSpace: "pre-wrap", // zodat \n netjes getoond wordt
+            whiteSpace: "pre-wrap",
           }}
         >
           <b>Er ging iets mis</b>
@@ -131,7 +121,9 @@ export default function FeedbackPage() {
 
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
         <label>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Jouw suggestie (verplicht)</div>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            Jouw suggestie (verplicht)
+          </div>
 
           <textarea
             value={message}
@@ -146,7 +138,6 @@ export default function FeedbackPage() {
             }}
           />
 
-          {/* Kleine hint onder het veld */}
           <div style={{ marginTop: 6, fontSize: 12, opacity: 0.8 }}>
             Minimaal 10 tekens.
             {messageTooShort ? " Je zit er nog onder." : ""}
@@ -154,7 +145,9 @@ export default function FeedbackPage() {
         </label>
 
         <label>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Email (optioneel)</div>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            Email (optioneel)
+          </div>
 
           <input
             value={email}
@@ -169,6 +162,20 @@ export default function FeedbackPage() {
             }}
           />
         </label>
+
+        {/* Honeypot veld: bots vullen dit vaak in, echte gebruikers niet */}
+        <input
+          type="text"
+          name="website"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          style={{
+            display: "none",
+          }}
+        />
 
         <button
           type="submit"
@@ -192,9 +199,8 @@ export default function FeedbackPage() {
   );
 }
 
-// Zet DRF errors om naar een leesbare tekst voor de gebruiker.
-// Voorbeeld DRF error: { "message": ["Ensure this field has at least 10 characters."] }
 function formatApiError(data: ApiError): string {
+  if (!data) return "Er ging iets mis.";
   if (typeof data === "string") return data;
 
   const parts: string[] = [];
@@ -204,7 +210,6 @@ function formatApiError(data: ApiError): string {
   if (data.email?.length) parts.push(`Email: ${data.email.join(", ")}`);
   if (data.page_url?.length) parts.push(`Pagina: ${data.page_url.join(", ")}`);
 
-  // Fallback als het een onverwacht JSON object is
   if (parts.length === 0) return JSON.stringify(data);
 
   return parts.join("\n");
