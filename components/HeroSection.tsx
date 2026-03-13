@@ -8,12 +8,7 @@ const featuredCities = [
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden border-b border-[#e4d7c5] bg-[#f5f0e7]">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(194,122,63,0.16),_transparent_34%),radial-gradient(circle_at_82%_18%,_rgba(170,188,131,0.12),_transparent_22%),linear-gradient(180deg,_rgba(255,251,245,0.95)_0%,_rgba(245,240,231,0.98)_100%)]"
-      />
-
+    <section className="relative overflow-hidden border-b border-[#e9dfd2] bg-[#FDFBF7]">
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="max-w-4xl">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5b33]">
@@ -33,19 +28,24 @@ export default function HeroSection() {
             method="get"
             role="search"
             aria-label="Zoek een stad"
-            className="overflow-hidden rounded-[2rem] border border-[#d9c7ae] bg-white shadow-[0_28px_70px_rgba(92,63,36,0.12)]"
+            className="relative overflow-hidden rounded-[2rem] border border-[#e5d9c8] bg-white shadow-[0_28px_70px_rgba(92,63,36,0.10)]"
           >
             <div className="border-b border-[#ece1d2] px-5 py-4 sm:px-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8d5b33]">
-                Begin hier
-              </p>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8d5b33]">
+                  Begin hier
+                </p>
+                <span className="rounded-full border border-[#e4d5c1] bg-[#faf4eb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8d5b33]">
+                  Vandaag populair
+                </span>
+              </div>
               <p id="hero-search-help" className="mt-2 text-sm leading-6 text-[#6e5a49]">
-                Bijvoorbeeld Apeldoorn, Deventer of Arnhem.
+                Bijvoorbeeld Apeldoorn, Deventer of Arnhem. Enter werkt ook.
               </p>
             </div>
 
             <div className="flex min-w-0 flex-col gap-3 p-3 sm:p-4 lg:flex-row lg:items-center">
-              <div className="flex min-w-0 flex-1 items-center gap-4 rounded-[1.4rem] bg-[#fbf7f1] px-4 py-3 sm:px-5 sm:py-4">
+              <div className="flex min-w-0 flex-1 items-center gap-4 rounded-[1.4rem] bg-[#f8f4ed] px-4 py-3 sm:px-5 sm:py-4">
                 <svg
                   className="h-5 w-5 shrink-0 text-[#9b714d]"
                   viewBox="0 0 20 20"
@@ -91,9 +91,10 @@ export default function HeroSection() {
 
               <button
                 type="submit"
-                className="inline-flex min-h-14 shrink-0 items-center justify-center rounded-[1.35rem] bg-[#b7d36b] px-6 text-base font-semibold text-[#1f1b15] transition hover:bg-[#a9c55f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7f9e35] lg:min-w-[180px]"
+                className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-[1.35rem] bg-[#b7d36b] px-6 text-base font-semibold text-[#1f1b15] shadow-[0_14px_30px_rgba(127,158,53,0.18)] transition hover:-translate-y-0.5 hover:bg-[#a9c55f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7f9e35] lg:min-w-[180px]"
               >
                 Zoek evenementen
+                <span aria-hidden="true">&#8594;</span>
               </button>
             </div>
           </form>
@@ -108,8 +109,9 @@ export default function HeroSection() {
                   <Link
                     key={city.label}
                     href={city.href}
-                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8cab6] bg-white/72 px-4 py-2 text-sm font-medium text-[#5f4d3e] transition hover:border-[#bb8b58] hover:bg-[#fff7ec] hover:text-[#3b291d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bb8b58]"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#ddd0bd] bg-white px-4 py-2 text-sm font-medium text-[#5f4d3e] transition hover:-translate-y-0.5 hover:border-[#bb8b58] hover:bg-[#fff7ec] hover:text-[#3b291d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bb8b58]"
                   >
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#b97a40]" aria-hidden="true" />
                     {city.label}
                   </Link>
                 ))}
@@ -120,7 +122,7 @@ export default function HeroSection() {
               href="/ontdek"
               className="inline-flex items-center gap-2 self-start text-sm font-medium text-[#6e5a49] transition hover:text-[#3b291d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bb8b58]"
             >
-              Of bekijk eerst alle evenementen
+              Liever eerst rustig bladeren?
               <span aria-hidden="true">&#8594;</span>
             </Link>
           </div>
