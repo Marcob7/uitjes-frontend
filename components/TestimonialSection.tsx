@@ -49,7 +49,7 @@ export default function TestimonialSection() {
         <article className="rounded-[2.5rem] border-2 border-neutral-900 bg-[#f7f7f5] px-8 py-10 shadow-[0_4px_0_0_rgba(23,23,23,1)] sm:px-10 sm:py-12 lg:px-14 lg:py-14">
           <blockquote className="max-w-2xl">
             <p className="text-2xl leading-relaxed text-neutral-900 sm:text-3xl sm:leading-relaxed">
-              “We zochten iets leuks om spontaan te doen en vonden via OpPad
+              “We zochten iets leuks om spontaan te doen en vonden via Reuring
               binnen een paar minuten een evenement in de buurt. De app is
               overzichtelijk, snel en geeft meteen inspiratie.”
             </p>

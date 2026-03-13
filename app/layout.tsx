@@ -4,7 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
-  title: "OpPad",
+  title: "Reuring",
   description: "Ontdek leuke uitjes, evenementen en activiteiten bij jou in de buurt.",
 };
 

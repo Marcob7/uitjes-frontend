@@ -20,13 +20,12 @@ export default function SiteHeader() {
           onClick={closeMenu}
         >
       <Image
-  src="/images/frog.png"
+  src="/images/cider.png"
   alt="Logo"
-  width={62}
-  height={62}
+  width={75}
+  height={75}
   className="object-contain"
-/>
-          <span>öõp pad</span>
+/>  <span>Reuring</span>
         </Link>
 
         {/* Desktop navigatie */}

@@ -1,31 +1,26 @@
-// frontend/components/OntdekHeader.tsx
 "use client";
 
+import Link from "next/link";
 import CitySelect, { type CityOption } from "@/components/CitySelect";
 
-// OntdekHeader bundelt:
-// - City selector
-// - Filter chips (when + free)
-// - Een statusregel ("Stad: ... Wanneer: ... Filter: ...")
-//
-// Dit is bewust een client component zodat we makkelijk UI/UX kunnen uitbreiden.
-// Voor nu gebruiken we nog <a href="..."> links om URL-driven state te houden.
+type OntdekHeaderProps = {
+  city: string;
+  free: string;
+  when?: string;
+  cityOptions: CityOption[];
+};
 
 export default function OntdekHeader({
   city,
   free,
   when,
   cityOptions,
-}: {
-  city: string;
-  free: string; // "0" of "1"
-  when?: string; // "tonight" | "weekend" | undefined
-  cityOptions: CityOption[];
-}) {
+}: OntdekHeaderProps) {
   const whenLabel =
     when === "tonight" ? "Vanavond" : when === "weekend" ? "Dit weekend" : "Altijd";
 
-  // Helper: maak een /ontdek URL met behoud van city + vrije combinatie van when/free
+  const cityLabel = cityOptions.find((option) => option.value === city)?.label ?? city;
+
   function buildUrl(next: { city: string; free: string; when?: string }) {
     const params = new URLSearchParams();
     params.set("city", next.city);
@@ -36,74 +31,102 @@ export default function OntdekHeader({
     return `/ontdek?${params.toString()}`;
   }
 
-  // Kleine helper voor chip-styling (active/inactive)
-  function chipStyle(active: boolean) {
-    return {
-      padding: "8px 10px",
-      border: "1px solid #ddd",
-      borderRadius: 999,
-      textDecoration: "none",
-      fontWeight: active ? 700 : 400,
-      display: "inline-block",
-    } as const;
+  function chipClass(active: boolean) {
+    return [
+      "inline-flex items-center justify-center rounded-full px-4 py-2 text-sm transition",
+      active
+        ? "border border-stone-900 bg-stone-900 font-semibold text-white shadow-sm"
+        : "border border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:bg-stone-50",
+    ].join(" ");
   }
 
+  const whenOptions = [
+    { label: "Altijd", href: buildUrl({ city, free, when: undefined }), active: !when },
+    { label: "Vanavond", href: buildUrl({ city, free, when: "tonight" }), active: when === "tonight" },
+    {
+      label: "Dit weekend",
+      href: buildUrl({ city, free, when: "weekend" }),
+      active: when === "weekend",
+    },
+  ];
+
+  const priceOptions = [
+    { label: "Alles", href: buildUrl({ city, free: "0", when }), active: free !== "1" },
+    { label: "Gratis", href: buildUrl({ city, free: "1", when }), active: free === "1" },
+  ];
+
   return (
-    <section style={{ marginTop: 12, marginBottom: 16 }}>
-      {/* 
-        Layout:
-        - op desktop: 2 kolommen (city links, chips rechts)
-        - op mobiel: alles onder elkaar (wrap)
-      */}
-      <div
-        style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "flex-end",
-          flexWrap: "wrap",
-        }}
-      >
-        {/* Links: city selector */}
-        <CitySelect cities={cityOptions} defaultCity="apeldoorn" />
+    <section className="mb-6 mt-4 rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,_rgba(255,255,255,0.96)_0%,_rgba(247,243,237,0.96)_100%)] p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,1.05fr)] lg:items-end">
+        <div className="max-w-xl">
+          <span className="inline-flex rounded-full border border-stone-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-stone-600">
+            Ontdek filters
+          </span>
 
-        {/* Rechts: chips */}
-        <div style={{ display: "grid", gap: 10 }}>
-          {/* When chips */}
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <a href={buildUrl({ city, free, when: undefined })} style={chipStyle(!when)}>
-              Altijd
-            </a>
-            <a
-              href={buildUrl({ city, free, when: "tonight" })}
-              style={chipStyle(when === "tonight")}
-            >
-              Vanavond
-            </a>
-            <a
-              href={buildUrl({ city, free, when: "weekend" })}
-              style={chipStyle(when === "weekend")}
-            >
-              Dit weekend
-            </a>
+          <h2 className="font-heading mt-4 text-3xl leading-tight text-stone-900 sm:text-4xl">
+            Verfijn je ontdektocht in {cityLabel}
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-stone-600 sm:text-base">
+            Wissel snel tussen moment en prijs zonder je stad te verliezen. De filters blijven
+            URL-gedreven zodat delen en verversen voorspelbaar blijft.
+          </p>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white/90 p-4 shadow-sm sm:p-5">
+          <CitySelect cities={cityOptions} defaultCity={city} />
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+            Wanneer
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {whenOptions.map((option) => (
+              <Link
+                key={option.label}
+                href={option.href}
+                className={chipClass(option.active)}
+                aria-current={option.active ? "page" : undefined}
+              >
+                {option.label}
+              </Link>
+            ))}
           </div>
+        </div>
 
-          {/* Free chips */}
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <a href={buildUrl({ city, free: "0", when })} style={chipStyle(free !== "1")}>
-              Alles
-            </a>
-            <a href={buildUrl({ city, free: "1", when })} style={chipStyle(free === "1")}>
-              Gratis
-            </a>
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+            Prijs
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {priceOptions.map((option) => (
+              <Link
+                key={option.label}
+                href={option.href}
+                className={chipClass(option.active)}
+                aria-current={option.active ? "page" : undefined}
+              >
+                {option.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Statusregel */}
-      <p style={{ marginTop: 12 }}>
-        Stad: <b>{city}</b> • Wanneer: <b>{whenLabel}</b> • Filter:{" "}
-        <b>{free === "1" ? "Gratis" : "Alles"}</b>
-      </p>
+      <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-stone-600">
+        <span className="rounded-full bg-stone-900 px-3 py-1 font-medium text-white">
+          Stad: {cityLabel}
+        </span>
+        <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+          Wanneer: {whenLabel}
+        </span>
+        <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+          Filter: {free === "1" ? "Gratis" : "Alles"}
+        </span>
+      </div>
     </section>
   );
 }

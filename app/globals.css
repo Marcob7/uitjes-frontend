@@ -3,56 +3,20 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Gambetta";
-  src: url("/fonts/gambetta/Gambetta-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Gambetta";
-  src: url("/fonts/gambetta/Gambetta-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Gambetta";
-  src: url("/fonts/gambetta/Gambetta-Semibold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Gambetta";
-  src: url("/fonts/gambetta/Gambetta-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: "Gambett-light";
-  src: url("/fonts/gambetta/Gambetta-Light.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: "Gambett-Semibold";
-  src: url("/fonts/gambetta/Gambetta-Semibold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-}
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-heading: "Gambetta-Semibold", Georgia, serif;
+  --font-body: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Aptos Display", "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -65,9 +29,33 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  font-feature-settings: "ss01" 1, "cv05" 1;
+  letter-spacing: -0.01em;
+  text-rendering: optimizeLegibility;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .font-heading {
   font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+p,
+label,
+button,
+input,
+textarea,
+select,
+a,
+li,
+figcaption,
+small {
+  font-family: var(--font-body);
 }

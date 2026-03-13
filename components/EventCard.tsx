@@ -33,51 +33,29 @@ export default function EventCard({
 }) {
   const startLabel = new Date(event.start_at).toLocaleString("nl-NL");
   const venueLabel = event.venue ?? "Onbekende locatie";
-  const priceLabel = event.is_free ? "Gratis" : `€${event.price_min ?? "?"}`; 
+  const priceLabel = event.is_free ? "Gratis" : `EUR ${event.price_min ?? "?"}`;
 
   return (
-    <li
-      className="
-        grid gap-2 rounded-xl border p-4 shadow-sm
-        border-neutral-200 bg-white text-neutral-900
-        dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100
-      "
-    >
-      {/* Titel */}
-      <div className="text-base font-semibold leading-snug">
-        {event.title}
+    <li className="grid gap-2 rounded-xl border border-[#e5d1b3] bg-[#fffaf3] p-4 text-[#3f2d1d] shadow-[0_10px_30px_rgba(118,78,41,0.08)]">
+      <div className="text-base font-semibold leading-snug text-[#2f2218]">{event.title}</div>
+
+      <div className="text-sm text-[#6d5844]">
+        {venueLabel} <span className="text-[#b4906a]">&middot;</span> {startLabel}
       </div>
 
-      {/* Meta info: locatie + tijd */}
-      <div className="text-sm text-neutral-700 dark:text-neutral-300">
-        {venueLabel}{" "}
-        <span className="text-neutral-400 dark:text-neutral-600">•</span>{" "}
-        {startLabel}
-      </div>
+      <div className="text-sm font-medium text-[#6b4a2d]">{priceLabel}</div>
 
-      {/* Prijs */}
-      <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-        {priceLabel}
-      </div>
-
-      {/* Acties */}
       {showDetailLink || showFavoriteButton ? (
         <div className="mt-2 flex items-center gap-3">
-          {/* Link naar detailpagina binnen je app */}
           {showDetailLink ? (
-      <a
-  href={`/events?id=${event.id}`}
-  className="
-    text-sm font-semibold underline underline-offset-4
-    text-neutral-900 hover:text-neutral-700
-    dark:text-neutral-100 dark:hover:text-neutral-300
-  "
->
-  Bekijk detail
-</a>
+            <a
+              href={`/events?id=${event.id}`}
+              className="text-sm font-semibold underline underline-offset-4 text-[#7c522d] transition hover:text-[#a56432]"
+            >
+              Bekijk detail
+            </a>
           ) : null}
 
-          {/* Favorieten knop (localStorage) */}
           {showFavoriteButton ? <FavoriteButton eventId={event.id} /> : null}
         </div>
       ) : null}

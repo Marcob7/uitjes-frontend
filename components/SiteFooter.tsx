@@ -106,7 +106,7 @@ export default function SiteFooter() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8f58d] text-lg">
                   O
                 </span>
-                <span>OpPad</span>
+                <span>Reuring</span>
               </Link>
 
               <p className="text-lg text-white">Made in Apeldoorn</p>
