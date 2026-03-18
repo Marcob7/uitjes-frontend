@@ -1,12 +1,80 @@
-import Link from "next/link";
+"use client";
 
-const featuredCities = [
-  { label: "Apeldoorn", href: "/ontdek?city=apeldoorn" },
-  { label: "Deventer", href: "/ontdek?city=deventer" },
-  { label: "Arnhem", href: "/ontdek?city=arnhem" },
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+type CityOption = {
+  label: string;
+  slug: string;
+};
+
+const featuredCities: CityOption[] = [
+  { label: "Apeldoorn", slug: "apeldoorn" },
+  { label: "Deventer", slug: "deventer" },
+  { label: "Arnhem", slug: "arnhem" },
 ];
 
+const cityOptions: CityOption[] = [
+  { label: "Apeldoorn", slug: "apeldoorn" },
+  { label: "Deventer", slug: "deventer" },
+  { label: "Arnhem", slug: "arnhem" },
+  { label: "Zwolle", slug: "zwolle" },
+  { label: "Nijmegen", slug: "nijmegen" },
+  { label: "Utrecht", slug: "utrecht" },
+];
+
+function normalizeCityToSlug(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-");
+}
+
 export default function HeroSection() {
+  const router = useRouter();
+  const [query, setQuery] = useState<string>("");
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+
+  const suggestions = useMemo((): CityOption[] => {
+    const trimmed = query.trim().toLowerCase();
+
+    if (!trimmed) return cityOptions;
+
+    return cityOptions.filter((city) =>
+      city.label.toLowerCase().includes(trimmed)
+    );
+  }, [query]);
+
+  function goToCity(cityValue: string): void {
+    const matchedCity = cityOptions.find(
+      (city) =>
+        city.label.toLowerCase() === cityValue.trim().toLowerCase() ||
+        city.slug === normalizeCityToSlug(cityValue)
+    );
+
+    const citySlug = matchedCity
+      ? matchedCity.slug
+      : normalizeCityToSlug(cityValue);
+
+    if (!citySlug) return;
+
+    router.push(`/ontdek?city=${encodeURIComponent(citySlug)}`);
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    goToCity(query);
+  }
+
+  function handleSuggestionClick(city: CityOption): void {
+    setQuery(city.label);
+    setShowSuggestions(false);
+    goToCity(city.label);
+  }
+
   return (
     <section className="relative overflow-hidden border-b border-[#e9dfd2] bg-[#FDFBF7]">
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
@@ -18,17 +86,17 @@ export default function HeroSection() {
             Zoek een stad en zie meteen wat daar te doen is.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-[#625141] sm:text-lg">
-            Typ een plaatsnaam, open de ontdekpagina en filter verder op moment, prijs of type uitje.
+            Typ een plaatsnaam, open de ontdekpagina en filter verder op moment,
+            prijs of type uitje.
           </p>
         </div>
 
         <div className="mt-10 max-w-5xl">
           <form
-            action="/ontdek"
-            method="get"
+            onSubmit={handleSubmit}
             role="search"
             aria-label="Zoek een stad"
-            className="relative overflow-hidden rounded-[2rem] border border-[#e5d9c8] bg-white shadow-[0_28px_70px_rgba(92,63,36,0.10)]"
+            className="relative overflow-visible rounded-[2rem] border border-[#e5d9c8] bg-white shadow-[0_28px_70px_rgba(92,63,36,0.10)]"
           >
             <div className="border-b border-[#ece1d2] px-5 py-4 sm:px-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -39,13 +107,16 @@ export default function HeroSection() {
                   Vandaag populair
                 </span>
               </div>
-              <p id="hero-search-help" className="mt-2 text-sm leading-6 text-[#6e5a49]">
+              <p
+                id="hero-search-help"
+                className="mt-2 text-sm leading-6 text-[#6e5a49]"
+              >
                 Bijvoorbeeld Apeldoorn, Deventer of Arnhem. Enter werkt ook.
               </p>
             </div>
 
             <div className="flex min-w-0 flex-col gap-3 p-3 sm:p-4 lg:flex-row lg:items-center">
-              <div className="flex min-w-0 flex-1 items-center gap-4 rounded-[1.4rem] bg-[#f8f4ed] px-4 py-3 sm:px-5 sm:py-4">
+              <div className="relative flex min-w-0 flex-1 items-center gap-4 rounded-[1.4rem] bg-[#f8f4ed] px-4 py-3 sm:px-5 sm:py-4">
                 <svg
                   className="h-5 w-5 shrink-0 text-[#9b714d]"
                   viewBox="0 0 20 20"
@@ -76,8 +147,17 @@ export default function HeroSection() {
                     id="city-search"
                     name="city"
                     type="search"
+                    value={query}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setQuery(event.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => {
+                      setTimeout(() => setShowSuggestions(false), 150);
+                    }}
                     placeholder="Naar welke stad wil je zoeken?"
-                    autoComplete="address-level2"
+                    autoComplete="off"
                     enterKeyHint="search"
                     inputMode="search"
                     spellCheck={false}
@@ -87,6 +167,25 @@ export default function HeroSection() {
                     className="w-full min-w-0 bg-transparent text-lg text-[#23170f] outline-none placeholder:text-[#9b836d] sm:text-xl"
                   />
                 </div>
+
+                {showSuggestions && suggestions.length > 0 ? (
+                  <div className="absolute left-0 right-0 top-[calc(100%+12px)] z-20 rounded-[1.4rem] border border-[#e5d9c8] bg-white p-2 shadow-[0_18px_40px_rgba(92,63,36,0.14)]">
+                    <ul className="flex flex-col gap-1">
+                      {suggestions.map((city) => (
+                        <li key={city.slug}>
+                          <button
+                            type="button"
+                            onMouseDown={() => handleSuggestionClick(city)}
+                            className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm text-[#3b291d] transition hover:bg-[#faf4eb]"
+                          >
+                            <span>{city.label}</span>
+                            <span className="text-[#9b836d]">→</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </div>
 
               <button
@@ -94,7 +193,7 @@ export default function HeroSection() {
                 className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-[1.35rem] bg-[#b7d36b] px-6 text-base font-semibold text-[#1f1b15] shadow-[0_14px_30px_rgba(127,158,53,0.18)] transition hover:-translate-y-0.5 hover:bg-[#a9c55f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7f9e35] lg:min-w-[180px]"
               >
                 Zoek evenementen
-                <span aria-hidden="true">&#8594;</span>
+                <span aria-hidden="true">→</span>
               </button>
             </div>
           </form>
@@ -108,10 +207,13 @@ export default function HeroSection() {
                 {featuredCities.map((city) => (
                   <Link
                     key={city.label}
-                    href={city.href}
+                    href={`/ontdek?city=${city.slug}`}
                     className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#ddd0bd] bg-white px-4 py-2 text-sm font-medium text-[#5f4d3e] transition hover:-translate-y-0.5 hover:border-[#bb8b58] hover:bg-[#fff7ec] hover:text-[#3b291d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bb8b58]"
                   >
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#b97a40]" aria-hidden="true" />
+                    <span
+                      className="h-1.5 w-1.5 rounded-full bg-[#b97a40]"
+                      aria-hidden="true"
+                    />
                     {city.label}
                   </Link>
                 ))}
@@ -123,7 +225,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 self-start text-sm font-medium text-[#6e5a49] transition hover:text-[#3b291d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bb8b58]"
             >
               Liever eerst rustig bladeren?
-              <span aria-hidden="true">&#8594;</span>
+              <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>

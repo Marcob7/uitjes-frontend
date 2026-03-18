@@ -14,11 +14,38 @@ import ShowcaseSection from "@/components/ShowcaseSection";
 import FeatureCardsSection from "@/components/FeatureCardsSection";
 import TestimonialSection from "@/components/TestimonialSection";
 import FinalCtaSection from "@/components/FinalCtaSection";
-
+import TrustedTeamsSection from "@/components/TrustedTeamsSection";
 type EventItem = {
   id: number;
   title?: string;
 };
+
+const cityItems = [
+  {
+    id: 1,
+    title: "Apeldoorn",
+    description: "Leuke restaurants, events en plekken voor een gezellige dag of avond.",
+    image: "/images/cities/apeldoorn.jpg",
+    href: "/ontdek?city=apeldoorn",
+    cta: "Bekijk Apeldoorn",
+  },
+  {
+    id: 2,
+    title: "Deventer",
+    description: "Ontdek kroegen, terrassen, markten en culturele hotspots.",
+    image: "/images/cities/deventer.jpg",
+    href: "/ontdek?city=deventer",
+    cta: "Bekijk Deventer",
+  },
+  {
+    id: 3,
+    title: "Arnhem",
+    description: "Van shoppen tot uitgaan en leuke activiteiten voor het weekend.",
+    image: "/images/cities/arnhem.jpg",
+    href: "/ontdek?city=arnhem",
+    cta: "Bekijk Arnhem",
+  },
+];
 
 export default function Home() {
   const city = "apeldoorn";
@@ -47,7 +74,7 @@ export default function Home() {
 
   return (
     <>
-    
+   <TrustedTeamsSection />
       <HeroSection />
       <InspirationCardsSection />
       <TrustedSection />
