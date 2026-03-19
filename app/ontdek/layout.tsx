@@ -1,5 +1,4 @@
 export const runtime = 'edge';
-
 export default function OntdekLayout({
   children,
 }: {

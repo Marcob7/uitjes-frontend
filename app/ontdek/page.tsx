@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import CityExploreView from "@/components/CityExploreView";
 
 type OntdekPageProps = {

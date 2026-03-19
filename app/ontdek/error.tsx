@@ -1,4 +1,3 @@
-export const runtime = 'edge';
 "use client";
 
 export default function Error({
