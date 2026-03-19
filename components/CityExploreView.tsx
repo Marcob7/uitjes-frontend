@@ -1,5 +1,6 @@
+export const runtime = 'edge';
 "use client";
-export const runtime = "edge";
+
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { getCityConfig } from "@/lib/cityConfig";
