@@ -15,6 +15,7 @@ import FeatureCardsSection from "@/components/FeatureCardsSection";
 import TestimonialSection from "@/components/TestimonialSection";
 import FinalCtaSection from "@/components/FinalCtaSection";
 import TrustedTeamsSection from "@/components/TrustedTeamsSection";
+
 type EventItem = {
   id: number;
   title?: string;
@@ -74,8 +75,9 @@ export default function Home() {
 
   return (
     <>
-   <TrustedTeamsSection />
+  
       <HeroSection />
+       <TrustedTeamsSection />
       <InspirationCardsSection />
       <TrustedSection />
       <ShowcaseSection />

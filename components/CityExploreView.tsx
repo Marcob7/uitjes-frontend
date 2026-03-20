@@ -3,6 +3,9 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { getCityConfig } from "@/lib/cityConfig";
+import ExploreFiltersSidebar, {
+  type ExploreFilters,
+} from "@/components/ExploreFiltersSidebar";
 
 type CategoryKey =
   | "restaurants"
@@ -42,6 +45,8 @@ type PlaceItem = {
   timeText?: string | null;
   sourceUrl?: string | null;
   isFree?: boolean;
+  priceText?: string | null;
+  sortDate?: string | null;
 };
 
 type CalendarEvent = {
@@ -213,14 +218,6 @@ const calendarDays = [
   { day: 31 },
 ];
 
-function formatCityName(city: string) {
-  return city
-    .split("-")
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
 function formatVenue(venue: string | null | undefined, cityLabel: string) {
   if (!venue || venue.toLowerCase() === "nan") {
     return cityLabel;
@@ -251,7 +248,7 @@ function formatTimeRange(startAt: string | null, endAt: string | null) {
 
 function getEventBadge(event: BackendEvent) {
   if (event.is_ongoing) {
-    return { label: "Bezig", color: "bg-emerald-500" };
+    return { label: "Nu bezig", color: "bg-emerald-500" };
   }
 
   if (event.is_free) {
@@ -263,6 +260,68 @@ function getEventBadge(event: BackendEvent) {
   }
 
   return { label: "Evenement", color: "bg-violet-500" };
+}
+
+function getPriceText(event: BackendEvent) {
+  if (event.is_free) {
+    return "Gratis toegang";
+  }
+
+  if (event.price_min != null) {
+    return `Vanaf €${event.price_min}`;
+  }
+
+  return "Prijs onbekend";
+}
+
+function sortEventsByStartDate(events: BackendEvent[]) {
+  return [...events].sort((a, b) => {
+    const aTime = a.start_at
+      ? new Date(a.start_at).getTime()
+      : Number.POSITIVE_INFINITY;
+    const bTime = b.start_at
+      ? new Date(b.start_at).getTime()
+      : Number.POSITIVE_INFINITY;
+
+    return aTime - bTime;
+  });
+}
+
+function isSameDay(date: Date, compare: Date) {
+  return (
+    date.getFullYear() === compare.getFullYear() &&
+    date.getMonth() === compare.getMonth() &&
+    date.getDate() === compare.getDate()
+  );
+}
+
+function getStartOfNextWeek(baseDate: Date) {
+  const day = baseDate.getDay();
+  const diffToNextMonday = day === 0 ? 1 : 8 - day;
+  const nextMonday = new Date(baseDate);
+  nextMonday.setDate(baseDate.getDate() + diffToNextMonday);
+  nextMonday.setHours(0, 0, 0, 0);
+  return nextMonday;
+}
+
+function getEndOfNextWeek(startOfNextWeek: Date) {
+  const end = new Date(startOfNextWeek);
+  end.setDate(startOfNextWeek.getDate() + 6);
+  end.setHours(23, 59, 59, 999);
+  return end;
+}
+
+function isThisWeekend(date: Date, now: Date) {
+  const todayDay = now.getDay();
+  const saturday = new Date(now);
+  saturday.setDate(now.getDate() + ((6 - todayDay + 7) % 7));
+  saturday.setHours(0, 0, 0, 0);
+
+  const sunday = new Date(saturday);
+  sunday.setDate(saturday.getDate() + 1);
+  sunday.setHours(23, 59, 59, 999);
+
+  return date >= saturday && date <= sunday;
 }
 
 function DayCell({
@@ -310,7 +369,7 @@ function DayCell({
 
 function CalendarView() {
   return (
-    <div className="mt-8 grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
+    <div className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <button
@@ -360,7 +419,9 @@ function CalendarView() {
       </section>
 
       <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="text-2xl font-semibold text-slate-900">Vrijdag 13 Maart</h3>
+        <h3 className="text-2xl font-semibold text-slate-900">
+          Vrijdag 13 Maart
+        </h3>
 
         <div className="mt-6 space-y-4">
           {calendarEvents.map((event) => (
@@ -409,11 +470,19 @@ export default function CityExploreView({
   const [activeCategory, setActiveCategory] =
     useState<CategoryKey>("evenementen");
 
+const [filters, setFilters] = useState<ExploreFilters>({
+  date: "all",
+  freeOnly: false,
+  distanceKm: 25,
+  experienceTypes: [],
+});
   const cityTheme = getCityConfig(city);
   const cityLabel = cityTheme.label;
 
   const eventItems = useMemo<PlaceItem[]>(() => {
-    return (events || []).map((event) => {
+    const sortedEvents = sortEventsByStartDate(events || []);
+
+    return sortedEvents.map((event) => {
       const badge = getEventBadge(event);
 
       return {
@@ -426,7 +495,7 @@ export default function CityExploreView({
           event.date_text ||
           "Voor dit event is nog geen extra beschrijving beschikbaar.",
         location: formatVenue(event.venue, cityLabel),
-        image: "/images/apeldoorn_img.jpg",
+        image: cityTheme.fallbackImage,
         category: "evenementen",
         mapX: "50%",
         mapY: "50%",
@@ -434,9 +503,11 @@ export default function CityExploreView({
         timeText: formatTimeRange(event.start_at, event.end_at),
         sourceUrl: event.source_url,
         isFree: event.is_free,
+        priceText: getPriceText(event),
+        sortDate: event.start_at,
       };
     });
-  }, [events, cityLabel]);
+  }, [events, cityLabel, cityTheme]);
 
   const fallbackPlaces = useMemo(() => {
     if (activeCategory === "kalender" || activeCategory === "kaart") {
@@ -452,26 +523,66 @@ export default function CityExploreView({
     }
 
     if (activeCategory === "evenementen") {
-      return eventItems.length > 0 ? eventItems : fallbackPlaces;
+      let items = eventItems.length > 0 ? eventItems : fallbackPlaces;
+
+      if (filters.freeOnly) {
+        items = items.filter((item) => item.isFree);
+      }
+
+      if (filters.date !== "all") {
+        const now = new Date();
+        const startOfNextWeek = getStartOfNextWeek(now);
+        const endOfNextWeek = getEndOfNextWeek(startOfNextWeek);
+
+        items = items.filter((item) => {
+          if (!item.sortDate) return false;
+
+          const itemDate = new Date(item.sortDate);
+
+          if (filters.date === "today") {
+            return isSameDay(itemDate, now);
+          }
+
+          if (filters.date === "weekend") {
+            return isThisWeekend(itemDate, now);
+          }
+
+          if (filters.date === "nextWeek") {
+            return itemDate >= startOfNextWeek && itemDate <= endOfNextWeek;
+          }
+
+          return true;
+        });
+      }
+
+      return items;
     }
 
     return fallbackPlaces;
-  }, [activeCategory, eventItems, fallbackPlaces]);
+  }, [activeCategory, eventItems, fallbackPlaces, filters]);
 
   const hasRealEvents = eventItems.length > 0;
   const isKnownDataCity = city === "apeldoorn" || city === "deventer";
 
+  const availableCities = [
+    { label: "Apeldoorn", slug: "apeldoorn" },
+    { label: "Deventer", slug: "deventer" },
+  ];
+
   return (
-    <section className="bg-[#f7f8fa] px-4 py-8 sm:px-6 lg:px-8">
+    <section
+      className="px-4 py-8 sm:px-6 lg:px-8"
+      style={{ backgroundColor: cityTheme.colors.pageBackground }}
+    >
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
               Wat is er te doen in {cityLabel}?
             </h1>
-        <p className="mt-3 text-lg leading-8 text-slate-500">
-  {cityTheme.description}
-</p>
+            <p className="mt-3 text-lg leading-8 text-slate-500">
+              {cityTheme.description}
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -502,12 +613,21 @@ export default function CityExploreView({
                 key={category.key}
                 type="button"
                 onClick={() => setActiveCategory(category.key)}
-               className={[
-  "inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition",
-  isActive
-    ? `${cityTheme.accentClass} border-transparent text-white shadow-sm`
-    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-].join(" ")}
+                className={[
+                  "inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition",
+                  isActive
+                    ? "shadow-sm"
+                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+                ].join(" ")}
+                style={
+                  isActive
+                    ? {
+                        backgroundColor: cityTheme.colors.accent,
+                        borderColor: cityTheme.colors.accent,
+                        color: cityTheme.colors.accentText,
+                      }
+                    : undefined
+                }
               >
                 <span aria-hidden="true">{category.icon}</span>
                 {category.label}
@@ -518,140 +638,182 @@ export default function CityExploreView({
 
         {!hasRealEvents && !isKnownDataCity ? (
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 text-slate-600 shadow-sm">
-            Voor <span className="font-semibold text-slate-900">{cityLabel}</span>{" "}
-            is nog geen data beschikbaar. Probeer Apeldoorn of Deventer.
+            Voor{" "}
+            <span className="font-semibold text-slate-900">{cityLabel}</span> is
+            nog geen data beschikbaar. Probeer Apeldoorn of Deventer.
           </div>
         ) : null}
 
-        {activeCategory === "kalender" ? (
-          <CalendarView />
-        ) : (
-          <div className="mt-8 grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
-            <div className="space-y-4">
-              {filteredPlaces.map((place, index) => (
-                <article
-                  key={place.id}
-                  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                >
-                  <div className="flex gap-4">
-                    <div className="relative shrink-0">
-                      <div className="absolute -left-2 -top-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white shadow-md">
-                        {index + 1}
-                      </div>
-
-                      <div className="relative h-28 w-32 overflow-hidden rounded-2xl">
-                        <Image
-                          src={place.image}
-                          alt={place.title}
-                          fill
-                          className="object-cover"
-                          sizes="128px"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-semibold tracking-[0.15em] text-slate-400">
-                          {place.type}
-                        </span>
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold text-white ${place.badgeColor}`}
-                        >
-                          {place.badge}
-                        </span>
-                      </div>
-
-                      <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-                        {place.title}
-                      </h2>
-
-                      <p className="mt-2 max-w-2xl text-base leading-7 text-slate-500">
-                        {place.description}
-                      </p>
-
-                      <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                        <span className="inline-flex items-center gap-2">
-                          <span aria-hidden="true">📍</span>
-                          <span>{place.location}</span>
-                        </span>
-
-                        {place.timeText ? (
-                          <span className="inline-flex items-center gap-2">
-                            <span aria-hidden="true">🕘</span>
-                            <span>{place.timeText}</span>
-                          </span>
-                        ) : null}
-                      </div>
-
-                      {place.sourceUrl ? (
-                        <div className="mt-4">
-                          <a
-                            href={place.sourceUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-2 text-sm font-medium text-slate-900 underline underline-offset-4"
-                          >
-                            Bekijk bron
-                            <span aria-hidden="true">↗</span>
-                          </a>
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <aside className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-              <div className="relative min-h-[720px] overflow-hidden rounded-2xl bg-[#f3f5f4]">
-                <div className="absolute inset-0">
-                  <div className="absolute left-[10%] top-0 h-full w-1.5 bg-slate-200/70" />
-                  <div className="absolute left-[48%] top-0 h-full w-3 bg-slate-300/60" />
-                  <div className="absolute right-[10%] top-0 h-full w-1.5 bg-slate-200/70" />
-
-                  <div className="absolute left-0 top-[30%] h-1.5 w-full bg-slate-200/70" />
-                  <div className="absolute left-0 top-[56%] h-3 w-full bg-slate-300/60" />
-                  <div className="absolute left-0 top-[80%] h-1.5 w-full bg-slate-200/70" />
-
-                  <div className="absolute left-[8%] top-[18%] h-40 w-16 rounded-2xl bg-emerald-100/40" />
-                  <div className="absolute bottom-[14%] right-[0%] h-40 w-36 rounded-3xl bg-emerald-100/40" />
-                  <div className="absolute left-[17%] top-[45%] h-14 w-20 rounded-2xl bg-slate-300/60" />
-                  <div className="absolute left-[30%] top-[63%] h-18 w-14 rounded-2xl bg-slate-300/60" />
-                  <div className="absolute right-[20%] top-[50%] h-12 w-24 rounded-2xl bg-slate-300/60" />
-                  <div className="absolute left-[14%] top-[18%] h-[2px] w-[64%] rotate-[45deg] bg-slate-200/70" />
-                </div>
-
-                {filteredPlaces.slice(0, 3).map((place, index) => (
-                  <div
-                    key={place.id}
-                    className="absolute z-10"
-                    style={{
-                      left: place.mapX,
-                      top: place.mapY,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  >
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                     <div
-  className={`flex h-12 w-12 items-center justify-center rounded-full ${cityTheme.accentClass} text-lg font-semibold text-white`}
->
-                        {index + 1}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-medium text-slate-500 shadow-sm">
-                  <span aria-hidden="true">📍</span>
-                  <span>
-                    {cityLabel} · {Math.min(filteredPlaces.length, 3)} locaties
-                  </span>
-                </div>
-              </div>
-            </aside>
+        <div className="mt-8 grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
+          <div className="xl:sticky xl:top-24 xl:self-start">
+            <ExploreFiltersSidebar
+              selectedCity={city}
+              availableCities={availableCities}
+              filters={filters}
+              onChange={setFilters}
+            />
           </div>
-        )}
+
+          <div>
+            {activeCategory === "kalender" ? (
+              <CalendarView />
+            ) : (
+              <div className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
+                <div className="space-y-4">
+                  {filteredPlaces.length === 0 ? (
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 text-slate-600 shadow-sm">
+                      Geen resultaten gevonden met deze filters.
+                    </div>
+                  ) : (
+                    filteredPlaces.map((place, index) => (
+                      <article
+                        key={place.id}
+                        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                      >
+                        <div className="flex flex-col gap-0 md:flex-row">
+                          <div className="relative md:w-[240px]">
+                            <div
+                              className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold shadow-md"
+                              style={{
+                                backgroundColor: cityTheme.colors.accent,
+                                color: cityTheme.colors.accentText,
+                              }}
+                            >
+                              {index + 1}
+                            </div>
+
+                            <div className="relative h-56 w-full md:h-full">
+                              <Image
+                                src={place.image}
+                                alt={place.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 240px"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex min-w-0 flex-1 flex-col p-5 sm:p-6">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-xs font-semibold tracking-[0.15em] text-slate-400">
+                                {place.type}
+                              </span>
+                              <span
+                                className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold text-white ${place.badgeColor}`}
+                              >
+                                {place.badge}
+                              </span>
+                              {place.priceText ? (
+                                <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                                  {place.priceText}
+                                </span>
+                              ) : null}
+                            </div>
+
+                            <h2 className="mt-3 text-2xl font-semibold leading-tight text-slate-900 sm:text-[1.75rem]">
+                              {place.title}
+                            </h2>
+
+                            {place.dateText ? (
+                              <p className="mt-3 text-sm font-medium uppercase tracking-[0.12em] text-slate-500">
+                                {place.dateText}
+                              </p>
+                            ) : null}
+
+                            <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+                              {place.description}
+                            </p>
+
+                            <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                              <span className="inline-flex items-center gap-2">
+                                <span aria-hidden="true">📍</span>
+                                <span>{place.location}</span>
+                              </span>
+
+                              {place.timeText ? (
+                                <span className="inline-flex items-center gap-2">
+                                  <span aria-hidden="true">🕘</span>
+                                  <span>{place.timeText}</span>
+                                </span>
+                              ) : null}
+                            </div>
+
+                            {place.sourceUrl ? (
+                              <div className="mt-6">
+                                <a
+                                  href={place.sourceUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-50"
+                                >
+                                  Bekijk bron
+                                  <span aria-hidden="true">↗</span>
+                                </a>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+
+                <aside className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  <div className="relative min-h-[720px] overflow-hidden rounded-2xl bg-[#f3f5f4]">
+                    <div className="absolute inset-0">
+                      <div className="absolute left-[10%] top-0 h-full w-1.5 bg-slate-200/70" />
+                      <div className="absolute left-[48%] top-0 h-full w-3 bg-slate-300/60" />
+                      <div className="absolute right-[10%] top-0 h-full w-1.5 bg-slate-200/70" />
+
+                      <div className="absolute left-0 top-[30%] h-1.5 w-full bg-slate-200/70" />
+                      <div className="absolute left-0 top-[56%] h-3 w-full bg-slate-300/60" />
+                      <div className="absolute left-0 top-[80%] h-1.5 w-full bg-slate-200/70" />
+
+                      <div className="absolute left-[8%] top-[18%] h-40 w-16 rounded-2xl bg-emerald-100/40" />
+                      <div className="absolute bottom-[14%] right-[0%] h-40 w-36 rounded-3xl bg-emerald-100/40" />
+                      <div className="absolute left-[17%] top-[45%] h-14 w-20 rounded-2xl bg-slate-300/60" />
+                      <div className="absolute left-[30%] top-[63%] h-18 w-14 rounded-2xl bg-slate-300/60" />
+                      <div className="absolute right-[20%] top-[50%] h-12 w-24 rounded-2xl bg-slate-300/60" />
+                      <div className="absolute left-[14%] top-[18%] h-[2px] w-[64%] rotate-[45deg] bg-slate-200/70" />
+                    </div>
+
+                    {filteredPlaces.slice(0, 3).map((place, index) => (
+                      <div
+                        key={place.id}
+                        className="absolute z-10"
+                        style={{
+                          left: place.mapX,
+                          top: place.mapY,
+                          transform: "translate(-50%, -50%)",
+                        }}
+                      >
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                          <div
+                            className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold"
+                            style={{
+                              backgroundColor: cityTheme.colors.accent,
+                              color: cityTheme.colors.accentText,
+                            }}
+                          >
+                            {index + 1}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-medium text-slate-500 shadow-sm">
+                      <span aria-hidden="true">📍</span>
+                      <span>
+                        {cityLabel} · {Math.min(filteredPlaces.length, 3)}{" "}
+                        locaties
+                      </span>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
