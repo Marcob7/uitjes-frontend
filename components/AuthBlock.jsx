@@ -32,7 +32,7 @@ export default function AuthBlock() {
   }
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div style={{ marginBottom: 18 }}>
       <div>Ingelogd als: <b>{me.username}</b></div>
       <button onClick={logout} style={{ marginTop: 8 }}>
         Uitloggen
