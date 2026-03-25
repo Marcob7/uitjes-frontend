@@ -88,7 +88,7 @@ export default function Home() {
         <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,_rgba(214,173,91,0.22),_transparent_58%)]" />
 
         <div className="relative mx-auto max-w-7xl">
-          <div className="overflow-hidden rounded-[2.25rem] border border-white/70 bg-white/88 p-6 shadow-[0_28px_90px_rgba(60,43,24,0.08)] backdrop-blur sm:p-8 lg:p-10">
+     <div className="overflow-hidden rounded-[2.25rem] border border-white/70 bg-white p-6 shadow-[0_28px_90px_rgba(60,43,24,0.08)] sm:p-8 lg:p-10">
             <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
               <section className="rounded-[2rem] bg-[#1f1d1a] p-6 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-8">
                 <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/72">
