@@ -5,9 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { getCityConfig } from "@/lib/cityConfig";
-import CityCalendarExpanded from "@/components/CityCalendarExpanded";
-import CityCalendarPreview from "@/components/CityCalendarPreview";
-import CalendarSection from "@/components/CalendarSection";
+
 type CategoryKey =
   | "events"
   | "attractions"
@@ -43,6 +41,20 @@ type ExploreCard = {
   time: string;
   location: string;
   image: string;
+};
+
+type CalendarView = "dag" | "week" | "maand" | "jaar";
+
+type CalendarCategory = "Alle categorieën" | "Kunst" | "Muziek" | "Theater" | "Culinair";
+
+type CalendarEvent = {
+  id: number;
+  title: string;
+  category: Exclude<CalendarCategory, "Alle categorieën">;
+  city: string;
+  date: string;
+  time?: string;
+  color: "green" | "purple" | "sand";
 };
 
 const categoryTabs: { key: CategoryKey; label: string }[] = [
@@ -186,6 +198,71 @@ const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
   ],
 };
 
+const MONTH_NAMES = [
+  "Januari",
+  "Februari",
+  "Maart",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Augustus",
+  "September",
+  "Oktober",
+  "November",
+  "December",
+];
+
+const WEEKDAY_NAMES = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
+
+const CALENDAR_EVENTS: CalendarEvent[] = [
+  {
+    id: 1,
+    title: "Vermeer at Mauritshuis",
+    category: "Kunst",
+    city: "Den Haag",
+    date: "2024-10-03",
+    time: "14:00",
+    color: "green",
+  },
+  {
+    id: 2,
+    title: "Jazz Nights at Paard",
+    category: "Muziek",
+    city: "Den Haag",
+    date: "2024-10-11",
+    time: "20:30",
+    color: "purple",
+  },
+  {
+    id: 3,
+    title: "Symphony at the Sea",
+    category: "Muziek",
+    city: "Den Haag",
+    date: "2024-10-23",
+    time: "19:30",
+    color: "green",
+  },
+  {
+    id: 4,
+    title: "Culinary Night Market",
+    category: "Culinair",
+    city: "Den Haag",
+    date: "2024-10-17",
+    time: "18:00",
+    color: "sand",
+  },
+  {
+    id: 5,
+    title: "Theater aan Zee",
+    category: "Theater",
+    city: "Den Haag",
+    date: "2024-10-26",
+    time: "20:00",
+    color: "purple",
+  },
+];
+
 function formatCityTitle(cityLabel: string) {
   return `${cityLabel} Discovery`;
 }
@@ -227,6 +304,7 @@ function sortEventsByStartDate(events: BackendEvent[]) {
     const aTime = a.start_at
       ? new Date(a.start_at).getTime()
       : Number.POSITIVE_INFINITY;
+
     const bTime = b.start_at
       ? new Date(b.start_at).getTime()
       : Number.POSITIVE_INFINITY;
@@ -291,6 +369,73 @@ function buildIconicCards(
       image: fallbackImage,
     },
   ];
+}
+
+function formatDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function isSameMonth(date: Date, currentDate: Date) {
+  return (
+    date.getMonth() === currentDate.getMonth() &&
+    date.getFullYear() === currentDate.getFullYear()
+  );
+}
+
+function getMonthGrid(currentDate: Date) {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+
+  const startDay = (firstDayOfMonth.getDay() + 6) % 7;
+  const totalDays = lastDayOfMonth.getDate();
+
+  const cells: Date[] = [];
+
+  for (let i = startDay; i > 0; i--) {
+    cells.push(new Date(year, month, 1 - i));
+  }
+
+  for (let day = 1; day <= totalDays; day++) {
+    cells.push(new Date(year, month, day));
+  }
+
+  while (cells.length % 7 !== 0) {
+    const nextDay = cells.length - (startDay + totalDays) + 1;
+    cells.push(new Date(year, month + 1, nextDay));
+  }
+
+  return cells;
+}
+
+function getWeekDates(currentDate: Date) {
+  const dayIndex = (currentDate.getDay() + 6) % 7;
+  const monday = new Date(currentDate);
+  monday.setDate(currentDate.getDate() - dayIndex);
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    return date;
+  });
+}
+
+function getColorClasses(color: CalendarEvent["color"]) {
+  switch (color) {
+    case "green":
+      return "bg-[#CFE8BF] text-[#1F2A17]";
+    case "purple":
+      return "bg-[#DEDCEF] text-[#1E1E25]";
+    case "sand":
+      return "bg-[#EEDFCF] text-[#2D241C]";
+    default:
+      return "bg-[#CFE8BF] text-[#1F2A17]";
+  }
 }
 
 function HeroSection({
@@ -390,6 +535,487 @@ function TabsSection({
           );
         })}
       </div>
+    </section>
+  );
+}
+
+function CalendarViewButton({
+  active,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  label: CalendarView;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-5 py-2.5 text-sm font-medium transition ${
+        active
+          ? "bg-[#B9DE84] text-[#223018]"
+          : "text-[#5E5953] hover:bg-white/60"
+      }`}
+    >
+      {label.charAt(0).toUpperCase() + label.slice(1)}
+    </button>
+  );
+}
+
+function CalendarEventPill({ event }: { event: CalendarEvent }) {
+  return (
+    <div
+      className={`rounded-[18px] px-3 py-2 text-[11px] leading-[1.15] ${getColorClasses(
+        event.color
+      )}`}
+    >
+      <div className="mb-1 text-[9px] uppercase tracking-[0.12em] opacity-70">
+        {event.category}
+      </div>
+      <div className="font-medium">{event.title}</div>
+    </div>
+  );
+}
+
+function CalendarMonthView({
+  currentDate,
+  events,
+}: {
+  currentDate: Date;
+  events: CalendarEvent[];
+}) {
+  const cells = getMonthGrid(currentDate);
+
+  const eventsByDate = useMemo(() => {
+    const map = new Map<string, CalendarEvent[]>();
+
+    for (const event of events) {
+      const list = map.get(event.date) ?? [];
+      list.push(event);
+      map.set(event.date, list);
+    }
+
+    return map;
+  }, [events]);
+
+  return (
+    <div className="overflow-hidden rounded-[2rem] border border-[#ECE6DD] bg-white">
+      <div className="grid grid-cols-7 border-b border-[#F0EBE4]">
+        {WEEKDAY_NAMES.map((day) => (
+          <div
+            key={day}
+            className="px-4 py-4 text-center text-[11px] font-medium tracking-[0.12em] text-[#918B83]"
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7">
+        {cells.map((date, index) => {
+          const dateKey = formatDateKey(date);
+          const dayEvents = eventsByDate.get(dateKey) ?? [];
+          const inCurrentMonth = isSameMonth(date, currentDate);
+
+          return (
+            <div
+              key={`${dateKey}-${index}`}
+              className={`min-h-[140px] border-r border-b border-[#F0EBE4] p-3 ${
+                !inCurrentMonth ? "bg-[#F7F4F0] text-[#B2ACA4]" : "bg-white"
+              }`}
+            >
+              <div className="text-[14px] font-medium">{date.getDate()}</div>
+
+              <div className="mt-3 space-y-2">
+                {dayEvents.slice(0, 2).map((event) => (
+                  <CalendarEventPill key={event.id} event={event} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CalendarWeekView({
+  currentDate,
+  events,
+}: {
+  currentDate: Date;
+  events: CalendarEvent[];
+}) {
+  const weekDates = getWeekDates(currentDate);
+
+  return (
+    <div className="overflow-hidden rounded-[2rem] border border-[#ECE6DD] bg-white">
+      <div className="grid grid-cols-7">
+        {weekDates.map((date) => {
+          const dateKey = formatDateKey(date);
+          const dayEvents = events.filter((event) => event.date === dateKey);
+
+          return (
+            <div
+              key={dateKey}
+              className="min-h-[220px] border-r border-[#F0EBE4] p-4 last:border-r-0"
+            >
+              <div className="text-[11px] uppercase tracking-[0.12em] text-[#918B83]">
+                {WEEKDAY_NAMES[(date.getDay() + 6) % 7]}
+              </div>
+              <div className="mt-2 text-[24px] font-semibold text-[#171717]">
+                {date.getDate()}
+              </div>
+
+              <div className="mt-4 space-y-3">
+                {dayEvents.length === 0 ? (
+                  <div className="text-[13px] text-[#AAA39A]">Geen events</div>
+                ) : (
+                  dayEvents.map((event) => (
+                    <CalendarEventPill key={event.id} event={event} />
+                  ))
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CalendarDayView({
+  currentDate,
+  events,
+}: {
+  currentDate: Date;
+  events: CalendarEvent[];
+}) {
+  const dateKey = formatDateKey(currentDate);
+  const dayEvents = events.filter((event) => event.date === dateKey);
+
+  return (
+    <div className="rounded-[2rem] border border-[#ECE6DD] bg-white p-6">
+      <div className="mb-6">
+        <div className="text-[12px] uppercase tracking-[0.14em] text-[#918B83]">
+          Dagoverzicht
+        </div>
+        <div className="mt-2 text-[28px] font-semibold tracking-[-0.03em] text-[#171717]">
+          {currentDate.getDate()} {MONTH_NAMES[currentDate.getMonth()]}{" "}
+          {currentDate.getFullYear()}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {dayEvents.length === 0 ? (
+          <div className="rounded-[1.5rem] bg-[#F7F4F0] p-5 text-[15px] text-[#7B756E]">
+            Geen events op deze dag.
+          </div>
+        ) : (
+          dayEvents.map((event) => (
+            <div
+              key={event.id}
+              className="rounded-[1.5rem] border border-[#ECE6DD] bg-[#FCFBF9] p-5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-[#8A847C]">
+                    {event.category}
+                  </div>
+                  <h3 className="mt-2 text-[22px] font-semibold text-[#171717]">
+                    {event.title}
+                  </h3>
+                </div>
+
+                <div
+                  className={`rounded-full px-3 py-1 text-[12px] font-medium ${getColorClasses(
+                    event.color
+                  )}`}
+                >
+                  {event.time ?? "Hele dag"}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CalendarYearView({
+  currentDate,
+  events,
+  onSelectMonth,
+}: {
+  currentDate: Date;
+  events: CalendarEvent[];
+  onSelectMonth: (monthIndex: number) => void;
+}) {
+  const year = currentDate.getFullYear();
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {MONTH_NAMES.map((month, monthIndex) => {
+        const count = events.filter((event) => {
+          const date = new Date(event.date);
+          return date.getFullYear() === year && date.getMonth() === monthIndex;
+        }).length;
+
+        const isActive = monthIndex === currentDate.getMonth();
+
+        return (
+          <button
+            key={month}
+            type="button"
+            onClick={() => onSelectMonth(monthIndex)}
+            className={`rounded-[1.5rem] border p-5 text-left transition ${
+              isActive
+                ? "border-[#B8DD8D] bg-[#EEF6E3]"
+                : "border-[#ECE6DD] bg-white hover:bg-[#FBF9F6]"
+            }`}
+          >
+            <div className="text-[22px] font-semibold tracking-[-0.02em] text-[#171717]">
+              {month}
+            </div>
+            <div className="mt-2 text-[14px] text-[#7B756E]">
+              {count} {count === 1 ? "event" : "events"}
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function CalendarSectionBlock({
+  cityLabel,
+  accentColor,
+  accentTextColor,
+}: {
+  cityLabel: string;
+  accentColor: string;
+  accentTextColor: string;
+}) {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [view, setView] = useState<CalendarView>("maand");
+  const [currentDate, setCurrentDate] = useState(new Date(2024, 9, 1));
+  const [selectedCategory, setSelectedCategory] =
+    useState<CalendarCategory>("Alle categorieën");
+
+  const filteredEvents = useMemo(() => {
+    if (selectedCategory === "Alle categorieën") return CALENDAR_EVENTS;
+    return CALENDAR_EVENTS.filter((event) => event.category === selectedCategory);
+  }, [selectedCategory]);
+
+  const title =
+    view === "jaar"
+      ? `${currentDate.getFullYear()}`
+      : `${MONTH_NAMES[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+  function goPrevious() {
+    const next = new Date(currentDate);
+
+    if (view === "dag") next.setDate(next.getDate() - 1);
+    if (view === "week") next.setDate(next.getDate() - 7);
+    if (view === "maand") next.setMonth(next.getMonth() - 1);
+    if (view === "jaar") next.setFullYear(next.getFullYear() - 1);
+
+    setCurrentDate(next);
+  }
+
+  function goNext() {
+    const next = new Date(currentDate);
+
+    if (view === "dag") next.setDate(next.getDate() + 1);
+    if (view === "week") next.setDate(next.getDate() + 7);
+    if (view === "maand") next.setMonth(next.getMonth() + 1);
+    if (view === "jaar") next.setFullYear(next.getFullYear() + 1);
+
+    setCurrentDate(next);
+  }
+
+  function goToToday() {
+    setCurrentDate(new Date());
+  }
+
+  return (
+    <section className="mt-10">
+      <div className="mb-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-[620px]">
+          <h2 className="text-4xl font-semibold leading-none tracking-tight sm:text-5xl lg:text-6xl">
+            {cityLabel} <span className="text-[#b8b5b0]">Agenda</span>
+          </h2>
+
+          <p className="mt-5 max-w-[480px] text-base leading-7 text-slate-600 sm:text-lg">
+            Ontdek de meest curator-waardige culturele momenten in {cityLabel}.
+          </p>
+        </div>
+
+        <div className="inline-flex rounded-full p-1" style={{ backgroundColor: "#f1e5da" }}>
+          <CalendarViewButton
+            active={view === "dag"}
+            label="dag"
+            onClick={() => setView("dag")}
+          />
+          <CalendarViewButton
+            active={view === "week"}
+            label="week"
+            onClick={() => setView("week")}
+          />
+          <CalendarViewButton
+            active={view === "maand"}
+            label="maand"
+            onClick={() => setView("maand")}
+          />
+          <CalendarViewButton
+            active={view === "jaar"}
+            label="jaar"
+            onClick={() => setView("jaar")}
+          />
+        </div>
+      </div>
+
+      <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            className="rounded-full px-5 py-3 text-sm font-medium"
+            style={{
+              backgroundColor: accentColor,
+              color: accentTextColor,
+            }}
+          >
+            {cityLabel}
+          </button>
+
+          {(["Alle categorieën", "Kunst", "Muziek", "Theater", "Culinair"] as CalendarCategory[]).map(
+            (category) => {
+              const active = selectedCategory === category;
+
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setSelectedCategory(category)}
+                  className="rounded-full border px-5 py-3 text-sm font-medium transition"
+                  style={
+                    active
+                      ? {
+                          backgroundColor: "#171717",
+                          color: "#ffffff",
+                          borderColor: "#171717",
+                        }
+                      : {
+                          backgroundColor: "#ffffff",
+                          color: "#171717",
+                          borderColor: "#ddd5cc",
+                        }
+                  }
+                >
+                  {category}
+                </button>
+              );
+            }
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className="self-start rounded-full border border-[#DDD5CC] bg-white px-5 py-3 text-sm font-medium text-[#171717] transition hover:bg-[#F7F3EE]"
+        >
+          {isExpanded ? "Kalender inklappen" : "Kalender uitklappen"}
+        </button>
+      </div>
+
+      {isExpanded ? (
+        <>
+          <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <h3 className="text-3xl font-semibold tracking-tight text-[#111111] sm:text-4xl">
+                {title}
+              </h3>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={goPrevious}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#DDD5CC] bg-white text-[18px] text-[#171717] transition hover:bg-[#F7F3EE]"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#DDD5CC] bg-white text-[18px] text-[#171717] transition hover:bg-[#F7F3EE]"
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={goToToday}
+              className="text-sm font-medium text-[#5E5953] underline underline-offset-4"
+            >
+              Ga naar vandaag
+            </button>
+          </div>
+
+          {view === "dag" && (
+            <CalendarDayView currentDate={currentDate} events={filteredEvents} />
+          )}
+
+          {view === "week" && (
+            <CalendarWeekView currentDate={currentDate} events={filteredEvents} />
+          )}
+
+          {view === "maand" && (
+            <CalendarMonthView currentDate={currentDate} events={filteredEvents} />
+          )}
+
+          {view === "jaar" && (
+            <CalendarYearView
+              currentDate={currentDate}
+              events={filteredEvents}
+              onSelectMonth={(monthIndex) => {
+                const next = new Date(currentDate);
+                next.setMonth(monthIndex);
+                setCurrentDate(next);
+                setView("maand");
+              }}
+            />
+          )}
+        </>
+      ) : (
+        <div className="rounded-[2rem] border border-[#ECE6DD] bg-white p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[12px] uppercase tracking-[0.14em] text-[#918B83]">
+                Kalender ingeklapt
+              </div>
+              <div className="mt-2 text-[24px] font-semibold text-[#171717]">
+                {title}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsExpanded(true)}
+              className="rounded-full px-5 py-3 text-sm font-medium"
+              style={{
+                backgroundColor: accentColor,
+                color: accentTextColor,
+              }}
+            >
+              Open kalender
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -708,8 +1334,6 @@ export default function CityExploreView({
   events,
 }: CityExploreViewProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("events");
-  const [showExpandedCalendar, setShowExpandedCalendar] = useState(false);
-  const [selectedCalendarDay, setSelectedCalendarDay] = useState<number>(9);
 
   const cityTheme = getCityConfig(city);
   const cityLabel = cityTheme.label;
@@ -763,24 +1387,11 @@ export default function CityExploreView({
           cityTheme={cityTheme}
         />
 
-        {!showExpandedCalendar ? (
-          <CityCalendarPreview
-            accentColor={cityTheme.colors.accent}
-            accentTextColor={cityTheme.colors.accentText}
-            onDayClick={(day) => {
-              setSelectedCalendarDay(day);
-              setShowExpandedCalendar(true);
-            }}
-          />
-        ) : (
-          <CityCalendarExpanded
-            cityLabel={cityLabel}
-            accentColor={cityTheme.colors.accent}
-            accentSoftColor={cityTheme.colors.softSurface || "#f2e7df"}
-            initialDay={selectedCalendarDay}
-            onClose={() => setShowExpandedCalendar(false)}
-          />
-        )}
+        <CalendarSectionBlock
+          cityLabel={cityLabel}
+          accentColor={cityTheme.colors.accent}
+          accentTextColor={cityTheme.colors.accentText}
+        />
 
         <section className="mt-12">
           <div className="grid gap-8 lg:grid-cols-[1fr_1.15fr] lg:items-start">
