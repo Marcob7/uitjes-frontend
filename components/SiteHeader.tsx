@@ -46,6 +46,21 @@ export default function SiteHeader() {
                 Bewaard
               </Link>
             </li>
+              <li>
+              <Link href="/event-details" className="transition-colors hover:text-neutral-950">
+                Uitgelichte Events
+              </Link>
+            </li>
+                <li>
+              <Link href="/cultuur" className="transition-colors hover:text-neutral-950">
+             Cultuur
+              </Link>
+            </li>
+                  <li>
+              <Link href="/festivals" className="transition-colors hover:text-neutral-950">
+             Festivals
+              </Link>
+            </li>
             <li>
               <Link href="/feedback" className="transition-colors hover:text-neutral-950">
                 Feedback

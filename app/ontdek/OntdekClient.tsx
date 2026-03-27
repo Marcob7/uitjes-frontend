@@ -7,6 +7,7 @@ import EventList from "@/components/EventList";
 import OntdekHeader from "@/components/OntdekHeader";
 import type { EventItem } from "@/components/EventCard";
 import { apiGet } from "@/lib/api";
+import { cityOptions as CITY_OPTIONS } from "@/lib/cityConfig";
 
 type EventsResponse =
   | EventItem[]
@@ -16,12 +17,6 @@ type EventsResponse =
     };
 
 const LIMIT = 20;
-const CITY_OPTIONS = [
-  { label: "Apeldoorn", value: "apeldoorn" },
-  { label: "Deventer", value: "deventer" },
-  { label: "Arnhem", value: "arnhem" },
-];
-
 function useDebouncedValue(value: string, delay = 350) {
   const [debounced, setDebounced] = useState(value);
 

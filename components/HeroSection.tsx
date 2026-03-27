@@ -3,35 +3,28 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 
 type CityOption = {
   label: string;
   slug: string;
 };
 
+const cityOptionsList: CityOption[] = cityOptions.map((city) => ({
+  label: city.label,
+  slug: city.value,
+}));
+
 const featuredCities: CityOption[] = [
-  { label: "Apeldoorn", slug: "apeldoorn" },
-  { label: "Deventer", slug: "deventer" },
-  { label: "Arnhem", slug: "arnhem" },
-];
-
-const cityOptions: CityOption[] = [
-  { label: "Apeldoorn", slug: "apeldoorn" },
-  { label: "Deventer", slug: "deventer" },
-  { label: "Arnhem", slug: "arnhem" },
-  { label: "Zwolle", slug: "zwolle" },
-  { label: "Nijmegen", slug: "nijmegen" },
-  { label: "Utrecht", slug: "utrecht" },
-];
-
-function normalizeCityToSlug(value: string): string {
-  return value
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-");
-}
+  "amsterdam",
+  "rotterdam",
+  "utrecht",
+  "apeldoorn",
+  "deventer",
+  "zwolle",
+]
+  .map((slug) => cityOptionsList.find((city) => city.slug === slug))
+  .filter(Boolean) as CityOption[];
 
 export default function HeroSection() {
   const router = useRouter();
@@ -41,23 +34,23 @@ export default function HeroSection() {
   const suggestions = useMemo((): CityOption[] => {
     const trimmed = query.trim().toLowerCase();
 
-    if (!trimmed) return cityOptions;
+    if (!trimmed) return cityOptionsList;
 
-    return cityOptions.filter((city) =>
+    return cityOptionsList.filter((city) =>
       city.label.toLowerCase().includes(trimmed)
     );
   }, [query]);
 
   function goToCity(cityValue: string): void {
-    const matchedCity = cityOptions.find(
+    const matchedCity = cityOptionsList.find(
       (city) =>
         city.label.toLowerCase() === cityValue.trim().toLowerCase() ||
-        city.slug === normalizeCityToSlug(cityValue)
+        city.slug === normalizeCitySlug(cityValue)
     );
 
     const citySlug = matchedCity
       ? matchedCity.slug
-      : normalizeCityToSlug(cityValue);
+      : normalizeCitySlug(cityValue);
 
     if (!citySlug) return;
 
@@ -111,7 +104,7 @@ export default function HeroSection() {
                 id="hero-search-help"
                 className="mt-2 text-sm leading-6 text-[#6e5a49]"
               >
-                Bijvoorbeeld Apeldoorn, Deventer of Arnhem. Enter werkt ook.
+                Bijvoorbeeld Amsterdam, Rotterdam, Utrecht of Zwolle. Enter werkt ook.
               </p>
             </div>
 
