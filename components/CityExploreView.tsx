@@ -45,7 +45,12 @@ type ExploreCard = {
 
 type CalendarView = "dag" | "week" | "maand" | "jaar";
 
-type CalendarCategory = "Alle categorieën" | "Kunst" | "Muziek" | "Theater" | "Culinair";
+type CalendarCategory =
+  | "Alle categorieën"
+  | "Kunst"
+  | "Muziek"
+  | "Theater"
+  | "Culinair";
 
 type CalendarEvent = {
   id: number;
@@ -57,6 +62,23 @@ type CalendarEvent = {
   color: "green" | "purple" | "sand";
 };
 
+type SafeCityTheme = {
+  slug: string;
+  label: string;
+  description?: string;
+  heroImage: string;
+  fallbackImage: string;
+  colors: {
+    pageBackground: string;
+    softSurface?: string;
+    accent: string;
+    accentText: string;
+    heading?: string;
+    text?: string;
+    mutedSurface?: string;
+  };
+};
+
 const categoryTabs: { key: CategoryKey; label: string }[] = [
   { key: "events", label: "Events" },
   { key: "attractions", label: "Attractions" },
@@ -64,82 +86,176 @@ const categoryTabs: { key: CategoryKey; label: string }[] = [
   { key: "bars", label: "Bars" },
   { key: "thingsToDo", label: "Things to do" },
 ];
+const HAARLEM_DUMMY_EVENTS: BackendEvent[] = [
+  {
+    id: 101,
+    title: "Teylers Avondopenstelling",
+    city: "haarlem",
+    venue: "Teylers Museum",
+    start_at: "2026-04-03T18:30:00",
+    end_at: "2026-04-03T21:00:00",
+    date_text: "Vrijdag 3 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 12.5,
+    source_url: "#",
+    latitude: 52.3809,
+    longitude: 4.6366,
+  },
+  {
+    id: 102,
+    title: "Jazz aan het Spaarne",
+    city: "haarlem",
+    venue: "Philharmonie Haarlem",
+    start_at: "2026-04-05T20:00:00",
+    end_at: "2026-04-05T22:30:00",
+    date_text: "Zondag 5 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 19,
+    source_url: "#",
+    latitude: 52.3815,
+    longitude: 4.6372,
+  },
+  {
+    id: 103,
+    title: "Food Market Grote Markt",
+    city: "haarlem",
+    venue: "Grote Markt",
+    start_at: "2026-04-06T12:00:00",
+    end_at: "2026-04-06T18:00:00",
+    date_text: "Maandag 6 april",
+    is_ongoing: false,
+    is_free: true,
+    price_min: 0,
+    source_url: "#",
+    latitude: 52.3813,
+    longitude: 4.6360,
+  },
+  {
+    id: 104,
+    title: "Historische Hofjeswandeling",
+    city: "haarlem",
+    venue: "Centrum Haarlem",
+    start_at: "2026-04-07T10:30:00",
+    end_at: "2026-04-07T12:00:00",
+    date_text: "Dinsdag 7 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 8.5,
+    source_url: "#",
+    latitude: 52.3797,
+    longitude: 4.6328,
+  },
+  {
+    id: 105,
+    title: "Openlucht Filmavond",
+    city: "haarlem",
+    venue: "Haarlemmerhout",
+    start_at: "2026-04-09T20:30:00",
+    end_at: "2026-04-09T23:00:00",
+    date_text: "Donderdag 9 april",
+    is_ongoing: false,
+    is_free: true,
+    price_min: 0,
+    source_url: "#",
+    latitude: 52.3735,
+    longitude: 4.6244,
+  },
+  {
+    id: 106,
+    title: "Lokale Makers Markt",
+    city: "haarlem",
+    venue: "Koepel Haarlem",
+    start_at: "2026-04-10T11:00:00",
+    end_at: "2026-04-10T17:00:00",
+    date_text: "Vrijdag 10 april",
+    is_ongoing: false,
+    is_free: true,
+    price_min: 0,
+    source_url: "#",
+    latitude: 52.3873,
+    longitude: 4.6461,
+  },
+];
+
+
 
 const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
   events: [
     {
       id: 1,
-      title: "Royal Academy Art Exhibition",
-      label: "ART EXHIBITION",
-      time: "10:00 AM",
-      location: "City Museum",
+      title: "Teylers Avondopenstelling",
+      label: "MUSEUM EVENT",
+      time: "18:30",
+      location: "Teylers Museum",
       image: "/images/apeldoorn_img.jpg",
     },
     {
       id: 2,
-      title: "Summer Beach Festival",
-      label: "LIVE EVENT",
-      time: "2:30 PM",
-      location: "Stadsplein",
+      title: "Jazz aan het Spaarne",
+      label: "LIVE MUZIEK",
+      time: "20:00",
+      location: "Philharmonie Haarlem",
       image: "/images/julianatoren.jpg",
     },
     {
       id: 3,
-      title: "Evening City Tour",
-      label: "CITY TOUR",
-      time: "8:00 PM",
-      location: "Centrum",
+      title: "Food Market Grote Markt",
+      label: "LOCAL EVENT",
+      time: "12:00",
+      location: "Grote Markt",
       image: "/images/apeldoorn_img.jpg",
     },
   ],
   attractions: [
     {
       id: 4,
-      title: "Historisch Stadscentrum",
+      title: "Teylers Museum",
       label: "HIGHLIGHT",
       time: "Hele dag",
-      location: "Binnenstad",
+      location: "Centrum",
       image: "/images/apeldoorn_img.jpg",
     },
     {
       id: 5,
-      title: "Stedelijk Museum",
+      title: "Molen de Adriaan",
       label: "CULTURE",
-      time: "11:00 AM",
-      location: "Museumkwartier",
+      time: "11:00",
+      location: "Spaarne",
       image: "/images/julianatoren.jpg",
     },
     {
       id: 6,
-      title: "Skyline Viewpoint",
-      label: "VIEWPOINT",
+      title: "Grote Markt",
+      label: "CITY ICON",
       time: "Sunset",
-      location: "Stadsrand",
+      location: "Binnenstad",
       image: "/images/apeldoorn_img.jpg",
     },
   ],
   restaurants: [
     {
       id: 7,
-      title: "Atelier Bistro",
+      title: "Spaarne Bistro",
       label: "RESTAURANT",
       time: "Lunch & Diner",
-      location: "Centrum",
+      location: "Aan het water",
       image: "/images/apeldoorn_img.jpg",
     },
     {
       id: 8,
-      title: "Canal House Dining",
+      title: "De Oude Stadskeuken",
       label: "LOCAL FAVORITE",
-      time: "6:00 PM",
-      location: "Oude wijk",
+      time: "18:00",
+      location: "Binnenstad",
       image: "/images/julianatoren.jpg",
     },
     {
       id: 9,
-      title: "Morning Roast Café",
+      title: "Morning Roast Haarlem",
       label: "COFFEE",
-      time: "8:00 AM",
+      time: "08:00",
       location: "Stationsbuurt",
       image: "/images/apeldoorn_img.jpg",
     },
@@ -147,52 +263,52 @@ const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
   bars: [
     {
       id: 10,
-      title: "Nocturne Bar",
+      title: "Spaarne Social Club",
       label: "COCKTAILS",
-      time: "9:00 PM",
-      location: "Binnenstad",
+      time: "21:00",
+      location: "Centrum",
       image: "/images/apeldoorn_img.jpg",
     },
     {
       id: 11,
-      title: "Old Town Pub",
+      title: "De Markt Pub",
       label: "PUB",
-      time: "7:00 PM",
-      location: "Markt",
+      time: "19:00",
+      location: "Grote Markt",
       image: "/images/julianatoren.jpg",
     },
     {
       id: 12,
-      title: "Rooftop Social",
+      title: "Rooftop Haarlem",
       label: "NIGHTLIFE",
-      time: "10:00 PM",
-      location: "Centrum",
+      time: "22:00",
+      location: "Binnenstad",
       image: "/images/apeldoorn_img.jpg",
     },
   ],
   thingsToDo: [
     {
       id: 13,
-      title: "Canal Walk",
+      title: "Hofjeswandeling",
       label: "OUTDOOR",
       time: "Middag",
-      location: "Stadscentrum",
+      location: "Oude stad",
       image: "/images/apeldoorn_img.jpg",
     },
     {
       id: 14,
-      title: "Creative Workshop",
+      title: "Keramiek Workshop",
       label: "EXPERIENCE",
-      time: "1:00 PM",
-      location: "Kunsthuis",
+      time: "13:00",
+      location: "Creatief atelier",
       image: "/images/julianatoren.jpg",
     },
     {
       id: 15,
-      title: "Local Market Route",
+      title: "Lokale Markt Route",
       label: "LOCAL TIP",
       time: "Ochtend",
-      location: "Marktplein",
+      location: "Centrum",
       image: "/images/apeldoorn_img.jpg",
     },
   ],
@@ -215,53 +331,126 @@ const MONTH_NAMES = [
 
 const WEEKDAY_NAMES = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
 
-const CALENDAR_EVENTS: CalendarEvent[] = [
+const HAARLEM_CALENDAR_EVENTS: CalendarEvent[] = [
   {
     id: 1,
-    title: "Vermeer at Mauritshuis",
+    title: "Fototentoonstelling aan het Spaarne",
     category: "Kunst",
-    city: "Den Haag",
-    date: "2024-10-03",
+    city: "Haarlem",
+    date: "2026-04-03",
     time: "14:00",
     color: "green",
   },
   {
     id: 2,
-    title: "Jazz Nights at Paard",
+    title: "Jazz in de Philharmonie",
     category: "Muziek",
-    city: "Den Haag",
-    date: "2024-10-11",
+    city: "Haarlem",
+    date: "2026-04-05",
     time: "20:30",
     color: "purple",
   },
   {
     id: 3,
-    title: "Symphony at the Sea",
+    title: "Voorjaarsconcert in de Bavokerk",
     category: "Muziek",
-    city: "Den Haag",
-    date: "2024-10-23",
+    city: "Haarlem",
+    date: "2026-04-09",
     time: "19:30",
     color: "green",
   },
   {
     id: 4,
-    title: "Culinary Night Market",
+    title: "Street Food op de Grote Markt",
     category: "Culinair",
-    city: "Den Haag",
-    date: "2024-10-17",
+    city: "Haarlem",
+    date: "2026-04-06",
     time: "18:00",
     color: "sand",
   },
   {
     id: 5,
-    title: "Theater aan Zee",
+    title: "Theateravond in de Schuur",
     category: "Theater",
-    city: "Den Haag",
-    date: "2024-10-26",
+    city: "Haarlem",
+    date: "2026-04-12",
     time: "20:00",
     color: "purple",
   },
+  {
+    id: 6,
+    title: "Kunstmarkt in de Koepel",
+    category: "Kunst",
+    city: "Haarlem",
+    date: "2026-04-18",
+    time: "11:00",
+    color: "sand",
+  },
 ];
+function getEventsWithFallback(city: string, events?: BackendEvent[]) {
+  if (events && events.length > 0) {
+    return events;
+  }
+
+  if (city.toLowerCase() === "haarlem") {
+    return HAARLEM_DUMMY_EVENTS;
+  }
+
+  return [];
+}
+
+function getSafeCityTheme(city: string): SafeCityTheme {
+  const normalizedCity = city.toLowerCase();
+
+  if (normalizedCity === "haarlem") {
+    return {
+      slug: "haarlem",
+      label: "Haarlem",
+      description:
+        "Ontdek stijlvolle hotspots, culturele plekken en lokale favorieten in Haarlem.",
+      heroImage: "/images/apeldoorn_img.jpg",
+      fallbackImage: "/images/julianatoren.jpg",
+      colors: {
+        pageBackground: "#f8f4ef",
+        softSurface: "#e9ddd2",
+        accent: "#171717",
+        accentText: "#ffffff",
+        heading: "#111111",
+        text: "#4b4b4b",
+        mutedSurface: "#f1e8de",
+      },
+    };
+  }
+
+  try {
+    return getCityConfig(city) as SafeCityTheme;
+  } catch {
+    return {
+      slug: normalizedCity,
+      label: city.charAt(0).toUpperCase() + city.slice(1),
+      description: `Ontdek bijzondere plekken, culturele highlights en lokale favorieten in ${city}.`,
+      heroImage: "/images/apeldoorn_img.jpg",
+      fallbackImage: "/images/julianatoren.jpg",
+      colors: {
+        pageBackground: "#f8f4ef",
+        softSurface: "#e9ddd2",
+        accent: "#171717",
+        accentText: "#ffffff",
+        heading: "#111111",
+        text: "#4b4b4b",
+        mutedSurface: "#f1e8de",
+      },
+    };
+  }
+}
+
+function getCalendarEventsForCity(city: string) {
+  if (city.toLowerCase() === "haarlem") {
+    return HAARLEM_CALENDAR_EVENTS;
+  }
+
+  return HAARLEM_CALENDAR_EVENTS;
+}
 
 function formatCityTitle(cityLabel: string) {
   return `${cityLabel} Discovery`;
@@ -443,7 +632,7 @@ function HeroSection({
   cityTheme,
 }: {
   cityLabel: string;
-  cityTheme: ReturnType<typeof getCityConfig>;
+  cityTheme: SafeCityTheme;
 }) {
   return (
     <section
@@ -501,7 +690,7 @@ function TabsSection({
 }: {
   activeCategory: CategoryKey;
   setActiveCategory: (value: CategoryKey) => void;
-  cityTheme: ReturnType<typeof getCityConfig>;
+  cityTheme: SafeCityTheme;
 }) {
   return (
     <section className="mt-6">
@@ -793,21 +982,23 @@ function CalendarSectionBlock({
   cityLabel,
   accentColor,
   accentTextColor,
+  calendarEvents,
 }: {
   cityLabel: string;
   accentColor: string;
   accentTextColor: string;
+  calendarEvents: CalendarEvent[];
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [view, setView] = useState<CalendarView>("maand");
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 9, 1));
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 3, 1));
   const [selectedCategory, setSelectedCategory] =
     useState<CalendarCategory>("Alle categorieën");
 
   const filteredEvents = useMemo(() => {
-    if (selectedCategory === "Alle categorieën") return CALENDAR_EVENTS;
-    return CALENDAR_EVENTS.filter((event) => event.category === selectedCategory);
-  }, [selectedCategory]);
+    if (selectedCategory === "Alle categorieën") return calendarEvents;
+    return calendarEvents.filter((event) => event.category === selectedCategory);
+  }, [selectedCategory, calendarEvents]);
 
   const title =
     view === "jaar"
@@ -853,7 +1044,10 @@ function CalendarSectionBlock({
           </p>
         </div>
 
-        <div className="inline-flex rounded-full p-1" style={{ backgroundColor: "#f1e5da" }}>
+        <div
+          className="inline-flex rounded-full p-1"
+          style={{ backgroundColor: "#f1e5da" }}
+        >
           <CalendarViewButton
             active={view === "dag"}
             label="dag"
@@ -890,35 +1084,41 @@ function CalendarSectionBlock({
             {cityLabel}
           </button>
 
-          {(["Alle categorieën", "Kunst", "Muziek", "Theater", "Culinair"] as CalendarCategory[]).map(
-            (category) => {
-              const active = selectedCategory === category;
+          {(
+            [
+              "Alle categorieën",
+              "Kunst",
+              "Muziek",
+              "Theater",
+              "Culinair",
+            ] as CalendarCategory[]
+          ).map((category) => {
+            const active = selectedCategory === category;
 
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => setSelectedCategory(category)}
-                  className="rounded-full border px-5 py-3 text-sm font-medium transition"
-                  style={
-                    active
-                      ? {
-                          backgroundColor: "#171717",
-                          color: "#ffffff",
-                          borderColor: "#171717",
-                        }
-                      : {
-                          backgroundColor: "#ffffff",
-                          color: "#171717",
-                          borderColor: "#ddd5cc",
-                        }
-                  }
-                >
-                  {category}
-                </button>
-              );
-            }
-          )}
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
+                className="rounded-full border px-5 py-3 text-sm font-medium transition"
+                style={
+                  active
+                    ? {
+                        backgroundColor: "#171717",
+                        color: "#ffffff",
+                        borderColor: "#171717",
+                      }
+                    : {
+                        backgroundColor: "#ffffff",
+                        color: "#171717",
+                        borderColor: "#ddd5cc",
+                      }
+                }
+              >
+                {category}
+              </button>
+            );
+          })}
         </div>
 
         <button
@@ -970,11 +1170,17 @@ function CalendarSectionBlock({
           )}
 
           {view === "week" && (
-            <CalendarWeekView currentDate={currentDate} events={filteredEvents} />
+            <CalendarWeekView
+              currentDate={currentDate}
+              events={filteredEvents}
+            />
           )}
 
           {view === "maand" && (
-            <CalendarMonthView currentDate={currentDate} events={filteredEvents} />
+            <CalendarMonthView
+              currentDate={currentDate}
+              events={filteredEvents}
+            />
           )}
 
           {view === "jaar" && (
@@ -1212,7 +1418,10 @@ function ExploreMap({
 
   return (
     <div className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-sm ring-1 ring-black/5">
-      <div ref={mapContainerRef} className="h-[420px] w-full rounded-[1.5rem]" />
+      <div
+        ref={mapContainerRef}
+        className="h-[420px] w-full rounded-[1.5rem]"
+      />
     </div>
   );
 }
@@ -1263,7 +1472,7 @@ function IconicSection({
   cityTheme,
 }: {
   cityLabel: string;
-  cityTheme: ReturnType<typeof getCityConfig>;
+  cityTheme: SafeCityTheme;
 }) {
   const iconicCards = buildIconicCards(
     cityLabel,
@@ -1335,25 +1544,34 @@ export default function CityExploreView({
 }: CityExploreViewProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("events");
 
-  const cityTheme = getCityConfig(city);
-  const cityLabel = cityTheme.label;
+const cityTheme = getCityConfig(city);
+const cityLabel = cityTheme.label;
 
-  const cards = useMemo(() => {
-    return buildExploreCards(
-      activeCategory,
-      events,
-      cityLabel,
-      cityTheme.fallbackImage
-    );
-  }, [activeCategory, events, cityLabel, cityTheme.fallbackImage]);
+const displayEvents = useMemo(() => {
+  return getEventsWithFallback(city, events);
+}, [city, events]);
 
-  const eventsForMap = useMemo(() => {
-    return sortEventsByStartDate(events || []).filter(
-      (event) =>
-        typeof event.latitude === "number" &&
-        typeof event.longitude === "number"
-    );
-  }, [events]);
+
+  const calendarEvents = useMemo(() => {
+    return getCalendarEventsForCity(city);
+  }, [city]);
+
+const cards = useMemo(() => {
+  return buildExploreCards(
+    activeCategory,
+    displayEvents,
+    cityLabel,
+    cityTheme.fallbackImage
+  );
+}, [activeCategory, displayEvents, cityLabel, cityTheme.fallbackImage]);
+
+const eventsForMap = useMemo(() => {
+  return sortEventsByStartDate(displayEvents || []).filter(
+    (event) =>
+      typeof event.latitude === "number" &&
+      typeof event.longitude === "number"
+  );
+}, [displayEvents]);
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -1391,6 +1609,7 @@ export default function CityExploreView({
           cityLabel={cityLabel}
           accentColor={cityTheme.colors.accent}
           accentTextColor={cityTheme.colors.accentText}
+          calendarEvents={calendarEvents}
         />
 
         <section className="mt-12">
@@ -1398,10 +1617,10 @@ export default function CityExploreView({
             <div>
               <div className="mb-6">
                 <h2 className="text-3xl font-semibold tracking-tight text-[#111111]">
-                  Wednesday, Oct 9
+                  Curated picks
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Curated picks for {cityLabel}
+                  Voor nu gevuld met Haarlem dummy data
                 </p>
               </div>
 

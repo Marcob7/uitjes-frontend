@@ -25,7 +25,7 @@ export default function SiteHeader() {
   width={75}
   height={75}
   className="object-contain"
-/>  <span>Reuring</span>
+/>  <span>Stadvinder</span>
         </Link>
 
         {/* Desktop navigatie */}
