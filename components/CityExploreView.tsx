@@ -79,13 +79,6 @@ type SafeCityTheme = {
   };
 };
 
-const categoryTabs: { key: CategoryKey; label: string }[] = [
-  { key: "events", label: "Events" },
-  { key: "attractions", label: "Attractions" },
-  { key: "restaurants", label: "Restaurants" },
-  { key: "bars", label: "Bars" },
-  { key: "thingsToDo", label: "Things to do" },
-];
 const HAARLEM_DUMMY_EVENTS: BackendEvent[] = [
   {
     id: 101,
@@ -683,50 +676,6 @@ function HeroSection({
   );
 }
 
-function TabsSection({
-  activeCategory,
-  setActiveCategory,
-  cityTheme,
-}: {
-  activeCategory: CategoryKey;
-  setActiveCategory: (value: CategoryKey) => void;
-  cityTheme: SafeCityTheme;
-}) {
-  return (
-    <section className="mt-6">
-      <div className="flex flex-wrap gap-3">
-        {categoryTabs.map((tab) => {
-          const isActive = activeCategory === tab.key;
-
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setActiveCategory(tab.key)}
-              className="rounded-full border px-5 py-3 text-sm font-medium transition"
-              style={
-                isActive
-                  ? {
-                      backgroundColor: cityTheme.colors.accent,
-                      borderColor: cityTheme.colors.accent,
-                      color: cityTheme.colors.accentText,
-                    }
-                  : {
-                      backgroundColor:
-                        cityTheme.colors.mutedSurface || "#f4f0eb",
-                      borderColor: "transparent",
-                      color: "#3a3a3a",
-                    }
-              }
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
 
 function CalendarViewButton({
   active,
@@ -1599,11 +1548,7 @@ const eventsForMap = useMemo(() => {
       <div className="mx-auto max-w-7xl">
         <HeroSection cityLabel={cityLabel} cityTheme={cityTheme} />
 
-        <TabsSection
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          cityTheme={cityTheme}
-        />
+   
 
         <CalendarSectionBlock
           cityLabel={cityLabel}
