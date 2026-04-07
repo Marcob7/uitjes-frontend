@@ -123,7 +123,7 @@ const HAARLEM_DUMMY_EVENTS: BackendEvent[] = [
     price_min: 0,
     source_url: "#",
     latitude: 52.3813,
-    longitude: 4.6360,
+    longitude: 4.636,
   },
   {
     id: 104,
@@ -171,8 +171,6 @@ const HAARLEM_DUMMY_EVENTS: BackendEvent[] = [
     longitude: 4.6461,
   },
 ];
-
-
 
 const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
   events: [
@@ -380,6 +378,7 @@ const HAARLEM_CALENDAR_EVENTS: CalendarEvent[] = [
     color: "sand",
   },
 ];
+
 function getEventsWithFallback(city: string, events?: BackendEvent[]) {
   if (events && events.length > 0) {
     return events;
@@ -416,7 +415,26 @@ function getSafeCityTheme(city: string): SafeCityTheme {
   }
 
   try {
-    return getCityConfig(city) as SafeCityTheme;
+    const config = getCityConfig(city) as Partial<SafeCityTheme> | undefined;
+
+    return {
+      slug: config?.slug || normalizedCity,
+      label: config?.label || city.charAt(0).toUpperCase() + city.slice(1),
+      description:
+        config?.description ||
+        `Ontdek bijzondere plekken, culturele highlights en lokale favorieten in ${city}.`,
+      heroImage: config?.heroImage || "/images/apeldoorn_img.jpg",
+      fallbackImage: config?.fallbackImage || "/images/julianatoren.jpg",
+      colors: {
+        pageBackground: config?.colors?.pageBackground || "#f8f4ef",
+        softSurface: config?.colors?.softSurface || "#e9ddd2",
+        accent: config?.colors?.accent || "#171717",
+        accentText: config?.colors?.accentText || "#ffffff",
+        heading: config?.colors?.heading || "#111111",
+        text: config?.colors?.text || "#4b4b4b",
+        mutedSurface: config?.colors?.mutedSurface || "#f1e8de",
+      },
+    };
   } catch {
     return {
       slug: normalizedCity,
@@ -675,7 +693,6 @@ function HeroSection({
     </section>
   );
 }
-
 
 function CalendarViewButton({
   active,
@@ -1492,37 +1509,35 @@ export default function CityExploreView({
   events,
 }: CityExploreViewProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("events");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
-const cityTheme = getCityConfig(city);
-const cityLabel = cityTheme.label;
+  const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
+  const cityLabel = cityTheme.label;
 
-const displayEvents = useMemo(() => {
-  return getEventsWithFallback(city, events);
-}, [city, events]);
-
+  const displayEvents = useMemo(() => {
+    return getEventsWithFallback(city, events);
+  }, [city, events]);
 
   const calendarEvents = useMemo(() => {
     return getCalendarEventsForCity(city);
   }, [city]);
 
-const cards = useMemo(() => {
-  return buildExploreCards(
-    activeCategory,
-    displayEvents,
-    cityLabel,
-    cityTheme.fallbackImage
-  );
-}, [activeCategory, displayEvents, cityLabel, cityTheme.fallbackImage]);
+  const cards = useMemo(() => {
+    return buildExploreCards(
+      activeCategory,
+      displayEvents,
+      cityLabel,
+      cityTheme.fallbackImage
+    );
+  }, [activeCategory, displayEvents, cityLabel, cityTheme.fallbackImage]);
 
-const eventsForMap = useMemo(() => {
-  return sortEventsByStartDate(displayEvents || []).filter(
-    (event) =>
-      typeof event.latitude === "number" &&
-      typeof event.longitude === "number"
-  );
-}, [displayEvents]);
-
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const eventsForMap = useMemo(() => {
+    return sortEventsByStartDate(displayEvents || []).filter(
+      (event) =>
+        typeof event.latitude === "number" &&
+        typeof event.longitude === "number"
+    );
+  }, [displayEvents]);
 
   useEffect(() => {
     if (activeCategory !== "events") {
@@ -1547,8 +1562,6 @@ const eventsForMap = useMemo(() => {
     >
       <div className="mx-auto max-w-7xl">
         <HeroSection cityLabel={cityLabel} cityTheme={cityTheme} />
-
-   
 
         <CalendarSectionBlock
           cityLabel={cityLabel}
