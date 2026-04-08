@@ -1,6 +1,6 @@
 export const runtime = "edge";
 
-import CityExploreView from "@/components/CityExploreView";
+import CityExploreView from "@/components/city-explore/CityExploreView";
 
 type OntdekPageProps = {
   searchParams?: {
@@ -30,7 +30,7 @@ function normalizeCity(value: string | undefined) {
 
 async function getCityEvents(city: string): Promise<BackendEvent[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
+ 
   if (!baseUrl) {
     console.error("NEXT_PUBLIC_API_BASE_URL ontbreekt.");
     return [];
