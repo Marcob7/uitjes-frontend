@@ -33,6 +33,7 @@ export type ExploreCard = {
   time: string;
   location: string;
   image: string;
+  href: string;
 };
 
 export type CalendarView = "dag" | "week" | "maand" | "jaar";

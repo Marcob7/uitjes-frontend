@@ -45,13 +45,9 @@ export default function CityExploreView({
     );
   }, [activeCategory, displayEvents, cityLabel, cityTheme.fallbackImage]);
 
-  const eventsForMap = useMemo(() => {
-    return sortEventsByStartDate(displayEvents || []).filter(
-      (event) =>
-        typeof event.latitude === "number" &&
-        typeof event.longitude === "number"
-    );
-  }, [displayEvents]);
+const eventsForMap = useMemo(() => {
+  return sortEventsByStartDate(displayEvents || []);
+}, [displayEvents]);
 
   useEffect(() => {
     if (activeCategory !== "events") {

@@ -1,3 +1,6 @@
+"use client";
+
+import Link from "next/link";
 import Image from "next/image";
 import type { ExploreCard } from "./types";
 
@@ -13,8 +16,8 @@ export default function ExploreCardItem({
   onSelect,
 }: ExploreCardItemProps) {
   return (
-    <button
-      type="button"
+    <Link
+      href={card.href}
       onMouseEnter={onSelect}
       onFocus={onSelect}
       onClick={onSelect}
@@ -56,6 +59,6 @@ export default function ExploreCardItem({
       >
         →
       </div>
-    </button>
+    </Link>
   );
 }

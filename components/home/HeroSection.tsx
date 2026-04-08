@@ -29,8 +29,8 @@ export default function HeroSection() {
           backgroundPosition: "center",
         }}
       >
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-4xl font-bold leading-none tracking-tight text-white md:text-5xl lg:text-6xl">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          <h1 className="mx-auto max-w-[12ch] text-center text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">
             Vind je volgende
             <br />
             geluksmoment.
@@ -40,7 +40,7 @@ export default function HeroSection() {
             Zoek direct op stad en bekijk meteen wat daar te doen is.
           </p>
 
-          <div className="mt-8">
+          <div className="mt-8 w-full">
             <SearchBar />
           </div>
 
@@ -57,16 +57,16 @@ export default function HeroSection() {
           </div>
 
           <div className="mt-4">
-         <Link
-  href="/inspiratie"
-  className="inline-flex min-h-[52px] items-center gap-3 rounded-full bg-lime-200 px-6 text-sm font-semibold text-slate-900 transition hover:bg-lime-300"
->
-  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-lime-700 text-white">
-    ✦
-  </span>
-  Help mij ontdekken wat ik kan doen
-  <span aria-hidden="true">→</span>
-</Link>
+            <Link
+              href="/inspiratie"
+              className="inline-flex min-h-[52px] items-center gap-3 rounded-full bg-lime-200 px-6 text-sm font-semibold text-slate-900 transition hover:bg-lime-300"
+            >
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-lime-700 text-white">
+                ✦
+              </span>
+              Help mij ontdekken wat ik kan doen
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </div>

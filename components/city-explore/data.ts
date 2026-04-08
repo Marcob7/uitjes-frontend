@@ -98,6 +98,99 @@ export const HAARLEM_DUMMY_EVENTS: BackendEvent[] = [
   },
 ];
 
+export const APELDOORN_DUMMY_EVENTS: BackendEvent[] = [
+  {
+    id: 201,
+    title: "Avond in CODA Museum",
+    city: "apeldoorn",
+    venue: "CODA Museum",
+    start_at: "2026-04-04T19:00:00",
+    end_at: "2026-04-04T21:30:00",
+    date_text: "Zaterdag 4 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 14.5,
+    source_url: "#",
+    latitude: 52.2136,
+    longitude: 5.9595,
+  },
+  {
+    id: 202,
+    title: "Live muziek in Gigant",
+    city: "apeldoorn",
+    venue: "Gigant",
+    start_at: "2026-04-05T20:00:00",
+    end_at: "2026-04-05T23:00:00",
+    date_text: "Zondag 5 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 18,
+    source_url: "#",
+    latitude: 52.2148,
+    longitude: 5.9631,
+  },
+  {
+    id: 203,
+    title: "Food & Drinks op het Marktplein",
+    city: "apeldoorn",
+    venue: "Marktplein",
+    start_at: "2026-04-06T12:00:00",
+    end_at: "2026-04-06T18:00:00",
+    date_text: "Maandag 6 april",
+    is_ongoing: false,
+    is_free: true,
+    price_min: 0,
+    source_url: "#",
+    latitude: 52.2119,
+    longitude: 5.9692,
+  },
+  {
+    id: 204,
+    title: "Wandeling door Park Berg & Bos",
+    city: "apeldoorn",
+    venue: "Park Berg & Bos",
+    start_at: "2026-04-07T10:30:00",
+    end_at: "2026-04-07T12:30:00",
+    date_text: "Dinsdag 7 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 7.5,
+    source_url: "#",
+    latitude: 52.225,
+    longitude: 5.9338,
+  },
+  {
+    id: 205,
+    title: "Filmavond in Vue Apeldoorn",
+    city: "apeldoorn",
+    venue: "Vue Apeldoorn",
+    start_at: "2026-04-09T20:15:00",
+    end_at: "2026-04-09T22:45:00",
+    date_text: "Donderdag 9 april",
+    is_ongoing: false,
+    is_free: false,
+    price_min: 11,
+    source_url: "#",
+    latitude: 52.219,
+    longitude: 5.9674,
+  },
+  {
+    id: 206,
+    title: "Voorjaarsmarkt in het centrum",
+    city: "apeldoorn",
+    venue: "Binnenstad Apeldoorn",
+    start_at: "2026-04-10T11:00:00",
+    end_at: "2026-04-10T17:00:00",
+    date_text: "Vrijdag 10 april",
+    is_ongoing: false,
+    is_free: true,
+    price_min: 0,
+    source_url: "#",
+    latitude: 52.2133,
+    longitude: 5.9601,
+  },
+];
+
 export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
   events: [
     {
@@ -107,6 +200,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "18:30",
       location: "Teylers Museum",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/teylers-avondopenstelling",
     },
     {
       id: 2,
@@ -115,6 +209,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "20:00",
       location: "Philharmonie Haarlem",
       image: "/images/julianatoren.jpg",
+      href: "/ontdek/jazz-aan-het-spaarne",
     },
     {
       id: 3,
@@ -123,6 +218,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "12:00",
       location: "Grote Markt",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/food-market-grote-markt",
     },
   ],
   attractions: [
@@ -133,6 +229,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "Hele dag",
       location: "Centrum",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/teylers-museum",
     },
     {
       id: 5,
@@ -141,6 +238,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "11:00",
       location: "Spaarne",
       image: "/images/julianatoren.jpg",
+      href: "/ontdek/molen-de-adriaan",
     },
     {
       id: 6,
@@ -149,6 +247,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "Sunset",
       location: "Binnenstad",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/grote-markt-haarlem",
     },
   ],
   restaurants: [
@@ -159,6 +258,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "Lunch & Diner",
       location: "Aan het water",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/spaarne-bistro",
     },
     {
       id: 8,
@@ -167,6 +267,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "18:00",
       location: "Binnenstad",
       image: "/images/julianatoren.jpg",
+      href: "/ontdek/de-oude-stadskeuken",
     },
     {
       id: 9,
@@ -175,6 +276,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "08:00",
       location: "Stationsbuurt",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/morning-roast-haarlem",
     },
   ],
   bars: [
@@ -185,6 +287,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "21:00",
       location: "Centrum",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/spaarne-social-club",
     },
     {
       id: 11,
@@ -193,6 +296,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "19:00",
       location: "Grote Markt",
       image: "/images/julianatoren.jpg",
+      href: "/ontdek/de-markt-pub",
     },
     {
       id: 12,
@@ -201,6 +305,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "22:00",
       location: "Binnenstad",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/rooftop-haarlem",
     },
   ],
   thingsToDo: [
@@ -211,6 +316,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "Middag",
       location: "Oude stad",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/hofjeswandeling",
     },
     {
       id: 14,
@@ -219,6 +325,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "13:00",
       location: "Creatief atelier",
       image: "/images/julianatoren.jpg",
+      href: "/ontdek/keramiek-workshop",
     },
     {
       id: 15,
@@ -227,6 +334,7 @@ export const mockCardsByCategory: Record<CategoryKey, ExploreCard[]> = {
       time: "Ochtend",
       location: "Centrum",
       image: "/images/apeldoorn_img.jpg",
+      href: "/ontdek/lokale-markt-route",
     },
   ],
 };

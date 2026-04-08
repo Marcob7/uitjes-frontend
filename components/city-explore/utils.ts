@@ -1,5 +1,6 @@
 import { getCityConfig } from "@/lib/cityConfig";
 import {
+  APELDOORN_DUMMY_EVENTS,
   HAARLEM_CALENDAR_EVENTS,
   HAARLEM_DUMMY_EVENTS,
   MONTH_NAMES,
@@ -14,13 +15,30 @@ import type {
   SafeCityTheme,
 } from "./types";
 
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export function getEventsWithFallback(city: string, events?: BackendEvent[]) {
   if (events && events.length > 0) {
     return events;
   }
 
-  if (city.toLowerCase() === "haarlem") {
+  const normalizedCity = city.toLowerCase();
+
+  if (normalizedCity === "haarlem") {
     return HAARLEM_DUMMY_EVENTS;
+  }
+
+  if (normalizedCity === "apeldoorn") {
+    return APELDOORN_DUMMY_EVENTS;
   }
 
   return [];
@@ -163,15 +181,16 @@ export function buildExploreCards(
   }
 
   return sortEventsByStartDate(events)
-    .slice(0, 6)
-    .map((event) => ({
-      id: event.id,
-      title: event.title || "Onbekend event",
-      label: event.is_free ? "FREE EVENT" : "EVENT",
-      time: formatTimeRange(event.start_at, event.end_at),
-      location: formatVenue(event.venue, cityLabel),
-      image: fallbackImage,
-    }));
+  .slice(0, 6)
+  .map((event) => ({
+    id: event.id,
+    title: event.title || "Onbekend event",
+    label: event.is_free ? "FREE EVENT" : "EVENT",
+    time: formatTimeRange(event.start_at, event.end_at),
+    location: formatVenue(event.venue, cityLabel),
+    image: fallbackImage,
+    href: `/ontdek/${slugify(event.title || `event-${event.id}`)}`,
+  }));
 }
 
 export function buildIconicCards(

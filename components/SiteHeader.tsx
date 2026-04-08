@@ -10,7 +10,7 @@ export default function SiteHeader() {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-<header className="sticky top-0 z-50 bg-[#FDFBF7]">
+    <header className="sticky top-0 z-50 bg-[#FDFBF7]">
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo / merknaam */}
         <Link
@@ -19,13 +19,14 @@ export default function SiteHeader() {
           aria-label="Ga naar home"
           onClick={closeMenu}
         >
-      <Image
-  src="/images/cider.png"
-  alt="Logo"
-  width={75}
-  height={75}
-  className="object-contain"
-/>  <span>Stadvinder</span>
+          <Image
+            src="/images/cider.png"
+            alt="Logo"
+            width={75}
+            height={75}
+            className="object-contain"
+          />
+          <span>Stadvinder</span>
         </Link>
 
         {/* Desktop navigatie */}
@@ -46,19 +47,22 @@ export default function SiteHeader() {
                 Bewaard
               </Link>
             </li>
-              <li>
-              <Link href="/event-details" className="transition-colors hover:text-neutral-950">
+            <li>
+              <Link
+                href="/event-details"
+                className="transition-colors hover:text-neutral-950"
+              >
                 Uitgelichte Events
               </Link>
             </li>
-                <li>
+            <li>
               <Link href="/cultuur" className="transition-colors hover:text-neutral-950">
-             Cultuur
+                Cultuur
               </Link>
             </li>
-                  <li>
+            <li>
               <Link href="/festivals" className="transition-colors hover:text-neutral-950">
-             Festivals
+                Festivals
               </Link>
             </li>
             <li>
@@ -155,6 +159,33 @@ export default function SiteHeader() {
                   className="block rounded-xl px-4 py-3 text-[15px] font-medium text-neutral-800 transition hover:bg-neutral-50"
                 >
                   Bewaard
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/event-details"
+                  onClick={closeMenu}
+                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-neutral-800 transition hover:bg-neutral-50"
+                >
+                  Uitgelichte Events
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/cultuur"
+                  onClick={closeMenu}
+                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-neutral-800 transition hover:bg-neutral-50"
+                >
+                  Cultuur
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/festivals"
+                  onClick={closeMenu}
+                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-neutral-800 transition hover:bg-neutral-50"
+                >
+                  Festivals
                 </Link>
               </li>
               <li>
