@@ -7,6 +7,8 @@ type PageProps = {
   };
 };
 
+export const dynamicParams = false;
+
 type QuickChoiceCard = {
   title: string;
   slug: string;
