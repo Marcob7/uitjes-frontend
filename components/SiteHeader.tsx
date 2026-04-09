@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Image from "next/image";
 
 export default function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,14 +18,8 @@ export default function SiteHeader() {
           aria-label="Ga naar home"
           onClick={closeMenu}
         >
-          <Image
-            src="/images/cider.png"
-            alt="Logo"
-            width={75}
-            height={75}
-            className="object-contain"
-          />
-          <span>Stadvinder</span>
+      
+          <span>Uitjes NL</span>
         </Link>
 
         {/* Desktop navigatie */}

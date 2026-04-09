@@ -73,7 +73,7 @@ export default function HeroSection() {
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="max-w-4xl">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5b33]">
-            Stadvinder
+            Uitjes NL
           </p>
           <h1 className="font-heading mt-4 max-w-4xl text-[clamp(3.2rem,8vw,6.4rem)] leading-[0.92] tracking-[-0.065em] text-[#23170f] [text-wrap:balance]">
             Zoek een stad en zie meteen wat daar te doen is.
