@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SearchBar from "./SearchBar";
 import { cityOptions } from "@/lib/cityConfig";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
 const featuredCitySlugs = [
   "amsterdam",
@@ -23,7 +24,10 @@ export default function HeroSection() {
         style={{
           backgroundImage: `
             linear-gradient(to right, rgba(0,0,0,0.34), rgba(0,0,0,0.18)),
-            url("https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=1600&q=80")
+            ${optimizeCssBackground("https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=1600&q=80", {
+              width: 1280,
+              quality: 58,
+            })}
           `,
           backgroundSize: "cover",
           backgroundPosition: "center",

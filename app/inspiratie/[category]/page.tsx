@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
   params: {
@@ -1242,7 +1243,13 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                     <div
                       className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-[1.04]"
                       style={{
-                        backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.10)), ${item.image}`,
+                        backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.10)), ${optimizeCssBackground(
+                          item.image,
+                          {
+                            width: isLarge ? 1120 : 760,
+                            quality: 58,
+                          }
+                        )}`,
                       }}
                     />
 
@@ -1322,7 +1329,10 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                   <div
                     className="aspect-[0.9/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                     style={{
-                      backgroundImage: item.image,
+                      backgroundImage: optimizeCssBackground(item.image, {
+                        width: 840,
+                        quality: 58,
+                      }),
                     }}
                   />
 

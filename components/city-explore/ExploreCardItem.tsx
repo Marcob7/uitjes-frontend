@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { ExploreCard } from "./types";
+import { optimizeRemoteImageUrl } from "@/lib/remoteImage";
 
 type ExploreCardItemProps = {
   card: ExploreCard;
@@ -27,7 +28,7 @@ export default function ExploreCardItem({
     >
       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[1.25rem]">
         <Image
-          src={card.image}
+          src={optimizeRemoteImageUrl(card.image, { width: 240 })}
           alt={card.title}
           fill
           className="object-cover"

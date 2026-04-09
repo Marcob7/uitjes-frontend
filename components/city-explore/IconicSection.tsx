@@ -1,13 +1,14 @@
 import Image from "next/image";
 import type { IconicCard, SafeCityTheme } from "./types";
 import { buildIconicCards } from "./utils";
+import { optimizeRemoteImageUrl } from "@/lib/remoteImage";
 
 function IconicCardItem({ card }: { card: IconicCard }) {
   return (
     <article className="group">
       <div className="relative h-[360px] overflow-hidden rounded-[1.5rem] shadow-sm ring-1 ring-black/5">
         <Image
-          src={card.image}
+          src={optimizeRemoteImageUrl(card.image, { width: 820 })}
           alt={card.title}
           fill
           className="object-cover transition duration-500 group-hover:scale-105"

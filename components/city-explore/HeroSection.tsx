@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { SafeCityTheme } from "./types";
 import { formatCityTitle, formatIntro } from "./utils";
+import { optimizeRemoteImageUrl } from "@/lib/remoteImage";
 
 type HeroSectionProps = {
   cityLabel: string;
@@ -48,7 +49,9 @@ export default function HeroSection({
 
         <div className="relative mx-auto h-[320px] w-full max-w-[420px] overflow-hidden rounded-[1.5rem] shadow-[0_18px_50px_rgba(0,0,0,0.18)] sm:h-[380px]">
           <Image
-            src={cityTheme.heroImage || cityTheme.fallbackImage}
+            src={optimizeRemoteImageUrl(cityTheme.heroImage || cityTheme.fallbackImage, {
+              width: 960,
+            })}
             alt={cityLabel}
             fill
             className="object-cover"

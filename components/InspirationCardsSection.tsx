@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { optimizeRemoteImageUrl } from "@/lib/remoteImage";
 
 export default function InspirationCardsSection() {
   const cards = [
@@ -86,10 +87,9 @@ export default function InspirationCardsSection() {
               className={`${card.width} ${card.height} relative shrink-0 overflow-hidden rounded-[2rem]`}
             >
               <Image
-                src={card.src}
+                src={optimizeRemoteImageUrl(card.src, { width: 900 })}
                 alt={card.alt}
                 fill
-                unoptimized
                 className="object-cover"
                 style={{ objectPosition: card.imagePosition }}
                 sizes="(max-width: 768px) 50vw, 25vw"

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
   params: {
@@ -437,7 +438,13 @@ export default function InspirationDetailPage({ params }: PageProps) {
             <div
               className="min-h-[360px] w-full bg-cover bg-center md:min-h-[520px]"
               style={{
-                backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.12)), ${page.heroImage}`,
+                backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.12)), ${optimizeCssBackground(
+                  page.heroImage,
+                  {
+                    width: 1280,
+                    quality: 58,
+                  }
+                )}`,
               }}
               aria-label={page.heroAlt}
             />
@@ -583,7 +590,12 @@ export default function InspirationDetailPage({ params }: PageProps) {
               <div key={index} className="overflow-hidden rounded-[22px]">
                 <div
                   className="aspect-[0.88/1] w-full bg-cover bg-center"
-                  style={{ backgroundImage: image }}
+                  style={{
+                    backgroundImage: optimizeCssBackground(image, {
+                      width: 640,
+                      quality: 56,
+                    }),
+                  }}
                 />
               </div>
             ))}
@@ -603,7 +615,12 @@ export default function InspirationDetailPage({ params }: PageProps) {
                 <div className="relative overflow-hidden rounded-[26px]">
                   <div
                     className="aspect-[0.95/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
-                    style={{ backgroundImage: item.image }}
+                    style={{
+                      backgroundImage: optimizeCssBackground(item.image, {
+                        width: 760,
+                        quality: 56,
+                      }),
+                    }}
                   />
 
                   <span className="absolute left-4 top-4 inline-flex rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-black">

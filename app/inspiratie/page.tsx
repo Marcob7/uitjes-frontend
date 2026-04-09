@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "@/components/home/SearchBar";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type CategoryCard = {
   title: string;
@@ -201,7 +202,13 @@ export default function InspiratiePage() {
                 <div
                   className="min-h-[290px] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03] md:min-h-[340px]"
                   style={{
-                    backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.58), rgba(0,0,0,0.06)), ${city.image}`,
+                    backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.58), rgba(0,0,0,0.06)), ${optimizeCssBackground(
+                      city.image,
+                      {
+                        width: 960,
+                        quality: 58,
+                      }
+                    )}`,
                   }}
                 />
                 <div className="absolute inset-x-0 bottom-0 p-6">
@@ -254,15 +261,25 @@ export default function InspiratiePage() {
               <div
                 className="aspect-[0.9/1] overflow-hidden rounded-[28px] bg-cover bg-center shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
                 style={{
-                  backgroundImage:
-                    "url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80')",
+                  backgroundImage: optimizeCssBackground(
+                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+                    {
+                      width: 720,
+                      quality: 56,
+                    }
+                  ),
                 }}
               />
               <div
                 className="aspect-[0.9/1] overflow-hidden rounded-[28px] bg-cover bg-center shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
                 style={{
-                  backgroundImage:
-                    "url('https://images.unsplash.com/photo-1612196808214-b7e239e5e7f1?auto=format&fit=crop&w=900&q=80')",
+                  backgroundImage: optimizeCssBackground(
+                    "https://images.unsplash.com/photo-1612196808214-b7e239e5e7f1?auto=format&fit=crop&w=900&q=80",
+                    {
+                      width: 720,
+                      quality: 56,
+                    }
+                  ),
                 }}
               />
             </div>

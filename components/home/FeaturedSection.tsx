@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type FeaturedItem = {
   id: number;
@@ -63,7 +64,13 @@ function FeaturedCard({ item }: FeaturedCardProps) {
             item.large ? "min-h-[420px]" : "min-h-[220px]"
           }`}
           style={{
-            backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.02)), ${item.image}`,
+            backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.02)), ${optimizeCssBackground(
+              item.image,
+              {
+                width: item.large ? 1120 : 820,
+                quality: 58,
+              }
+            )}`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

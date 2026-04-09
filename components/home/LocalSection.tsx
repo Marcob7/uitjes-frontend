@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
 const benefits = [
   "Gecureerde routes door verborgen straatjes",
@@ -13,8 +14,13 @@ export default function LocalSection() {
         <div
           className="min-h-[300px] overflow-hidden rounded-[28px]"
           style={{
-            backgroundImage:
-              'url("https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1400&q=80")',
+            backgroundImage: optimizeCssBackground(
+              "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1400&q=80",
+              {
+                width: 960,
+                quality: 56,
+              }
+            ),
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
