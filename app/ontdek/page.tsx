@@ -1,6 +1,7 @@
 export const runtime = "edge";
 
 import CityExploreView from "@/components/city-explore/CityExploreView";
+import { getEventsWithFallback } from "@/components/city-explore/utils";
 
 type OntdekPageProps = {
   searchParams?: {
@@ -28,7 +29,19 @@ function normalizeCity(value: string | undefined) {
   return value.trim().toLowerCase().replace(/\s+/g, "-");
 }
 
+function shouldUseDummyData(city: string) {
+  if (process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "1") {
+    return true;
+  }
+
+  return getEventsWithFallback(city, []).length > 0;
+}
+
 async function getCityEvents(city: string): Promise<BackendEvent[]> {
+  if (shouldUseDummyData(city)) {
+    return [];
+  }
+
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
  
   if (!baseUrl) {

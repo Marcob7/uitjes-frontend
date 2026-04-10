@@ -19,6 +19,15 @@ export type BackendEvent = {
   source_url: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  summary?: string | null;
+  walk_minutes?: number | null;
+  rating?: number | null;
+  image?: string | null;
+  status?: string | null;
+  category_label?: string | null;
+  audiences?: PlannerCompanion[];
+  moments?: PlannerMoment[];
+  vibes?: PlannerVibe[];
 };
 
 export type CityExploreViewProps = {
@@ -34,12 +43,32 @@ export type ExploreCard = {
   location: string;
   image: string;
   href: string;
+  description?: string;
+  price?: string;
+  distance?: string;
+  status?: string;
+  rating?: number | null;
+  audiences?: PlannerCompanion[];
+  moments?: PlannerMoment[];
+  vibes?: PlannerVibe[];
+};
+
+export type PlannerCompanion = "solo" | "date" | "gezin" | "vrienden";
+
+export type PlannerMoment = "nu" | "vanavond" | "morgen" | "weekend";
+
+export type PlannerVibe = "cultureel" | "actief" | "eten-drinken" | "relaxed";
+
+export type PlannerSelections = {
+  companion: PlannerCompanion;
+  moment: PlannerMoment;
+  vibe: PlannerVibe;
 };
 
 export type CalendarView = "dag" | "week" | "maand" | "jaar";
 
 export type CalendarCategory =
-  | "Alle categorieën"
+  | "Alle categorieen"
   | "Kunst"
   | "Muziek"
   | "Theater"
@@ -48,7 +77,7 @@ export type CalendarCategory =
 export type CalendarEvent = {
   id: number;
   title: string;
-  category: Exclude<CalendarCategory, "Alle categorieën">;
+  category: Exclude<CalendarCategory, "Alle categorieen">;
   city: string;
   date: string;
   time?: string;
@@ -78,4 +107,32 @@ export type IconicCard = {
   description: string;
   cta: string;
   image: string;
+};
+
+export type HeroRecommendation = {
+  id: number;
+  tag: string;
+  title: string;
+  subtitle: string;
+  href: string;
+};
+
+export type ExploreFeatureCard = {
+  id: number;
+  title: string;
+  description: string;
+  icon: "spark" | "clock" | "map";
+  tone: "butter" | "mint" | "mist";
+};
+
+export type EditorialContent = {
+  editionTag: string;
+  titleIntro: string;
+  titleAccent: string;
+  titleOutro: string;
+  intro: string;
+  ctaLabel: string;
+  recommendations: HeroRecommendation[];
+  momentFilters: string[];
+  featureCards: ExploreFeatureCard[];
 };

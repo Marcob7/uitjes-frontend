@@ -60,7 +60,7 @@ export default function HeroSection() {
             ))}
           </div>
 
-          <div className="mt-4">
+          <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/inspiratie"
               className="inline-flex min-h-[52px] items-center gap-3 rounded-full bg-lime-200 px-6 text-sm font-semibold text-slate-900 transition hover:bg-lime-300"
@@ -70,6 +70,13 @@ export default function HeroSection() {
               </span>
               Help mij ontdekken wat ik kan doen
               <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/jaarkalender"
+              className="inline-flex min-h-[52px] items-center gap-2 rounded-full border border-white/35 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/18"
+            >
+              Bekijk de jaarkalender van Nederland
+              <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </div>

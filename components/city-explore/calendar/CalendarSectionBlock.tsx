@@ -13,6 +13,7 @@ import CalendarViewButton from "./CalendarViewButton";
 import CalendarWeekView from "./CalendarWeekView";
 import CalendarYearView from "./CalendarYearView";
 import { getCityConfig } from "@/lib/cityConfig";
+
 type CalendarSectionBlockProps = {
   cityLabel: string;
   accentColor: string;
@@ -21,7 +22,7 @@ type CalendarSectionBlockProps = {
 };
 
 const CALENDAR_CATEGORIES: CalendarCategory[] = [
-  "Alle categorieën",
+  "Alle categorieen",
   "Kunst",
   "Muziek",
   "Theater",
@@ -34,17 +35,16 @@ export default function CalendarSectionBlock({
   accentTextColor,
   calendarEvents,
 }: CalendarSectionBlockProps) {
-   
   const [isExpanded, setIsExpanded] = useState(true);
   const [view, setView] = useState<CalendarView>("maand");
   const [currentDate, setCurrentDate] = useState(new Date(2026, 3, 1));
   const [selectedCategory, setSelectedCategory] =
-    useState<CalendarCategory>("Alle categorieën");
+    useState<CalendarCategory>("Alle categorieen");
 
   const filteredEvents = useMemo(() => {
-    if (selectedCategory === "Alle categorieën") return calendarEvents;
+    if (selectedCategory === "Alle categorieen") return calendarEvents;
     return calendarEvents.filter((event) => event.category === selectedCategory);
-  }, [selectedCategory, calendarEvents]);
+  }, [calendarEvents, selectedCategory]);
 
   const title =
     view === "jaar"
@@ -76,28 +76,28 @@ export default function CalendarSectionBlock({
   function goToToday() {
     setCurrentDate(new Date());
   }
-const cityTheme = getCityConfig(cityLabel);
+
+  const cityTheme = getCityConfig(cityLabel);
+
   return (
     <section className="mt-10">
       <div className="mb-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-<div className="max-w-[620px]">
-  <h2
-    className="text-4xl font-semibold leading-none tracking-tight sm:text-5xl lg:text-6xl"
-    style={{ color: cityTheme.colors.heading }}
-  >
-    {cityLabel}{" "}
-    <span style={{ color: cityTheme.colors.text }}>
-      Agenda
-    </span>
-  </h2>
+        <div className="max-w-[620px]">
+          <h2
+            className="text-4xl font-semibold leading-none tracking-tight sm:text-5xl lg:text-6xl"
+            style={{ color: cityTheme.colors.heading }}
+          >
+            {cityLabel} <span style={{ color: cityTheme.colors.text }}>Agenda</span>
+          </h2>
 
-  <p
-    className="mt-5 max-w-[480px] text-base leading-7 sm:text-lg"
-    style={{ color: cityTheme.colors.text }}
-  >
-    Ontdek de meest curator-waardige culturele momenten in {cityLabel}.
-  </p>
-</div>
+          <p
+            className="mt-5 max-w-[480px] text-base leading-7 sm:text-lg"
+            style={{ color: cityTheme.colors.text }}
+          >
+            Ontdek de meest curator-waardige culturele momenten in {cityLabel}.
+          </p>
+        </div>
+
         <div
           className="inline-flex rounded-full p-1"
           style={{ backgroundColor: "#f1e5da" }}
@@ -190,14 +190,14 @@ const cityTheme = getCityConfig(cityLabel);
                   onClick={goPrevious}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-[#DDD5CC] bg-white text-[18px] text-[#171717] transition hover:bg-[#F7F3EE]"
                 >
-                  ‹
+                  {"<"}
                 </button>
                 <button
                   type="button"
                   onClick={goNext}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-[#DDD5CC] bg-white text-[18px] text-[#171717] transition hover:bg-[#F7F3EE]"
                 >
-                  ›
+                  {">"}
                 </button>
               </div>
             </div>
@@ -216,17 +216,11 @@ const cityTheme = getCityConfig(cityLabel);
           )}
 
           {view === "week" && (
-            <CalendarWeekView
-              currentDate={currentDate}
-              events={filteredEvents}
-            />
+            <CalendarWeekView currentDate={currentDate} events={filteredEvents} />
           )}
 
           {view === "maand" && (
-            <CalendarMonthView
-              currentDate={currentDate}
-              events={filteredEvents}
-            />
+            <CalendarMonthView currentDate={currentDate} events={filteredEvents} />
           )}
 
           {view === "jaar" && (

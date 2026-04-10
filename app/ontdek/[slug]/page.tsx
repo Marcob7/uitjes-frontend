@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getExploreDetailBySlug, exploreDetailData } from "@/lib/exploreDetailData";
+import {
+  getAllExploreDetailSlugs,
+  getExploreDetailBySlug,
+} from "@/lib/exploreDetailData";
 
 type PageProps = {
   params: {
@@ -12,7 +15,7 @@ type PageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return Object.keys(exploreDetailData).map((slug) => ({
+  return getAllExploreDetailSlugs().map((slug) => ({
     slug,
   }));
 }

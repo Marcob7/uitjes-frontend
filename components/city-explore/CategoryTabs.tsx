@@ -14,27 +14,27 @@ const CATEGORY_OPTIONS: Array<{
   {
     key: "events",
     label: "Events",
-    activeClassName: "bg-[#D6E7D8] text-[#1F2A1F]",
+    activeClassName: "bg-[#b8ea72] text-[#23321a]",
   },
   {
     key: "attractions",
     label: "Highlights",
-    activeClassName: "bg-[#BFE293] text-[#2E4A1F]",
+    activeClassName: "bg-[#eee1cf] text-[#4c3a24]",
   },
   {
     key: "restaurants",
     label: "Restaurants",
-    activeClassName: "bg-[#EEDFC7] text-[#3A2E1F]",
+    activeClassName: "bg-[#f2ddd2] text-[#56372d]",
   },
   {
     key: "bars",
     label: "Bars",
-    activeClassName: "bg-[#DFDFEA] text-[#2B2B39]",
+    activeClassName: "bg-[#dfe1ef] text-[#323548]",
   },
   {
     key: "thingsToDo",
     label: "Te doen",
-    activeClassName: "bg-[#F3E6D6] text-[#43301F]",
+    activeClassName: "bg-[#e9e4d3] text-[#49402d]",
   },
 ];
 
@@ -53,22 +53,14 @@ export default function CategoryTabs({
             key={option.key}
             type="button"
             onClick={() => onChange(option.key)}
-            className={`inline-flex items-center gap-3 rounded-full px-5 py-3 text-base font-semibold transition sm:px-6 sm:py-4 sm:text-lg ${
+            aria-label={`${option.label} (${counts[option.key]})`}
+            className={`inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium transition sm:px-6 ${
               isActive
-                ? option.activeClassName + " shadow-sm"
-                : "bg-white text-[#1b1b1b] ring-1 ring-black/10 hover:bg-[#f8f6f3]"
+                ? `${option.activeClassName} shadow-[0_10px_24px_rgba(69,76,34,0.10)]`
+                : "bg-[#f4ece2] text-[#5e5548] hover:bg-[#ece2d6]"
             }`}
           >
-            <span>{option.label}</span>
-            <span
-              className={`inline-flex min-w-8 items-center justify-center rounded-full px-2 py-1 text-xs font-semibold ${
-                isActive
-                  ? "bg-black/10 text-current"
-                  : "bg-[#f4ede7] text-slate-600"
-              }`}
-            >
-              {counts[option.key]}
-            </span>
+            {option.label}
           </button>
         );
       })}
