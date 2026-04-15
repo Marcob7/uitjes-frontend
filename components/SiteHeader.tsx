@@ -9,122 +9,135 @@ export default function SiteHeader() {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FDFBF7]">
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 bg-[#FDFBF7] md:bg-[#FDFBF7]">
+      <div className="relative overflow-hidden md:overflow-visible">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[url('/images/home/mobile-page-background.png')] bg-cover bg-top bg-no-repeat opacity-95 md:hidden"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(240,246,231,0.86),rgba(227,238,214,0.78))] md:hidden"
+        />
+
+        <div className="relative mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo / merknaam */}
-        <Link
-          href="/"
-          className="flex items-center gap-3 text-xl font-semibold tracking-tight text-neutral-900"
-          aria-label="Ga naar home"
-          onClick={closeMenu}
-        >
-      
-          <span>Uitjes NL</span>
-        </Link>
-
-        {/* Desktop navigatie */}
-        <nav aria-label="Hoofdnavigatie" className="hidden md:flex">
-          <ul className="flex items-center gap-8 text-[15px] font-medium text-neutral-700">
-            <li>
-              <Link href="/" className="transition-colors hover:text-neutral-950">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/ontdek" className="transition-colors hover:text-neutral-950">
-                Ontdek
-              </Link>
-            </li>
-            <li>
-              <Link href="/saved" className="transition-colors hover:text-neutral-950">
-                Bewaard
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/event-details"
-                className="transition-colors hover:text-neutral-950"
-              >
-                Uitgelichte Events
-              </Link>
-            </li>
-            <li>
-              <Link href="/cultuur" className="transition-colors hover:text-neutral-950">
-                Cultuur
-              </Link>
-            </li>
-            <li>
-              <Link href="/festivals" className="transition-colors hover:text-neutral-950">
-                Festivals
-              </Link>
-            </li>
-            <li>
-              <Link href="/feedback" className="transition-colors hover:text-neutral-950">
-                Feedback
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Rechter acties desktop */}
-        <div className="hidden items-center gap-3 md:flex">
           <Link
-            href="/saved"
-            className="text-[15px] font-medium text-neutral-700 transition-colors hover:text-neutral-950"
+            href="/"
+            className="flex items-center gap-3 text-xl font-semibold tracking-tight text-neutral-900"
+            aria-label="Ga naar home"
+            onClick={closeMenu}
           >
-            Mijn lijst
+            <span>Uitjes NL</span>
           </Link>
 
-          <Link
-            href="/ontdek"
-            className="inline-flex items-center justify-center rounded-2xl bg-lime-300 px-5 py-3 text-[15px] font-semibold text-neutral-950 transition hover:bg-lime-400"
-          >
-            Ontdek uitjes
-          </Link>
-        </div>
+          {/* Desktop navigatie */}
+          <nav aria-label="Hoofdnavigatie" className="hidden md:flex">
+            <ul className="flex items-center gap-8 text-[15px] font-medium text-neutral-700">
+              <li>
+                <Link href="/" className="transition-colors hover:text-neutral-950">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/ontdek" className="transition-colors hover:text-neutral-950">
+                  Ontdek
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/event-details"
+                  className="transition-colors hover:text-neutral-950"
+                >
+                  Uitgelichte Events
+                </Link>
+              </li>
+              <li>
+                <Link href="/cultuur" className="transition-colors hover:text-neutral-950">
+                  Cultuur
+                </Link>
+              </li>
+              <li>
+                <Link href="/festivals" className="transition-colors hover:text-neutral-950">
+                  Festivals
+                </Link>
+              </li>
+              <li>
+                <Link href="/feedback" className="transition-colors hover:text-neutral-950">
+                  Feedback
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
-        {/* Hamburger knop mobiel */}
-        <button
-          type="button"
-          aria-label={mobileMenuOpen ? "Sluit menu" : "Open menu"}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-neutral-200 text-neutral-900 transition hover:bg-neutral-50 md:hidden"
-        >
-          <span className="sr-only">
-            {mobileMenuOpen ? "Sluit menu" : "Open menu"}
-          </span>
+          {/* Rechter acties desktop */}
+          <div className="hidden items-center gap-3 md:flex">
+            <Link
+              href="/saved"
+              className="text-[15px] font-medium text-neutral-700 transition-colors hover:text-neutral-950"
+            >
+          Mijn lijst
+            </Link>
 
-          <div className="flex flex-col gap-1.5">
-            <span
-              className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
-                mobileMenuOpen ? "translate-y-2 rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`block h-0.5 w-5 bg-current transition-opacity duration-200 ${
-                mobileMenuOpen ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
-                mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
-              }`}
-            />
+            <Link
+              href="/ontdek"
+              className="inline-flex items-center justify-center rounded-2xl bg-lime-300 px-5 py-3 text-[15px] font-semibold text-neutral-950 transition hover:bg-lime-400"
+            >
+              Ontdek uitjes
+            </Link>
           </div>
-        </button>
+
+          {/* Hamburger knop mobiel */}
+          <button
+            type="button"
+            aria-label={mobileMenuOpen ? "Sluit menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[rgba(58,78,35,0.14)] bg-[rgba(251,247,241,0.68)] text-neutral-900 shadow-[0_8px_18px_rgba(48,64,28,0.08)] backdrop-blur-sm transition hover:bg-[rgba(251,247,241,0.82)] md:hidden"
+          >
+            <span className="sr-only">
+              {mobileMenuOpen ? "Sluit menu" : "Open menu"}
+            </span>
+
+            <div className="flex flex-col gap-1.5">
+              <span
+                className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
+                  mobileMenuOpen ? "translate-y-2 rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-5 bg-current transition-opacity duration-200 ${
+                  mobileMenuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
+                  mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
+                }`}
+              />
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Mobiel menu */}
       {mobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="border-t border-neutral-200 bg-white md:hidden"
+          className="relative overflow-hidden border-t border-[rgba(58,78,35,0.12)] md:hidden"
         >
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[url('/images/home/mobile-page-background.png')] bg-cover bg-top bg-no-repeat opacity-95"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(240,246,231,0.94),rgba(230,238,217,0.9))]"
+          />
           <nav
             aria-label="Mobiele hoofdnavigatie"
-            className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6"
+            className="relative mx-auto w-full max-w-7xl px-4 py-4 sm:px-6"
           >
             <ul className="flex flex-col gap-2">
               <li>
@@ -198,7 +211,7 @@ export default function SiteHeader() {
                 onClick={closeMenu}
                 className="inline-flex items-center justify-center rounded-xl border border-neutral-200 px-4 py-3 text-[15px] font-medium text-neutral-900 transition hover:bg-neutral-50"
               >
-                Mijn lijst
+                Bewaard
               </Link>
 
               <Link

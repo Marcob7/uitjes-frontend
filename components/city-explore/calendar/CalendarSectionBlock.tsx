@@ -94,7 +94,7 @@ export default function CalendarSectionBlock({
             className="mt-5 max-w-[480px] text-base leading-7 sm:text-lg"
             style={{ color: cityTheme.colors.text }}
           >
-            Ontdek de meest curator-waardige culturele momenten in {cityLabel}.
+            Ontdek de meest speciaal geselecteerd-waardige culturele momenten in {cityLabel}.
           </p>
         </div>
 

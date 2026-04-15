@@ -1150,60 +1150,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#f6f4ef] text-[#111111]">
-      <header className="border-b border-black/5 bg-[#f6f4ef]">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-4 py-5 md:px-8">
-          <Link
-            href="/"
-            className="text-lg font-semibold tracking-[-0.03em] text-black"
-          >
-            Radiant Curator
-          </Link>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/inspiratie"
-              className="border-b border-black pb-1 text-xs font-medium text-black"
-            >
-              Discover
-            </Link>
-            <Link
-              href="/culturele-momenten"
-              className="text-xs text-black/55 transition hover:text-black"
-            >
-              Cultural Moments
-            </Link>
-            <Link
-              href="/lokale-gidsen"
-              className="text-xs text-black/55 transition hover:text-black"
-            >
-              Local Guides
-            </Link>
-            <Link
-              href="/verhalen"
-              className="text-xs text-black/55 transition hover:text-black"
-            >
-              Stories
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              aria-label="Zoeken"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-black transition hover:bg-black/5"
-            >
-              <SearchIcon />
-            </button>
-
-            <Link
-              href="/club"
-              className="hidden rounded-full bg-[#bde28d] px-4 py-2 text-xs font-semibold text-black transition hover:bg-[#aed97a] md:inline-flex"
-            >
-              Join the Club
-            </Link>
-          </div>
-        </div>
-      </header>
+   
 
       <section className="px-4 pb-12 pt-8 md:px-8 md:pb-16 md:pt-12">
         <div className="mx-auto max-w-[1280px]">
@@ -1310,7 +1257,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                 Suggesties
               </h2>
               <p className="mt-1 text-sm text-black/45">
-                Aanraders voor vandaag geselecteerd door onze curators.
+                Aanraders voor vandaag geselecteerd door onze speciaal geselecteerds.
               </p>
             </div>
 
@@ -1367,85 +1314,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
         </div>
       </section>
 
-      <footer className="bg-[#111111] px-4 py-10 text-white md:px-8">
-        <div className="mx-auto grid max-w-[1280px] gap-8 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
-          <div>
-            <Link
-              href="/"
-              className="text-lg font-semibold tracking-[-0.03em] text-white"
-            >
-              Radiant Curator
-            </Link>
-
-            <p className="mt-5 max-w-[240px] text-xs leading-6 text-white/60">
-              © 2024 Radiant Curator. Formed as essential cultural moments. De
-              gids voor jouw stad.
-            </p>
-          </div>
-
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#d7f0ae]">
-              Verken
-            </p>
-            <div className="mt-4 flex flex-col gap-3 text-sm text-white/70">
-              <Link href="/manifest" className="transition hover:text-white">
-                The Manifesto
-              </Link>
-              <Link
-                href="/editorial-policy"
-                className="transition hover:text-white"
-              >
-                Editorial Policy
-              </Link>
-              <Link
-                href="/curator-access"
-                className="transition hover:text-white"
-              >
-                Curator Access
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#d7f0ae]">
-              Informatie
-            </p>
-            <div className="mt-4 flex flex-col gap-3 text-sm text-white/70">
-              <Link href="/privacy" className="transition hover:text-white">
-                Privacy & Terms
-              </Link>
-              <Link href="/contact" className="transition hover:text-white">
-                Contact
-              </Link>
-              <Link href="/over-ons" className="transition hover:text-white">
-                Over ons
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#d7f0ae]">
-              Stay radiant
-            </p>
-            <div className="mt-4 flex items-center gap-3">
-              <button
-                type="button"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
-                aria-label="Instagram"
-              >
-                <AtIcon />
-              </button>
-              <button
-                type="button"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
-                aria-label="Delen"
-              >
-                <ShareIcon />
-              </button>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
     </main>
   );
 }

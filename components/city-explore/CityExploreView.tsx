@@ -35,7 +35,7 @@ const CURATED_COPY: Record<
   { title: string; description: string; countLabel: string }
 > = {
   events: {
-    title: "Curated picks",
+    title: "Speciaal geselecteerd",
     description:
       "Een selectie van momenten die makkelijk in je dag passen en direct sfeer geven.",
     countLabel: "momenten",
@@ -294,7 +294,7 @@ export default function CityExploreView({
   }, [isPlannerVisible]);
 
   const curatedCopy = CURATED_COPY[activeCategory];
-  const sectionTitle = isPlannerVisible ? "Gefilterde picks" : curatedCopy.title;
+  const sectionTitle = isPlannerVisible ? "Gefilterde keuzes" : curatedCopy.title;
   const sectionDescription = isPlannerVisible
     ? getPlannerSummary(plannerSelections)
     : curatedCopy.description;
@@ -363,7 +363,7 @@ export default function CityExploreView({
         </section>
 
         <section
-          id="curated-picks"
+          id="speciaal geselecteerd"
           className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
         >
           <div className="rounded-[2.4rem] border border-black/5 bg-[#f4e6d9] p-6 shadow-[0_24px_60px_rgba(64,42,24,0.08)] sm:p-8">

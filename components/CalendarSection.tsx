@@ -419,7 +419,7 @@ export default function CalendarSection() {
             Den Haag <span className="text-[#B8B5B0]">Agenda</span>
           </h2>
           <p className="mt-3 max-w-[560px] text-[20px] leading-8 text-[#5E5953]">
-            Ontdek de meest curator-waardige culturele momenten in de stad aan de zee voor de maand Oktober.
+            Ontdek de meest speciaal geselecteerd-waardige culturele momenten in de stad aan de zee voor de maand Oktober.
           </p>
         </div>
 

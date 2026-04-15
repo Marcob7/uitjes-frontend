@@ -2,13 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 
 import { JaarkalenderFilterControls } from "./JaarkalenderFilterControls";
-import {
-  getJaarkalenderDayByNumber,
-  getJaarkalenderHref,
-  jaarkalenderCategoryMeta,
-  type JaarkalenderCalendarItem,
-  type JaarkalenderCategoryKey,
-} from "./data";
+import { getJaarkalenderDayByNumber, getJaarkalenderHref } from "./data";
 
 export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",
@@ -22,24 +16,8 @@ type MonthCalendarCell = {
   monthLabel?: string;
   muted?: boolean;
   href?: string;
-  summaryText?: string;
-  categories?: JaarkalenderCategoryKey[];
-  locationText?: string;
-  accent?: boolean;
+  eventCount?: number;
 };
-
-function getLocationPreview(items: JaarkalenderCalendarItem[]) {
-  return Array.from(
-    new Set(
-      items.map((item) => {
-        const locationParts = item.locatie.split(", ");
-        return locationParts[locationParts.length - 1] ?? item.locatie;
-      })
-    )
-  )
-    .slice(0, 2)
-    .join(" · ");
-}
 
 const monthCalendarCells: MonthCalendarCell[] = [
   {
@@ -56,10 +34,7 @@ const monthCalendarCells: MonthCalendarCell[] = [
       key: `day-${dayNumber}`,
       day: String(dayNumber),
       href: getJaarkalenderHref(dayNumber),
-      summaryText: day?.calendarSummary.text,
-      categories: day?.calendarSummary.categories,
-      locationText: day ? getLocationPreview(day.calendarItems) : undefined,
-      accent: dayNumber === 10,
+      eventCount: day?.calendarSummary.displayCount,
     };
   }),
   {
@@ -89,16 +64,10 @@ const mobileAgenda = [3, 5, 10, 15].flatMap((dayNumber) => {
     return [];
   }
 
-  const primaryCategory = day.calendarSummary.categories[0] ?? "cultuur";
-  const gratisCount = day.calendarItems.filter((item) => item.gratis).length;
-
   return [
     {
       day: `${dayNumber} oktober`,
-      title: day.calendarSummary.text,
-      meta: `${getLocationPreview(day.calendarItems)} · ${gratisCount} gratis`,
-      categories: day.calendarSummary.categories.slice(0, 3),
-      tone: jaarkalenderCategoryMeta[primaryCategory].surfaceClass,
+      eventCount: day.calendarSummary.displayCount,
       href: getJaarkalenderHref(dayNumber),
     },
   ];
@@ -166,46 +135,27 @@ function MonthNavButton({ label }: { label: string }) {
   );
 }
 
-function CategoryLegendPill({
-  category,
+function CountBlock({
+  count,
+  muted = false,
 }: {
-  category: JaarkalenderCategoryKey;
+  count?: number;
+  muted?: boolean;
 }) {
-  const meta = jaarkalenderCategoryMeta[category];
-
-  return (
-    <div
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${meta.badgeClass}`}
-    >
-      <span className={`h-2.5 w-2.5 rounded-full ${meta.dotClass}`} />
-      {meta.label}
-    </div>
-  );
-}
-
-function CategoryPreview({
-  categories = [],
-}: {
-  categories?: JaarkalenderCategoryKey[];
-}) {
-  if (!categories.length) {
-    return null;
+  if (muted || !count) {
+    return (
+      <div className="mt-auto text-sm text-[#aaa093]">Geen telling</div>
+    );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1.5">
-        {categories.slice(0, 3).map((category) => (
-          <span
-            key={category}
-            title={jaarkalenderCategoryMeta[category].label}
-            className={`inline-flex h-2.5 w-2.5 rounded-full ${jaarkalenderCategoryMeta[category].dotClass}`}
-          />
-        ))}
+    <div className="mt-auto">
+      <div className="text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-none tracking-[-0.08em] text-[#1b1712]">
+        +{count}
       </div>
-      <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#847768]">
-        {categories.length} categorieen
-      </span>
+      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8c8072]">
+        activiteiten
+      </p>
     </div>
   );
 }
@@ -214,7 +164,6 @@ function CalendarCell({
   day,
   monthLabel,
   muted = false,
-  accent = false,
   className = "",
   href,
   children,
@@ -222,7 +171,6 @@ function CalendarCell({
   day: string;
   monthLabel?: string;
   muted?: boolean;
-  accent?: boolean;
   className?: string;
   href?: string;
   children?: ReactNode;
@@ -231,20 +179,20 @@ function CalendarCell({
     <>
       <div
         className={`flex items-baseline gap-2 text-sm font-medium ${
-          muted ? "text-[#9d9489]" : ""
+          muted ? "text-[#9d9489]" : "text-[#2b261f]"
         }`}
       >
-        <span>{day}</span>
+        <span className="text-lg font-semibold tracking-[-0.03em]">{day}</span>
         {monthLabel ? (
           <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#a19485]">
             {monthLabel}
           </span>
         ) : null}
       </div>
-      <div className="mt-3 flex flex-1 flex-col items-start gap-2">{children}</div>
+      <div className="mt-6 flex flex-1 flex-col">{children}</div>
       {href ? (
-        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#6a7a45] opacity-0 transition group-hover:opacity-100">
-          Open dag
+        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f72] transition group-hover:text-[#5c6d3e]">
+          Open
           <ArrowIcon />
         </span>
       ) : null}
@@ -255,12 +203,8 @@ function CalendarCell({
     return (
       <Link
         href={href}
-        className={`group relative flex min-h-[148px] flex-col border-b border-r border-[#e6dfd3] p-4 transition hover:-translate-y-[1px] hover:bg-[#fffdf8] ${
-          muted ? "bg-[#ebe6df] text-[#a39a8d]" : "bg-[#fbfaf7] text-[#15120f]"
-        } ${
-          accent
-            ? "bg-[linear-gradient(180deg,#f6f9eb_0%,#e0f2ba_100%)] shadow-[inset_0_0_0_1px_rgba(74,102,33,0.16)]"
-            : ""
+        className={`group relative flex min-h-[168px] flex-col border-b border-r border-[#e7dfd3] px-5 py-5 transition duration-200 hover:bg-[#fffdf9] ${
+          muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-[#fbfaf7] text-[#15120f]"
         } ${className}`}
       >
         {content}
@@ -270,9 +214,9 @@ function CalendarCell({
 
   return (
     <div
-      className={`relative min-h-[148px] border-b border-r border-[#e6dfd3] p-4 ${
-        muted ? "bg-[#ebe6df] text-[#a39a8d]" : "bg-[#fbfaf7] text-[#15120f]"
-      } ${accent ? "bg-[#dff1bf]" : ""} ${className}`}
+      className={`relative flex min-h-[168px] flex-col border-b border-r border-[#e7dfd3] px-5 py-5 ${
+        muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-[#fbfaf7] text-[#15120f]"
+      } ${className}`}
     >
       {content}
     </div>
@@ -460,14 +404,6 @@ export default function JaarkalenderPage() {
             <JaarkalenderFilterControls />
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            {(Object.keys(jaarkalenderCategoryMeta) as JaarkalenderCategoryKey[]).map(
-              (category) => (
-                <CategoryLegendPill key={category} category={category} />
-              )
-            )}
-          </div>
-
           <div className="mt-8 overflow-hidden rounded-[2.2rem] border border-[#e4ddd2] bg-[#f8f6f1] shadow-[0_20px_60px_rgba(66,49,31,0.06)]">
             <div className="hidden md:block">
               <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fcfbf8]">
@@ -489,22 +425,13 @@ export default function JaarkalenderPage() {
                     monthLabel={cell.monthLabel}
                     muted={cell.muted}
                     href={cell.href}
-                    accent={cell.accent}
                     className={
                       cell.muted
                         ? undefined
-                        : "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(248,245,239,0.98))]"
+                        : "bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(248,245,239,0.98))]"
                     }
                   >
-                    {!cell.muted ? (
-                      <>
-                        <CategoryPreview categories={cell.categories} />
-                        <p className="max-w-none text-[1.1rem] font-semibold leading-[1.08] tracking-[-0.03em] text-[#171511]">
-                          {cell.summaryText}
-                        </p>
-                        <p className="text-sm text-[#66584b]">{cell.locationText}</p>
-                      </>
-                    ) : null}
+                    <CountBlock count={cell.eventCount} muted={cell.muted} />
                   </CalendarCell>
                 ))}
               </div>
@@ -513,23 +440,22 @@ export default function JaarkalenderPage() {
             <div className="space-y-3 p-4 md:hidden">
               {mobileAgenda.map((item) => (
                 <Link
-                  key={item.title}
+                  key={item.day}
                   href={item.href}
-                  className={`block rounded-[1.6rem] p-5 shadow-[0_12px_28px_rgba(55,39,24,0.05)] ${item.tone}`}
+                  className="block rounded-[1.6rem] border border-[#e5dccf] bg-[#fbfaf7] p-5 shadow-[0_12px_28px_rgba(55,39,24,0.05)]"
                 >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6a5d51]">
-                    {item.day}
-                  </p>
-                  <h3 className="mt-3 max-w-none text-[1.7rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
-                    {item.title}
-                  </h3>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {item.categories.map((category) => (
-                      <CategoryLegendPill key={`${item.day}-${category}`} category={category} />
-                    ))}
-                  </div>
-                  <div className="mt-3 flex items-center justify-between gap-4">
-                    <p className="text-sm text-[#4d4339]">{item.meta}</p>
+                  <div className="flex items-end justify-between gap-4">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f72]">
+                        {item.day}
+                      </p>
+                      <p className="mt-3 text-[2.6rem] font-semibold leading-none tracking-[-0.08em] text-[#171511]">
+                        +{item.eventCount}
+                      </p>
+                      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f72]">
+                        activiteiten
+                      </p>
+                    </div>
                     <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#66764b]">
                       Open
                       <ArrowIcon />

@@ -33,7 +33,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
         <div className="mx-auto max-w-[1280px]">
           <header className="mb-6 flex items-center justify-between">
             <Link href="/" className="text-xl font-semibold tracking-[-0.03em]">
-              Radiant Curator
+              Radiant speciaal geselecteerd
             </Link>
 
             <nav className="hidden items-center gap-8 md:flex">
@@ -241,7 +241,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
       <footer className="mt-20 bg-[#121212] px-4 py-10 text-white md:px-8">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="text-xl font-semibold tracking-[-0.03em]">
-            Radiant Curator
+            Radiant speciaal geselecteerd
           </div>
 
           <div className="flex flex-wrap gap-6 text-sm text-white/70">
@@ -252,7 +252,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
           </div>
 
           <div className="text-sm text-white/60">
-            © 2024 Radiant Curator. City Guide Editorial.
+            © 2024 Radiant speciaal geselecteerd. City Guide Editorial.
           </div>
         </div>
       </footer>

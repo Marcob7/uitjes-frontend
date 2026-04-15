@@ -94,56 +94,12 @@ const popularCities: CityCard[] = [
 export default function InspiratiePage() {
   return (
     <main className="min-h-screen bg-[#f7f5f1] text-[#111111]">
-      <header className="border-b border-black/5 bg-[#f7f5f1]">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-5 py-5 md:px-8">
-          <Link
-            href="/"
-            className="text-lg font-semibold tracking-[-0.02em] text-black"
-          >
-            Uitjes
-          </Link>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/inspiratie"
-              className="border-b border-black pb-1 text-sm font-medium text-black"
-            >
-              Discover
-            </Link>
-            <Link
-              href="/gidsen"
-              className="text-sm text-black/60 transition hover:text-black"
-            >
-              Guides
-            </Link>
-            <Link
-              href="/nearby"
-              className="text-sm text-black/60 transition hover:text-black"
-            >
-              Nearby
-            </Link>
-            <Link
-              href="/saved"
-              className="text-sm text-black/60 transition hover:text-black"
-            >
-              Saved
-            </Link>
-          </nav>
-
-          <Link
-            href="/account"
-            aria-label="Account"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-black transition hover:bg-black hover:text-white"
-          >
-            <UserIcon />
-          </Link>
-        </div>
-      </header>
+   
 
       <section className="px-5 pb-12 pt-10 md:px-8 md:pb-16 md:pt-14">
         <div className="mx-auto max-w-[1280px]">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-[2.6rem] font-black leading-[0.92] tracking-[-0.04em] text-black md:text-[4.5rem]">
+            <h1 className="mx-auto text-[2.6rem] font-black leading-[0.92] tracking-[-0.04em] text-black md:max-w-[11ch] md:translate-x-6 md:text-[4.5rem]">
               Begeleide Ontdekkingsreis
             </h1>
 
@@ -234,7 +190,7 @@ export default function InspiratiePage() {
               </p>
 
               <h2 className="mt-4 max-w-[520px] text-4xl font-black leading-[0.95] tracking-[-0.04em] text-black md:text-5xl">
-                Ontvang wekelijks de beste curator-tips.
+                Ontvang wekelijks de beste speciaal geselecteerd-tips.
               </h2>
 
               <p className="mt-5 max-w-md text-sm leading-6 text-black/65 md:text-base">
@@ -312,7 +268,7 @@ export default function InspiratiePage() {
           </div>
 
           <p className="text-sm text-white/50">
-            © 2024 Uitjes Platform. A Radiant Curator Experience.
+            © 2024 Uitjes Platform. A Radiant speciaal geselecteerd Experience.
           </p>
         </div>
       </footer>

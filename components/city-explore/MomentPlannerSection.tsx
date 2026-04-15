@@ -90,7 +90,7 @@ export default function MomentPlannerSection({
             Jouw moment
           </div>
           <p className="mt-2 text-sm leading-6 text-[#655b4f] sm:text-base">
-            Kies een setting en we filteren de picks hieronder direct op sfeer,
+            Kies een setting en we filteren de keuzes hieronder direct op sfeer,
             timing en wat het best past bij jullie plan.
           </p>
         </div>

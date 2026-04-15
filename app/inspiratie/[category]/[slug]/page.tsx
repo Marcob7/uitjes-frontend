@@ -69,7 +69,7 @@ const categoryMeta: Record<
 > = {
   vandaag: {
     badge: "VANDAAG OPEN",
-    chips: ["Populair", "Vandaag", "Curator tip"],
+    chips: ["Populair", "Vandaag", "speciaal geselecteerd tip"],
     reasons: [
       "Goede keuze voor vandaag",
       "Past goed binnen deze categorie",
@@ -317,14 +317,14 @@ function getPageData(category: SupportedCategory, slug: string): DetailPageData 
   const baseTitle = slugToTitle(slug);
   const title = override?.title ?? baseTitle;
   const heroImage = override?.heroImage ?? getImageBySeed(`${category}-${slug}-hero`);
-  const meta = override?.meta ?? `${categoryLabels[category]} • Curator tip • 4.7`;
+  const meta = override?.meta ?? `${categoryLabels[category]} • speciaal geselecteerd tip • 4.7`;
   const chips = override?.chips ?? categoryConfig.chips;
 
   return {
     title,
     heroImage,
     heroAlt: title,
-    badges: [categoryConfig.badge, "CURATOR TIP"],
+    badges: [categoryConfig.badge, "speciaal geselecteerd TIP"],
     meta,
     chips,
     reasons: override?.reasons ?? categoryConfig.reasons,
@@ -382,7 +382,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
             href="/"
             className="text-lg font-semibold tracking-[-0.03em] text-black"
           >
-            Radiant Curator
+            Radiant speciaal geselecteerd
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -646,7 +646,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
             href="/"
             className="text-lg font-semibold tracking-[-0.03em] text-white"
           >
-            Radiant Curator
+            Radiant speciaal geselecteerd
           </Link>
 
           <div className="flex flex-wrap items-center gap-5 text-sm text-white/70">
@@ -665,7 +665,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
           </div>
 
           <p className="text-sm text-white/50">
-            © 2024 Radiant Curator. City Guide Editorial.
+            © 2024 Radiant speciaal geselecteerd. City Guide Editorial.
           </p>
         </div>
       </footer>

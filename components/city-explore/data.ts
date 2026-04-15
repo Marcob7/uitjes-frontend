@@ -44,7 +44,7 @@ export const CITY_EDITORIAL_CONTENT: Record<string, EditorialContent> = {
         id: 1,
         title: "Expert Curation",
         description:
-          "Elke plek is handmatig geselecteerd door curators die Haarlem kennen van hofje tot kade.",
+          "Elke plek is handmatig geselecteerd door speciaal geselecteerds die Haarlem kennen van hofje tot kade.",
         icon: "spark",
         tone: "butter",
       },

@@ -67,7 +67,7 @@ const staticCalendarData: CalendarEventCard[] = [
   },
   {
     id: 4,
-    title: "Surprise Curator",
+    title: "Surprise speciaal geselecteerd",
     category: "Curated",
     time: "",
     location: "",
@@ -269,7 +269,7 @@ function SurpriseCard() {
       </div>
 
       <h3 className="mt-6 text-[1.8rem] font-semibold tracking-tight text-[#111111]">
-        Surprise Curator
+        Surprise speciaal geselecteerd
       </h3>
 
       <p className="mt-4 max-w-[17rem] text-[14px] leading-6 text-black/55">

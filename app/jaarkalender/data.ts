@@ -383,7 +383,7 @@ function buildGenericTimeline(dayNumber: number): TimelineSlot[] {
           venue: museum,
           title: `Ochtendprogramma in ${museum}`,
           description:
-            "Een rustig begin van de dag met curator tours, lichte muziek en vroege toegang voor liefhebbers van cultuur.",
+            "Een rustig begin van de dag met speciaal geselecteerd tours, lichte muziek en vroege toegang voor liefhebbers van cultuur.",
           location: `${museum}, ${city}`,
           tone: "peach",
           primaryAction: "Add to Calendar",
@@ -500,7 +500,7 @@ const tenthDayOverride: JaarkalenderDay = {
           venue: "Rijksmuseum",
           title: "Morgenlicht in het Rijks",
           description:
-            "Een exclusieve vroege opening voor curatoren en kunstliefhebbers. Ontdek de galerijen voordat de grote drukte begint.",
+            "Een exclusieve vroege opening voor speciaal geselecteerden en kunstliefhebbers. Ontdek de galerijen voordat de grote drukte begint.",
           location: "Rijksmuseum, Amsterdam",
           tone: "peach",
           primaryAction: "Add to Calendar",
