@@ -1,7 +1,7 @@
 // frontend/app/feedback/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiFetchAuth } from "@/lib/api";
 
 type ApiError =
@@ -32,6 +32,20 @@ export default function FeedbackPage() {
   // Kleine client-side check: voorkomt onnodige request
   const messageTooShort =
     message.trim().length > 0 && message.trim().length < 10;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const presetMessage = params.get("message");
+    const presetEmail = params.get("email");
+
+    if (presetMessage) {
+      setMessage((current) => current || presetMessage);
+    }
+
+    if (presetEmail) {
+      setEmail((current) => current || presetEmail);
+    }
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

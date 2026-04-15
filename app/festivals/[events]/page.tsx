@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import {
+  buildGoogleCalendarHref,
+  buildTicketSearchHref,
+} from "@/lib/actionLinks";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import {
   generateFestivalStaticParams,
@@ -17,6 +21,22 @@ type PageProps = {
   params: {
     events: string;
   };
+};
+
+const FESTIVAL_YEAR = 2024;
+const MONTH_INDEX_BY_NAME: Record<string, number> = {
+  january: 0,
+  february: 1,
+  march: 2,
+  april: 3,
+  may: 4,
+  june: 5,
+  july: 6,
+  august: 7,
+  september: 8,
+  october: 9,
+  november: 10,
+  december: 11,
 };
 
 export const dynamicParams = false;
@@ -38,6 +58,14 @@ export function generateMetadata({ params }: PageProps): Metadata {
     title: `${festival.name} | Uitjes NL`,
     description: `${festival.dateLabel} in ${festival.locationLabel}.`,
   };
+}
+
+function getFestivalDayDate(dateLabel: string) {
+  const [monthName, dayValue] = dateLabel.split(" ");
+  const monthIndex = MONTH_INDEX_BY_NAME[monthName.toLowerCase()];
+  const day = Number.parseInt(dayValue, 10);
+
+  return new Date(Date.UTC(FESTIVAL_YEAR, monthIndex, day, 12, 0, 0));
 }
 
 function CalendarMiniIcon() {
@@ -170,7 +198,13 @@ function HeroMeta({ festival }: { festival: FestivalDetail }) {
   );
 }
 
-function TicketCard({ tier }: { tier: FestivalTicketTier }) {
+function TicketCard({
+  tier,
+  ticketHref,
+}: {
+  tier: FestivalTicketTier;
+  ticketHref: string;
+}) {
   const toneClass =
     tier.tone === "lime"
       ? "bg-[#dff4b8]"
@@ -205,12 +239,14 @@ function TicketCard({ tier }: { tier: FestivalTicketTier }) {
         ))}
       </div>
 
-      <button
-        type="button"
+      <a
+        href={ticketHref}
+        target="_blank"
+        rel="noreferrer"
         className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#171511] px-5 text-sm font-semibold text-white transition hover:bg-[#2a241e]"
       >
         Purchase
-      </button>
+      </a>
     </article>
   );
 }
@@ -252,6 +288,10 @@ export default function FestivalDetailPage({ params }: PageProps) {
   }
 
   const discoverMore = getDiscoverMoreFestivals(festival.slug);
+  const ticketSearchHref = buildTicketSearchHref(
+    festival.name,
+    festival.locationLabel
+  );
 
   return (
     <main className="min-h-screen bg-[#f8f4ed] text-[#171511]">
@@ -328,48 +368,63 @@ export default function FestivalDetailPage({ params }: PageProps) {
           </div>
 
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
-            {festival.lineupDays.map((day) => (
-              <article
-                key={day.label}
-                className={`rounded-[1.6rem] px-5 py-5 shadow-[0_10px_24px_rgba(52,38,22,0.06)] ${
-                  day.featured ? "bg-[#d8f3a8]" : "bg-white/88"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f816f]">
-                      {day.label}
-                    </p>
-                    <h3 className="mt-2 max-w-none text-[1.8rem] leading-none tracking-[-0.05em] text-[#171511]">
-                      {day.dateLabel}
-                    </h3>
-                  </div>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/75 text-[#171511]">
-                    <CalendarMiniIcon />
-                  </span>
-                </div>
+            {festival.lineupDays.map((day) => {
+              const calendarStart = getFestivalDayDate(day.dateLabel);
+              const calendarHref = buildGoogleCalendarHref({
+                title: `${festival.name} - ${day.label}`,
+                details: day.acts
+                  .map((act) => `${act.name} (${act.genre})`)
+                  .join(", "),
+                location: festival.locationLabel,
+                start: calendarStart,
+                end: new Date(calendarStart.getTime() + 8 * 60 * 60 * 1000),
+              });
 
-                <div className="mt-5 space-y-4">
-                  {day.acts.map((act) => (
-                    <div key={act.name} className="border-b border-black/8 pb-4 last:border-b-0 last:pb-0">
-                      <p className="text-base font-medium text-[#171511]">{act.name}</p>
-                      <p className="mt-1 text-[13px] text-[#655a4f]">{act.genre}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  className={`mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition ${
-                    day.featured
-                      ? "bg-[#171511] text-white hover:bg-[#2a241d]"
-                      : "border border-[#e2dacf] bg-white text-[#171511] hover:bg-[#faf7f2]"
+              return (
+                <article
+                  key={day.label}
+                  className={`rounded-[1.6rem] px-5 py-5 shadow-[0_10px_24px_rgba(52,38,22,0.06)] ${
+                    day.featured ? "bg-[#d8f3a8]" : "bg-white/88"
                   }`}
                 >
-                  Add to Calendar
-                </button>
-              </article>
-            ))}
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f816f]">
+                        {day.label}
+                      </p>
+                      <h3 className="mt-2 max-w-none text-[1.8rem] leading-none tracking-[-0.05em] text-[#171511]">
+                        {day.dateLabel}
+                      </h3>
+                    </div>
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/75 text-[#171511]">
+                      <CalendarMiniIcon />
+                    </span>
+                  </div>
+
+                  <div className="mt-5 space-y-4">
+                    {day.acts.map((act) => (
+                      <div key={act.name} className="border-b border-black/8 pb-4 last:border-b-0 last:pb-0">
+                        <p className="text-base font-medium text-[#171511]">{act.name}</p>
+                        <p className="mt-1 text-[13px] text-[#655a4f]">{act.genre}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <a
+                    href={calendarHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition ${
+                      day.featured
+                        ? "bg-[#171511] text-white hover:bg-[#2a241d]"
+                        : "border border-[#e2dacf] bg-white text-[#171511] hover:bg-[#faf7f2]"
+                    }`}
+                  >
+                    Add to Calendar
+                  </a>
+                </article>
+              );
+            })}
           </div>
         </section>
 
@@ -385,7 +440,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {festival.ticketTiers.map((tier) => (
-              <TicketCard key={tier.name} tier={tier} />
+              <TicketCard key={tier.name} tier={tier} ticketHref={ticketSearchHref} />
             ))}
           </div>
         </section>

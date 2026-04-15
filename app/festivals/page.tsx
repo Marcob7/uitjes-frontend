@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useDeferredValue, useState } from "react";
 
 import {
@@ -258,7 +259,10 @@ function FestivalCard({
 }
 
 export default function FestivalsPage() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [query, setQuery] = useState("");
+  const [newsletterEmail, setNewsletterEmail] = useState("");
   const [activeGenre, setActiveGenre] =
     useState<(typeof genreFilters)[number]>("Alle genres");
   const [alerts, setAlerts] = useState(defaultAlerts);
@@ -283,6 +287,28 @@ export default function FestivalsPage() {
 
     return matchesGenre && matchesQuery;
   });
+
+  const isListView = pathname === "/festivals";
+
+  function scrollToResults() {
+    document.getElementById("festival-results")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
+  function openNewsletterFlow() {
+    const params = new URLSearchParams({
+      message:
+        "Ik wil graag de festival nieuwsbrief ontvangen met curated tips en updates.",
+    });
+
+    if (newsletterEmail.trim()) {
+      params.set("email", newsletterEmail.trim());
+    }
+
+    router.push(`/feedback?${params.toString()}`);
+  }
 
   return (
     <main className="min-h-screen bg-[#f8f5f0] text-[#171511]">
@@ -317,6 +343,7 @@ export default function FestivalsPage() {
 
               <button
                 type="button"
+                onClick={scrollToResults}
                 className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#4c7426] px-8 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(76,116,38,0.22)] transition hover:bg-[#43681f]"
               >
                 Zoek
@@ -347,21 +374,35 @@ export default function FestivalsPage() {
               })}
             </div>
 
-            <div className="inline-flex rounded-full border border-[#e1d9ce] bg-[#f4efe7] p-1">
-              <span className="inline-flex min-h-10 items-center rounded-full bg-white px-5 text-sm font-medium text-[#171511] shadow-[0_8px_18px_rgba(60,44,23,0.08)]">
+            <div className="relative z-10 inline-flex rounded-full border border-[#e1d9ce] bg-[#f4efe7] p-1 shadow-[0_10px_22px_rgba(60,44,23,0.05)]">
+              <Link
+                href="/festivals"
+                className={`relative inline-flex min-h-10 items-center rounded-full px-5 text-sm font-medium transition ${
+                  isListView
+                    ? "cursor-default bg-white text-[#171511] shadow-[0_8px_18px_rgba(60,44,23,0.08)]"
+                    : "cursor-pointer text-[#8c8175] hover:bg-white/70 hover:text-[#171511]"
+                }`}
+                aria-current={isListView ? "page" : undefined}
+              >
                 Lijst
-              </span>
-              <span className="inline-flex min-h-10 items-center px-5 text-sm font-medium text-[#8c8175]">
+              </Link>
+              <Link
+                href="/festivals/kalender"
+                className="relative inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 text-sm font-medium text-[#8c8175] transition hover:bg-white/70 hover:text-[#171511]"
+              >
                 Kalender
-              </span>
-              <span className="inline-flex min-h-10 items-center px-5 text-sm font-medium text-[#8c8175]">
+              </Link>
+              <Link
+                href="/festivals/kaart"
+                className="relative inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 text-sm font-medium text-[#8c8175] transition hover:bg-white/70 hover:text-[#171511]"
+              >
                 Kaart
-              </span>
+              </Link>
             </div>
           </div>
         </section>
 
-        <section className="py-8">
+        <section id="festival-results" className="py-8">
           <div className="space-y-4">
             {filteredFestivals.map((festival) => (
               <FestivalCard key={festival.slug} festival={festival} />
@@ -423,18 +464,21 @@ export default function FestivalsPage() {
             Your Weekly Pulse
           </h2>
           <p className="mx-auto mt-4 max-w-[32rem] text-sm leading-7 text-[#5d5348] sm:text-[15px]">
-            De speciaal geselecteerd selecteert. Jij beleeft. Geen ruis, alleen de essentie
+            De curator selecteert. Jij beleeft. Geen ruis, alleen de essentie
             elke donderdag in je inbox.
           </p>
 
           <div className="mx-auto mt-8 flex max-w-[32rem] flex-col gap-3 sm:flex-row">
             <input
               type="email"
+              value={newsletterEmail}
+              onChange={(event) => setNewsletterEmail(event.target.value)}
               placeholder="E-mailadres"
               className="min-h-14 flex-1 rounded-full border border-[#e7dfd4] bg-white px-5 text-sm outline-none transition placeholder:text-[#a09386] focus:border-[#cfc1af]"
             />
             <button
               type="button"
+              onClick={openNewsletterFlow}
               className="inline-flex min-h-14 items-center justify-center rounded-full bg-[#171511] px-8 text-sm font-semibold text-white transition hover:bg-[#2b261f]"
             >
               Inschrijven

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import {
+  buildGoogleCalendarHref,
+  buildMapsSearchHref,
+} from "@/lib/actionLinks";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import {
   generateJaarkalenderEventStaticParams,
@@ -51,6 +55,21 @@ const fallbackImages = [
   "https://images.unsplash.com/photo-1506157786151-b8491531f063",
   "https://images.unsplash.com/photo-1459749411175-04bf5292ceea",
 ];
+
+const DUTCH_MONTH_INDEX: Record<string, number> = {
+  januari: 0,
+  februari: 1,
+  maart: 2,
+  april: 3,
+  mei: 4,
+  juni: 5,
+  juli: 6,
+  augustus: 7,
+  september: 8,
+  oktober: 9,
+  november: 10,
+  december: 11,
+};
 
 export const dynamicParams = false;
 
@@ -268,6 +287,21 @@ function getTimeLabel(entry: JaarkalenderEventEntry) {
   return `${entry.slot.time} - 23:59`;
 }
 
+function buildJaarkalenderDate(entry: JaarkalenderEventEntry) {
+  const [hours, minutes] = entry.slot.time.split(":").map(Number);
+  const monthIndex =
+    DUTCH_MONTH_INDEX[entry.day.monthDisplay.toLowerCase()] ?? 0;
+
+  return new Date(
+    entry.day.year,
+    monthIndex,
+    entry.day.dayNumber,
+    hours,
+    minutes,
+    0
+  );
+}
+
 function buildEventViewModel(entry: JaarkalenderEventEntry): EventViewModel {
   const cityLabel = getCityLabel(entry.card);
   const categoryKey = getCategoryKey(entry.card);
@@ -482,6 +516,15 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
   const nearbyEvents = getJaarkalenderEventEntriesForDay(eventEntry.day)
     .filter((entry) => entry.eventSlug !== eventEntry.eventSlug)
     .slice(0, 3);
+  const calendarStart = buildJaarkalenderDate(eventEntry);
+  const calendarHref = buildGoogleCalendarHref({
+    title: eventEntry.card.title,
+    details: eventEntry.card.description,
+    location: viewModel.locationLabel,
+    start: calendarStart,
+    end: new Date(calendarStart.getTime() + 3 * 60 * 60 * 1000),
+  });
+  const routeHref = buildMapsSearchHref(viewModel.locationLabel);
 
   return (
     <main className="min-h-screen bg-[#fbf7ef] text-[#171511]">
@@ -535,13 +578,15 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
               </div>
             </div>
 
-            <button
-              type="button"
+            <a
+              href={calendarHref}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#d6f38b] px-7 text-sm font-semibold text-[#171511] transition hover:bg-[#c9ee77]"
             >
               <CalendarIcon />
               {viewModel.importLabel}
-            </button>
+            </a>
           </div>
         </section>
 
@@ -609,12 +654,14 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
               <p className="mt-4 text-sm leading-7 text-[#65574c]">
                 {viewModel.routeLabel}
               </p>
-              <button
-                type="button"
+              <a
+                href={routeHref}
+                target="_blank"
+                rel="noreferrer"
                 className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#171511] px-5 text-sm font-semibold text-[#171511] transition hover:bg-[#171511] hover:text-white"
               >
                 {viewModel.routeAction}
-              </button>
+              </a>
             </div>
           </aside>
         </section>

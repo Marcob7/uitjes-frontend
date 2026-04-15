@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SavePlaceButton from "@/components/SavePlaceButton";
+import {
+  buildActionSearchHref,
+  buildMapsSearchHref,
+} from "@/lib/actionLinks";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
@@ -373,6 +378,19 @@ export default function InspirationDetailPage({ params }: PageProps) {
   }
 
   const page = getPageData(category, slug);
+  const reserveHref = buildActionSearchHref({
+    title: page.title,
+    location: page.practical.address,
+    actionLabel: "reserveer",
+  });
+  const routeHref = buildMapsSearchHref(page.practical.address);
+  const savedPlace = {
+    id: `inspiratie:${category}/${slug}`,
+    title: page.title,
+    href: `/inspiratie/${category}/${slug}`,
+    meta: page.meta,
+    image: page.heroImage,
+  };
 
   return (
     <main className="min-h-screen bg-[#f6f4ef] text-[#111111]">
@@ -413,21 +431,21 @@ export default function InspirationDetailPage({ params }: PageProps) {
           </nav>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="Zoeken"
+            <Link
+              href={`/inspiratie/${category}`}
+              aria-label="Terug naar overzicht"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-black transition hover:bg-black/5"
             >
               <SearchIcon />
-            </button>
+            </Link>
 
-            <button
-              type="button"
-              aria-label="Profiel"
+            <Link
+              href="/saved"
+              aria-label="Opgeslagen plekken"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-black transition hover:bg-black/5"
             >
               <UserIcon />
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -519,29 +537,40 @@ export default function InspirationDetailPage({ params }: PageProps) {
             <aside className="space-y-5">
               <div className="rounded-[28px] bg-[#f3efe9] p-5 shadow-[0_12px_30px_rgba(0,0,0,0.05)]">
                 <div className="flex flex-col gap-3">
-                  <button
-                    type="button"
+                  <a
+                    href={reserveHref}
+                    target="_blank"
+                    rel="noreferrer"
                     className="inline-flex h-14 items-center justify-center rounded-full bg-[#bde28d] px-6 text-sm font-semibold text-black transition hover:bg-[#add77a]"
                   >
                     Reserveer nu
-                  </button>
+                  </a>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
+                    <a
+                      href={routeHref}
+                      target="_blank"
+                      rel="noreferrer"
                       className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white text-sm font-medium text-black/80 transition hover:bg-black/5"
                     >
                       <MapIcon />
                       Bekijk route
-                    </button>
+                    </a>
 
-                    <button
-                      type="button"
+                    <SavePlaceButton
+                      item={savedPlace}
                       className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#eeece9] text-sm font-medium text-black/80 transition hover:bg-black/5"
+                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#dcefd1] text-sm font-medium text-black transition hover:bg-[#cfe6c1]"
+                      savedChildren={
+                        <>
+                          <SaveIcon />
+                          Opgeslagen
+                        </>
+                      }
                     >
                       <SaveIcon />
                       Sla op
-                    </button>
+                    </SavePlaceButton>
                   </div>
                 </div>
               </div>

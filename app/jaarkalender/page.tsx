@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { AgendaImportBanner } from "./AgendaImportBanner";
 import { JaarkalenderFilterControls } from "./JaarkalenderFilterControls";
 import { getJaarkalenderDayByNumber, getJaarkalenderHref } from "./data";
 
@@ -373,6 +374,10 @@ export default function JaarkalenderPage() {
         </section>
 
         <section className="mt-10">
+          <div className="mb-6">
+            <AgendaImportBanner />
+          </div>
+
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <div className="flex items-center gap-3 text-[#1a1713]">

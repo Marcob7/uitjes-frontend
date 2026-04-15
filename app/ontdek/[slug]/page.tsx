@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SavePlaceButton from "@/components/SavePlaceButton";
+import {
+  buildActionSearchHref,
+  buildMapsSearchHref,
+} from "@/lib/actionLinks";
 import {
   getAllExploreDetailSlugs,
   getExploreDetailBySlug,
@@ -26,6 +31,20 @@ export default function ExploreDetailPage({ params }: PageProps) {
   if (!item) {
     notFound();
   }
+
+  const reserveHref = buildActionSearchHref({
+    title: item.title,
+    location: `${item.city} ${item.practical.address}`,
+    actionLabel: item.actions.reserveLabel,
+  });
+  const routeHref = buildMapsSearchHref(item.practical.address);
+  const savedPlace = {
+    id: `explore:${item.slug}`,
+    title: item.title,
+    href: `/ontdek/${item.slug}`,
+    meta: item.subtitle,
+    image: item.heroImage,
+  };
 
   return (
     <main className="min-h-screen bg-[#f6f3ee] text-[#111111]">
@@ -176,17 +195,32 @@ export default function ExploreDetailPage({ params }: PageProps) {
 
             <aside className="space-y-5">
               <div className="rounded-[1.75rem] bg-white p-5 shadow-sm">
-                <button className="mb-3 inline-flex w-full items-center justify-center rounded-full bg-[#bde28d] px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90">
+                <a
+                  href={reserveHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mb-3 inline-flex w-full items-center justify-center rounded-full bg-[#bde28d] px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
+                >
                   {item.actions.reserveLabel}
-                </button>
+                </a>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <button className="inline-flex items-center justify-center rounded-full bg-[#f1e7dd] px-4 py-3 text-sm font-medium text-black">
+                  <a
+                    href={routeHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center rounded-full bg-[#f1e7dd] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#eadbcd]"
+                  >
                     {item.actions.routeLabel}
-                  </button>
-                  <button className="inline-flex items-center justify-center rounded-full bg-[#ececf2] px-4 py-3 text-sm font-medium text-black">
+                  </a>
+                  <SavePlaceButton
+                    item={savedPlace}
+                    className="inline-flex items-center justify-center rounded-full bg-[#ececf2] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#e0e0ea]"
+                    savedClassName="inline-flex items-center justify-center rounded-full bg-[#dfeecd] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#d4e7ba]"
+                    savedChildren="Opgeslagen"
+                  >
                     {item.actions.saveLabel}
-                  </button>
+                  </SavePlaceButton>
                 </div>
               </div>
 

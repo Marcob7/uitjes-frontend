@@ -1,6 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  buildMapsSearchHref,
+  buildTicketSearchHref,
+} from "@/lib/actionLinks";
 
 type ProgramItem = {
   time: string;
@@ -242,6 +246,12 @@ export default function EventsPage() {
     );
   }, [selectedEventId]);
 
+  const mapsHref = buildMapsSearchHref(selectedEvent.locationAddress);
+  const reservationHref = buildTicketSearchHref(
+    selectedEvent.title,
+    `${selectedEvent.locationName} ${selectedEvent.city}`
+  );
+
   return (
     <main className="min-h-screen bg-[#F6F3EE] px-4 py-6 text-[#171717] md:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto grid max-w-[1440px] gap-8 xl:grid-cols-[320px_minmax(0,1fr)]">
@@ -397,12 +407,14 @@ export default function EventsPage() {
                 <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#171717]">
                   Locatie
                 </h2>
-                <button
-                  type="button"
-                  className="text-sm font-medium text-[#171717] underline underline-offset-4"
+                <a
+                  href={mapsHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-[#171717] underline underline-offset-4 transition hover:text-black/70"
                 >
                   Open in Maps
-                </button>
+                </a>
               </div>
 
               <div className="relative overflow-hidden rounded-[34px] bg-[#ECEAF1]">
@@ -470,12 +482,14 @@ export default function EventsPage() {
                   </div>
                 ))}
 
-                <button
-                  type="button"
-                  className="mt-2 w-full rounded-full bg-[#B8E57D] px-6 py-4 text-sm font-semibold text-[#171717] transition hover:brightness-95"
+                <a
+                  href={reservationHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-[#B8E57D] px-6 py-4 text-sm font-semibold text-[#171717] transition hover:brightness-95"
                 >
                   Reserveer plaatsen
-                </button>
+                </a>
 
                 <div className="space-y-3 border-t border-[#EEE7DE] pt-4 text-sm text-[#5D5953]">
                   <p>• Directe bevestiging via e-mail na reservering.</p>
