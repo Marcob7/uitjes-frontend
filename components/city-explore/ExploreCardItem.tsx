@@ -1,6 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+
+import { optimizeRemoteImageUrl } from "@/lib/remoteImage";
+
 import type { ExploreCard } from "./types";
 
 type ExploreCardItemProps = {
@@ -22,21 +26,40 @@ function StarIcon() {
   );
 }
 
-function ArrowIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
+function getStatusClass(status: string | undefined) {
+  const normalizedStatus = status?.toLowerCase() || "";
+
+  if (
+    normalizedStatus.includes("sluit") ||
+    normalizedStatus.includes("gesloten") ||
+    normalizedStatus.includes("afgelopen")
+  ) {
+    return "text-[#c95437]";
+  }
+
+  return "text-[#4a7a24]";
+}
+
+function getImageAccent(index: number) {
+  if (index % 4 === 0) {
+    return "from-[#cb7328]/34 via-transparent to-[#120804]/72";
+  }
+
+  if (index % 4 === 1) {
+    return "from-[#d6ae7b]/18 via-transparent to-[#101114]/58";
+  }
+
+  if (index % 4 === 2) {
+    return "from-[#ec8e27]/28 via-transparent to-[#180c08]/74";
+  }
+
+  return "from-[#a38250]/24 via-transparent to-[#111317]/60";
+}
+
+function buildTags(card: ExploreCard) {
+  return [card.distance, card.location].filter(
+    (value, index, items): value is string =>
+      Boolean(value) && items.indexOf(value) === index
   );
 }
 
@@ -46,73 +69,78 @@ export default function ExploreCardItem({
   isSelected,
   onSelect,
 }: ExploreCardItemProps) {
+  const tags = buildTags(card);
+
   return (
     <Link
       href={card.href}
       onMouseEnter={onSelect}
       onFocus={onSelect}
       onClick={onSelect}
-      className={`block rounded-[1.8rem] border px-5 py-5 text-left transition ${
+      className={`group flex flex-col gap-5 rounded-[2rem] p-5 ring-1 transition duration-200 sm:flex-row sm:items-start ${
         isSelected
-          ? "border-[#6d9c35] bg-white shadow-[0_18px_44px_rgba(63,76,27,0.12)]"
-          : "border-black/6 bg-[#fbf7f1] hover:border-black/12 hover:bg-white"
+          ? "bg-white shadow-[0_24px_44px_rgba(67,86,27,0.12)] ring-[#86ae49]/40"
+          : "bg-[#fbf8f4] shadow-[0_24px_44px_rgba(40,30,20,0.05)] ring-black/[0.04] hover:-translate-y-1 hover:bg-white"
       }`}
     >
-      <div className="flex items-start gap-4">
+      <div className="relative h-[108px] w-full shrink-0 overflow-hidden rounded-[1.6rem] bg-[#2b1b12] sm:w-[108px]">
+        <Image
+          src={optimizeRemoteImageUrl(card.image, { width: 420 })}
+          alt={card.title}
+          fill
+          className="object-cover transition duration-300 group-hover:scale-[1.04]"
+          sizes="108px"
+        />
         <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-            isSelected ? "bg-[#b8ea72] text-[#23321a]" : "bg-white text-[#292929]"
-          }`}
-        >
-          {index + 1}
-        </div>
+          className={`absolute inset-0 bg-gradient-to-br ${getImageAccent(index)}`}
+        />
+      </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#7b735f]">
-                {card.label}
-              </p>
-              <h3 className="mt-2 text-[1.5rem] font-semibold leading-[1.02] tracking-[-0.05em] text-[#111111]">
-                {card.title}
-              </h3>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="inline-flex rounded-full bg-[#dff1c5] px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#66873e]">
+              {card.label}
             </div>
-
-            {typeof card.rating === "number" ? (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#f4efdd] px-2.5 py-1 text-xs font-semibold text-[#373122]">
-                <span>{card.rating.toFixed(1)}</span>
-                <StarIcon />
-              </span>
-            ) : null}
+            <h3 className="mt-3 text-[1.95rem] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151515]">
+              {card.title}
+            </h3>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#60574a]">
-            <span>{card.time}</span>
-            {card.price ? <span>{card.price}</span> : null}
-          </div>
-
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#60574a]">
-            <span>{card.distance || card.location}</span>
-            <span>{card.location}</span>
-          </div>
-
-          {card.description ? (
-            <p className="mt-4 max-w-[32rem] text-sm leading-6 text-[#5e5548]">
-              {card.description}
-            </p>
+          {typeof card.rating === "number" ? (
+            <div className="inline-flex items-center gap-1.5 pt-1 text-sm font-semibold text-[#111111]">
+              <StarIcon />
+              <span>{card.rating.toFixed(1)}</span>
+            </div>
           ) : null}
-
-          <div className="mt-4 flex items-center justify-between gap-4">
-            <span className="rounded-full bg-[#d9efb3] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#365020]">
-              {card.status || "Plan dit moment"}
-            </span>
-
-            <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#111111]">
-              Bekijk
-              <ArrowIcon />
-            </span>
-          </div>
         </div>
+
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-[0.98rem] text-[#5d5248]">
+          <span>{card.time}</span>
+          <span className="h-1 w-1 rounded-full bg-[#b8aa9b]" />
+          <span>{card.price || "Prijs volgt"}</span>
+          <span className="h-1 w-1 rounded-full bg-[#b8aa9b]" />
+          <span className={getStatusClass(card.status)}>{card.status || "Plan dit moment"}</span>
+        </div>
+
+        {card.description ? (
+          <p className="mt-3 max-w-[32rem] text-sm leading-7 text-[#605347]">
+            {card.description}
+          </p>
+        ) : null}
+
+        {tags.length > 0 ? (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-[#d9cfc4] bg-white px-3 py-1 text-[0.78rem] text-[#5a5047]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </div>
     </Link>
   );

@@ -1,6 +1,6 @@
 export const runtime = "edge";
 
-import CityExploreView from "@/components/city-explore/CityExploreView";
+import CityExplorePage from "@/components/city-explore/page";
 import { getEventsWithFallback } from "@/components/city-explore/utils";
 
 type OntdekPageProps = {
@@ -80,5 +80,5 @@ export default async function OntdekPage({ searchParams }: OntdekPageProps) {
   const city = normalizeCity(searchParams?.city);
   const events = await getCityEvents(city);
 
-  return <CityExploreView city={city} events={events} />;
+  return <CityExplorePage city={city} events={events} />;
 }
