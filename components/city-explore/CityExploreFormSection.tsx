@@ -15,6 +15,7 @@ import type {
 
 type CityExploreFormSectionProps = {
   cityLabel: string;
+  isDarkLiquid: boolean;
   plannerSelections: PlannerSelections;
   currentStep: number;
   completedStepCount: number;
@@ -454,9 +455,22 @@ function buildStepChips(
   return chips;
 }
 
-function StepBadge({ currentStep }: { currentStep: number }) {
+function StepBadge({
+  currentStep,
+  isDarkLiquid,
+}: {
+  currentStep: number;
+  isDarkLiquid: boolean;
+}) {
   return (
-    <div className="inline-flex rounded-2xl bg-[#d9f0a8] px-5 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#33481f] sm:rounded-full">
+    <div
+      className="inline-flex rounded-2xl px-5 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.22em] shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:rounded-full"
+      style={{
+        backgroundColor: isDarkLiquid ? "rgba(255,255,255,0.16)" : "#d9f0a8",
+        color: isDarkLiquid ? "#ffffff" : "#33481f",
+        border: isDarkLiquid ? "1px solid rgba(255,255,255,0.16)" : "none",
+      }}
+    >
       Stap {currentStep} van {TOTAL_STEPS}
     </div>
   );
@@ -465,9 +479,11 @@ function StepBadge({ currentStep }: { currentStep: number }) {
 function ProgressMeter({
   currentStep,
   completedStepCount,
+  isDarkLiquid,
 }: {
   currentStep: number;
   completedStepCount: number;
+  isDarkLiquid: boolean;
 }) {
   return (
     <div className="mx-auto mt-12 max-w-[18rem]">
@@ -480,14 +496,23 @@ function ProgressMeter({
           return (
             <div
               key={stepNumber}
-              className={`h-2.5 rounded-full transition ${
-                isComplete || isActive ? "bg-[#b7e56b]" : "bg-[#e7e0d7]"
-              }`}
+              className="h-2.5 rounded-full transition"
+              style={{
+                backgroundColor:
+                  isComplete || isActive
+                    ? "#b7e56b"
+                    : isDarkLiquid
+                      ? "rgba(255,255,255,0.26)"
+                      : "#e7e0d7",
+              }}
             />
           );
         })}
       </div>
-      <div className="mt-4 text-center text-[0.8rem] font-medium uppercase tracking-[0.22em] text-[#93877b]">
+      <div
+        className="mt-4 text-center text-[0.8rem] font-medium uppercase tracking-[0.22em]"
+        style={{ color: isDarkLiquid ? "rgba(255,255,255,0.66)" : "#93877b" }}
+      >
         Voortgang
       </div>
     </div>
@@ -546,16 +571,24 @@ function StepChipRow({
 function StepHeading({
   title,
   description,
+  isDarkLiquid,
 }: {
   title: string;
   description: string;
+  isDarkLiquid: boolean;
 }) {
   return (
     <div className="mx-auto max-w-[56rem] text-center">
-      <h2 className="mx-auto text-center text-[clamp(2.6rem,7vw,5rem)] font-semibold leading-[0.9] tracking-[-0.08em] text-[#141414]">
+      <h2
+        className="mx-auto text-center text-[clamp(2.6rem,7vw,5rem)] font-semibold leading-[0.9] tracking-[-0.08em]"
+        style={{ color: isDarkLiquid ? "#ffffff" : "#141414" }}
+      >
         {title}
       </h2>
-      <p className="mx-auto mt-5 max-w-[42rem] text-center text-[1.05rem] leading-8 text-[#74685d] sm:text-[1.18rem]">
+      <p
+        className="mx-auto mt-5 max-w-[42rem] text-center text-[1.05rem] leading-8 sm:text-[1.18rem]"
+        style={{ color: isDarkLiquid ? "rgba(255,255,255,0.76)" : "#74685d" }}
+      >
         {description}
       </p>
     </div>
@@ -762,6 +795,7 @@ function ReviewStep({
 
 export default function CityExploreFormSection({
   cityLabel,
+  isDarkLiquid,
   plannerSelections,
   currentStep,
   completedStepCount,
@@ -775,6 +809,11 @@ export default function CityExploreFormSection({
   onShowResults,
 }: CityExploreFormSectionProps) {
   const stepChips = buildStepChips(plannerSelections, completedStepCount);
+  const borderColor = isDarkLiquid ? "rgba(255,255,255,0.18)" : "#ddd3c8";
+  const secondaryTextColor = isDarkLiquid ? "rgba(255,255,255,0.85)" : "#3c392f";
+  const secondaryButtonSurface = isDarkLiquid
+    ? "rgba(255,255,255,0.12)"
+    : "rgba(255,255,255,0.72)";
 
   const stepContent = (() => {
     if (currentStep === 1) {
@@ -838,12 +877,33 @@ export default function CityExploreFormSection({
   })();
 
   return (
-    <section className="bg-[#f6eee4]">
+    <section className="bg-transparent">
       <div className="mx-auto max-w-[1220px] px-6 py-10 sm:px-8 lg:px-10 lg:py-14">
         <div className="relative overflow-hidden px-2 py-4 sm:px-4 lg:px-6 lg:py-8">
-          <div className="absolute -left-16 top-20 h-40 w-40 rounded-full bg-[#ece3d6] blur-3xl" />
-          <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-[#f4ead6] blur-3xl" />
-          <div className="absolute bottom-0 right-24 h-36 w-36 rounded-full bg-[#ddeec2] blur-3xl" />
+          <div
+            className="absolute -left-16 top-20 h-40 w-40 rounded-full blur-3xl"
+            style={{
+              backgroundColor: isDarkLiquid
+                ? "rgba(255,255,255,0.08)"
+                : "rgba(236,227,214,0.88)",
+            }}
+          />
+          <div
+            className="absolute right-0 top-0 h-64 w-64 rounded-full blur-3xl"
+            style={{
+              backgroundColor: isDarkLiquid
+                ? "rgba(255,255,255,0.06)"
+                : "rgba(244,234,214,0.92)",
+            }}
+          />
+          <div
+            className="absolute bottom-0 right-24 h-36 w-36 rounded-full blur-3xl"
+            style={{
+              backgroundColor: isDarkLiquid
+                ? "rgba(183,229,107,0.12)"
+                : "rgba(221,238,194,0.92)",
+            }}
+          />
 
           <div className="relative">
             <div className="flex justify-center">
@@ -855,13 +915,14 @@ export default function CityExploreFormSection({
             </div>
 
             <div className="mt-6 flex justify-center">
-              <StepBadge currentStep={currentStep} />
+              <StepBadge currentStep={currentStep} isDarkLiquid={isDarkLiquid} />
             </div>
 
             <div className="mt-8">
               <StepHeading
                 title={stepContent.title}
                 description={stepContent.description}
+                isDarkLiquid={isDarkLiquid}
               />
             </div>
 
@@ -873,7 +934,13 @@ export default function CityExploreFormSection({
                   <button
                     type="button"
                     onClick={onPreviousStep}
-                    className="inline-flex min-h-12 items-center gap-3 rounded-2xl px-4 text-[1.05rem] font-medium text-[#3c392f] transition hover:bg-white/50 hover:text-[#171515] sm:rounded-full sm:px-0"
+                    className="inline-flex min-h-12 items-center gap-3 rounded-2xl px-4 text-[1.05rem] font-medium transition sm:rounded-full sm:px-0"
+                    style={{
+                      color: secondaryTextColor,
+                      backgroundColor: isDarkLiquid
+                        ? "rgba(255,255,255,0.06)"
+                        : "transparent",
+                    }}
                   >
                     <ArrowLeftIcon className="h-5 w-5" />
                     <span>Vorige stap</span>
@@ -886,7 +953,15 @@ export default function CityExploreFormSection({
                   <button
                     type="button"
                     onClick={onShowResults}
-                    className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-2xl border border-[#ddd3c8] bg-white/72 px-5 py-3 text-sm font-semibold text-[#2d2925] shadow-[0_12px_30px_rgba(52,38,25,0.06)] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto sm:rounded-full"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-2xl px-5 py-3 text-sm font-semibold shadow-[0_12px_30px_rgba(52,38,25,0.06)] transition hover:-translate-y-0.5 sm:w-auto sm:rounded-full"
+                    style={{
+                      border: `1px solid ${borderColor}`,
+                      backgroundColor: secondaryButtonSurface,
+                      color: isDarkLiquid ? "#ffffff" : "#2d2925",
+                      boxShadow: isDarkLiquid
+                        ? "0 12px 30px rgba(8, 15, 20, 0.18)"
+                        : "0 12px 30px rgba(52,38,25,0.06)",
+                    }}
                   >
                     <span>Bekijk resultaten tot nu toe</span>
                     <ArrowRightIcon className="h-4 w-4" />
@@ -898,6 +973,7 @@ export default function CityExploreFormSection({
             <ProgressMeter
               currentStep={currentStep}
               completedStepCount={completedStepCount}
+              isDarkLiquid={isDarkLiquid}
             />
           </div>
         </div>

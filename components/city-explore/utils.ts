@@ -80,6 +80,45 @@ export function getCityEditorialContent(city: string): EditorialContent {
   };
 }
 
+function hexToRgb(hex: string) {
+  const normalized = (hex || "#000000").replace("#", "");
+  const fallback = "000000";
+  const safeValue = /^[0-9a-fA-F]{6}$/.test(normalized)
+    ? normalized
+    : fallback;
+
+  return {
+    red: parseInt(safeValue.slice(0, 2), 16),
+    green: parseInt(safeValue.slice(2, 4), 16),
+    blue: parseInt(safeValue.slice(4, 6), 16),
+  };
+}
+
+function srgbToLinear(channel: number) {
+  const normalized = channel / 255;
+  return normalized <= 0.04045
+    ? normalized / 12.92
+    : ((normalized + 0.055) / 1.055) ** 2.4;
+}
+
+function getRelativeLuminance(hex: string) {
+  const { red, green, blue } = hexToRgb(hex);
+  const r = srgbToLinear(red);
+  const g = srgbToLinear(green);
+  const b = srgbToLinear(blue);
+
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+export function isLiquidPaletteDark(theme: SafeCityTheme) {
+  const deep = getRelativeLuminance(theme.liquid.deep);
+  const mid = getRelativeLuminance(theme.liquid.mid);
+  const highlight = getRelativeLuminance(theme.liquid.highlight);
+  const weightedLuminance = deep * 0.48 + mid * 0.36 + highlight * 0.16;
+
+  return weightedLuminance < 0.24;
+}
+
 export function getSafeCityTheme(city: string): SafeCityTheme {
   const normalizedCity = city.toLowerCase();
 
@@ -91,6 +130,11 @@ export function getSafeCityTheme(city: string): SafeCityTheme {
         "Van historische musea tot moderne jazz-avonden aan het water. Wij cureren de meest authentieke ervaringen in de stad van de bloemen.",
       heroImage: "/images/apeldoorn_img.jpg",
       fallbackImage: "/images/apeldoorn_img.jpg",
+      liquid: {
+        deep: "#173822",
+        mid: "#5f8a32",
+        highlight: "#d8f2b5",
+      },
       colors: {
         pageBackground: "#f8f4ee",
         softSurface: "#fbf7f1",
@@ -114,6 +158,11 @@ export function getSafeCityTheme(city: string): SafeCityTheme {
         `Ontdek bijzondere plekken, culturele highlights en lokale favorieten in ${city}.`,
       heroImage: config?.heroImage || "/images/apeldoorn_img.jpg",
       fallbackImage: config?.fallbackImage || "/images/apeldoorn_img.jpg",
+      liquid: {
+        deep: config?.liquid?.deep || "#132016",
+        mid: config?.liquid?.mid || "#4f7a45",
+        highlight: config?.liquid?.highlight || "#d9f0d0",
+      },
       colors: {
         pageBackground: config?.colors?.pageBackground || "#f8f4ee",
         softSurface: config?.colors?.softSurface || "#fbf7f1",
@@ -131,6 +180,11 @@ export function getSafeCityTheme(city: string): SafeCityTheme {
       description: `Ontdek bijzondere plekken, culturele highlights en lokale favorieten in ${city}.`,
       heroImage: "/images/apeldoorn_img.jpg",
       fallbackImage: "/images/apeldoorn_img.jpg",
+      liquid: {
+        deep: "#132016",
+        mid: "#4f7a45",
+        highlight: "#d9f0d0",
+      },
       colors: {
         pageBackground: "#f8f4ee",
         softSurface: "#fbf7f1",

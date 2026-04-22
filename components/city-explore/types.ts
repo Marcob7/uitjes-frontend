@@ -90,6 +90,11 @@ export type SafeCityTheme = {
   description?: string;
   heroImage: string;
   fallbackImage: string;
+  liquid: {
+    deep: string;
+    mid: string;
+    highlight: string;
+  };
   colors: {
     pageBackground: string;
     softSurface?: string;

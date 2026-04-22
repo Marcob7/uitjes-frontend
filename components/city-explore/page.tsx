@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { WebGLLiquid } from "@/components/ui/webgl-liquid";
+
 import CityExploreFormSection from "./CityExploreFormSection";
 import CityExploreHeroSection from "./CityExploreHeroSection";
 import CityExploreMapSection from "./CityExploreMapSection";
@@ -19,6 +21,7 @@ import {
   filterEventsByPlanner,
   getCityEditorialContent,
   getEventsWithFallback,
+  isLiquidPaletteDark,
   getSafeCityTheme,
   sortEventsByStartDate,
 } from "./utils";
@@ -87,6 +90,7 @@ export default function CityExplorePage({
   const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
   const editorialContent = useMemo(() => getCityEditorialContent(city), [city]);
   const cityLabel = cityTheme.label;
+  const isDarkLiquid = useMemo(() => isLiquidPaletteDark(cityTheme), [cityTheme]);
 
   const displayEvents = useMemo(() => {
     return getEventsWithFallback(city, events);
@@ -188,31 +192,77 @@ export default function CityExplorePage({
       className="min-h-screen bg-[#fbf8f3] text-[#171717]"
       style={{ backgroundColor: cityTheme.colors.pageBackground || "#fbf8f3" }}
     >
-      <CityExploreHeroSection
-        cityLabel={cityLabel}
-        intro={editorialContent.intro}
-        cityTheme={cityTheme}
-      />
+      <section className="relative overflow-hidden border-b border-black/[0.04]">
+        <div className="absolute inset-0">
+          <WebGLLiquid
+            title={cityLabel}
+            subtitle=""
+            description=""
+            colorDeep={cityTheme.liquid.deep}
+            colorMid={cityTheme.liquid.mid}
+            colorHighlight={cityTheme.liquid.highlight}
+            speed={0.78}
+            flowStrength={0.88}
+            grain={0.03}
+            contrast={1.06}
+            opacity={0.88}
+            reveal={false}
+            className="h-full w-full !min-h-0 !items-start"
+            style={{
+              minHeight: "100%",
+              height: "100%",
+              backgroundColor: cityTheme.colors.pageBackground || "#fbf8f3",
+            }}
+            contentContainerClassName="max-w-[1220px] px-6 pb-0 pt-14 sm:px-8 lg:px-10 lg:pt-16"
+            contentInnerClassName="max-w-none"
+            titleClassName={
+              isDarkLiquid
+                ? "max-w-[9ch] text-[clamp(4.1rem,11vw,8rem)] tracking-[-0.085em] text-white"
+                : "max-w-[9ch] text-[clamp(4.1rem,11vw,8rem)] tracking-[-0.085em] text-[#111111]"
+            }
+            overlayClassName={
+              isDarkLiquid
+                ? "bg-gradient-to-r from-black/42 via-black/16 to-transparent"
+                : "bg-gradient-to-r from-white/64 via-white/22 to-transparent"
+            }
+            glowClassName={
+              isDarkLiquid
+                ? "bg-[radial-gradient(circle_at_68%_32%,rgba(255,255,255,0.18),transparent_42%)]"
+                : "bg-[radial-gradient(circle_at_68%_30%,rgba(255,255,255,0.3),transparent_40%)]"
+            }
+          />
+        </div>
 
-      <CityExploreFormSection
-        cityLabel={cityLabel}
-        plannerSelections={plannerSelections}
-        currentStep={currentStep}
-        completedStepCount={completedStepCount}
-        featuredCard={featuredCard}
-        onCompanionSelect={handleCompanionSelect}
-        onMomentSelect={handleMomentSelect}
-        onVibeSelect={handleVibeSelect}
-        onPreviousStep={handlePreviousStep}
-        onGoToStep={handleGoToStep}
-        onClearStep={handleClearStep}
-        onShowResults={() =>
-          resultsRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          })
-        }
-      />
+        <div className="relative z-10">
+          <CityExploreHeroSection
+            cityLabel={cityLabel}
+            intro={editorialContent.intro}
+            cityTheme={cityTheme}
+            isDarkLiquid={isDarkLiquid}
+          />
+
+          <CityExploreFormSection
+            cityLabel={cityLabel}
+            isDarkLiquid={isDarkLiquid}
+            plannerSelections={plannerSelections}
+            currentStep={currentStep}
+            completedStepCount={completedStepCount}
+            featuredCard={featuredCard}
+            onCompanionSelect={handleCompanionSelect}
+            onMomentSelect={handleMomentSelect}
+            onVibeSelect={handleVibeSelect}
+            onPreviousStep={handlePreviousStep}
+            onGoToStep={handleGoToStep}
+            onClearStep={handleClearStep}
+            onShowResults={() =>
+              resultsRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
+          />
+        </div>
+      </section>
 
       <CityExploreResultsSection
         cityLabel={cityLabel}
