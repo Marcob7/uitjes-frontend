@@ -16,7 +16,7 @@ export default function NewMomentSection() {
 
           <Link
             href="/inspiratie"
-            className="group inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-full bg-[#776d64] px-6 text-sm font-semibold text-[#fbf8f5] shadow-[0_14px_28px_rgba(76,68,62,0.18)] transition hover:-translate-y-0.5 hover:bg-[#675e56] md:min-h-[60px] md:w-auto md:min-w-[220px]"
+            className="group inline-flex min-h-[56px] w-full items-center justify-center gap-3 rounded-2xl bg-[#776d64] px-6 text-sm font-semibold text-[#fbf8f5] shadow-[0_14px_28px_rgba(76,68,62,0.18)] transition hover:-translate-y-0.5 hover:bg-[#675e56] md:min-h-[60px] md:w-auto md:min-w-[220px] md:rounded-full"
           >
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(255,255,255,0.12)] text-base text-[#f6efe9]">
               &#10010;

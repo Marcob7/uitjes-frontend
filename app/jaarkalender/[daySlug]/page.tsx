@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import {
   generateJaarkalenderStaticParams,
@@ -406,14 +407,17 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[#f8f4ec] text-[#171511]">
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Jaarkalender", href: "/jaarkalender" },
+            { label: `${day.weekdayDisplay} ${day.dayNumber} ${day.monthDisplay}` },
+          ]}
+          className="mb-6"
+        />
+
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[44rem]">
-            <Link
-              href="/jaarkalender"
-              className="text-sm font-medium uppercase tracking-[0.24em] text-[#8a7c6d] transition hover:text-[#4d433a]"
-            >
-              Nederland / Agenda
-            </Link>
             <h1 className="mt-5 max-w-none text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.075em] text-[#171511]">
               {day.weekdayDisplay}
               <span className="ml-2">{day.dayNumber}</span>

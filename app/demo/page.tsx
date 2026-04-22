@@ -258,7 +258,7 @@ export default function DemoMapPage() {
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div ref={mapContainerRef} className="h-[650px] w-full" />
+            <div ref={mapContainerRef} className="h-[420px] w-full sm:h-[540px] lg:h-[650px]" />
           </div>
         </div>
       </div>

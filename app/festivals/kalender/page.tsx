@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
+import FestivalViewToggle from "@/components/FestivalViewToggle";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import { getFestivalDetailHref } from "../data";
 
@@ -161,6 +163,10 @@ const highlightCards: HighlightCard[] = [
   },
 ];
 
+const mobileCalendarDays = calendarCells.filter(
+  (cell) => !cell.muted && (cell.events?.length ?? 0) > 0
+);
+
 function SearchIcon() {
   return (
     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -269,7 +275,7 @@ function HighlightInfoCard({ card }: { card: HighlightCard }) {
       <p className="mt-4 text-sm leading-7 text-[#5a5046]">{card.description}</p>
       <Link
         href={card.href}
-        className={`mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-full px-6 text-sm font-semibold transition ${buttonClass}`}
+        className={`mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-2xl px-6 text-sm font-semibold transition sm:rounded-full ${buttonClass}`}
       >
         {card.cta}
       </Link>
@@ -281,6 +287,15 @@ export default function FestivalsCalendarPage() {
   return (
     <main className="min-h-screen bg-[#fcf8f2] text-[#171511]">
       <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Festivals", href: "/festivals" },
+            { label: "Kalender" },
+          ]}
+          className="mb-6"
+        />
+
         <section>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-[42rem]">
@@ -295,42 +310,23 @@ export default function FestivalsCalendarPage() {
             </div>
 
             <div className="w-full max-w-[28rem]">
-              <div className="rounded-full bg-[#f7ede2] p-2">
+              <div className="rounded-[1.6rem] bg-[#f7ede2] p-2 sm:rounded-full">
                 <label
                   htmlFor="calendar-search"
-                  className="flex min-h-12 items-center gap-3 rounded-full px-4 text-[#7b7166]"
+                  className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-[#7b7166] sm:rounded-full"
                 >
                   <SearchIcon />
                   <input
                     id="calendar-search"
                     type="text"
                     placeholder="Search festivals..."
-                    className="h-full flex-1 bg-transparent text-sm text-[#171511] outline-none placeholder:text-[#9a8f83]"
+                    className="h-full flex-1 bg-transparent text-base text-[#171511] outline-none placeholder:text-[#9a8f83] sm:text-sm"
                   />
                 </label>
               </div>
 
               <div className="mt-8 flex justify-end">
-                <div className="relative z-10 inline-flex rounded-full bg-[#f7ede2] p-1 shadow-[0_10px_22px_rgba(60,44,23,0.05)]">
-                  <Link
-                    href="/festivals"
-                    className="relative inline-flex min-h-11 cursor-pointer items-center rounded-full px-6 text-sm font-medium text-[#7a7065] transition hover:text-[#171511]"
-                  >
-                    Lijst
-                  </Link>
-                  <span
-                    className="relative inline-flex min-h-11 items-center rounded-full bg-[#cfee8c] px-6 text-sm font-medium text-[#171511] shadow-[0_8px_18px_rgba(102,136,46,0.16)]"
-                    aria-current="page"
-                  >
-                    Kalender
-                  </span>
-                  <Link
-                    href="/festivals/kaart"
-                    className="relative inline-flex min-h-11 cursor-pointer items-center rounded-full px-6 text-sm font-medium text-[#7a7065] transition hover:text-[#171511]"
-                  >
-                    Kaart
-                  </Link>
-                </div>
+                <FestivalViewToggle currentView="calendar" />
               </div>
             </div>
           </div>
@@ -339,28 +335,28 @@ export default function FestivalsCalendarPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#dff1d8] px-5 text-sm font-medium text-[#171511]"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#dff1d8] px-5 text-sm font-medium text-[#171511] sm:rounded-full"
               >
                 Genre: All
                 <FilterChevron />
               </button>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#f8ebc9] px-5 text-sm font-medium text-[#171511]"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#f8ebc9] px-5 text-sm font-medium text-[#171511] sm:rounded-full"
               >
                 City: Netherlands
                 <FilterChevron />
               </button>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#e6e7f3] px-5 text-sm font-medium text-[#171511]"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#e6e7f3] px-5 text-sm font-medium text-[#171511] sm:rounded-full"
               >
                 Vibe Match
                 <span className="text-xs">≋</span>
               </button>
             </div>
 
-            <div className="flex items-center gap-4 self-end text-[#171511]">
+            <div className="flex items-center gap-4 self-start text-[#171511] lg:self-end">
               <button
                 type="button"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#8e8377] transition hover:bg-white"
@@ -381,7 +377,7 @@ export default function FestivalsCalendarPage() {
         </section>
 
         <section className="mt-8 overflow-hidden rounded-[2.4rem] border border-[#f0e6db] bg-white shadow-[0_20px_50px_rgba(60,44,23,0.04)]">
-          <div className="grid grid-cols-7 bg-[#fbefe4]">
+          <div className="hidden grid-cols-7 bg-[#fbefe4] sm:grid">
             {weekdayLabels.map((label) => (
               <div
                 key={label}
@@ -392,7 +388,36 @@ export default function FestivalsCalendarPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-7">
+          <div className="grid grid-cols-1 sm:hidden">
+            {mobileCalendarDays.map((cell) => (
+              <div
+                key={cell.key}
+                className="border-t border-[#f3ece2] px-4 py-4 first:border-t-0"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-lg font-medium text-[#171511]">
+                      {cell.dayNumber} juli
+                    </div>
+                    <p className="mt-1 text-sm text-[#8e8174]">
+                      {cell.events?.length} festivalmomenten
+                    </p>
+                  </div>
+                  <span className="rounded-2xl bg-[#f7ede2] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#7a7065]">
+                    Dag {cell.dayNumber}
+                  </span>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {cell.events?.map((event) => (
+                    <CalendarPill key={`${cell.key}-${event.label}`} event={event} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden sm:grid sm:grid-cols-7">
             {calendarCells.map((cell) => (
               <div
                 key={cell.key}

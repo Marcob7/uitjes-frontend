@@ -14,22 +14,14 @@ type ApiError =
   | string;
 
 export default function FeedbackPage() {
-  // Form state
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
-
-  // Honeypot: echte gebruikers vullen dit niet in
   const [website, setWebsite] = useState("");
-
-  // Tijd waarop formulier geladen is
   const [formStartedAt] = useState(() => Date.now());
-
-  // UI state
   const [loading, setLoading] = useState(false);
   const [successId, setSuccessId] = useState<number | null>(null);
   const [errorText, setErrorText] = useState<string>("");
 
-  // Kleine client-side check: voorkomt onnodige request
   const messageTooShort =
     message.trim().length > 0 && message.trim().length < 10;
 
@@ -49,12 +41,9 @@ export default function FeedbackPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    // Reset statusmeldingen
     setErrorText("");
     setSuccessId(null);
 
-    // Simpele UX-validatie
     if (message.trim().length < 10) {
       setErrorText("Je bericht moet minimaal 10 tekens zijn.");
       return;
@@ -69,9 +58,7 @@ export default function FeedbackPage() {
           message: message.trim(),
           email: email.trim() ? email.trim() : "",
           page_url: window.location.href,
-
-          // Anti-spam
-          website, // moet leeg blijven
+          website,
           form_started_at: formStartedAt,
         }),
       });
@@ -82,7 +69,6 @@ export default function FeedbackPage() {
         return;
       }
 
-      // Succes
       setSuccessId(r.data?.id ?? null);
       setMessage("");
       setEmail("");
@@ -95,120 +81,94 @@ export default function FeedbackPage() {
   }
 
   return (
-    <main style={{ padding: 24, maxWidth: 720 }}>
-      <h1>Feedback</h1>
-
-      <p style={{ marginTop: 8, marginBottom: 16 }}>
-        Heb je een suggestie of mis je iets? Laat het weten. Dit komt direct bij
-        ons binnen.
-      </p>
-
-      {successId !== null ? (
-        <div
-          style={{
-            border: "1px solid #b7eb8f",
-            background: "#f6ffed",
-            padding: 12,
-            borderRadius: 8,
-            marginBottom: 16,
-          }}
-        >
-          <b>Bedankt!</b> Je feedback is verstuurd. (id: {successId})
-        </div>
-      ) : null}
-
-      {errorText ? (
-        <div
-          style={{
-            border: "1px solid #ffa39e",
-            background: "#fff1f0",
-            padding: 12,
-            borderRadius: 8,
-            marginBottom: 16,
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          <b>Er ging iets mis</b>
-          <div style={{ marginTop: 6 }}>{errorText}</div>
-        </div>
-      ) : null}
-
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>
-            Jouw suggestie (verplicht)
+    <main className="min-h-screen bg-[#f7f5f0] px-4 py-6 text-[#171717] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl">
+        <section className="rounded-[2rem] border border-[#e7e0d5] bg-white px-5 py-6 shadow-[0_18px_40px_rgba(57,43,27,0.05)] sm:px-8 sm:py-8">
+          <div className="max-w-2xl">
+            <div className="inline-flex rounded-2xl bg-[#eef5df] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#50672f] sm:rounded-full">
+              Feedback
+            </div>
+            <h1 className="mt-5 text-[clamp(2.2rem,6vw,3.6rem)] leading-[0.95] tracking-[-0.06em] text-[#171717]">
+              Wat kunnen we op mobiel beter maken?
+            </h1>
+            <p className="mt-4 text-sm leading-7 text-[#61584d] sm:text-base">
+              Heb je een suggestie of mis je iets? Laat het weten. Dit komt direct bij
+              ons binnen.
+            </p>
           </div>
 
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            rows={6}
-            placeholder="Bijv. ‘Ik wil kunnen filteren op binnen/buiten’ of ‘Toon ook prikkelarme opties’..."
-            style={{
-              width: "100%",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #ddd",
-            }}
-          />
+          {successId !== null ? (
+            <div className="mt-6 rounded-[1.4rem] border border-[#b7eb8f] bg-[#f6ffed] px-4 py-4 text-sm text-[#335317]">
+              <b>Bedankt!</b> Je feedback is verstuurd. (id: {successId})
+            </div>
+          ) : null}
 
-          <div style={{ marginTop: 6, fontSize: 12, opacity: 0.8 }}>
-            Minimaal 10 tekens.
-            {messageTooShort ? " Je zit er nog onder." : ""}
-          </div>
-        </label>
+          {errorText ? (
+            <div className="mt-6 whitespace-pre-wrap rounded-[1.4rem] border border-[#ffa39e] bg-[#fff1f0] px-4 py-4 text-sm text-[#7e2f2b]">
+              <b>Er ging iets mis</b>
+              <div className="mt-2">{errorText}</div>
+            </div>
+          ) : null}
 
-        <label>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>
-            Email (optioneel)
-          </div>
+          <form onSubmit={onSubmit} className="mt-8 grid gap-5">
+            <label className="grid gap-2">
+              <div className="text-sm font-semibold text-[#171717]">
+                Jouw suggestie (verplicht)
+              </div>
 
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="jij@voorbeeld.nl"
-            type="email"
-            style={{
-              width: "100%",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #ddd",
-            }}
-          />
-        </label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={6}
+                placeholder="Bijvoorbeeld: ik wil kunnen filteren op binnen of buiten."
+                className="min-h-[160px] w-full rounded-[1.5rem] border border-[#ddd6cb] bg-[#fcfaf7] px-4 py-3 text-base text-[#171717] outline-none transition focus:border-[#bfb3a4]"
+              />
 
-        {/* Honeypot veld: bots vullen dit vaak in, echte gebruikers niet */}
-        <input
-          type="text"
-          name="website"
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-          tabIndex={-1}
-          autoComplete="off"
-          aria-hidden="true"
-          style={{
-            display: "none",
-          }}
-        />
+              <div className="text-xs text-[#6e6458]">
+                Minimaal 10 tekens.
+                {messageTooShort ? " Je zit er nog onder." : ""}
+              </div>
+            </label>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 12px",
-            borderRadius: 8,
-            border: "1px solid #ddd",
-            cursor: loading ? "not-allowed" : "pointer",
-            fontWeight: 600,
-          }}
-        >
-          {loading ? "Versturen..." : "Verstuur feedback"}
-        </button>
+            <label className="grid gap-2">
+              <div className="text-sm font-semibold text-[#171717]">
+                Email (optioneel)
+              </div>
 
-        <div style={{ fontSize: 12, opacity: 0.8 }}>
-          Na versturen kun je het terugzien in Django Admin → Feedbacks.
-        </div>
-      </form>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="jij@voorbeeld.nl"
+                type="email"
+                className="min-h-12 w-full rounded-2xl border border-[#ddd6cb] bg-[#fcfaf7] px-4 text-base text-[#171717] outline-none transition focus:border-[#bfb3a4] sm:rounded-full"
+              />
+            </label>
+
+            <input
+              type="text"
+              name="website"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="hidden"
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-[#171717] bg-[#171717] px-5 text-sm font-semibold text-white transition hover:bg-[#2b261f] disabled:opacity-60 sm:w-auto sm:rounded-full"
+            >
+              {loading ? "Versturen..." : "Verstuur feedback"}
+            </button>
+
+            <div className="text-xs text-[#6e6458]">
+              Na versturen kun je het terugzien in Django Admin, onder Feedbacks.
+            </div>
+          </form>
+        </section>
+      </div>
     </main>
   );
 }

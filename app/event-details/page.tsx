@@ -338,7 +338,7 @@ export default function EventsPage() {
                   style={{ backgroundImage: `url(${selectedEvent.image})` }}
                 />
 
-                <div className="absolute -bottom-5 left-4 max-w-[220px] rounded-[24px] bg-[#EBDAB7] px-5 py-4 shadow-lg md:left-6">
+                <div className="mt-4 rounded-[24px] bg-[#EBDAB7] px-5 py-4 shadow-lg md:absolute md:-bottom-5 md:left-6 md:mt-0 md:max-w-[220px]">
                   <p className="text-sm font-medium leading-5 text-[#171717]">
                     “{selectedEvent.quote}”
                   </p>
@@ -383,7 +383,7 @@ export default function EventsPage() {
                 {selectedEvent.program.map((item) => (
                   <div
                     key={item.title}
-                    className={`flex items-center justify-between rounded-[26px] px-5 py-5 ${item.color}`}
+                    className={`flex flex-col gap-3 rounded-[26px] px-5 py-5 sm:flex-row sm:items-center sm:justify-between ${item.color}`}
                   >
                     <div>
                       <p className="text-xs text-[#6E6A65]">{item.time}</p>
@@ -403,7 +403,7 @@ export default function EventsPage() {
 
             {/* Locatie */}
             <section>
-              <div className="mb-5 flex items-center justify-between gap-4">
+              <div className="mb-5 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#171717]">
                   Locatie
                 </h2>
@@ -422,7 +422,7 @@ export default function EventsPage() {
                   <div className="bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.65),_rgba(222,220,230,0.85))]" />
                   <div className="relative bg-[#E7E5F0]">
                     <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#5B8C32] shadow-[0_0_0_6px_rgba(91,140,50,0.15)]" />
-                    <div className="absolute bottom-6 left-1/2 w-[210px] -translate-x-1/2 rounded-[22px] bg-white px-4 py-4 shadow-lg">
+                    <div className="absolute bottom-6 left-1/2 w-[min(210px,calc(100%-2rem))] -translate-x-1/2 rounded-[22px] bg-white px-4 py-4 shadow-lg">
                       <p className="text-sm font-semibold text-[#171717]">
                         {selectedEvent.locationName}
                       </p>

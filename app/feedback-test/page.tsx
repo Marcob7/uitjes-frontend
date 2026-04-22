@@ -11,20 +11,18 @@ export default function FeedbackTestPage() {
     setStatus("Versturen...");
 
     try {
-      // We sturen JSON naar Django. Dit is precies wat je echte feedback pagina straks ook doet.
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/feedback/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // Zonder deze header kan DRF je body niet als JSON lezen
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message, // moet >= 10 tekens (jouw serializer)
+          message,
           email: "test@example.com",
           page_url: window.location.href,
         }),
       });
 
-      // Als Django 400 teruggeeft, willen we de fouttekst zien
       if (!res.ok) {
         const text = await res.text();
         setStatus(`Fout (${res.status}): ${text}`);
@@ -39,28 +37,35 @@ export default function FeedbackTestPage() {
   }
 
   return (
-    <main style={{ padding: 24 }}>
-      <h1>Feedback POST test</h1>
+    <main className="min-h-screen bg-[#f7f5f0] px-4 py-6 text-[#171717] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl rounded-[2rem] border border-[#e7e0d5] bg-white px-5 py-6 shadow-[0_18px_40px_rgba(57,43,27,0.05)] sm:px-8 sm:py-8">
+        <h1 className="text-[clamp(2rem,5vw,3rem)] leading-[0.96] tracking-[-0.05em]">
+          Feedback POST test
+        </h1>
 
-      <label style={{ display: "block", marginBottom: 8 }}>
-        Bericht:
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows={4}
-          style={{ width: "100%", marginTop: 6 }}
-        />
-      </label>
+        <label className="mt-6 block">
+          <span className="text-sm font-semibold">Bericht</span>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={4}
+            className="mt-2 min-h-[140px] w-full rounded-[1.5rem] border border-[#ddd6cb] bg-[#fcfaf7] px-4 py-3 text-base outline-none"
+          />
+        </label>
 
-      <button onClick={sendFeedback} style={{ padding: "8px 12px" }}>
-        Verstuur test feedback
-      </button>
+        <button
+          onClick={sendFeedback}
+          className="mt-5 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#171717] px-5 text-sm font-semibold text-white sm:rounded-full"
+        >
+          Verstuur test feedback
+        </button>
 
-      <p style={{ marginTop: 12 }}>{status}</p>
+        <p className="mt-4 text-sm text-[#5d5449]">{status}</p>
 
-      <p style={{ marginTop: 24 }}>
-        Na een succesvolle POST zie je het terug in Django Admin → Feedbacks.
-      </p>
+        <p className="mt-6 text-xs text-[#6e6458]">
+          Na een succesvolle POST zie je het terug in Django Admin, onder Feedbacks.
+        </p>
+      </div>
     </main>
   );
 }

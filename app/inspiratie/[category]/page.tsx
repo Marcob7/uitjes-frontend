@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
@@ -1150,10 +1151,17 @@ export default function InspirationCategoryPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#f6f4ef] text-[#111111]">
-   
-
       <section className="px-4 pb-12 pt-8 md:px-8 md:pb-16 md:pt-12">
         <div className="mx-auto max-w-[1280px]">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Inspiratie", href: "/inspiratie" },
+              { label: content.label },
+            ]}
+            className="mb-6"
+          />
+
           <div className="max-w-[620px]">
             <p className="mb-3 text-sm font-medium text-black/45">
               {content.label}

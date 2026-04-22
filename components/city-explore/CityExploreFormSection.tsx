@@ -456,7 +456,7 @@ function buildStepChips(
 
 function StepBadge({ currentStep }: { currentStep: number }) {
   return (
-    <div className="inline-flex rounded-full bg-[#d9f0a8] px-5 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#33481f]">
+    <div className="inline-flex rounded-2xl bg-[#d9f0a8] px-5 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#33481f] sm:rounded-full">
       Stap {currentStep} van {TOTAL_STEPS}
     </div>
   );
@@ -515,12 +515,12 @@ function StepChipRow({
         return (
           <div
             key={chip.step}
-            className="inline-flex items-center overflow-hidden rounded-full border border-[#d7e7b6] bg-[#d9f0a8] text-[#44602a] shadow-[0_14px_28px_rgba(109,144,51,0.12)]"
+            className="inline-flex w-full items-center overflow-hidden rounded-[1.35rem] border border-[#d7e7b6] bg-[#d9f0a8] text-[#44602a] shadow-[0_14px_28px_rgba(109,144,51,0.12)] sm:w-auto sm:rounded-full"
           >
             <button
               type="button"
               onClick={() => onGoToStep(chip.step)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
+              className="inline-flex min-h-12 flex-1 items-center gap-2 px-4 py-3 text-sm font-medium sm:flex-none sm:py-2"
             >
               <Icon className="h-4 w-4" />
               <span>
@@ -532,7 +532,7 @@ function StepChipRow({
               type="button"
               onClick={() => onClearStep(chip.step)}
               aria-label={`Verwijder ${chip.label.toLowerCase()}`}
-              className="border-l border-[#c9dfa0] px-3 py-2 text-[#577238] transition hover:bg-[#cee894]"
+              className="min-h-12 border-l border-[#c9dfa0] px-3 py-3 text-[#577238] transition hover:bg-[#cee894] sm:py-2"
             >
               <CloseIcon className="h-3.5 w-3.5" />
             </button>
@@ -570,7 +570,7 @@ function CompanionGrid({
   onSelect: (value: PlannerCompanion) => void;
 }) {
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {COMPANION_OPTIONS.map((option) => {
         const Icon = option.icon;
         const isSelected = selected === option.id;
@@ -581,7 +581,7 @@ function CompanionGrid({
             type="button"
             aria-pressed={isSelected}
             onClick={() => onSelect(option.id)}
-            className={`group min-h-[230px] rounded-[2.2rem] p-6 text-center ring-1 transition duration-300 ${
+            className={`group min-h-[190px] rounded-[1.8rem] p-5 text-center ring-1 transition duration-300 sm:min-h-[230px] sm:rounded-[2.2rem] sm:p-6 ${
               option.tone
             } ${
               isSelected
@@ -589,13 +589,13 @@ function CompanionGrid({
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.09)]"
             }`}
           >
-            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white/42 text-current ring-1 ring-white/55">
-              <Icon className="h-10 w-10" />
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/42 text-current ring-1 ring-white/55 sm:h-24 sm:w-24">
+              <Icon className="h-8 w-8 sm:h-10 sm:w-10" />
             </div>
-            <div className="mt-10 text-[2rem] font-semibold tracking-[-0.05em]">
+            <div className="mt-7 text-[1.7rem] font-semibold tracking-[-0.05em] sm:mt-10 sm:text-[2rem]">
               {option.label}
             </div>
-            <div className="mt-3 text-base text-current/72">{option.subtitle}</div>
+            <div className="mt-3 text-sm text-current/72 sm:text-base">{option.subtitle}</div>
           </button>
         );
       })}
@@ -619,7 +619,7 @@ function SimpleOptionGrid<T extends string>({
   onSelect: (value: T) => void;
 }) {
   return (
-    <div className="mx-auto grid max-w-[1020px] gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <div className="mx-auto grid max-w-[1020px] gap-4 md:grid-cols-2 xl:grid-cols-4">
       {options.map((option) => {
         const Icon = option.icon;
         const isSelected = selected === option.id;
@@ -630,7 +630,7 @@ function SimpleOptionGrid<T extends string>({
             type="button"
             aria-pressed={isSelected}
             onClick={() => onSelect(option.id)}
-            className={`min-h-[214px] rounded-[2rem] px-5 py-6 text-center ring-1 transition duration-300 ${
+            className={`min-h-[188px] rounded-[1.8rem] px-5 py-5 text-center ring-1 transition duration-300 sm:min-h-[214px] sm:rounded-[2rem] sm:py-6 ${
               option.tone || "bg-white/58 text-[#1f1b18] ring-[#ece4d9]"
             } ${
               isSelected
@@ -638,13 +638,13 @@ function SimpleOptionGrid<T extends string>({
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.08)]"
             }`}
           >
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/68 text-[#486d21] ring-1 ring-black/5">
-              <Icon className="h-9 w-9" />
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/68 text-[#486d21] ring-1 ring-black/5 sm:h-20 sm:w-20">
+              <Icon className="h-8 w-8 sm:h-9 sm:w-9" />
             </div>
-            <div className="mt-8 text-[1.9rem] font-semibold leading-[1] tracking-[-0.05em] text-[#171513]">
+            <div className="mt-6 text-[1.6rem] font-semibold leading-[1] tracking-[-0.05em] text-[#171513] sm:mt-8 sm:text-[1.9rem]">
               {option.label}
             </div>
-            <div className="mt-3 text-[0.98rem] leading-7 text-[#74685d]">
+            <div className="mt-3 text-sm leading-6 text-[#74685d] sm:text-[0.98rem] sm:leading-7">
               {option.subtitle}
             </div>
           </button>
@@ -725,7 +725,7 @@ function ReviewStep({
         <button
           type="button"
           onClick={onShowResults}
-          className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#181615] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5"
+          className="mt-8 inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-[#181615] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 sm:w-auto sm:rounded-full"
         >
           <span>Bekijk resultaten</span>
           <ArrowRightIcon className="h-4 w-4" />
@@ -867,13 +867,13 @@ export default function CityExploreFormSection({
 
             <div className="mt-12">{stepContent.content}</div>
 
-            <div className="mt-10 flex min-h-[44px] flex-wrap items-center justify-between gap-6">
-              <div className="flex min-w-[180px] justify-start">
+            <div className="mt-10 flex min-h-[44px] flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+              <div className="flex w-full justify-start sm:min-w-[180px]">
                 {currentStep > 1 ? (
                   <button
                     type="button"
                     onClick={onPreviousStep}
-                    className="inline-flex items-center gap-3 text-[1.05rem] font-medium text-[#3c392f] transition hover:text-[#171515]"
+                    className="inline-flex min-h-12 items-center gap-3 rounded-2xl px-4 text-[1.05rem] font-medium text-[#3c392f] transition hover:bg-white/50 hover:text-[#171515] sm:rounded-full sm:px-0"
                   >
                     <ArrowLeftIcon className="h-5 w-5" />
                     <span>Vorige stap</span>
@@ -881,12 +881,12 @@ export default function CityExploreFormSection({
                 ) : null}
               </div>
 
-              <div className="flex min-w-[180px] justify-end">
+              <div className="flex w-full justify-end sm:min-w-[180px]">
                 {currentStep < TOTAL_STEPS ? (
                   <button
                     type="button"
                     onClick={onShowResults}
-                    className="inline-flex items-center gap-3 rounded-full border border-[#ddd3c8] bg-white/72 px-5 py-3 text-sm font-semibold text-[#2d2925] shadow-[0_12px_30px_rgba(52,38,25,0.06)] transition hover:-translate-y-0.5 hover:bg-white"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-2xl border border-[#ddd3c8] bg-white/72 px-5 py-3 text-sm font-semibold text-[#2d2925] shadow-[0_12px_30px_rgba(52,38,25,0.06)] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto sm:rounded-full"
                   >
                     <span>Bekijk resultaten tot nu toe</span>
                     <ArrowRightIcon className="h-4 w-4" />

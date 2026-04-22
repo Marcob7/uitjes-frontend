@@ -49,18 +49,13 @@ export default function CitySelect({
   }
 
   return (
-    <label style={{ display: "grid", gap: 6, maxWidth: 320 }}>
-      <div style={{ fontWeight: 600 }}>Stad</div>
+    <label className="grid w-full gap-2 sm:max-w-[320px]">
+      <div className="text-sm font-semibold text-stone-900">Stad</div>
 
       <select
         value={currentCity}
         onChange={(e) => onChangeCity(e.target.value)}
-        style={{
-          padding: 10,
-          borderRadius: 8,
-          border: "1px solid #ddd",
-          background: "white",
-        }}
+        className="min-h-12 rounded-2xl border border-stone-200 bg-white px-4 text-base text-stone-900 outline-none transition focus:border-stone-400"
       >
         {cities.map((c) => (
           <option key={c.value} value={c.value}>

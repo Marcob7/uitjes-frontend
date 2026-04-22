@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
 import {
   buildActionSearchHref,
@@ -70,6 +71,15 @@ export default function ExploreDetailPage({ params }: PageProps) {
               </Link>
             </nav>
           </header>
+
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Ontdek", href: "/ontdek" },
+              { label: item.title },
+            ]}
+            className="mb-6"
+          />
 
           <section className="overflow-hidden rounded-[2rem]">
             <div className="relative h-[360px] w-full md:h-[520px]">

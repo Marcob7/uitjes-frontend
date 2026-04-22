@@ -318,20 +318,20 @@ export default function ExploreMap({
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,249,244,0.14)_0%,rgba(236,224,210,0.2)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(255,255,255,0.34),transparent_26%)]" />
 
-      <div className="pointer-events-none absolute left-5 right-5 top-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="rounded-full bg-white/92 px-4 py-2 text-sm font-medium text-[#2a231f] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-black/5 backdrop-blur">
+      <div className="pointer-events-none absolute left-4 right-4 top-4 flex flex-col gap-2 sm:left-5 sm:right-5 sm:top-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <div className="rounded-2xl bg-white/92 px-4 py-2 text-sm font-medium text-[#2a231f] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-black/5 backdrop-blur sm:rounded-full">
           {cityLabel} kaart
         </div>
 
         {hasDummyLocations ? (
-          <div className="rounded-full bg-[#fff7e8]/94 px-4 py-2 text-xs font-medium text-[#7a5b1d] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-[#ead3a2] backdrop-blur">
+          <div className="rounded-2xl bg-[#fff7e8]/94 px-4 py-2 text-xs font-medium text-[#7a5b1d] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-[#ead3a2] backdrop-blur sm:rounded-full">
             Dummy locaties actief
           </div>
         ) : null}
       </div>
 
       {selectedPlace ? (
-        <div className="absolute bottom-5 left-5 right-5 sm:right-auto sm:w-[320px]">
+        <div className="relative z-10 px-4 pb-4 pt-0 sm:absolute sm:bottom-5 sm:left-5 sm:right-5 sm:w-[320px] sm:p-0">
           <div className="rounded-[2rem] bg-white px-6 py-6 shadow-[0_28px_60px_rgba(51,35,21,0.18)]">
             <h3 className="text-[1.9rem] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151515]">
               Verken op de kaart
@@ -362,7 +362,7 @@ export default function ExploreMap({
             <button
               type="button"
               onClick={focusSelectedPlace}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#181615] px-5 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5"
+              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-[#181615] px-5 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:rounded-full"
             >
               Kaart openen
             </button>

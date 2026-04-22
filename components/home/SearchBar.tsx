@@ -72,16 +72,16 @@ export default function SearchBar({
   }
 
   return (
-    <div className="relative mx-auto max-w-2xl">
+    <div className="relative z-40 mx-auto max-w-2xl">
       <form
         onSubmit={handleSubmit}
         role="search"
         aria-label="Zoek een stad"
-        className="rounded-[28px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full"
+        className="rounded-[24px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full"
       >
         <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-center">
-          <div className="relative flex min-h-[54px] flex-1 items-center rounded-full bg-transparent px-3 sm:min-h-[56px] sm:px-4">
-            <span className="mr-3 text-base text-slate-400 sm:text-lg">
+          <div className="relative flex min-h-[56px] flex-1 items-center rounded-2xl bg-transparent px-4 sm:min-h-[56px] sm:rounded-full sm:px-4">
+            <span className="mr-3 text-lg text-slate-400">
               &#8981;
             </span>
 
@@ -107,11 +107,11 @@ export default function SearchBar({
               inputMode="search"
               spellCheck={false}
               maxLength={80}
-              className="w-full bg-transparent text-[15px] text-slate-700 outline-none placeholder:text-slate-400 sm:text-sm"
+              className="w-full bg-transparent text-base text-slate-700 outline-none placeholder:text-slate-400 sm:text-sm"
             />
 
             {showSuggestions && suggestions.length > 0 ? (
-              <div className="absolute left-0 right-0 top-[calc(100%+12px)] z-30 max-h-[min(18rem,55vh)] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+              <div className="absolute left-0 right-0 top-[calc(100%+12px)] z-[90] max-h-[min(18rem,55vh)] overflow-y-auto rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] sm:rounded-[24px]">
                 <ul className="flex flex-col gap-1">
                   {suggestions.map((city) => (
                     <li key={city.slug}>
@@ -132,7 +132,7 @@ export default function SearchBar({
 
           <button
             type="submit"
-            className="inline-flex h-[54px] w-full items-center justify-center rounded-full bg-lime-700 px-7 text-sm font-semibold text-white transition hover:bg-lime-800 sm:h-[56px] md:w-auto"
+            className="inline-flex h-[56px] w-full items-center justify-center rounded-2xl bg-lime-700 px-7 text-sm font-semibold text-white transition hover:bg-lime-800 sm:h-[56px] sm:rounded-full md:w-auto"
           >
             {buttonLabel}
           </button>

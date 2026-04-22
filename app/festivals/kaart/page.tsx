@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
+import FestivalViewToggle from "@/components/FestivalViewToggle";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import { festivalDetails, getFestivalDetailHref } from "../data";
 
@@ -275,32 +277,78 @@ export default function FestivalsMapPage() {
   return (
     <main className="min-h-screen bg-[#fbf7f1] text-[#171511]">
       <div className="mx-auto max-w-[1360px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section className="overflow-hidden rounded-[2.4rem] border border-[#ece2d7] bg-[#c2d7d9] shadow-[0_30px_70px_rgba(45,37,28,0.08)]">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Festivals", href: "/festivals" },
+            { label: "Kaart" },
+          ]}
+          className="mb-6"
+        />
+
+        <div className="mb-6">
+          <FestivalViewToggle currentView="map" />
+        </div>
+
+        <section className="mb-6 md:hidden">
+
+          <div className="mt-5 space-y-4">
+            {mapFestivals.map((item) => (
+              <Link
+                key={item.slug}
+                href={getFestivalDetailHref(item.slug)}
+                className="block overflow-hidden rounded-[2rem] border border-[#ece2d7] bg-white shadow-[0_18px_36px_rgba(45,37,28,0.08)]"
+              >
+                <div
+                  className="min-h-[12rem] bg-cover bg-center"
+                  style={{
+                    backgroundImage: `linear-gradient(180deg, rgba(8,8,8,0.12), rgba(8,8,8,0.5)), ${optimizeCssBackground(
+                      item.image,
+                      {
+                        width: 960,
+                        quality: 56,
+                      }
+                    )}`,
+                  }}
+                />
+                <div className="space-y-4 p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6f6559]">
+                        {item.dateLabel}
+                      </p>
+                      <h2 className="mt-2 text-[1.7rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+                        {item.title}
+                      </h2>
+                      <p className="mt-2 text-sm text-[#665c51]">{item.venueLabel}</p>
+                    </div>
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f3ede5] text-sm font-semibold text-[#171511]">
+                      {item.indexLabel}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-2xl bg-[#f3ede5] px-3 py-2 text-xs font-medium text-[#4d463d]">
+                      {item.matchLabel}
+                    </span>
+                    {item.genres.map((genre) => (
+                      <span
+                        key={`${item.slug}-${genre}`}
+                        className="rounded-2xl bg-[#f8f4ef] px-3 py-2 text-xs font-medium text-[#4d463d]"
+                      >
+                        {genre}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="hidden overflow-hidden rounded-[2.4rem] border border-[#ece2d7] bg-[#c2d7d9] shadow-[0_30px_70px_rgba(45,37,28,0.08)] md:block">
           <div className="relative min-h-[72rem] overflow-hidden lg:min-h-[76rem]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(255,255,255,0.38),_transparent_34%),radial-gradient(circle_at_85%_18%,_rgba(255,255,255,0.24),_transparent_28%)]" />
-
-            <div className="absolute left-8 top-8 z-20 flex flex-wrap gap-3">
-              <div className="relative z-10 inline-flex rounded-full bg-white/90 p-1 shadow-[0_12px_24px_rgba(39,33,27,0.08)]">
-                <span
-                  className="relative inline-flex min-h-11 items-center rounded-full bg-[#171511] px-10 text-sm font-semibold uppercase tracking-[0.18em] text-white"
-                  aria-current="page"
-                >
-                  Map
-                </span>
-                <Link
-                  href="/festivals"
-                  className="relative inline-flex min-h-11 cursor-pointer items-center rounded-full px-8 text-sm font-medium uppercase tracking-[0.18em] text-[#767068] transition hover:text-[#171511]"
-                >
-                  Lijst
-                </Link>
-                <Link
-                  href="/festivals/kalender"
-                  className="relative inline-flex min-h-11 cursor-pointer items-center rounded-full px-8 text-sm font-medium uppercase tracking-[0.18em] text-[#767068] transition hover:text-[#171511]"
-                >
-                  Kalender
-                </Link>
-              </div>
-            </div>
 
             <div className="absolute right-8 top-8 z-20 flex flex-wrap gap-3">
               <MapBadge>

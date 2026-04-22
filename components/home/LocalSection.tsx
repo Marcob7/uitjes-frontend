@@ -56,7 +56,7 @@ export default function LocalSection() {
           <div className="mt-8">
             <Link
               href="/nieuwsbrief"
-              className="inline-flex min-h-[48px] items-center rounded-full bg-lime-700 px-6 text-sm font-semibold text-white transition hover:bg-lime-800"
+              className="inline-flex min-h-[48px] items-center rounded-2xl bg-lime-700 px-6 text-sm font-semibold text-white transition hover:bg-lime-800 sm:rounded-full"
             >
               Meld je aan voor de nieuwsbrief
             </Link>

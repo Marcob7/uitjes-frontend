@@ -243,35 +243,6 @@ export default function InspiratiePage() {
         </div>
       </section>
 
-      <footer className="bg-[#111111] px-5 py-10 text-white md:px-8">
-        <div className="mx-auto flex max-w-[1280px] flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <Link href="/" className="text-lg font-semibold tracking-[-0.02em]">
-            Uitjes
-          </Link>
-
-          <div className="flex flex-wrap items-center gap-5 text-sm text-white/70">
-            <Link href="/about" className="transition hover:text-white">
-              About
-            </Link>
-            <Link href="/privacy" className="transition hover:text-white">
-              Privacy
-            </Link>
-            <Link
-              href="/editorial-guidelines"
-              className="transition hover:text-white"
-            >
-              Editorial Guidelines
-            </Link>
-            <Link href="/contact" className="transition hover:text-white">
-              Contact
-            </Link>
-          </div>
-
-          <p className="text-sm text-white/50">
-            © 2024 Uitjes Platform. A Radiant speciaal geselecteerd Experience.
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }

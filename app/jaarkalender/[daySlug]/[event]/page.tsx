@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
 import {
   buildGoogleCalendarHref,
   buildMapsSearchHref,
@@ -530,13 +531,17 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
     <main className="min-h-screen bg-[#fbf7ef] text-[#171511]">
       <div className="mx-auto max-w-[1320px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="mb-6">
-          <Link
-            href={`/jaarkalender/${eventEntry.day.slug}`}
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#645548] transition hover:text-[#171511]"
-          >
-            <ArrowIcon />
-            Terug naar {eventEntry.day.weekdayDisplay.toLowerCase()} {eventEntry.day.dayNumber} {eventEntry.day.monthDisplay.toLowerCase()}
-          </Link>
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Jaarkalender", href: "/jaarkalender" },
+              {
+                label: `${eventEntry.day.weekdayDisplay} ${eventEntry.day.dayNumber} ${eventEntry.day.monthDisplay}`,
+                href: `/jaarkalender/${eventEntry.day.slug}`,
+              },
+              { label: eventEntry.card.title },
+            ]}
+          />
         </div>
 
         <section

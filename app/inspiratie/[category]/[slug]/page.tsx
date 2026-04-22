@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
 import {
   buildActionSearchHref,
@@ -394,64 +395,20 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#f6f4ef] text-[#111111]">
-      <header className="border-b border-black/5 bg-[#f6f4ef]">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-4 py-5 md:px-8">
-          <Link
-            href="/"
-            className="text-lg font-semibold tracking-[-0.03em] text-black"
-          >
-            Radiant speciaal geselecteerd
-          </Link>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/inspiratie"
-              className="text-xs text-black/55 transition hover:text-black"
-            >
-              Ontdekken
-            </Link>
-            <Link
-              href="/agenda"
-              className="text-xs text-black/55 transition hover:text-black"
-            >
-              Agenda
-            </Link>
-            <Link
-              href={`/inspiratie/${category}`}
-              className="border-b border-black pb-1 text-xs font-medium text-black"
-            >
-              Populair
-            </Link>
-            <Link
-              href="/favorieten"
-              className="text-xs text-black/55 transition hover:text-black"
-            >
-              Favorieten
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/inspiratie/${category}`}
-              aria-label="Terug naar overzicht"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-black transition hover:bg-black/5"
-            >
-              <SearchIcon />
-            </Link>
-
-            <Link
-              href="/saved"
-              aria-label="Opgeslagen plekken"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-black transition hover:bg-black/5"
-            >
-              <UserIcon />
-            </Link>
-          </div>
-        </div>
-      </header>
+   
 
       <section className="px-4 pb-10 pt-6 md:px-8 md:pb-14">
         <div className="mx-auto max-w-[1280px]">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Inspiratie", href: "/inspiratie" },
+              { label: categoryLabels[category], href: `/inspiratie/${category}` },
+              { label: page.title },
+            ]}
+            className="mb-6"
+          />
+
           <div className="relative overflow-hidden rounded-[34px]">
             <div
               className="min-h-[360px] w-full bg-cover bg-center md:min-h-[520px]"
@@ -669,35 +626,6 @@ export default function InspirationDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      <footer className="bg-[#111111] px-4 py-10 text-white md:px-8">
-        <div className="mx-auto flex max-w-[1280px] flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <Link
-            href="/"
-            className="text-lg font-semibold tracking-[-0.03em] text-white"
-          >
-            Radiant speciaal geselecteerd
-          </Link>
-
-          <div className="flex flex-wrap items-center gap-5 text-sm text-white/70">
-            <Link href="/over-ons" className="transition hover:text-white">
-              Over ons
-            </Link>
-            <Link href="/contact" className="transition hover:text-white">
-              Contact
-            </Link>
-            <Link href="/privacy" className="transition hover:text-white">
-              Privacy
-            </Link>
-            <Link href="/cookies" className="transition hover:text-white">
-              Cookies
-            </Link>
-          </div>
-
-          <p className="text-sm text-white/50">
-            © 2024 Radiant speciaal geselecteerd. City Guide Editorial.
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }

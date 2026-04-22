@@ -25,7 +25,6 @@ export default function SavedPage() {
       setLoading(true);
       setNeedsLogin(false);
 
-      // 1) Check of je ingelogd bent
       const me = await apiGetAuth("/api/auth/user/");
       if (cancelled) return;
 
@@ -36,7 +35,6 @@ export default function SavedPage() {
         return;
       }
 
-      // 2) Haal favorieten op (lijst met event_id’s)
       const favs = await apiGetAuth("/api/favorites/");
       if (cancelled) return;
 
@@ -48,7 +46,6 @@ export default function SavedPage() {
         return;
       }
 
-      // 3) Haal per id de event details op (MVP)
       const results = await Promise.all(
         ids.map(async (id) => {
           try {
@@ -72,56 +69,63 @@ export default function SavedPage() {
   }, []);
 
   return (
-    <main style={{ padding: 24 }}>
-      <AuthBlock />
+    <main className="min-h-screen bg-[#f7f5f0] px-4 py-6 text-[#171717] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl">
+        <AuthBlock />
 
-      <h1>Bewaard</h1>
+        <div className="mb-8 mt-4 max-w-2xl">
+          <h1 className="text-[clamp(2.2rem,6vw,3.6rem)] leading-[0.95] tracking-[-0.06em]">
+            Bewaard
+          </h1>
+          <p className="mt-3 text-sm leading-7 text-[#62594e] sm:text-base">
+            Alles wat je hebt opgeslagen, netjes bij elkaar voor mobiel gebruik.
+          </p>
+        </div>
 
-      {savedPlaces.length > 0 ? (
-        <section style={{ marginTop: 24, marginBottom: 32 }}>
-          <h2>Lokaal opgeslagen plekken</h2>
-          <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
-            {savedPlaces.map((place) => (
-              <Link
-                key={place.id}
-                href={place.href}
-                style={{
-                  display: "block",
-                  padding: 16,
-                  borderRadius: 16,
-                  border: "1px solid #e6e0d8",
-                  background: "#fffdf9",
-                  textDecoration: "none",
-                  color: "inherit",
-                }}
-              >
-                <div style={{ fontWeight: 700 }}>{place.title}</div>
-                {place.meta ? (
-                  <div style={{ marginTop: 6, fontSize: 14, opacity: 0.75 }}>
-                    {place.meta}
-                  </div>
-                ) : null}
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
+        {savedPlaces.length > 0 ? (
+          <section className="mb-10">
+            <h2 className="text-xl font-semibold text-[#171717]">Lokaal opgeslagen plekken</h2>
+            <div className="mt-4 grid gap-3">
+              {savedPlaces.map((place) => (
+                <Link
+                  key={place.id}
+                  href={place.href}
+                  className="block rounded-[1.5rem] border border-[#e6e0d8] bg-[#fffdf9] p-4 text-inherit shadow-[0_10px_24px_rgba(57,43,27,0.04)]"
+                >
+                  <div className="font-semibold">{place.title}</div>
+                  {place.meta ? (
+                    <div className="mt-2 text-sm text-[#6d6458]">{place.meta}</div>
+                  ) : null}
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
-      <h2>Accountfavorieten</h2>
+        <h2 className="text-xl font-semibold text-[#171717]">Accountfavorieten</h2>
 
-      {loading ? (
-        <p>Laden…</p>
-      ) : needsLogin ? (
-        <p>
-          Log in om je favorieten te zien. Ga terug naar <a href="/ontdek">Ontdek</a>.
-        </p>
-      ) : events.length === 0 ? (
-        <p>
-          Je hebt nog niks bewaard. Ga naar <a href="/ontdek">Ontdek</a>.
-        </p>
-      ) : (
-        <EventList events={events} />
-      )}
+        <div className="mt-4">
+          {loading ? (
+            <p className="text-sm text-[#6d6458]">Laden...</p>
+          ) : needsLogin ? (
+            <p className="text-sm leading-7 text-[#6d6458]">
+              Log in om je favorieten te zien. Ga terug naar{" "}
+              <a className="underline" href="/ontdek">
+                Ontdek
+              </a>.
+            </p>
+          ) : events.length === 0 ? (
+            <p className="text-sm leading-7 text-[#6d6458]">
+              Je hebt nog niks bewaard. Ga naar{" "}
+              <a className="underline" href="/ontdek">
+                Ontdek
+              </a>.
+            </p>
+          ) : (
+            <EventList events={events} />
+          )}
+        </div>
+      </div>
     </main>
   );
 }

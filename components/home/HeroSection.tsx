@@ -57,17 +57,17 @@ export default function HeroSection() {
               <Link
                 key={city!.value}
                 href={`/ontdek?city=${city!.value}`}
-                className="inline-flex min-h-[44px] items-center rounded-full bg-white/90 px-4 text-sm font-medium text-slate-800 transition hover:bg-white md:px-5"
+                className="inline-flex min-h-[44px] items-center rounded-2xl bg-white/90 px-4 text-sm font-medium text-slate-800 transition hover:bg-white md:rounded-full md:px-5"
               >
                 {city!.label}
               </Link>
             ))}
           </div>
 
-          <div className="mt-6 flex w-full max-w-xl flex-col items-stretch gap-3 lg:mt-4 lg:max-w-none lg:flex-row lg:items-center lg:justify-center">
+          <div className="relative z-0 mt-6 flex w-full max-w-xl flex-col items-stretch gap-3 lg:mt-4 lg:max-w-none lg:flex-row lg:items-center lg:justify-center">
             <Link
               href="/inspiratie"
-              className="inline-flex min-h-[56px] w-full items-center justify-between gap-3 rounded-full bg-lime-200 px-6 text-sm font-semibold text-slate-900 transition hover:bg-lime-300 lg:min-h-[52px] lg:w-auto lg:justify-center"
+              className="inline-flex min-h-[56px] w-full items-center justify-between gap-3 rounded-2xl bg-lime-200 px-6 text-sm font-semibold text-slate-900 transition hover:bg-lime-300 lg:min-h-[52px] lg:w-auto lg:justify-center lg:rounded-full"
             >
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-lime-700 text-white">
                 &#10022;
@@ -77,7 +77,7 @@ export default function HeroSection() {
             </Link>
             <Link
               href="/jaarkalender"
-              className="inline-flex min-h-[56px] w-full items-center justify-between gap-3 rounded-full border border-white/35 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/18 lg:min-h-[52px] lg:w-auto lg:justify-center lg:gap-2"
+              className="inline-flex min-h-[56px] w-full items-center justify-between gap-3 rounded-2xl border border-white/35 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/18 lg:min-h-[52px] lg:w-auto lg:justify-center lg:gap-2 lg:rounded-full"
             >
               Bekijk de jaarkalender van Nederland
               <span aria-hidden="true">&rarr;</span>

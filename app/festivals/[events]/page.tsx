@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
 import {
   buildGoogleCalendarHref,
   buildTicketSearchHref,
@@ -296,6 +297,15 @@ export default function FestivalDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[#f8f4ed] text-[#171511]">
       <div className="mx-auto max-w-[1240px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Festivals", href: "/festivals" },
+            { label: festival.name },
+          ]}
+          className="mb-6"
+        />
+
         <section
           className="relative overflow-hidden rounded-[2rem] bg-[#181614] px-5 py-5 text-white shadow-[0_24px_60px_rgba(26,21,16,0.22)] sm:px-6 sm:py-6"
           style={{

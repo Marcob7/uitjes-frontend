@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDeferredValue, useState } from "react";
 
+import FestivalViewToggle from "@/components/FestivalViewToggle";
 import {
   festivalOverviewItems,
   getFestivalDetailHref,
@@ -247,7 +248,7 @@ function FestivalCard({
 
           <Link
             href={getFestivalDetailHref(festival.slug)}
-            className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#ddd4c8] text-[#171511] transition hover:bg-[#faf8f4]"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[#ddd4c8] text-[#171511] transition hover:bg-[#faf8f4] sm:rounded-full"
             aria-label={`Open ${festival.name}`}
           >
             <ArrowIcon />
@@ -259,7 +260,6 @@ function FestivalCard({
 }
 
 export default function FestivalsPage() {
-  const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -287,8 +287,6 @@ export default function FestivalsPage() {
 
     return matchesGenre && matchesQuery;
   });
-
-  const isListView = pathname === "/festivals";
 
   function scrollToResults() {
     document.getElementById("festival-results")?.scrollIntoView({
@@ -324,11 +322,11 @@ export default function FestivalsPage() {
             </p>
           </div>
 
-          <div className="mt-8 rounded-full border border-[#e5ddd2] bg-white p-2 shadow-[0_10px_24px_rgba(60,44,23,0.04)]">
+          <div className="mt-8 rounded-[1.6rem] border border-[#e5ddd2] bg-white p-2 shadow-[0_10px_24px_rgba(60,44,23,0.04)] sm:rounded-full">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <label
                 htmlFor="festival-search"
-                className="flex min-h-14 flex-1 items-center gap-3 rounded-full px-4 text-[#6c6256]"
+                className="flex min-h-14 flex-1 items-center gap-3 rounded-[1.1rem] px-4 text-[#6c6256] sm:rounded-full"
               >
                 <SearchIcon />
                 <input
@@ -337,14 +335,14 @@ export default function FestivalsPage() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Zoek op genre, stad of vibe..."
-                  className="h-full flex-1 bg-transparent text-sm text-[#171511] outline-none placeholder:text-[#a09386]"
+                  className="h-full flex-1 bg-transparent text-base text-[#171511] outline-none placeholder:text-[#a09386] sm:text-sm"
                 />
               </label>
 
               <button
                 type="button"
                 onClick={scrollToResults}
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#4c7426] px-8 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(76,116,38,0.22)] transition hover:bg-[#43681f]"
+                className="inline-flex min-h-12 items-center justify-center rounded-[1.1rem] bg-[#4c7426] px-8 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(76,116,38,0.22)] transition hover:bg-[#43681f] sm:rounded-full"
               >
                 Zoek
               </button>
@@ -361,7 +359,7 @@ export default function FestivalsPage() {
                     key={genre}
                     type="button"
                     onClick={() => setActiveGenre(genre)}
-                    className={`rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition ${
+                    className={`min-h-11 rounded-2xl px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition sm:rounded-full ${
                       active
                         ? "bg-[#ddefb1] text-[#3f5e1f]"
                         : "bg-white text-[#6f655a] hover:bg-[#f2eee8]"
@@ -374,31 +372,7 @@ export default function FestivalsPage() {
               })}
             </div>
 
-            <div className="relative z-10 inline-flex rounded-full border border-[#e1d9ce] bg-[#f4efe7] p-1 shadow-[0_10px_22px_rgba(60,44,23,0.05)]">
-              <Link
-                href="/festivals"
-                className={`relative inline-flex min-h-10 items-center rounded-full px-5 text-sm font-medium transition ${
-                  isListView
-                    ? "cursor-default bg-white text-[#171511] shadow-[0_8px_18px_rgba(60,44,23,0.08)]"
-                    : "cursor-pointer text-[#8c8175] hover:bg-white/70 hover:text-[#171511]"
-                }`}
-                aria-current={isListView ? "page" : undefined}
-              >
-                Lijst
-              </Link>
-              <Link
-                href="/festivals/kalender"
-                className="relative inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 text-sm font-medium text-[#8c8175] transition hover:bg-white/70 hover:text-[#171511]"
-              >
-                Kalender
-              </Link>
-              <Link
-                href="/festivals/kaart"
-                className="relative inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 text-sm font-medium text-[#8c8175] transition hover:bg-white/70 hover:text-[#171511]"
-              >
-                Kaart
-              </Link>
-            </div>
+            <FestivalViewToggle currentView="list" />
           </div>
         </section>
 
@@ -449,10 +423,10 @@ export default function FestivalsPage() {
             </div>
 
             <div className="relative flex items-center justify-center">
-              <div className="absolute right-[12%] top-[8%] rounded-full bg-[#4f7628] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_20px_rgba(79,118,40,0.18)]">
+              <div className="absolute right-[10%] top-[8%] hidden rounded-full bg-[#4f7628] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_20px_rgba(79,118,40,0.18)] sm:block">
                 Live nu
               </div>
-              <div className="grid h-[18rem] w-[18rem] place-items-center rounded-full border border-white/70 bg-white/75 text-[#4f7628] shadow-[0_18px_44px_rgba(79,118,40,0.12)] sm:h-[22rem] sm:w-[22rem]">
+              <div className="grid h-[15rem] w-[15rem] place-items-center rounded-full border border-white/70 bg-white/75 text-[#4f7628] shadow-[0_18px_44px_rgba(79,118,40,0.12)] sm:h-[22rem] sm:w-[22rem]">
                 <BellIcon />
               </div>
             </div>
@@ -474,12 +448,12 @@ export default function FestivalsPage() {
               value={newsletterEmail}
               onChange={(event) => setNewsletterEmail(event.target.value)}
               placeholder="E-mailadres"
-              className="min-h-14 flex-1 rounded-full border border-[#e7dfd4] bg-white px-5 text-sm outline-none transition placeholder:text-[#a09386] focus:border-[#cfc1af]"
+              className="min-h-14 flex-1 rounded-2xl border border-[#e7dfd4] bg-white px-5 text-base outline-none transition placeholder:text-[#a09386] focus:border-[#cfc1af] sm:rounded-full sm:text-sm"
             />
             <button
               type="button"
               onClick={openNewsletterFlow}
-              className="inline-flex min-h-14 items-center justify-center rounded-full bg-[#171511] px-8 text-sm font-semibold text-white transition hover:bg-[#2b261f]"
+              className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[#171511] px-8 text-sm font-semibold text-white transition hover:bg-[#2b261f] sm:rounded-full"
             >
               Inschrijven
             </button>
