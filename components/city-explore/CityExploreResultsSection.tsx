@@ -228,9 +228,13 @@ export default function CityExploreResultsSection({
   const hasNoResults = filteredCards.length === 0;
   const hasFewResults =
     filteredCards.length > 0 && filteredCards.length <= LOW_RESULTS_THRESHOLD;
+  const resultsLabel =
+    filteredCards.length === 1
+      ? "1 match"
+      : `${filteredCards.length} matches`;
 
   return (
-    <section ref={sectionRef} className="bg-white">
+    <section ref={sectionRef} className="bg-[#fcfaf7]">
       <div className="mx-auto max-w-[1220px] px-6 pb-8 pt-12 sm:px-8 lg:px-10 lg:pb-10 lg:pt-14">
         <div className="flex flex-wrap items-center gap-3">
           {activeFilters.map((filter) => {
@@ -250,8 +254,11 @@ export default function CityExploreResultsSection({
 
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <h3 className="mt-8 text-[clamp(1.9rem,3vw,2.8rem)] font-semibold leading-[0.98] tracking-[-0.06em] text-[#151515]">
-              Top matches
+            <div className="mt-8 inline-flex rounded-full bg-[#efe8de] px-4 py-2 text-[0.74rem] font-semibold uppercase tracking-[0.2em] text-[#6a5d4f]">
+              {resultsLabel}
+            </div>
+            <h3 className="mt-4 text-[clamp(2.2rem,3.6vw,3.3rem)] font-semibold leading-[0.96] tracking-[-0.07em] text-[#151515]">
+              Resultaten voor jullie moment
             </h3>
             <p className="mt-3 max-w-[36rem] text-sm leading-7 text-[#605347] sm:text-base">
               {completedStepCount === 0
@@ -293,19 +300,23 @@ export default function CityExploreResultsSection({
         </div>
 
         {hasNoResults ? (
-          <CityExploreAlternativesSection
-            cityLabel={cityLabel}
-            plannerSelections={plannerSelections}
-            scarcity="none"
-          />
+          <div className="mt-10 border-t border-[#ece5db] pt-8">
+            <CityExploreAlternativesSection
+              cityLabel={cityLabel}
+              plannerSelections={plannerSelections}
+              scarcity="none"
+            />
+          </div>
         ) : null}
 
         {hasFewResults ? (
-          <CityExploreAlternativesSection
-            cityLabel={cityLabel}
-            plannerSelections={plannerSelections}
-            scarcity="few"
-          />
+          <div className="mt-10 border-t border-[#ece5db] pt-8">
+            <CityExploreAlternativesSection
+              cityLabel={cityLabel}
+              plannerSelections={plannerSelections}
+              scarcity="few"
+            />
+          </div>
         ) : null}
       </div>
     </section>

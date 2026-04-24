@@ -258,66 +258,58 @@ export default function CityExploreAlternativesSection({
   scarcity,
 }: CityExploreAlternativesSectionProps) {
   const content = buildAlternativeContent(cityLabel, plannerSelections);
+  const isCompact = scarcity === "few";
 
   return (
-    <section className="mt-14 px-1 sm:px-0">
-      <div className="max-w-[54rem]">
-        <div className="text-[0.74rem] font-semibold uppercase tracking-[0.24em] text-[#6f8a2e]">
+    <section className="px-1 sm:px-0">
+      <div className={isCompact ? "max-w-[42rem]" : "max-w-[48rem]"}>
+        <div className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#6f8a2e]">
           {scarcity === "none" ? "Geen directe matches" : "Extra suggesties"}
         </div>
-        <h3 className="mt-4 text-[clamp(2rem,4vw,3.4rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#151515]">
+        <h3 className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151515]">
           {content.title}
         </h3>
-        <p className="mt-4 max-w-[44rem] text-base leading-8 text-[#63584d]">
+        <p className="mt-3 max-w-[40rem] text-sm leading-7 text-[#63584d] sm:text-base">
           {content.subtitle}
         </p>
       </div>
 
-      <div className="mt-10 grid gap-10 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.62fr)] xl:items-start">
-        <article className="overflow-hidden rounded-[2.8rem] border border-[#d8cec2] bg-white">
-          <div className="grid xl:grid-cols-[minmax(300px,0.95fr)_minmax(0,1fr)]">
-            <div className="relative min-h-[340px]">
+      <div className="mt-8 grid gap-4 xl:grid-cols-[minmax(0,1.02fr)_minmax(280px,0.86fr)] xl:items-start">
+        <article className="rounded-[2rem] border border-[#e7ddd2] bg-[#fcfaf6] p-5 sm:p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+            <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-[1.5rem] bg-[#ede4d8] sm:h-32 sm:w-32">
               <Image
                 src={content.featured.image}
                 alt={content.featured.title}
                 fill
                 className="object-cover"
-                sizes="(max-width: 1280px) 100vw, 520px"
+                sizes="(max-width: 640px) 100vw, 128px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#120b07]/12 via-transparent to-transparent" />
-              <div className="absolute left-6 top-6 rounded-full bg-[#4f7727] px-5 py-3 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-white">
-                {content.featured.eyebrow}
-              </div>
             </div>
 
-            <div className="flex h-full flex-col px-6 py-6 sm:px-8 sm:py-8">
-              <div className="flex items-start justify-between gap-5">
-                <div className="text-[0.9rem] font-semibold uppercase tracking-[0.24em] text-[#456726]">
-                  Exclusieve selectie
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="rounded-full bg-[#edf5e2] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#456726]">
+                  {content.featured.eyebrow}
                 </div>
-                <div className="text-right">
-                  <div className="text-[3rem] font-semibold leading-none tracking-[-0.07em] text-[#466d25]">
-                    {content.featured.score}
-                  </div>
-                  <div className="mt-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#5e584f]">
-                    Match score
-                  </div>
+                <div className="rounded-full bg-white px-3 py-1.5 text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-[#5e584f]">
+                  Score {content.featured.score}
                 </div>
               </div>
 
-              <h4 className="mt-6 text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[0.96] tracking-[-0.07em] text-[#171513]">
+              <h4 className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-[1] tracking-[-0.05em] text-[#171513]">
                 {content.featured.title}
               </h4>
 
-              <p className="mt-6 max-w-[28rem] text-[1.04rem] leading-9 text-[#40372f]">
+              <p className="mt-3 max-w-[30rem] text-[0.98rem] leading-7 text-[#40372f]">
                 {content.featured.description}
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {content.featured.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-[#efebe6] px-4 py-2 text-sm font-medium text-[#302821]"
+                    className="rounded-full bg-[#efebe6] px-3 py-1.5 text-[0.78rem] font-medium text-[#302821]"
                   >
                     {tag}
                   </span>
@@ -326,7 +318,7 @@ export default function CityExploreAlternativesSection({
 
               <button
                 type="button"
-                className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-[#4f7727] px-8 py-4 text-lg font-semibold text-white transition hover:-translate-y-0.5"
+                className="mt-5 inline-flex w-fit items-center justify-center rounded-full bg-[#4f7727] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5"
               >
                 {content.featured.cta}
               </button>
@@ -335,37 +327,37 @@ export default function CityExploreAlternativesSection({
         </article>
 
         <aside>
-          <div className="text-[0.88rem] font-semibold uppercase tracking-[0.28em] text-[#171513]">
+          <div className="text-[0.74rem] font-semibold uppercase tracking-[0.22em] text-[#6f665c]">
             Slimme alternatieven
           </div>
 
-          <div className="mt-8 grid gap-4">
+          <div className="mt-4 grid gap-3">
             {content.alternatives.map((item) => (
               <article
                 key={item.id}
-                className="flex items-center gap-5 rounded-[2rem] bg-[#f8f5f0] px-5 py-5"
+                className="flex items-start gap-4 rounded-[1.6rem] border border-[#eee6dc] bg-white/78 px-4 py-4"
               >
-                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full bg-[#ede4d8]">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[1rem] bg-[#ede4d8]">
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
                     className="object-cover"
-                    sizes="96px"
+                    sizes="64px"
                   />
                 </div>
 
                 <div className="min-w-0">
-                  <div className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#567a2f]">
+                  <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#567a2f]">
                     {item.eyebrow}
                   </div>
-                  <div className="mt-2 text-[1.7rem] font-semibold leading-[0.98] tracking-[-0.05em] text-[#171513]">
+                  <div className="mt-1 text-[1.15rem] font-semibold leading-[1.02] tracking-[-0.04em] text-[#171513]">
                     {item.title}
                   </div>
-                  <p className="mt-2 text-[1rem] leading-7 text-[#665a4e]">
+                  <p className="mt-2 text-sm leading-6 text-[#665a4e]">
                     {item.description}
                   </p>
-                  <div className="mt-2 text-base font-semibold text-[#232019]">
+                  <div className="mt-2 text-[0.82rem] font-semibold uppercase tracking-[0.14em] text-[#232019]">
                     {item.match}
                   </div>
                 </div>

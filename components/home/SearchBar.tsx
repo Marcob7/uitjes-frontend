@@ -3,10 +3,19 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { cn } from "@/lib/utils";
 
 type SearchBarProps = {
   placeholder?: string;
   buttonLabel?: string;
+  rootClassName?: string;
+  formClassName?: string;
+  inputWrapperClassName?: string;
+  iconClassName?: string;
+  inputClassName?: string;
+  suggestionsPanelClassName?: string;
+  suggestionItemClassName?: string;
+  submitButtonClassName?: string;
 };
 
 type CityOption = {
@@ -22,6 +31,14 @@ const cityOptionsList: CityOption[] = cityOptions.map((city) => ({
 export default function SearchBar({
   placeholder = "Zoek op stad, festival of activiteit",
   buttonLabel = "Zoek",
+  rootClassName,
+  formClassName,
+  inputWrapperClassName,
+  iconClassName,
+  inputClassName,
+  suggestionsPanelClassName,
+  suggestionItemClassName,
+  submitButtonClassName,
 }: SearchBarProps) {
   const router = useRouter();
   const [query, setQuery] = useState<string>("");
@@ -72,16 +89,24 @@ export default function SearchBar({
   }
 
   return (
-    <div className="relative z-40 mx-auto max-w-2xl">
+    <div className={cn("relative z-40 mx-auto max-w-2xl", rootClassName)}>
       <form
         onSubmit={handleSubmit}
         role="search"
         aria-label="Zoek een stad"
-        className="rounded-[24px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full"
+        className={cn(
+          "rounded-[24px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full",
+          formClassName,
+        )}
       >
         <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-center">
-          <div className="relative flex min-h-[56px] flex-1 items-center rounded-2xl bg-transparent px-4 sm:min-h-[56px] sm:rounded-full sm:px-4">
-            <span className="mr-3 text-lg text-slate-400">
+          <div
+            className={cn(
+              "relative flex min-h-[56px] flex-1 items-center rounded-2xl bg-transparent px-4 sm:min-h-[56px] sm:rounded-full sm:px-4",
+              inputWrapperClassName,
+            )}
+          >
+            <span className={cn("mr-3 text-lg text-slate-400", iconClassName)}>
               &#8981;
             </span>
 
@@ -107,21 +132,32 @@ export default function SearchBar({
               inputMode="search"
               spellCheck={false}
               maxLength={80}
-              className="w-full bg-transparent text-base text-slate-700 outline-none placeholder:text-slate-400 sm:text-sm"
+              className={cn(
+                "w-full bg-transparent text-base text-slate-700 outline-none placeholder:text-slate-400 sm:text-sm",
+                inputClassName,
+              )}
             />
 
             {showSuggestions && suggestions.length > 0 ? (
-              <div className="absolute left-0 right-0 top-[calc(100%+12px)] z-[90] max-h-[min(18rem,55vh)] overflow-y-auto rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] sm:rounded-[24px]">
+              <div
+                className={cn(
+                  "absolute left-0 right-0 top-[calc(100%+12px)] z-[90] max-h-[min(18rem,55vh)] overflow-y-auto rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] sm:rounded-[24px]",
+                  suggestionsPanelClassName,
+                )}
+              >
                 <ul className="flex flex-col gap-1">
                   {suggestions.map((city) => (
                     <li key={city.slug}>
                       <button
                         type="button"
                         onMouseDown={() => handleSuggestionClick(city)}
-                        className="flex w-full items-center justify-between rounded-[16px] px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-50"
+                        className={cn(
+                          "flex w-full items-center justify-between rounded-[16px] px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-50",
+                          suggestionItemClassName,
+                        )}
                       >
                         <span>{city.label}</span>
-                        <span className="text-slate-400">&rarr;</span>
+                        <span className="text-current/60">&rarr;</span>
                       </button>
                     </li>
                   ))}
@@ -132,7 +168,10 @@ export default function SearchBar({
 
           <button
             type="submit"
-            className="inline-flex h-[56px] w-full items-center justify-center rounded-2xl bg-lime-700 px-7 text-sm font-semibold text-white transition hover:bg-lime-800 sm:h-[56px] sm:rounded-full md:w-auto"
+            className={cn(
+              "inline-flex h-[56px] w-full items-center justify-center rounded-2xl bg-lime-700 px-7 text-sm font-semibold text-white transition hover:bg-lime-800 sm:h-[56px] sm:rounded-full md:w-auto",
+              submitButtonClassName,
+            )}
           >
             {buttonLabel}
           </button>

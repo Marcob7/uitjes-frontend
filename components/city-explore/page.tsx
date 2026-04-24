@@ -244,6 +244,7 @@ export default function CityExplorePage({
           <CityExploreFormSection
             cityLabel={cityLabel}
             isDarkLiquid={isDarkLiquid}
+            resultsCount={filteredCards.length}
             plannerSelections={plannerSelections}
             currentStep={currentStep}
             completedStepCount={completedStepCount}
