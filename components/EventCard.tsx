@@ -49,7 +49,7 @@ export default function EventCard({
         <div className="mt-2 flex items-center gap-3">
           {showDetailLink ? (
             <a
-              href={`/events?id=${event.id}`}
+              href={`/events/${event.id}`}
               className="text-sm font-semibold underline underline-offset-4 text-[#7c522d] transition hover:text-[#a56432]"
             >
               Bekijk detail

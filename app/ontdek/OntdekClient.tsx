@@ -297,7 +297,7 @@ export default function OntdekClient() {
 
                 <div className="rounded-[1.75rem] border border-stone-200 bg-[#fcfbf8] p-5 sm:p-6">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
-                    Doorlopend
+                    Nu bezig
                   </p>
                   <div className="mt-3 grid gap-3">
                     <label className="flex items-center gap-3 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700">
@@ -318,7 +318,7 @@ export default function OntdekClient() {
                         disabled={ongoingDisabled}
                         className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-400 disabled:opacity-50"
                       />
-                      Alleen doorlopend
+                      Alleen nu bezig
                     </label>
 
                     <label className="flex items-center gap-3 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700">
@@ -329,7 +329,7 @@ export default function OntdekClient() {
                         disabled={ongoingDisabled}
                         className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-400 disabled:opacity-50"
                       />
-                      Verberg doorlopend
+                      Verberg nu bezig
                     </label>
                   </div>
                 </div>
