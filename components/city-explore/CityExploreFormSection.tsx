@@ -186,29 +186,29 @@ function getLiquidOptionCardStyle(
 const COMPANION_OPTIONS: CompanionOption[] = [
   {
     id: "solo",
-    label: "Solo",
-    subtitle: "Me-time & ontdekking",
+    label: "Alleen op pad",
+    subtitle: "Ontdek plekken en activiteiten die je makkelijk zelf kunt doen.",
     tone: "sand",
     icon: SoloIcon,
   },
   {
     id: "date",
     label: "Date",
-    subtitle: "Romantiek & verbinding",
+    subtitle: "Vind iets dat leuk voelt om samen te doen in deze stad.",
     tone: "violet",
     icon: HeartIcon,
   },
   {
     id: "gezin",
-    label: "Gezin",
-    subtitle: "Plezier voor alle leeftijden",
+    label: "Met gezin",
+    subtitle: "Activiteiten die passen bij kinderen, gemak en samen op pad.",
     tone: "sage",
     icon: FamilyIcon,
   },
   {
     id: "vrienden",
-    label: "Vrienden",
-    subtitle: "Gezelligheid & avontuur",
+    label: "Met vrienden",
+    subtitle: "Ideeën voor een gezellige middag of avond samen.",
     tone: "amber",
     icon: FriendsIcon,
   },
@@ -218,28 +218,28 @@ const MOMENT_OPTIONS: MomentOption[] = [
   {
     id: "nu",
     label: "Nu",
-    subtitle: "Direct iets doen",
+    subtitle: "Suggesties die nu of op korte termijn interessant zijn.",
     tone: "amber",
     icon: LightningIcon,
   },
   {
     id: "vanavond",
     label: "Vanavond",
-    subtitle: "Later op de dag",
+    subtitle: "Ideeën voor een spontane avond in deze stad.",
     tone: "violet",
     icon: MoonIcon,
   },
   {
     id: "morgen",
-    label: "Morgen",
-    subtitle: "Iets om naar uit te kijken",
+    label: "Later plannen",
+    subtitle: "Bewaar inspiratie voor een later moment.",
     tone: "sage",
     icon: SunIcon,
   },
   {
     id: "weekend",
     label: "Dit weekend",
-    subtitle: "Meer tijd om te plannen",
+    subtitle: "Dingen om dit weekend te doen.",
     tone: "mist",
     icon: CalendarIcon,
   },
@@ -249,28 +249,28 @@ const VIBE_OPTIONS: VibeOption[] = [
   {
     id: "cultureel",
     label: "Cultureel",
-    subtitle: "Musea, muziek & verhalen",
+    subtitle: "Musea, theater, erfgoed en bijzondere plekken in deze stad.",
     tone: "sand",
     icon: SparkIcon,
   },
   {
     id: "actief",
     label: "Actief",
-    subtitle: "Wandelen, buiten & energie",
+    subtitle: "Buiten, bewegen, ontdekken of iets doen met energie.",
     tone: "sage",
     icon: RouteIcon,
   },
   {
     id: "eten-drinken",
     label: "Eten & drinken",
-    subtitle: "Tafels, terrassen & smaak",
+    subtitle: "Terrassen, restaurants, proeverijen of foodspots.",
     tone: "amber",
     icon: ForkKnifeIcon,
   },
   {
     id: "relaxed",
     label: "Relaxed",
-    subtitle: "Rustig, sfeervol & makkelijk",
+    subtitle: "Rustige plekken, wandelen, rondkijken of laagdrempelig genieten.",
     tone: "mist",
     icon: LeafIcon,
   },
@@ -612,8 +612,8 @@ function ProgressMeter({
   isDarkLiquid: boolean;
 }) {
   return (
-    <div className="mx-auto mt-12 max-w-[18rem]">
-      <div className="grid grid-cols-4 gap-3">
+    <div className="mx-auto mt-6 max-w-[12rem] sm:mt-12 sm:max-w-[18rem]">
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {Array.from({ length: TOTAL_STEPS }, (_, index) => {
           const stepNumber = index + 1;
           const isComplete = stepNumber <= completedStepCount;
@@ -622,7 +622,7 @@ function ProgressMeter({
           return (
             <div
               key={stepNumber}
-              className="h-2.5 rounded-full transition"
+              className="h-1.5 rounded-full transition sm:h-2.5"
               style={{
                 backgroundColor:
                   isComplete || isActive
@@ -636,7 +636,7 @@ function ProgressMeter({
         })}
       </div>
       <div
-        className="mt-4 text-center text-[0.8rem] font-medium uppercase tracking-[0.22em]"
+        className="sr-only mt-4 text-center text-[0.8rem] font-medium uppercase tracking-[0.22em] sm:not-sr-only"
         style={{ color: isDarkLiquid ? "rgba(255,255,255,0.66)" : "#93877b" }}
       >
         Voortgang
@@ -659,7 +659,7 @@ function StepChipRow({
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-3">
+    <div className="hidden flex-wrap justify-center gap-3 sm:flex">
       {chips.map((chip) => {
         const Icon = chip.icon;
 
@@ -697,13 +697,13 @@ function StepHeading({
   return (
     <div className="mx-auto max-w-[56rem] text-center">
       <h2
-        className="mx-auto text-center text-[clamp(2.6rem,7vw,5rem)] font-semibold leading-[0.9] tracking-[-0.08em]"
+        className="mx-auto text-center text-[2rem] font-semibold leading-[0.98] tracking-[-0.055em] sm:text-[clamp(2.6rem,7vw,5rem)] sm:leading-[0.9] sm:tracking-[-0.08em]"
         style={{ color: isDarkLiquid ? "#ffffff" : "#141414" }}
       >
         {title}
       </h2>
       <p
-        className="mx-auto mt-5 max-w-[42rem] text-center text-[1.05rem] leading-8 sm:text-[1.18rem]"
+        className="mx-auto mt-3 max-w-[34rem] text-center text-sm leading-6 sm:mt-5 sm:max-w-[42rem] sm:text-[1.18rem] sm:leading-8"
         style={{ color: isDarkLiquid ? "rgba(255,255,255,0.76)" : "#74685d" }}
       >
         {description}
@@ -722,7 +722,7 @@ function CompanionGrid({
   isDarkLiquid: boolean;
 }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
       {COMPANION_OPTIONS.map((option) => {
         const Icon = option.icon;
         const isSelected = selected === option.id;
@@ -732,11 +732,12 @@ function CompanionGrid({
           <AppChoiceButton
             key={option.id}
             title={option.label}
+            description={option.subtitle}
             selected={isSelected}
             onClick={() => onSelect(option.id)}
             size="large"
             icon={<Icon className="h-6 w-6 sm:h-10 sm:w-10" />}
-            className={`min-h-[92px] text-left sm:min-h-[230px] sm:text-center [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-24 [&>span:first-child]:sm:w-24 ${
+            className={`min-h-[68px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[230px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-24 [&>span:first-child]:sm:w-24 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:sm:block ${
               isSelected
                 ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.14)]"
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.09)]"
@@ -771,7 +772,7 @@ function SimpleOptionGrid<T extends string>({
   isDarkLiquid: boolean;
 }) {
   return (
-    <div className="mx-auto grid max-w-[1020px] gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="mx-auto grid max-w-[1020px] gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
       {options.map((option) => {
         const Icon = option.icon;
         const isSelected = selected === option.id;
@@ -781,11 +782,12 @@ function SimpleOptionGrid<T extends string>({
           <AppChoiceButton
             key={option.id}
             title={option.label}
+            description={option.subtitle}
             selected={isSelected}
             onClick={() => onSelect(option.id)}
             size="large"
             icon={<Icon className="h-6 w-6 sm:h-9 sm:w-9" />}
-            className={`min-h-[86px] text-left sm:min-h-[214px] sm:text-center [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-20 [&>span:first-child]:sm:w-20 ${
+            className={`min-h-[64px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[214px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-20 [&>span:first-child]:sm:w-20 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:sm:block ${
               isSelected
                 ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.12)]"
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.08)]"
@@ -825,35 +827,35 @@ function ReviewStep({
   const vibePalette = getTonePalette("amber");
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.85fr)] lg:items-stretch">
+    <div className="grid gap-4 sm:gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.85fr)] lg:items-stretch">
       <AppCard
         variant="glass"
         padding="lg"
-        className="rounded-[2.2rem]"
+        className="rounded-[1.5rem] p-5 sm:rounded-[2.2rem] sm:p-8"
         style={panelStyle}
       >
         <div className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#7d7267]">
           Jullie selectie
         </div>
-        <div className="mt-4 inline-flex rounded-full bg-[#efe8de] px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#6b5f51]">
+        <div className="mt-3 inline-flex rounded-full bg-[#efe8de] px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#6b5f51] sm:mt-4">
           {resultsCount === 1 ? "1 resultaat" : `${resultsCount} resultaten`}
         </div>
-        <h3 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#151515]">
+        <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#151515] sm:mt-4 sm:text-[clamp(2rem,4vw,3rem)] sm:leading-[0.95] sm:tracking-[-0.06em]">
           Klaar om {cityLabel} op jullie manier te ontdekken
         </h3>
-        <p className="mt-4 max-w-[36rem] text-base leading-8 text-[#665a4e]">
+        <p className="mt-3 max-w-[36rem] text-sm leading-6 text-[#665a4e] sm:mt-4 sm:text-base sm:leading-8">
           Je keuzes staan klaar. Open de resultaten en bekijk welke plekken het
           best passen bij jullie moment.
         </p>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
           <AppCard
             as="button"
             type="button"
             onClick={() => onGoToStep(1)}
             variant="interactive"
             padding="sm"
-            className="rounded-[1.6rem] px-4 py-5 text-left"
+            className="rounded-[1.2rem] px-4 py-4 text-left sm:rounded-[1.6rem] sm:py-5"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
             <div
@@ -865,7 +867,7 @@ function ReviewStep({
             >
               Gezelschap
             </div>
-            <div className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#191715]">
+            <div className="mt-2 text-lg font-semibold tracking-[-0.04em] text-[#191715] sm:mt-3 sm:text-xl">
               {getCompanionLabel(selections.companion)}
             </div>
           </AppCard>
@@ -875,7 +877,7 @@ function ReviewStep({
             onClick={() => onGoToStep(2)}
             variant="interactive"
             padding="sm"
-            className="rounded-[1.6rem] px-4 py-5 text-left"
+            className="rounded-[1.2rem] px-4 py-4 text-left sm:rounded-[1.6rem] sm:py-5"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
             <div
@@ -887,7 +889,7 @@ function ReviewStep({
             >
               Wanneer
             </div>
-            <div className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#192014]">
+            <div className="mt-2 text-lg font-semibold tracking-[-0.04em] text-[#192014] sm:mt-3 sm:text-xl">
               {getMomentLabel(selections.moment)}
             </div>
           </AppCard>
@@ -897,7 +899,7 @@ function ReviewStep({
             onClick={() => onGoToStep(3)}
             variant="interactive"
             padding="sm"
-            className="rounded-[1.6rem] px-4 py-5 text-left"
+            className="rounded-[1.2rem] px-4 py-4 text-left sm:rounded-[1.6rem] sm:py-5"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
             <div
@@ -909,7 +911,7 @@ function ReviewStep({
             >
               Sfeer
             </div>
-            <div className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#211a12]">
+            <div className="mt-2 text-lg font-semibold tracking-[-0.04em] text-[#211a12] sm:mt-3 sm:text-xl">
               {getVibeLabel(selections.vibe)}
             </div>
           </AppCard>
@@ -921,7 +923,7 @@ function ReviewStep({
           size="lg"
           fullWidth
           iconRight={<ArrowRightIcon className="h-4 w-4" />}
-          className="mt-8 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:w-auto"
+          className="mt-5 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:mt-8 sm:w-auto"
         >
           Bekijk alle resultaten
         </AppButton>
@@ -930,21 +932,21 @@ function ReviewStep({
       <AppCard
         variant="glass"
         padding="lg"
-        className="rounded-[2.2rem]"
+        className="rounded-[1.5rem] p-5 sm:rounded-[2.2rem] sm:p-8"
         style={panelStyle}
       >
         <div className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#7d7267]">
           Voorproefje
         </div>
-        <h3 className="mt-4 text-[clamp(1.9rem,3vw,2.7rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#151515]">
+        <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#151515] sm:mt-4 sm:text-[clamp(1.9rem,3vw,2.7rem)] sm:leading-[0.95] sm:tracking-[-0.06em]">
           {featuredCard?.title || `Ontdek ${cityLabel}`}
         </h3>
-        <p className="mt-4 max-w-[34rem] text-base leading-8 text-[#665a4e]">
+        <p className="mt-3 max-w-[34rem] text-sm leading-6 text-[#665a4e] sm:mt-4 sm:text-base sm:leading-8">
           {featuredCard?.description ||
             "Een eerste match die aansluit op jullie gekozen moment en sfeer."}
         </p>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2">
           <AppCard
             variant="glass"
             padding="sm"
@@ -1006,7 +1008,7 @@ function ReviewStep({
           size="lg"
           fullWidth
           iconRight={<ArrowRightIcon className="h-4 w-4" />}
-          className="mt-6 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:w-auto"
+          className="mt-5 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:mt-6 sm:w-auto"
         >
           Bekijken
         </AppButton>
@@ -1106,7 +1108,7 @@ export default function CityExploreFormSection({
 
   return (
     <section className="bg-transparent">
-      <div className="mx-auto max-w-[1220px] px-6 py-10 sm:px-8 lg:px-10 lg:py-14">
+      <div className="mx-auto max-w-[1220px] px-4 py-6 sm:px-8 sm:py-10 lg:px-10 lg:py-14">
         <div className="">
           <div
             className="absolute -left-16 top-20 h-40 w-40 rounded-full blur-3xl"
@@ -1142,11 +1144,11 @@ export default function CityExploreFormSection({
               />
             </div>
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-2 flex justify-center sm:mt-6">
               <StepBadge currentStep={currentStep} isDarkLiquid={isDarkLiquid} />
             </div>
 
-            <div className="mt-8">
+            <div className="mt-4 sm:mt-8">
               <StepHeading
                 title={stepContent.title}
                 description={stepContent.description}
@@ -1154,9 +1156,9 @@ export default function CityExploreFormSection({
               />
             </div>
 
-            <div className="mt-12">{stepContent.content}</div>
+            <div className="mt-6 sm:mt-12">{stepContent.content}</div>
 
-            <div className="mt-10 flex min-h-[44px] flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            <div className="mt-6 flex min-h-[44px] flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
               <div className="flex w-full justify-start sm:min-w-[180px]">
                 {currentStep > 1 ? (
                   <AppButton

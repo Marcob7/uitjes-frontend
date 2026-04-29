@@ -4,6 +4,7 @@ import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type CategoryCard = {
   title: string;
+  description: string;
   href: string;
   bgClass: string;
   icon: React.ReactNode;
@@ -18,49 +19,57 @@ type CityCard = {
 
 const categoryCards: CategoryCard[] = [
   {
-    title: "Vandaag iets doen",
+    title: "Nu",
+    description: "Ik wil snel iets vinden dat nu kan.",
     href: "/inspiratie/vandaag",
     bgClass: "bg-[#dcebd9]",
     icon: <ClockIcon />,
   },
   {
     title: "Dit weekend",
+    description: "Ik wil ideeën voor het weekend.",
     href: "/inspiratie/weekend",
     bgClass: "bg-[#eee2d9]",
     icon: <CalendarIcon />,
   },
   {
-    title: "Eten & Drinken",
+    title: "Eten & drinken",
+    description: "Ik wil iets met horeca, proeven, borrelen of uit eten.",
     href: "/inspiratie/eten-drinken",
     bgClass: "bg-[#efe3bf]",
     icon: <FoodIcon />,
   },
   {
-    title: "Met kinderen",
+    title: "Met gezin",
+    description: "Ik zoek iets dat past bij kinderen en samen op pad gaan.",
     href: "/inspiratie/met-kinderen",
     bgClass: "bg-[#e5e4f2]",
     icon: <SmileIcon />,
   },
   {
-    title: "Gratis",
+    title: "Relaxed",
+    description: "Ik zoek iets rustigs, simpels of laagdrempeligs.",
     href: "/inspiratie/gratis",
     bgClass: "bg-[#dff0c8]",
     icon: <MoneyIcon />,
   },
   {
-    title: "Binnen",
+    title: "Cultureel",
+    description: "Ik wil inspiratie voor musea, steden, voorstellingen of bijzondere plekken.",
     href: "/inspiratie/binnen",
     bgClass: "bg-[#e9e6e6]",
     icon: <BuildingIcon />,
   },
   {
-    title: "Buiten",
+    title: "Actief",
+    description: "Ik zoek iets buiten, sportiefs of avontuurlijks.",
     href: "/inspiratie/buiten",
     bgClass: "bg-[#dbead8]",
     icon: <TreeIcon />,
   },
   {
-    title: "Romantisch",
+    title: "Date",
+    description: "Ik zoek iets dat geschikt is om samen te doen.",
     href: "/inspiratie/romantisch",
     bgClass: "bg-[#efe4dc]",
     icon: <HeartIcon />,
@@ -121,6 +130,9 @@ export default function InspiratiePage() {
                 <div className="mb-5 text-black">{card.icon}</div>
                 <span className="text-sm font-semibold tracking-[-0.02em] text-black md:text-base">
                   {card.title}
+                </span>
+                <span className="mt-2 max-w-[12rem] text-xs leading-5 text-black/60">
+                  {card.description}
                 </span>
               </Link>
             ))}
