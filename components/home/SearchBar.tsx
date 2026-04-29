@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AppButton } from "@/components/ui/app";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import { cn } from "@/lib/utils";
 
@@ -166,15 +167,18 @@ export default function SearchBar({
             ) : null}
           </div>
 
-          <button
+          <AppButton
             type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
             className={cn(
-              "inline-flex h-[56px] w-full items-center justify-center rounded-2xl bg-lime-700 px-7 text-sm font-semibold text-white transition hover:bg-lime-800 sm:h-[56px] sm:rounded-full md:w-auto",
+              "h-[56px] px-7 md:w-auto",
               submitButtonClassName,
             )}
           >
             {buttonLabel}
-          </button>
+          </AppButton>
         </div>
       </form>
     </div>

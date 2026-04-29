@@ -2,6 +2,13 @@
 
 import type { ReactElement } from "react";
 
+import {
+  AppButton,
+  AppCard,
+  AppChoiceButton,
+  AppFilterChip,
+} from "@/components/ui/app";
+
 import type {
   ExploreCard,
   PlannerCompanion,
@@ -657,30 +664,21 @@ function StepChipRow({
         const Icon = chip.icon;
 
         return (
-          <div
+          <AppFilterChip
             key={chip.step}
-            className="inline-flex w-full items-center overflow-hidden rounded-[1.35rem] border border-[#d7e7b6] bg-[#d9f0a8] text-[#44602a] shadow-[0_14px_28px_rgba(109,144,51,0.12)] sm:w-auto sm:rounded-full"
+            active
+            removable
+            onClick={() => onGoToStep(chip.step)}
+            onRemove={() => onClearStep(chip.step)}
+            className="w-full justify-center border-[#d7e7b6] bg-[#d9f0a8] px-4 py-2.5 text-[#44602a] shadow-[0_14px_28px_rgba(109,144,51,0.12)] sm:w-auto"
           >
-            <button
-              type="button"
-              onClick={() => onGoToStep(chip.step)}
-              className="inline-flex min-h-12 flex-1 items-center gap-2 px-4 py-3 text-sm font-medium sm:flex-none sm:py-2"
-            >
+            <span className="inline-flex items-center gap-2">
               <Icon className="h-4 w-4" />
               <span>
                 {chip.label}: {chip.value}
               </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onClearStep(chip.step)}
-              aria-label={`Verwijder ${chip.label.toLowerCase()}`}
-              className="min-h-12 border-l border-[#c9dfa0] px-3 py-3 text-[#577238] transition hover:bg-[#cee894] sm:py-2"
-            >
-              <CloseIcon className="h-3.5 w-3.5" />
-            </button>
-          </div>
+            </span>
+          </AppFilterChip>
         );
       })}
     </div>
@@ -731,32 +729,24 @@ function CompanionGrid({
         const palette = getTonePalette(option.tone);
 
         return (
-          <button
+          <AppChoiceButton
             key={option.id}
-            type="button"
-            aria-pressed={isSelected}
+            title={option.label}
+            selected={isSelected}
             onClick={() => onSelect(option.id)}
-            className={`group min-h-[190px] rounded-[1.8rem] p-5 text-center transition duration-300 sm:min-h-[230px] sm:rounded-[2.2rem] sm:p-6 ${
+            size="large"
+            icon={<Icon className="h-6 w-6 sm:h-10 sm:w-10" />}
+            className={`min-h-[92px] text-left sm:min-h-[230px] sm:text-center [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-24 [&>span:first-child]:sm:w-24 ${
               isSelected
                 ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.14)]"
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.09)]"
             }`}
-            style={getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid)}
-          >
-            <div
-              className="mx-auto flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24"
-              style={{
-                backgroundColor: palette.iconBackground,
-                color: palette.iconText,
-                boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.7)",
-              }}
-            >
-              <Icon className="h-8 w-8 sm:h-10 sm:w-10" />
-            </div>
-            <div className="mt-7 text-[1.7rem] font-semibold tracking-[-0.05em] sm:mt-10 sm:text-[2rem]">
-              {option.label}
-            </div>
-          </button>
+            style={{
+              ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
+              "--choice-icon-bg": palette.iconBackground,
+              "--choice-icon-text": palette.iconText,
+            } as React.CSSProperties}
+          />
         );
       })}
     </div>
@@ -788,32 +778,24 @@ function SimpleOptionGrid<T extends string>({
         const palette = getTonePalette(option.tone);
 
         return (
-          <button
+          <AppChoiceButton
             key={option.id}
-            type="button"
-            aria-pressed={isSelected}
+            title={option.label}
+            selected={isSelected}
             onClick={() => onSelect(option.id)}
-            className={`min-h-[188px] rounded-[1.8rem] px-5 py-5 text-center transition duration-300 sm:min-h-[214px] sm:rounded-[2rem] sm:py-6 ${
+            size="large"
+            icon={<Icon className="h-6 w-6 sm:h-9 sm:w-9" />}
+            className={`min-h-[86px] text-left sm:min-h-[214px] sm:text-center [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-20 [&>span:first-child]:sm:w-20 ${
               isSelected
                 ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.12)]"
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.08)]"
             }`}
-            style={getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid)}
-          >
-            <div
-              className="mx-auto flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20"
-              style={{
-                backgroundColor: palette.iconBackground,
-                color: palette.iconText,
-                boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.7)",
-              }}
-            >
-              <Icon className="h-8 w-8 sm:h-9 sm:w-9" />
-            </div>
-            <div className="mt-6 text-[1.6rem] font-semibold leading-[1] tracking-[-0.05em] text-[#171513] sm:mt-8 sm:text-[1.9rem]">
-              {option.label}
-            </div>
-          </button>
+            style={{
+              ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
+              "--choice-icon-bg": palette.iconBackground,
+              "--choice-icon-text": palette.iconText,
+            } as React.CSSProperties}
+          />
         );
       })}
     </div>
@@ -844,8 +826,10 @@ function ReviewStep({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.85fr)] lg:items-stretch">
-      <div
-        className="rounded-[2.2rem] p-6 sm:p-8"
+      <AppCard
+        variant="glass"
+        padding="lg"
+        className="rounded-[2.2rem]"
         style={panelStyle}
       >
         <div className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#7d7267]">
@@ -863,10 +847,13 @@ function ReviewStep({
         </p>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <button
+          <AppCard
+            as="button"
             type="button"
             onClick={() => onGoToStep(1)}
-            className="rounded-[1.6rem] px-4 py-5 text-left transition hover:-translate-y-0.5"
+            variant="interactive"
+            padding="sm"
+            className="rounded-[1.6rem] px-4 py-5 text-left"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
             <div
@@ -881,11 +868,14 @@ function ReviewStep({
             <div className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#191715]">
               {getCompanionLabel(selections.companion)}
             </div>
-          </button>
-          <button
+          </AppCard>
+          <AppCard
+            as="button"
             type="button"
             onClick={() => onGoToStep(2)}
-            className="rounded-[1.6rem] px-4 py-5 text-left transition hover:-translate-y-0.5"
+            variant="interactive"
+            padding="sm"
+            className="rounded-[1.6rem] px-4 py-5 text-left"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
             <div
@@ -900,11 +890,14 @@ function ReviewStep({
             <div className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#192014]">
               {getMomentLabel(selections.moment)}
             </div>
-          </button>
-          <button
+          </AppCard>
+          <AppCard
+            as="button"
             type="button"
             onClick={() => onGoToStep(3)}
-            className="rounded-[1.6rem] px-4 py-5 text-left transition hover:-translate-y-0.5"
+            variant="interactive"
+            padding="sm"
+            className="rounded-[1.6rem] px-4 py-5 text-left"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
             <div
@@ -919,21 +912,25 @@ function ReviewStep({
             <div className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#211a12]">
               {getVibeLabel(selections.vibe)}
             </div>
-          </button>
+          </AppCard>
         </div>
 
-        <button
-          type="button"
+        <AppButton
           onClick={onShowResults}
-          className="mt-8 inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-[#181615] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 sm:w-auto sm:rounded-full"
+          variant="dark"
+          size="lg"
+          fullWidth
+          iconRight={<ArrowRightIcon className="h-4 w-4" />}
+          className="mt-8 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:w-auto"
         >
-          <span>Bekijk alle resultaten</span>
-          <ArrowRightIcon className="h-4 w-4" />
-        </button>
-      </div>
+          Bekijk alle resultaten
+        </AppButton>
+      </AppCard>
 
-      <div
-        className="rounded-[2.2rem] p-6 sm:p-8"
+      <AppCard
+        variant="glass"
+        padding="lg"
+        className="rounded-[2.2rem]"
         style={panelStyle}
       >
         <div className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#7d7267]">
@@ -948,7 +945,9 @@ function ReviewStep({
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <div
+          <AppCard
+            variant="glass"
+            padding="sm"
             className="rounded-[1.4rem] px-4 py-4"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
@@ -958,8 +957,10 @@ function ReviewStep({
             <div className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#1a1714]">
               {featuredCard?.time || "Tijd volgt"}
             </div>
-          </div>
-          <div
+          </AppCard>
+          <AppCard
+            variant="glass"
+            padding="sm"
             className="rounded-[1.4rem] px-4 py-4"
             style={getGlassPanelStyle(isDarkLiquid, false)}
           >
@@ -969,43 +970,47 @@ function ReviewStep({
             <div className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#1a1714]">
               {featuredCard?.location || cityLabel}
             </div>
-          </div>
+          </AppCard>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
           {featuredCard?.label ? (
-            <span
+            <AppFilterChip
+              variant="subtle"
               className="rounded-full px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em]"
               style={{
                 backgroundColor: momentPalette.badgeBackground,
                 color: momentPalette.badgeText,
-              }}
+              } as React.CSSProperties}
             >
               {featuredCard.label}
-            </span>
+            </AppFilterChip>
           ) : null}
           {featuredCard?.status ? (
-            <span
+            <AppFilterChip
+              variant="subtle"
               className="rounded-full px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em]"
               style={{
                 backgroundColor: companionPalette.badgeBackground,
                 color: companionPalette.badgeText,
-              }}
+              } as React.CSSProperties}
             >
               {featuredCard.status}
-            </span>
+            </AppFilterChip>
           ) : null}
         </div>
 
-        <button
-          type="button"
+        <AppButton
           onClick={onShowResults}
-          className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-[#181615] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 sm:w-auto sm:rounded-full"
+          variant="dark"
+          size="lg"
+          fullWidth
+          iconRight={<ArrowRightIcon className="h-4 w-4" />}
+          className="mt-6 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:w-auto"
         >
-          <span>Bekijken</span>
-          <ArrowRightIcon className="h-4 w-4" />
-        </button>
-      </div>
+          Bekijken
+        </AppButton>
+      </AppCard>
     </div>
   );
 }
@@ -1154,10 +1159,12 @@ export default function CityExploreFormSection({
             <div className="mt-10 flex min-h-[44px] flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
               <div className="flex w-full justify-start sm:min-w-[180px]">
                 {currentStep > 1 ? (
-                  <button
-                    type="button"
+                  <AppButton
                     onClick={onPreviousStep}
-                    className="inline-flex min-h-12 items-center gap-3 rounded-2xl px-4 text-[1.05rem] font-medium transition sm:rounded-full sm:px-0"
+                    variant="ghost"
+                    size="md"
+                    iconLeft={<ArrowLeftIcon className="h-5 w-5" />}
+                    className="min-h-12 px-4 text-[1.05rem] font-medium sm:px-0"
                     style={{
                       color: secondaryTextColor,
                       backgroundColor: isDarkLiquid
@@ -1165,18 +1172,20 @@ export default function CityExploreFormSection({
                         : "transparent",
                     }}
                   >
-                    <ArrowLeftIcon className="h-5 w-5" />
-                    <span>Vorige stap</span>
-                  </button>
+                    Vorige stap
+                  </AppButton>
                 ) : null}
               </div>
 
               <div className="flex w-full justify-end sm:min-w-[180px]">
                 {currentStep < TOTAL_STEPS ? (
-                  <button
-                    type="button"
+                  <AppButton
                     onClick={onShowResults}
-                    className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-2xl px-5 py-3 text-sm font-semibold shadow-[0_12px_30px_rgba(52,38,25,0.06)] transition hover:-translate-y-0.5 sm:w-auto sm:rounded-full"
+                    variant="secondary"
+                    size="md"
+                    fullWidth
+                    iconRight={<ArrowRightIcon className="h-4 w-4" />}
+                    className="min-h-12 shadow-[0_12px_30px_rgba(52,38,25,0.06)] hover:-translate-y-0.5 sm:w-auto"
                     style={{
                       border: `1px solid ${borderColor}`,
                       backgroundColor: secondaryButtonSurface,
@@ -1186,9 +1195,8 @@ export default function CityExploreFormSection({
                         : "0 12px 30px rgba(52,38,25,0.06)",
                     }}
                   >
-                    <span>Bekijk resultaten tot nu toe</span>
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </button>
+                    Bekijk resultaten tot nu toe
+                  </AppButton>
                 ) : null}
               </div>
             </div>

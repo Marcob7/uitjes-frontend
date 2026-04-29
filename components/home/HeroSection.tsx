@@ -1,5 +1,5 @@
-import Link from "next/link";
 import SearchBar from "./SearchBar";
+import { AppButton, AppSection } from "@/components/ui/app";
 import { WebGLLiquid } from "@/components/ui/webgl-liquid";
 import { cityOptions } from "@/lib/cityConfig";
 
@@ -18,7 +18,11 @@ const featuredCities = featuredCitySlugs
 
 export default function HeroSection() {
   return (
-    <section className="px-4 pt-4 md:px-6 lg:px-8">
+    <AppSection
+      maxWidth="full"
+      spacing="sm"
+      innerClassName="pt-4 pb-0 md:px-6 lg:px-8"
+    >
       <div className="relative overflow-hidden rounded-[32px] px-6 py-8 md:px-10 md:py-12 lg:px-14 lg:py-16">
         <div className="absolute inset-0">
           <WebGLLiquid
@@ -74,37 +78,47 @@ export default function HeroSection() {
 
           <div className="mt-5 hidden flex-wrap items-center justify-center gap-3 sm:flex">
             {featuredCities.map((city) => (
-              <Link
+              <AppButton
                 key={city!.value}
                 href={`/ontdek?city=${city!.value}`}
-                className="inline-flex min-h-[44px] items-center rounded-2xl border border-white/16 bg-white/10 px-4 text-sm font-medium text-white shadow-[0_12px_30px_rgba(0,0,0,0.14)] backdrop-blur-md transition hover:bg-white/14 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:rounded-full md:px-5"
+                variant="ghost"
+                size="sm"
+                className="min-h-[44px] rounded-2xl border-white/16 bg-white/10 px-4 font-medium text-white shadow-[0_12px_30px_rgba(0,0,0,0.14)] backdrop-blur-md hover:bg-white/14 focus-visible:outline-white md:rounded-full md:px-5"
               >
                 {city!.label}
-              </Link>
+              </AppButton>
             ))}
           </div>
 
           <div className="relative z-0 mt-6 flex w-full max-w-xl flex-col items-stretch gap-3 lg:mt-4 lg:max-w-none lg:flex-row lg:items-center lg:justify-center">
-            <Link
+            <AppButton
               href="/inspiratie"
-              className="inline-flex min-h-[56px] w-full items-center justify-between gap-3 rounded-2xl border border-[#e8f2d0]/65 bg-[#e8f2d0] px-6 text-sm font-semibold text-[#162016] shadow-[0_18px_36px_rgba(12,20,12,0.18)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7fbeb] lg:min-h-[52px] lg:w-auto lg:justify-center lg:rounded-full"
+              variant="primary"
+              size="lg"
+              fullWidth
+              iconLeft={
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1e3224] text-[#f7fbeb]">
+                  &#10022;
+                </span>
+              }
+              iconRight={<span aria-hidden="true">&rarr;</span>}
+              className="min-h-[56px] justify-between border-[#e8f2d0]/65 px-6 shadow-[0_18px_36px_rgba(12,20,12,0.18)] hover:-translate-y-0.5 focus-visible:outline-[#f7fbeb] lg:min-h-[52px] lg:w-auto lg:justify-center"
             >
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1e3224] text-[#f7fbeb]">
-                &#10022;
-              </span>
               Help mij ontdekken wat ik kan doen
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
-            <Link
+            </AppButton>
+            <AppButton
               href="/jaarkalender"
-              className="inline-flex min-h-[56px] w-full items-center justify-between gap-3 rounded-2xl border border-white/18 bg-white/10 px-6 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(0,0,0,0.16)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/14 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:min-h-[52px] lg:w-auto lg:justify-center lg:gap-2 lg:rounded-full"
+              variant="ghost"
+              size="lg"
+              fullWidth
+              iconRight={<span aria-hidden="true">&rarr;</span>}
+              className="min-h-[56px] justify-between gap-3 rounded-2xl border-white/18 bg-white/10 px-6 text-white shadow-[0_18px_36px_rgba(0,0,0,0.16)] backdrop-blur-md hover:-translate-y-0.5 hover:bg-white/14 focus-visible:outline-white lg:min-h-[52px] lg:w-auto lg:justify-center lg:gap-2 lg:rounded-full"
             >
               Bekijk de jaarkalender van Nederland
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
+            </AppButton>
           </div>
         </div>
       </div>
-    </section>
+    </AppSection>
   );
 }
