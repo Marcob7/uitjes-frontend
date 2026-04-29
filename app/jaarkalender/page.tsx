@@ -14,10 +14,12 @@ export const metadata = {
 type MonthCalendarCell = {
   key: string;
   day: string;
+  dayNumber?: number;
   monthLabel?: string;
   muted?: boolean;
   href?: string;
   eventCount?: number;
+  eventLabels?: string[];
 };
 
 const monthCalendarCells: MonthCalendarCell[] = [
@@ -34,8 +36,10 @@ const monthCalendarCells: MonthCalendarCell[] = [
     return {
       key: `day-${dayNumber}`,
       day: String(dayNumber),
+      dayNumber,
       href: getJaarkalenderHref(dayNumber),
       eventCount: day?.calendarSummary.displayCount,
+      eventLabels: day?.calendarItems.slice(0, 2).map((item) => item.title),
     };
   }),
   {
@@ -58,21 +62,7 @@ const monthCalendarCells: MonthCalendarCell[] = [
   },
 ];
 
-const mobileAgenda = [3, 5, 10, 15].flatMap((dayNumber) => {
-  const day = getJaarkalenderDayByNumber(dayNumber);
-
-  if (!day) {
-    return [];
-  }
-
-  return [
-    {
-      day: `${dayNumber} oktober`,
-      eventCount: day.calendarSummary.displayCount,
-      href: getJaarkalenderHref(dayNumber),
-    },
-  ];
-});
+const selectedCalendarDay = 10;
 
 function ArrowIcon() {
   return (
@@ -159,6 +149,74 @@ function CountBlock({
       </p>
     </div>
   );
+}
+
+function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
+  const eventLabels = cell.eventLabels ?? [];
+  const visibleLabels = eventLabels.slice(0, 2);
+  const hiddenCount = Math.max((cell.eventCount ?? 0) - visibleLabels.length, 0);
+  const isSelected = cell.dayNumber === selectedCalendarDay;
+
+  const content = (
+    <>
+      <div className="flex items-start justify-between gap-1">
+        <div
+          className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[12px] font-semibold leading-none ${
+            isSelected
+              ? "bg-[#171511] text-white"
+              : cell.muted
+                ? "text-[#a79d91]"
+                : "text-[#221d17]"
+          }`}
+        >
+          {cell.day}
+        </div>
+        {cell.monthLabel ? (
+          <span className="pt-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-[#a79d91]">
+            {cell.monthLabel}
+          </span>
+        ) : null}
+      </div>
+
+      {!cell.muted && visibleLabels.length > 0 ? (
+        <div className="mt-1.5 space-y-1">
+          {visibleLabels.map((label, index) => (
+            <div
+              key={`${cell.key}-${label}-${index}`}
+              className={`truncate rounded-full px-1.5 py-0.5 text-[9px] font-medium leading-3 ${
+                index === 1 ? "hidden min-[390px]:block" : ""
+              } ${isSelected ? "bg-[#d9efad] text-[#26331a]" : "bg-[#efe8dc] text-[#5f5246]"}`}
+            >
+              {label}
+            </div>
+          ))}
+          {hiddenCount > 0 ? (
+            <div className="text-[9px] font-semibold leading-none text-[#71804f]">
+              +{hiddenCount}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </>
+  );
+
+  const className = `min-h-[74px] border-b border-r border-[#e5ded2] p-1.5 ${
+    cell.muted
+      ? "bg-[#eee9e2]"
+      : isSelected
+        ? "bg-[#fbf7ed]"
+        : "bg-[#fbfaf7]"
+  }`;
+
+  if (cell.href) {
+    return (
+      <Link href={cell.href} className={`${className} block`} aria-label={`${cell.day} oktober openen`}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }
 
 function CalendarCell({
@@ -373,19 +431,19 @@ export default function JaarkalenderPage() {
           </div>
         </section>
 
-        <section className="mt-10">
-          <div className="mb-6">
+        <section className="mt-6 sm:mt-10">
+          <div className="mb-4 sm:mb-6">
             <AgendaImportBanner />
           </div>
 
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <div className="flex items-center gap-3 text-[#1a1713]">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#edf7d8] text-[#405028]">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#edf7d8] text-[#405028] sm:h-10 sm:w-10">
                   <CalendarIcon />
                 </span>
                 <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.22em] text-[#8a7b6a]">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7b6a] sm:text-sm sm:tracking-[0.22em]">
                     Overzicht
                   </p>
                   <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
@@ -394,12 +452,12 @@ export default function JaarkalenderPage() {
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center gap-3">
+              <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5 sm:gap-3">
                 <MonthNavButton label="<" />
                 <MonthNavButton label=">" />
                 <button
                   type="button"
-                  className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#d9efad] px-5 text-sm font-semibold text-[#2a331d] transition hover:bg-[#cee797]"
+                  className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#d9efad] px-4 text-sm font-semibold text-[#2a331d] transition hover:bg-[#cee797] sm:min-h-11 sm:px-5"
                 >
                   Vandaag
                 </button>
@@ -409,7 +467,7 @@ export default function JaarkalenderPage() {
             <JaarkalenderFilterControls />
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-[2.2rem] border border-[#e4ddd2] bg-[#f8f6f1] shadow-[0_20px_60px_rgba(66,49,31,0.06)]">
+          <div className="mt-5 overflow-hidden rounded-[1.4rem] border border-[#e4ddd2] bg-[#f8f6f1] shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8 sm:rounded-[2.2rem]">
             <div className="hidden md:block">
               <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fcfbf8]">
                 {["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"].map((day) => (
@@ -442,32 +500,23 @@ export default function JaarkalenderPage() {
               </div>
             </div>
 
-            <div className="space-y-3 p-4 md:hidden">
-              {mobileAgenda.map((item) => (
-                <Link
-                  key={item.day}
-                  href={item.href}
-                  className="block rounded-[1.6rem] border border-[#e5dccf] bg-[#fbfaf7] p-5 shadow-[0_12px_28px_rgba(55,39,24,0.05)]"
-                >
-                  <div className="flex items-end justify-between gap-4">
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f72]">
-                        {item.day}
-                      </p>
-                      <p className="mt-3 text-[2.6rem] font-semibold leading-none tracking-[-0.08em] text-[#171511]">
-                        +{item.eventCount}
-                      </p>
-                      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f72]">
-                        activiteiten
-                      </p>
-                    </div>
-                    <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#66764b]">
-                      Open
-                      <ArrowIcon />
-                    </span>
+            <div className="md:hidden">
+              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fcfbf8]">
+                {["ma", "di", "wo", "do", "vr", "za", "zo"].map((day) => (
+                  <div
+                    key={day}
+                    className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7e7366]"
+                  >
+                    {day}
                   </div>
-                </Link>
-              ))}
+                ))}
+              </div>
+
+              <div className="grid grid-cols-7">
+                {monthCalendarCells.map((cell) => (
+                  <MobileCalendarCell key={cell.key} cell={cell} />
+                ))}
+              </div>
             </div>
           </div>
         </section>
