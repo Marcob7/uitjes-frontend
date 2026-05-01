@@ -85,6 +85,7 @@ export default function CityExplorePage({
   const [plannerSelections, setPlannerSelections] = useState<PlannerSelections>(
     DEFAULT_PLANNER_SELECTIONS
   );
+  const plannerRef = useRef<HTMLElement | null>(null);
   const resultsRef = useRef<HTMLElement | null>(null);
 
   const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
@@ -129,7 +130,31 @@ export default function CityExplorePage({
     return sortEventsByStartDate(filteredEvents);
   }, [filteredEvents]);
 
-  const featuredCard = filteredCards[0] ?? cards[0] ?? null;
+  function scrollToSection(target: HTMLElement | null, block: ScrollLogicalPosition) {
+    if (!target) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    target.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block,
+    });
+  }
+
+  function showResults() {
+    scrollToSection(resultsRef.current, "start");
+  }
+
+  function showPlannerStep(step: number) {
+    setCurrentStep(step);
+    window.setTimeout(() => {
+      scrollToSection(plannerRef.current, "start");
+    }, 60);
+  }
 
   function handleCompanionSelect(value: PlannerCompanion) {
     setPlannerSelections((current) => ({
@@ -155,7 +180,10 @@ export default function CityExplorePage({
       vibe: value,
     }));
     setCompletedStepCount((current) => Math.max(current, 3));
-    setCurrentStep(4);
+    setCurrentStep(3);
+    window.setTimeout(() => {
+      showResults();
+    }, 120);
   }
 
   function handlePreviousStep() {
@@ -240,23 +268,17 @@ export default function CityExplorePage({
           <CityExploreFormSection
             cityLabel={cityLabel}
             isDarkLiquid={isDarkLiquid}
-            resultsCount={filteredCards.length}
             plannerSelections={plannerSelections}
             currentStep={currentStep}
             completedStepCount={completedStepCount}
-            featuredCard={featuredCard}
             onCompanionSelect={handleCompanionSelect}
             onMomentSelect={handleMomentSelect}
             onVibeSelect={handleVibeSelect}
             onPreviousStep={handlePreviousStep}
             onGoToStep={handleGoToStep}
             onClearStep={handleClearStep}
-            onShowResults={() =>
-              resultsRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              })
-            }
+            onShowResults={showResults}
+            sectionRef={plannerRef}
           />
 
           <CityExploreResultsSection
@@ -267,6 +289,7 @@ export default function CityExplorePage({
             sectionRef={resultsRef}
             plannerSelections={plannerSelections}
             completedStepCount={completedStepCount}
+            onEditSelection={showPlannerStep}
           />
         </div>
       </div>

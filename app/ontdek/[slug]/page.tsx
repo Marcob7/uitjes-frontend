@@ -51,26 +51,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
     <main className="uitjes-surface min-h-screen text-white">
       <section className="px-4 py-6 md:px-8 md:py-8">
         <div className="mx-auto max-w-[1280px]">
-          <header className="mb-6 flex items-center justify-between">
-            <Link href="/" className="text-xl font-semibold tracking-[-0.03em]">
-              Radiant speciaal geselecteerd
-            </Link>
-
-            <nav className="hidden items-center gap-8 md:flex">
-              <Link href="/ontdek" className="text-sm text-white/76 hover:text-white">
-                Ontdekken
-              </Link>
-              <Link href="/agenda" className="text-sm text-white/76 hover:text-white">
-                Agenda
-              </Link>
-              <Link href="/populair" className="border-b border-[#23170f] pb-1 text-sm font-medium">
-                Populair
-              </Link>
-              <Link href="/favorieten" className="text-sm text-white/76 hover:text-white">
-                Favorieten
-              </Link>
-            </nav>
-          </header>
+     
 
           <Breadcrumbs
             items={[
@@ -282,24 +263,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      <footer className="mt-20 bg-[#121212] px-4 py-10 text-white md:px-8">
-        <div className="mx-auto flex max-w-[1280px] flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div className="text-xl font-semibold tracking-[-0.03em]">
-            Radiant speciaal geselecteerd
-          </div>
-
-          <div className="flex flex-wrap gap-6 text-sm text-white/70">
-            <Link href="/over-ons">Over ons</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/cookies">Cookies</Link>
-          </div>
-
-          <div className="text-sm text-white/60">
-            © 2024 Radiant speciaal geselecteerd. City Guide Editorial.
-          </div>
-        </div>
-      </footer>
+     
     </main>
   );
 }

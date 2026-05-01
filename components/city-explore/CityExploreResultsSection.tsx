@@ -1,6 +1,6 @@
 "use client";
 
-import type { RefObject } from "react";
+import type { ReactElement, RefObject } from "react";
 
 import ExploreCardItem from "./ExploreCardItem";
 import type {
@@ -19,6 +19,15 @@ type CityExploreResultsSectionProps = {
   sectionRef: RefObject<HTMLElement | null>;
   plannerSelections: PlannerSelections;
   completedStepCount: number;
+  onEditSelection: (step: number) => void;
+};
+
+type ActiveFilter = {
+  id: string;
+  label: string;
+  tone: string;
+  icon: (props: { className?: string }) => ReactElement;
+  editStep?: number;
 };
 
 function FilterIcon({ className }: { className?: string }) {
@@ -169,7 +178,7 @@ function buildActiveFilters(
   plannerSelections: PlannerSelections,
   completedStepCount: number
 ) {
-  const filters = [
+  const filters: ActiveFilter[] = [
     {
       id: "city",
       label: cityLabel,
@@ -184,6 +193,7 @@ function buildActiveFilters(
       label: getCompanionLabel(plannerSelections.companion),
       tone: "border-white/18 bg-[rgba(246,217,210,0.22)] text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md",
       icon: HeartIcon,
+      editStep: 1,
     });
   }
 
@@ -193,6 +203,7 @@ function buildActiveFilters(
       label: getMomentLabel(plannerSelections.moment),
       tone: "border-white/18 bg-[rgba(223,240,214,0.22)] text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md",
       icon: CalendarIcon,
+      editStep: 2,
     });
   }
 
@@ -202,6 +213,7 @@ function buildActiveFilters(
       label: getVibeLabel(plannerSelections.vibe),
       tone: "border-white/18 bg-[rgba(246,232,191,0.22)] text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md",
       icon: SparkIcon,
+      editStep: 3,
     });
   }
 
@@ -216,6 +228,7 @@ export default function CityExploreResultsSection({
   sectionRef,
   plannerSelections,
   completedStepCount,
+  onEditSelection,
 }: CityExploreResultsSectionProps) {
   const activeFilters = buildActiveFilters(
     cityLabel,
@@ -231,30 +244,46 @@ export default function CityExploreResultsSection({
   return (
     <section
       ref={sectionRef}
-      className="relative border-b border-white/10 bg-transparent"
+      className="relative scroll-mt-6 border-b border-white/10 bg-transparent"
     >
       <div className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-[rgba(198,223,154,0.14)] blur-3xl" />
       <div className="pointer-events-none absolute right-0 top-20 h-80 w-80 rounded-full bg-[rgba(122,213,217,0.12)] blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[rgba(255,255,255,0.08)] blur-3xl" />
 
       <div className="relative mx-auto max-w-[1220px] px-6 pb-8 pt-12 sm:px-8 lg:px-10 lg:pb-10 lg:pt-14">
-        <div className="flex flex-wrap items-center gap-3">
-          {activeFilters.map((filter) => {
-            const Icon = filter.icon;
+        <div className="rounded-[2.2rem] border border-white/16 bg-white/10 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:p-7">
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            {activeFilters.map((filter) => {
+              const Icon = filter.icon;
 
-            return (
-              <div
-                key={filter.id}
-                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium ${filter.tone}`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{filter.label}</span>
-              </div>
-            );
-          })}
-        </div>
+              const editStep = filter.editStep;
 
-        <div className="mt-8 rounded-[2.2rem] border border-white/16 bg-white/10 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:p-7">
+              if (editStep) {
+                return (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => onEditSelection(editStep)}
+                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition hover:-translate-y-0.5 hover:bg-white/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] ${filter.tone}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{filter.label}</span>
+                  </button>
+                );
+              }
+
+              return (
+                <div
+                  key={filter.id}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium ${filter.tone}`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{filter.label}</span>
+                </div>
+              );
+            })}
+          </div>
+
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
               <div className="inline-flex rounded-full border border-[#e8f2d0]/40 bg-[#e8f2d0]/18 px-4 py-2 text-[0.74rem] font-semibold uppercase tracking-[0.2em] text-[#f1f7df] shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md">

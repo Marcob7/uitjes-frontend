@@ -1,16 +1,14 @@
 "use client";
 
-import type { ReactElement } from "react";
+import type { ReactElement, RefObject } from "react";
 
 import {
   AppButton,
-  AppCard,
   AppChoiceButton,
   AppFilterChip,
 } from "@/components/ui/app";
 
 import type {
-  ExploreCard,
   PlannerCompanion,
   PlannerMoment,
   PlannerSelections,
@@ -20,11 +18,9 @@ import type {
 type CityExploreFormSectionProps = {
   cityLabel: string;
   isDarkLiquid: boolean;
-  resultsCount: number;
   plannerSelections: PlannerSelections;
   currentStep: number;
   completedStepCount: number;
-  featuredCard: ExploreCard | null;
   onCompanionSelect: (value: PlannerCompanion) => void;
   onMomentSelect: (value: PlannerMoment) => void;
   onVibeSelect: (value: PlannerVibe) => void;
@@ -32,6 +28,7 @@ type CityExploreFormSectionProps = {
   onGoToStep: (step: number) => void;
   onClearStep: (step: number) => void;
   onShowResults: () => void;
+  sectionRef: RefObject<HTMLElement | null>;
 };
 
 type LiquidToneKey = "sand" | "violet" | "sage" | "amber" | "mist" | "rose";
@@ -67,7 +64,7 @@ type StepChip = {
   icon: (props: { className?: string }) => ReactElement;
 };
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3;
 
 function getTonePalette(tone: LiquidToneKey) {
   switch (tone) {
@@ -144,20 +141,6 @@ function getTonePalette(tone: LiquidToneKey) {
         iconText: "#6a4531",
       };
   }
-}
-
-function getGlassPanelStyle(isDarkLiquid: boolean, isSelected = false) {
-  return {
-    backgroundColor: isDarkLiquid ? "rgba(255,255,255,0.84)" : "rgba(255,255,255,0.76)",
-    border: `1px solid ${isDarkLiquid ? "rgba(255,255,255,0.36)" : "rgba(255,255,255,0.72)"}`,
-    boxShadow: isSelected
-      ? isDarkLiquid
-        ? "0 24px 52px rgba(8,15,20,0.24)"
-        : "0 24px 48px rgba(41,31,22,0.14)"
-      : isDarkLiquid
-        ? "0 18px 38px rgba(8,15,20,0.16)"
-        : "0 16px 34px rgba(41,31,22,0.08)",
-  };
 }
 
 function getLiquidOptionCardStyle(
@@ -804,227 +787,12 @@ function SimpleOptionGrid<T extends string>({
   );
 }
 
-function ReviewStep({
-  cityLabel,
-  resultsCount,
-  selections,
-  featuredCard,
-  onShowResults,
-  onGoToStep,
-  isDarkLiquid,
-}: {
-  cityLabel: string;
-  resultsCount: number;
-  selections: PlannerSelections;
-  featuredCard: ExploreCard | null;
-  onShowResults: () => void;
-  onGoToStep: (step: number) => void;
-  isDarkLiquid: boolean;
-}) {
-  const panelStyle = getGlassPanelStyle(isDarkLiquid, false);
-  const companionPalette = getTonePalette("rose");
-  const momentPalette = getTonePalette("sage");
-  const vibePalette = getTonePalette("amber");
-
-  return (
-    <div className="grid gap-4 sm:gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.85fr)] lg:items-stretch">
-      <AppCard
-        variant="glass"
-        padding="lg"
-        className="rounded-[1.5rem] p-5 sm:rounded-[2.2rem] sm:p-8"
-        style={panelStyle}
-      >
-        <div className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#7d7267]">
-          Jullie selectie
-        </div>
-        <div className="mt-3 inline-flex rounded-full bg-[#efe8de] px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#6b5f51] sm:mt-4">
-          {resultsCount === 1 ? "1 resultaat" : `${resultsCount} resultaten`}
-        </div>
-        <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#151515] sm:mt-4 sm:text-[clamp(2rem,4vw,3rem)] sm:leading-[0.95] sm:tracking-[-0.06em]">
-          Klaar om {cityLabel} op jullie manier te ontdekken
-        </h3>
-        <p className="mt-3 max-w-[36rem] text-sm leading-6 text-[#665a4e] sm:mt-4 sm:text-base sm:leading-8">
-          Je keuzes staan klaar. Open de resultaten en bekijk welke plekken het
-          best passen bij jullie moment.
-        </p>
-
-        <div className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
-          <AppCard
-            as="button"
-            type="button"
-            onClick={() => onGoToStep(1)}
-            variant="interactive"
-            padding="sm"
-            className="rounded-[1.2rem] px-4 py-4 text-left sm:rounded-[1.6rem] sm:py-5"
-            style={getGlassPanelStyle(isDarkLiquid, false)}
-          >
-            <div
-              className="inline-flex rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em]"
-              style={{
-                backgroundColor: companionPalette.badgeBackground,
-                color: companionPalette.badgeText,
-              }}
-            >
-              Gezelschap
-            </div>
-            <div className="mt-2 text-lg font-semibold tracking-[-0.04em] text-[#191715] sm:mt-3 sm:text-xl">
-              {getCompanionLabel(selections.companion)}
-            </div>
-          </AppCard>
-          <AppCard
-            as="button"
-            type="button"
-            onClick={() => onGoToStep(2)}
-            variant="interactive"
-            padding="sm"
-            className="rounded-[1.2rem] px-4 py-4 text-left sm:rounded-[1.6rem] sm:py-5"
-            style={getGlassPanelStyle(isDarkLiquid, false)}
-          >
-            <div
-              className="inline-flex rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em]"
-              style={{
-                backgroundColor: momentPalette.badgeBackground,
-                color: momentPalette.badgeText,
-              }}
-            >
-              Wanneer
-            </div>
-            <div className="mt-2 text-lg font-semibold tracking-[-0.04em] text-[#192014] sm:mt-3 sm:text-xl">
-              {getMomentLabel(selections.moment)}
-            </div>
-          </AppCard>
-          <AppCard
-            as="button"
-            type="button"
-            onClick={() => onGoToStep(3)}
-            variant="interactive"
-            padding="sm"
-            className="rounded-[1.2rem] px-4 py-4 text-left sm:rounded-[1.6rem] sm:py-5"
-            style={getGlassPanelStyle(isDarkLiquid, false)}
-          >
-            <div
-              className="inline-flex rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em]"
-              style={{
-                backgroundColor: vibePalette.badgeBackground,
-                color: vibePalette.badgeText,
-              }}
-            >
-              Sfeer
-            </div>
-            <div className="mt-2 text-lg font-semibold tracking-[-0.04em] text-[#211a12] sm:mt-3 sm:text-xl">
-              {getVibeLabel(selections.vibe)}
-            </div>
-          </AppCard>
-        </div>
-
-        <AppButton
-          onClick={onShowResults}
-          variant="dark"
-          size="lg"
-          fullWidth
-          iconRight={<ArrowRightIcon className="h-4 w-4" />}
-          className="mt-5 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:mt-8 sm:w-auto"
-        >
-          Bekijk alle resultaten
-        </AppButton>
-      </AppCard>
-
-      <AppCard
-        variant="glass"
-        padding="lg"
-        className="rounded-[1.5rem] p-5 sm:rounded-[2.2rem] sm:p-8"
-        style={panelStyle}
-      >
-        <div className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#7d7267]">
-          Voorproefje
-        </div>
-        <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#151515] sm:mt-4 sm:text-[clamp(1.9rem,3vw,2.7rem)] sm:leading-[0.95] sm:tracking-[-0.06em]">
-          {featuredCard?.title || `Ontdek ${cityLabel}`}
-        </h3>
-        <p className="mt-3 max-w-[34rem] text-sm leading-6 text-[#665a4e] sm:mt-4 sm:text-base sm:leading-8">
-          {featuredCard?.description ||
-            "Een eerste match die aansluit op jullie gekozen moment en sfeer."}
-        </p>
-
-        <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2">
-          <AppCard
-            variant="glass"
-            padding="sm"
-            className="rounded-[1.4rem] px-4 py-4"
-            style={getGlassPanelStyle(isDarkLiquid, false)}
-          >
-            <div className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#7d7166]">
-              Tijdstip
-            </div>
-            <div className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#1a1714]">
-              {featuredCard?.time || "Tijd volgt"}
-            </div>
-          </AppCard>
-          <AppCard
-            variant="glass"
-            padding="sm"
-            className="rounded-[1.4rem] px-4 py-4"
-            style={getGlassPanelStyle(isDarkLiquid, false)}
-          >
-            <div className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#7d7166]">
-              Locatie
-            </div>
-            <div className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#1a1714]">
-              {featuredCard?.location || cityLabel}
-            </div>
-          </AppCard>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-3">
-          {featuredCard?.label ? (
-            <AppFilterChip
-              variant="subtle"
-              className="rounded-full px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em]"
-              style={{
-                backgroundColor: momentPalette.badgeBackground,
-                color: momentPalette.badgeText,
-              } as React.CSSProperties}
-            >
-              {featuredCard.label}
-            </AppFilterChip>
-          ) : null}
-          {featuredCard?.status ? (
-            <AppFilterChip
-              variant="subtle"
-              className="rounded-full px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em]"
-              style={{
-                backgroundColor: companionPalette.badgeBackground,
-                color: companionPalette.badgeText,
-              } as React.CSSProperties}
-            >
-              {featuredCard.status}
-            </AppFilterChip>
-          ) : null}
-        </div>
-
-        <AppButton
-          onClick={onShowResults}
-          variant="dark"
-          size="lg"
-          fullWidth
-          iconRight={<ArrowRightIcon className="h-4 w-4" />}
-          className="mt-5 shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:mt-6 sm:w-auto"
-        >
-          Bekijken
-        </AppButton>
-      </AppCard>
-    </div>
-  );
-}
-
 export default function CityExploreFormSection({
   cityLabel,
   isDarkLiquid,
-  resultsCount,
   plannerSelections,
   currentStep,
   completedStepCount,
-  featuredCard,
   onCompanionSelect,
   onMomentSelect,
   onVibeSelect,
@@ -1032,6 +800,7 @@ export default function CityExploreFormSection({
   onGoToStep,
   onClearStep,
   onShowResults,
+  sectionRef,
 }: CityExploreFormSectionProps) {
   const stepChips = buildStepChips(plannerSelections, completedStepCount);
   const borderColor = isDarkLiquid ? "rgba(255,255,255,0.18)" : "#ddd3c8";
@@ -1088,26 +857,15 @@ export default function CityExploreFormSection({
       };
     }
 
-    return {
-      title: "Jullie avond staat klaar",
-      description:
-        "Controleer je keuzes en open daarna direct de best passende matches hieronder op dezelfde pagina.",
-      content: (
-        <ReviewStep
-          cityLabel={cityLabel}
-          resultsCount={resultsCount}
-          selections={plannerSelections}
-          featuredCard={featuredCard}
-          onShowResults={onShowResults}
-          onGoToStep={onGoToStep}
-          isDarkLiquid={isDarkLiquid}
-        />
-      ),
-    };
+    return null;
   })();
 
+  if (!stepContent) {
+    return null;
+  }
+
   return (
-    <section className="bg-transparent">
+    <section ref={sectionRef} className="scroll-mt-6 bg-transparent">
       <div className="mx-auto max-w-[1220px] px-4 py-6 sm:px-8 sm:py-10 lg:px-10 lg:py-14">
         <div className="">
           <div
