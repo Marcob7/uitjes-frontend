@@ -561,7 +561,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(120,246,217,0.18),transparent_28%),linear-gradient(180deg,rgba(5,7,12,0.08),rgba(5,7,12,0.76))]" />
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-[48rem]">
-              <div className="inline-flex rounded-full bg-[#e8f2d0] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
+              <div className="inline-flex rounded-full bg-[#e8f2d0] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#162016]">
                 {viewModel.label}
               </div>
               <h1 className="mt-5 text-[clamp(3rem,7vw,5.5rem)] leading-[0.92] tracking-[-0.07em] text-white">
@@ -587,7 +587,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
               href={calendarHref}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-white transition hover:bg-[#c9ee77]"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-[#162016] transition hover:bg-[#c9ee77]"
             >
               <CalendarIcon />
               {viewModel.importLabel}

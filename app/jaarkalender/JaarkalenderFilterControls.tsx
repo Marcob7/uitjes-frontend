@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   jaarkalenderCategoryMeta,
@@ -154,7 +154,7 @@ function ControlButton({
 }: {
   icon: ReactNode;
   children: ReactNode;
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
     <button
@@ -174,29 +174,75 @@ export function JaarkalenderFilterControls() {
   const [activeCategory, setActiveCategory] =
     useState<JaarkalenderCategoryKey>("muziek");
   const [activeMood, setActiveMood] = useState("Bruisend");
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
+    const getFocusableElements = () => {
+      const modal = modalRef.current;
+      if (!modal) return [];
+
+      return Array.from(
+        modal.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute("disabled"));
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsOpen(false);
+        closeModal();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements = getFocusableElements();
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        modalRef.current?.focus();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     };
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
+    window.setTimeout(() => {
+      const firstFocusableElement = getFocusableElements()[0];
+      firstFocusableElement?.focus();
+    }, 0);
 
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      triggerRef.current?.focus();
     };
   }, [isOpen]);
 
-  const openModal = (triggerLabel: string) => {
+  const openModal = (triggerLabel: string, triggerElement: HTMLElement) => {
+    triggerRef.current = triggerElement;
     setActiveTrigger(triggerLabel);
     setIsOpen(true);
   };
@@ -207,13 +253,13 @@ export function JaarkalenderFilterControls() {
         <div className="flex flex-wrap gap-3">
           <ControlButton
             icon={<PinIcon />}
-            onClick={() => openModal("Heel Nederland")}
+            onClick={(event) => openModal("Heel Nederland", event.currentTarget)}
           >
             Heel Nederland
           </ControlButton>
           <ControlButton
             icon={<FilterIcon />}
-            onClick={() => openModal("Alle categorieen")}
+            onClick={(event) => openModal("Alle categorieen", event.currentTarget)}
           >
             Alle categorieen
           </ControlButton>
@@ -224,7 +270,7 @@ export function JaarkalenderFilterControls() {
             <button
               key={filter}
               type="button"
-              onClick={() => openModal(filter)}
+              onClick={(event) => openModal(filter, event.currentTarget)}
               className={`inline-flex min-h-10 items-center rounded-full border px-4 text-sm transition ${
                 activeTrigger === filter && isOpen
                   ? "border-[#b8df71] bg-[#eef8d8] text-[#344125]"
@@ -240,12 +286,14 @@ export function JaarkalenderFilterControls() {
       {isOpen ? (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(34,26,20,0.28)] px-4 py-8 backdrop-blur-[6px]"
-          onClick={() => setIsOpen(false)}
+          onClick={closeModal}
         >
           <div
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="jaarkalender-filter-title"
+            tabIndex={-1}
             className="relative w-full max-w-[52rem] overflow-hidden rounded-[2.6rem] border border-white/65 bg-[linear-gradient(180deg,#f9f5ee_0%,#f7f2ea_100%)] shadow-[0_28px_100px_rgba(52,38,25,0.22)]"
             onClick={(event) => event.stopPropagation()}
           >
@@ -269,7 +317,7 @@ export function JaarkalenderFilterControls() {
               <button
                 type="button"
                 aria-label="Sluit filter modal"
-                onClick={() => setIsOpen(false)}
+                onClick={closeModal}
                 className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-[#eddccd]"
               >
                 <CloseIcon />
@@ -397,14 +445,14 @@ export function JaarkalenderFilterControls() {
                 <div className="grid gap-4 pt-2 md:grid-cols-2">
                   <button
                     type="button"
-                    onClick={() => setIsOpen(false)}
+                    onClick={closeModal}
                     className="inline-flex min-h-16 items-center justify-center rounded-full bg-[#171511] px-6 text-lg font-semibold text-white transition hover:bg-[#29231d]"
                   >
                     Wis filters
                   </button>
                   <button
                     type="button"
-                    onClick={() => setIsOpen(false)}
+                    onClick={closeModal}
                     className="inline-flex min-h-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,#d6f48b,#bdf178)] px-6 text-lg font-semibold text-white transition hover:brightness-[0.98]"
                   >
                     Toon resultaten

@@ -498,7 +498,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     href={reserveHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-14 items-center justify-center rounded-full bg-[#bde28d] px-6 text-sm font-semibold text-white transition hover:bg-[#add77a]"
+                    className="inline-flex h-14 items-center justify-center rounded-full bg-[#bde28d] px-6 text-sm font-semibold text-[#213515] transition hover:bg-[#add77a]"
                   >
                     Reserveer nu
                   </a>

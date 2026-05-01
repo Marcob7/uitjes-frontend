@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppButton } from "@/components/ui/app";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
@@ -42,8 +42,11 @@ export default function SearchBar({
   submitButtonClassName,
 }: SearchBarProps) {
   const router = useRouter();
+  const searchInputId = useId();
+  const suggestionsListId = useId();
   const [query, setQuery] = useState<string>("");
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
 
   // Deze lijst toont steden die matchen met wat de gebruiker intypt.
   const suggestions = useMemo((): CityOption[] => {
@@ -86,8 +89,44 @@ export default function SearchBar({
   function handleSuggestionClick(city: CityOption): void {
     setQuery(city.label);
     setShowSuggestions(false);
+    setActiveSuggestionIndex(-1);
     goToCity(city.label);
   }
+
+  function handleInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setShowSuggestions(true);
+      setActiveSuggestionIndex((current) =>
+        suggestions.length === 0 ? -1 : Math.min(current + 1, suggestions.length - 1),
+      );
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveSuggestionIndex((current) =>
+        suggestions.length === 0 ? -1 : Math.max(current - 1, 0),
+      );
+      return;
+    }
+
+    if (event.key === "Enter" && activeSuggestionIndex >= 0) {
+      event.preventDefault();
+      handleSuggestionClick(suggestions[activeSuggestionIndex]);
+      return;
+    }
+
+    if (event.key === "Escape") {
+      setShowSuggestions(false);
+      setActiveSuggestionIndex(-1);
+    }
+  }
+
+  const activeSuggestionId =
+    activeSuggestionIndex >= 0
+      ? `${suggestionsListId}-option-${suggestions[activeSuggestionIndex]?.slug}`
+      : undefined;
 
   return (
     <div className={cn("relative z-40 mx-auto max-w-2xl", rootClassName)}>
@@ -111,21 +150,31 @@ export default function SearchBar({
               &#8981;
             </span>
 
-            <label htmlFor="homepage-city-search" className="sr-only">
+            <label htmlFor={searchInputId} className="sr-only">
               Zoek een stad
             </label>
 
             <input
-              id="homepage-city-search"
+              id={searchInputId}
               type="search"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={showSuggestions && suggestions.length > 0}
+              aria-controls={suggestionsListId}
+              aria-activedescendant={activeSuggestionId}
               value={query}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setQuery(event.target.value);
                 setShowSuggestions(true);
+                setActiveSuggestionIndex(-1);
               }}
               onFocus={() => setShowSuggestions(true)}
+              onKeyDown={handleInputKeyDown}
               onBlur={() => {
-                setTimeout(() => setShowSuggestions(false), 150);
+                setTimeout(() => {
+                  setShowSuggestions(false);
+                  setActiveSuggestionIndex(-1);
+                }, 150);
               }}
               placeholder={placeholder}
               autoComplete="off"
@@ -141,16 +190,23 @@ export default function SearchBar({
 
             {showSuggestions && suggestions.length > 0 ? (
               <div
+                id={suggestionsListId}
+                role="listbox"
+                aria-label="Stadsuggesties"
                 className={cn(
                   "absolute left-0 right-0 top-[calc(100%+12px)] z-[90] max-h-[min(18rem,55vh)] overflow-y-auto rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] sm:rounded-[24px]",
                   suggestionsPanelClassName,
                 )}
               >
                 <ul className="flex flex-col gap-1">
-                  {suggestions.map((city) => (
+                  {suggestions.map((city, index) => (
                     <li key={city.slug}>
                       <button
+                        id={`${suggestionsListId}-option-${city.slug}`}
+                        role="option"
+                        aria-selected={index === activeSuggestionIndex}
                         type="button"
+                        onMouseEnter={() => setActiveSuggestionIndex(index)}
                         onMouseDown={() => handleSuggestionClick(city)}
                         className={cn(
                           "flex w-full items-center justify-between rounded-[16px] px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-50",
