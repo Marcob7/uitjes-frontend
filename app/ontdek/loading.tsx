@@ -1,6 +1,11 @@
 export default function Loading() {
   return (
-    <section className="uitjes-surface px-4 py-10 sm:px-6 lg:px-8">
+    <section
+      role="status"
+      aria-live="polite"
+      aria-label="Ontdekpagina laden"
+      className="uitjes-surface px-4 py-10 sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl animate-pulse">
         <div className="rounded-3xl border border-white/16 bg-white/10 backdrop-blur-xl p-8 shadow-[0_18px_44px_rgba(0,0,0,0.16)] sm:p-10">
           <div className="h-12 w-2/3 rounded-xl bg-[#e5d9c8]" />

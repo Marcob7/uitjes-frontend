@@ -179,6 +179,7 @@ export function WebGLLiquid({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [hasWebGLError, setHasWebGLError] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   const settings = useMemo(
     () => ({
@@ -208,6 +209,18 @@ export function WebGLLiquid({
       revealDuration,
     ],
   );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    updateMotionPreference();
+    mediaQuery.addEventListener("change", updateMotionPreference);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateMotionPreference);
+    };
+  }, []);
 
   useEffect(() => {
     if (hasWebGLError) {
@@ -330,9 +343,13 @@ export function WebGLLiquid({
       const start = performance.now();
 
       const render = (now: number) => {
-        const elapsedSec = Math.max(0, (now - start - settings.delayMs) / 1000);
+        const elapsedSec = prefersReducedMotion
+          ? 0
+          : Math.max(0, (now - start - settings.delayMs) / 1000);
         const revealProgress = settings.reveal
-          ? Math.min(1, elapsedSec / Math.max(settings.revealDuration, 0.05))
+          ? prefersReducedMotion
+            ? 1
+            : Math.min(1, elapsedSec / Math.max(settings.revealDuration, 0.05))
           : 1;
 
         const deep = hexToRgb01(settings.colorDeep);
@@ -354,7 +371,9 @@ export function WebGLLiquid({
         gl.uniform1f(uReveal, revealProgress);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        rafId = requestAnimationFrame(render);
+        if (!prefersReducedMotion) {
+          rafId = requestAnimationFrame(render);
+        }
       };
 
       rafId = requestAnimationFrame(render);
@@ -371,7 +390,7 @@ export function WebGLLiquid({
       setHasWebGLError(true);
       return;
     }
-  }, [hasWebGLError, settings]);
+  }, [hasWebGLError, prefersReducedMotion, settings]);
 
   const content = (title || subtitle || description || children) && (
     <div

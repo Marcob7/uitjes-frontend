@@ -36,10 +36,14 @@ export default function FavouriteButton({ eventId }) {
 
   return (
     <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-      <button onClick={toggle} disabled={busy}>
+      <button type="button" onClick={toggle} disabled={busy} aria-pressed={saved}>
         {saved ? "Bewaard" : "Bewaar"}
       </button>
-      {msg ? <span style={{ fontSize: 12 }}>{msg}</span> : null}
+      {msg ? (
+        <span role="status" aria-live="polite" style={{ fontSize: 12 }}>
+          {msg}
+        </span>
+      ) : null}
     </div>
   );
 }

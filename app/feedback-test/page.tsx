@@ -54,13 +54,16 @@ export default function FeedbackTestPage() {
         </label>
 
         <button
+          type="button"
           onClick={sendFeedback}
           className="mt-5 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#171717] px-5 text-sm font-semibold text-white sm:rounded-full"
         >
           Verstuur test feedback
         </button>
 
-        <p className="mt-4 text-sm text-[#5d5449]">{status}</p>
+        <p role="status" aria-live="polite" className="mt-4 text-sm text-[#5d5449]">
+          {status}
+        </p>
 
         <p className="mt-6 text-xs text-[#6e6458]">
           Na een succesvolle POST zie je het terug in Django Admin, onder Feedbacks.

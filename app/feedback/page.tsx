@@ -98,13 +98,21 @@ export default function FeedbackPage() {
           </div>
 
           {successId !== null ? (
-            <div className="mt-6 rounded-[1.4rem] border border-[#b7eb8f] bg-[#f6ffed] px-4 py-4 text-sm text-[#335317]">
+            <div
+              role="status"
+              aria-live="polite"
+              className="mt-6 rounded-[1.4rem] border border-[#b7eb8f] bg-[#f6ffed] px-4 py-4 text-sm text-[#335317]"
+            >
               <b>Bedankt!</b> Je feedback is verstuurd. (id: {successId})
             </div>
           ) : null}
 
           {errorText ? (
-            <div className="mt-6 whitespace-pre-wrap rounded-[1.4rem] border border-[#ffa39e] bg-[#fff1f0] px-4 py-4 text-sm text-[#7e2f2b]">
+            <div
+              id="feedback-error"
+              role="alert"
+              className="mt-6 whitespace-pre-wrap rounded-[1.4rem] border border-[#ffa39e] bg-[#fff1f0] px-4 py-4 text-sm text-[#7e2f2b]"
+            >
               <b>Er ging iets mis</b>
               <div className="mt-2">{errorText}</div>
             </div>
@@ -120,11 +128,14 @@ export default function FeedbackPage() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={6}
+                required
+                aria-invalid={messageTooShort || Boolean(errorText)}
+                aria-describedby={errorText ? "feedback-error feedback-message-help" : "feedback-message-help"}
                 placeholder="Bijvoorbeeld: ik wil kunnen filteren op binnen of buiten."
                 className="min-h-[160px] w-full rounded-[1.5rem] border border-[#ddd6cb] bg-[#fcfaf7] px-4 py-3 text-base text-[#171717] outline-none transition focus:border-[#bfb3a4]"
               />
 
-              <div className="text-xs text-[#6e6458]">
+              <div id="feedback-message-help" className="text-xs text-[#6e6458]">
                 Minimaal 10 tekens.
                 {messageTooShort ? " Je zit er nog onder." : ""}
               </div>
@@ -140,6 +151,7 @@ export default function FeedbackPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jij@voorbeeld.nl"
                 type="email"
+                autoComplete="email"
                 className="min-h-12 w-full rounded-2xl border border-[#ddd6cb] bg-[#fcfaf7] px-4 text-base text-[#171717] outline-none transition focus:border-[#bfb3a4] sm:rounded-full"
               />
             </label>

@@ -64,7 +64,11 @@ export const AppInput = React.forwardRef<HTMLInputElement, AppInputProps>(
         ) : null}
 
         {error ? (
-          <p id={errorId} className="text-xs font-medium leading-5 text-[#9b3c2e]">
+          <p
+            id={errorId}
+            role="alert"
+            className="text-xs font-medium leading-5 text-[#9b3c2e]"
+          >
             {error}
           </p>
         ) : null}

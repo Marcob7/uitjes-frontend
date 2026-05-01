@@ -53,6 +53,7 @@ export default function CitySelect({
       <div className="text-sm font-semibold text-stone-900">Stad</div>
 
       <select
+        id="city-select"
         value={currentCity}
         onChange={(e) => onChangeCity(e.target.value)}
         className="min-h-12 rounded-2xl border border-stone-200 bg-white px-4 text-base text-stone-900 outline-none transition focus:border-stone-400"

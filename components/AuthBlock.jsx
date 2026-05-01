@@ -21,12 +21,12 @@ export default function AuthBlock() {
     window.location.href = `${API_BASE}/accounts/logout/`;
   }
 
-  if (loading) return <p>Account laden</p>;
+  if (loading) return <p role="status" aria-live="polite">Account laden</p>;
 
   if (!me) {
     return (
       <div style={{ marginBottom: 16 }}>
-        <button onClick={login}>Login met Google</button>
+        <button type="button" onClick={login}>Login met Google</button>
       </div>
     );
   }
@@ -34,7 +34,7 @@ export default function AuthBlock() {
   return (
     <div style={{ marginBottom: 18 }}>
       <div>Ingelogd als: <b>{me.username}</b></div>
-      <button onClick={logout} style={{ marginTop: 8 }}>
+      <button type="button" onClick={logout} style={{ marginTop: 8 }}>
         Uitloggen
       </button>
     </div>

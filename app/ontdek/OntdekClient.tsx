@@ -155,7 +155,7 @@ export default function OntdekClient() {
                     Jouw ontdekruimte
                   </h2>
                 </div>
-                  <span className="rounded-full bg-[#e8f2d0] px-3 py-1 text-xs font-semibold text-white">
+                  <span className="rounded-full bg-[#e8f2d0] px-3 py-1 text-xs font-semibold text-[#162016]">
                   Live
                 </span>
               </div>
@@ -242,7 +242,7 @@ export default function OntdekClient() {
                     Resultaatstatus
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2 text-sm text-white/70">
-                    <span className="rounded-full bg-[#e8f2d0] px-3 py-1 font-medium text-white">
+                    <span className="rounded-full bg-[#e8f2d0] px-3 py-1 font-medium text-[#162016]">
                       {loading ? "Laden..." : `${events.length} zichtbaar`}
                     </span>
                     {when ? (

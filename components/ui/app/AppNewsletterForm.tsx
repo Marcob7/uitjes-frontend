@@ -67,6 +67,8 @@ export function AppNewsletterForm({
           onChange={(event) => setEmail(event.target.value)}
           placeholder={placeholder}
           required
+          aria-label={placeholder}
+          autoComplete="email"
           wrapperClassName="flex-1"
           className="bg-white"
           error={status === "error" ? "Vul een geldig e-mailadres in." : undefined}
@@ -83,7 +85,7 @@ export function AppNewsletterForm({
       </form>
 
       {status === "success" ? (
-        <p className="mt-3 text-sm font-medium text-[#4d6630]">
+        <p role="status" aria-live="polite" className="mt-3 text-sm font-medium text-[#4d6630]">
           Je aanmelding staat klaar. De backend koppelen we later.
         </p>
       ) : null}

@@ -13,9 +13,9 @@ export default function AppFrame({ children }: AppFrameProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main id="app-shell-content" className="flex-1">
+      <div id="app-shell-content" className="flex-1">
         {children}
-      </main>
+      </div>
       <SiteFooter />
     </div>
   );
