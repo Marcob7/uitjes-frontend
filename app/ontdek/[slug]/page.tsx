@@ -48,7 +48,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="min-h-screen bg-[#f6f3ee] text-[#111111]">
+    <main className="uitjes-surface min-h-screen text-white">
       <section className="px-4 py-6 md:px-8 md:py-8">
         <div className="mx-auto max-w-[1280px]">
           <header className="mb-6 flex items-center justify-between">
@@ -57,16 +57,16 @@ export default function ExploreDetailPage({ params }: PageProps) {
             </Link>
 
             <nav className="hidden items-center gap-8 md:flex">
-              <Link href="/ontdek" className="text-sm text-black/70 hover:text-black">
+              <Link href="/ontdek" className="text-sm text-white/76 hover:text-white">
                 Ontdekken
               </Link>
-              <Link href="/agenda" className="text-sm text-black/70 hover:text-black">
+              <Link href="/agenda" className="text-sm text-white/76 hover:text-white">
                 Agenda
               </Link>
-              <Link href="/populair" className="border-b border-black pb-1 text-sm font-medium">
+              <Link href="/populair" className="border-b border-[#23170f] pb-1 text-sm font-medium">
                 Populair
               </Link>
-              <Link href="/favorieten" className="text-sm text-black/70 hover:text-black">
+              <Link href="/favorieten" className="text-sm text-white/76 hover:text-white">
                 Favorieten
               </Link>
             </nav>
@@ -95,10 +95,10 @@ export default function ExploreDetailPage({ params }: PageProps) {
 
               <div className="absolute bottom-0 left-0 w-full p-5 md:p-8">
                 <div className="mb-4 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[#d8efb5] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-black">
+                  <span className="rounded-full bg-[#d8efb5] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
                     {item.category}
                   </span>
-                  <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-black">
+                  <span className="rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
                     {item.status}
                   </span>
                 </div>
@@ -116,7 +116,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
 
           <section className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_360px]">
             <div>
-              <div className="grid gap-6 rounded-[2rem] bg-white/60 p-6 md:grid-cols-2 md:p-8">
+              <div className="grid gap-6 rounded-[2rem] bg-white/10 backdrop-blur-xl p-6 md:grid-cols-2 md:p-8">
                 <div>
                   <h2 className="text-3xl font-semibold tracking-[-0.04em]">
                     Waarom dit een goede keuze is
@@ -129,17 +129,17 @@ export default function ExploreDetailPage({ params }: PageProps) {
                       <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#6d8f3d] text-xs text-white">
                         ✓
                       </span>
-                      <span className="text-sm leading-6 text-black/70">{reason}</span>
+                      <span className="text-sm leading-6 text-white/76">{reason}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="mt-8 rounded-[2rem] bg-[#ede1d6] p-7 md:p-9">
+              <div className="mt-8 rounded-[2rem] bg-white/10 p-7 md:p-9">
                 <h2 className="text-4xl font-semibold tracking-[-0.04em]">
                   {item.aboutTitle}
                 </h2>
-                <p className="mt-5 max-w-3xl text-sm leading-7 text-black/70 md:text-base">
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-white/76 md:text-base">
                   {item.aboutText}
                 </p>
               </div>
@@ -184,7 +184,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
                           sizes="(max-width: 768px) 100vw, 33vw"
                         />
 
-                        <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-black">
+                        <span className="absolute left-3 top-3 rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
                           {place.badge}
                         </span>
                       </div>
@@ -193,7 +193,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
                         <h3 className="text-2xl font-semibold tracking-[-0.03em]">
                           {place.title}
                         </h3>
-                        <p className="mt-1 text-sm text-black/55">
+                        <p className="mt-1 text-sm text-white/68">
                           {place.subtitle}
                         </p>
                       </div>
@@ -204,12 +204,12 @@ export default function ExploreDetailPage({ params }: PageProps) {
             </div>
 
             <aside className="space-y-5">
-              <div className="rounded-[1.75rem] bg-white p-5 shadow-sm">
+              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] bg-white/10 backdrop-blur-xl p-5 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
                 <a
                   href={reserveHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="mb-3 inline-flex w-full items-center justify-center rounded-full bg-[#bde28d] px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
+                  className="mb-3 inline-flex w-full items-center justify-center rounded-full bg-[#bde28d] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                 >
                   {item.actions.reserveLabel}
                 </a>
@@ -219,14 +219,14 @@ export default function ExploreDetailPage({ params }: PageProps) {
                     href={routeHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-full bg-[#f1e7dd] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#eadbcd]"
+                    className="inline-flex items-center justify-center rounded-full bg-[#f1e7dd] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#eadbcd]"
                   >
                     {item.actions.routeLabel}
                   </a>
                   <SavePlaceButton
                     item={savedPlace}
-                    className="inline-flex items-center justify-center rounded-full bg-[#ececf2] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#e0e0ea]"
-                    savedClassName="inline-flex items-center justify-center rounded-full bg-[#dfeecd] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#d4e7ba]"
+                    className="inline-flex items-center justify-center rounded-full bg-[#ececf2] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#e0e0ea]"
+                    savedClassName="inline-flex items-center justify-center rounded-full bg-[#dfeecd] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#d4e7ba]"
                     savedChildren="Opgeslagen"
                   >
                     {item.actions.saveLabel}
@@ -234,44 +234,44 @@ export default function ExploreDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="rounded-[1.75rem] bg-[#d8ead0] p-6">
+              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] bg-white/12 p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.03em]">
                   Praktisch
                 </h3>
 
                 <div className="mt-5 space-y-5">
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-black/55">
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
                       Adres
                     </div>
-                    <div className="mt-1 text-sm leading-6 text-black/75">
+                    <div className="mt-1 text-sm leading-6 text-white/82">
                       {item.practical.address}
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-black/55">
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
                       Openingstijden
                     </div>
-                    <div className="mt-1 text-sm leading-6 text-black/75">
+                    <div className="mt-1 text-sm leading-6 text-white/82">
                       {item.practical.openingHours}
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-black/55">
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
                       Type
                     </div>
-                    <div className="mt-1 text-sm leading-6 text-black/75">
+                    <div className="mt-1 text-sm leading-6 text-white/82">
                       {item.practical.cuisine}
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-black/55">
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
                       Prijs
                     </div>
-                    <div className="mt-1 text-sm leading-6 text-black/75">
+                    <div className="mt-1 text-sm leading-6 text-white/82">
                       {item.practical.pricing}
                     </div>
                   </div>

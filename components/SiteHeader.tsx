@@ -2,578 +2,173 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 
-type RgbColor = {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-};
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/jaarkalender", label: "Jaarkalender" },
+  { href: "/inspiratie", label: "Inspiratie" },
+  { href: "/inspiratie", label: "Last minute" },
+  { href: "/event-details", label: "Uitgelichte Events" },
+  { href: "/festivals", label: "Festivals" },
+  { href: "/feedback", label: "Feedback" },
+];
 
-type HeaderTheme = {
-  bg: string;
-  text: string;
-  border: string;
-  panelBg: string;
-  hoverBg: string;
-  elevatedBg: string;
-  elevatedBorder: string;
-  ctaBg: string;
-  ctaText: string;
-  ctaHover: string;
-};
-
-const DEFAULT_HEADER_THEME: HeaderTheme = {
-  bg: "#FDFBF7",
-  text: "#171717",
-  border: "rgba(58,78,35,0.10)",
-  panelBg: "#FDFBF7",
-  hoverBg: "rgba(255,255,255,0.78)",
-  elevatedBg: "#ffffff",
-  elevatedBorder: "rgba(58,78,35,0.14)",
-  ctaBg: "#bef264",
-  ctaText: "#171717",
-  ctaHover: "#a3e635",
-};
-
-function clamp(value: number, min = 0, max = 255) {
-  return Math.max(min, Math.min(max, value));
-}
-
-function parseColor(value: string | null | undefined): RgbColor | null {
-  if (!value) {
-    return null;
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === href;
   }
 
-  const input = value.trim();
-
-  if (input.startsWith("#")) {
-    const hex = input.slice(1);
-
-    if (hex.length === 3) {
-      return {
-        r: Number.parseInt(hex[0] + hex[0], 16),
-        g: Number.parseInt(hex[1] + hex[1], 16),
-        b: Number.parseInt(hex[2] + hex[2], 16),
-        a: 1,
-      };
-    }
-
-    if (hex.length === 6) {
-      return {
-        r: Number.parseInt(hex.slice(0, 2), 16),
-        g: Number.parseInt(hex.slice(2, 4), 16),
-        b: Number.parseInt(hex.slice(4, 6), 16),
-        a: 1,
-      };
-    }
-  }
-
-  const rgbMatch = input.match(
-    /rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*[,/]\s*([\d.]+))?\s*\)/i,
-  );
-
-  if (!rgbMatch) {
-    return null;
-  }
-
-  return {
-    r: clamp(Number(rgbMatch[1])),
-    g: clamp(Number(rgbMatch[2])),
-    b: clamp(Number(rgbMatch[3])),
-    a: rgbMatch[4] ? Math.max(0, Math.min(1, Number(rgbMatch[4]))) : 1,
-  };
-}
-
-function toRgbaString(color: RgbColor, alpha = color.a) {
-  return `rgba(${Math.round(color.r)}, ${Math.round(color.g)}, ${Math.round(color.b)}, ${alpha})`;
-}
-
-function mixColors(base: RgbColor, overlay: RgbColor, amount: number): RgbColor {
-  const ratio = Math.max(0, Math.min(1, amount));
-
-  return {
-    r: base.r + (overlay.r - base.r) * ratio,
-    g: base.g + (overlay.g - base.g) * ratio,
-    b: base.b + (overlay.b - base.b) * ratio,
-    a: 1,
-  };
-}
-
-function getLuminance(color: RgbColor) {
-  const channels = [color.r, color.g, color.b].map((channel) => {
-    const value = channel / 255;
-    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-  });
-
-  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
-}
-
-function getContrastRatio(first: RgbColor, second: RgbColor) {
-  const lighter = Math.max(getLuminance(first), getLuminance(second));
-  const darker = Math.min(getLuminance(first), getLuminance(second));
-
-  return (lighter + 0.05) / (darker + 0.05);
-}
-
-function buildThemeFromColor(color: RgbColor): HeaderTheme {
-  const darkText = parseColor("#171717")!;
-  const lightText = parseColor("#FFFFFF")!;
-  const textColor =
-    getContrastRatio(color, darkText) >= getContrastRatio(color, lightText)
-      ? darkText
-      : lightText;
-
-  const isDarkSurface = textColor === lightText;
-  const elevatedBase = mixColors(color, textColor, isDarkSurface ? 0.1 : 0.04);
-  const hoverBase = mixColors(color, textColor, isDarkSurface ? 0.16 : 0.06);
-
-  return {
-    bg: toRgbaString(color, 0.96),
-    text: toRgbaString(textColor, 1),
-    border: toRgbaString(textColor, isDarkSurface ? 0.18 : 0.1),
-    panelBg: toRgbaString(color, 0.98),
-    hoverBg: toRgbaString(hoverBase, isDarkSurface ? 0.9 : 1),
-    elevatedBg: toRgbaString(elevatedBase, isDarkSurface ? 0.92 : 1),
-    elevatedBorder: toRgbaString(textColor, isDarkSurface ? 0.2 : 0.12),
-    ctaBg: isDarkSurface ? "#ffffff" : "#171717",
-    ctaText: isDarkSurface ? "#171717" : "#ffffff",
-    ctaHover: isDarkSurface ? "#f3f4f6" : "#0f0f0f",
-  };
-}
-
-function applyAccessibleTextOverride(
-  baseTheme: HeaderTheme,
-  backgroundColor: RgbColor,
-  preferredText: RgbColor | null,
-) {
-  if (!preferredText || getContrastRatio(backgroundColor, preferredText) < 4.5) {
-    return baseTheme;
-  }
-
-  return {
-    ...baseTheme,
-    text: toRgbaString(preferredText, 1),
-    border: toRgbaString(preferredText, 0.12),
-    elevatedBorder: toRgbaString(preferredText, 0.16),
-  };
-}
-
-function getThemeFromElement(element: HTMLElement | null): HeaderTheme | null {
-  if (!element) {
-    return null;
-  }
-
-  const style = window.getComputedStyle(element);
-  const explicitBg =
-    element.dataset.headerBg ?? style.getPropertyValue("--header-bg").trim();
-  const explicitText =
-    element.dataset.headerFg ?? style.getPropertyValue("--header-fg").trim();
-  const backgroundColor = parseColor(explicitBg || style.backgroundColor);
-
-  if (!backgroundColor || backgroundColor.a < 0.72) {
-    return null;
-  }
-
-  const baseTheme = buildThemeFromColor(backgroundColor);
-
-  if (!explicitText) {
-    return baseTheme;
-  }
-
-  const textColor = parseColor(explicitText);
-  return applyAccessibleTextOverride(baseTheme, backgroundColor, textColor);
-}
-
-function findThemeInAncestors(start: Element | null, boundary: HTMLElement | null) {
-  let current = start instanceof HTMLElement ? start : null;
-
-  while (current && current !== boundary) {
-    const theme = getThemeFromElement(current);
-    if (theme) {
-      return theme;
-    }
-    current = current.parentElement;
-  }
-
-  return boundary ? getThemeFromElement(boundary) : null;
-}
-
-function findFallbackTheme(boundary: HTMLElement | null) {
-  if (!boundary) {
-    return DEFAULT_HEADER_THEME;
-  }
-
-  const pageRoot = boundary.firstElementChild as HTMLElement | null;
-  if (!pageRoot) {
-    return DEFAULT_HEADER_THEME;
-  }
-
-  const queue: HTMLElement[] = [pageRoot];
-  let scanned = 0;
-
-  while (queue.length > 0 && scanned < 40) {
-    const current = queue.shift()!;
-    scanned += 1;
-
-    const rect = current.getBoundingClientRect();
-    if (rect.height >= 24 && rect.bottom > 0) {
-      const theme = getThemeFromElement(current);
-      if (theme) {
-        return theme;
-      }
-    }
-
-    queue.push(...Array.from(current.children).slice(0, 6) as HTMLElement[]);
-  }
-
-  return DEFAULT_HEADER_THEME;
-}
-
-function isSameTheme(current: HeaderTheme, next: HeaderTheme) {
-  return (
-    current.bg === next.bg &&
-    current.text === next.text &&
-    current.border === next.border &&
-    current.panelBg === next.panelBg &&
-    current.elevatedBg === next.elevatedBg &&
-    current.elevatedBorder === next.elevatedBorder &&
-    current.ctaBg === next.ctaBg &&
-    current.ctaText === next.ctaText
-  );
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const headerRef = useRef<HTMLElement | null>(null);
-  const themeRef = useRef<HeaderTheme>(DEFAULT_HEADER_THEME);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<HeaderTheme>(DEFAULT_HEADER_THEME);
 
-  const closeMenu = () => setMobileMenuOpen(false);
-
-  useLayoutEffect(() => {
-    const contentRoot = document.getElementById("app-shell-content");
-    let frame = 0;
-
-    const updateTheme = () => {
-      const header = headerRef.current;
-
-      if (!header) {
-        themeRef.current = DEFAULT_HEADER_THEME;
-        setTheme(DEFAULT_HEADER_THEME);
-        return;
-      }
-
-      const headerBounds = header.getBoundingClientRect();
-      const sampleX = Math.max(24, Math.min(window.innerWidth / 2, window.innerWidth - 24));
-      const sampleY = Math.min(window.innerHeight - 2, Math.max(headerBounds.bottom + 1, 2));
-      const sampledElement = document.elementFromPoint(sampleX, sampleY);
-
-      const nextTheme =
-        findThemeInAncestors(sampledElement, contentRoot) ?? findFallbackTheme(contentRoot);
-
-      if (!isSameTheme(themeRef.current, nextTheme)) {
-        themeRef.current = nextTheme;
-        setTheme(nextTheme);
-      }
-    };
-
-    const scheduleUpdate = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(updateTheme);
-    };
-
-    scheduleUpdate();
-    const delayedUpdate = window.setTimeout(scheduleUpdate, 120);
-    window.addEventListener("load", scheduleUpdate);
-    window.addEventListener("resize", scheduleUpdate);
-
-    return () => {
-      window.clearTimeout(delayedUpdate);
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("load", scheduleUpdate);
-      window.removeEventListener("resize", scheduleUpdate);
-    };
+  useEffect(() => {
+    setMobileMenuOpen(false);
   }, [pathname]);
 
-  const headerStyle = {
-    backgroundColor: theme.bg,
-    color: theme.text,
-    borderColor: theme.border,
-  } satisfies CSSProperties;
-
-  const mutedTextStyle = { color: theme.text } satisfies CSSProperties;
-  const elevatedStyle = {
-    backgroundColor: theme.elevatedBg,
-    color: theme.text,
-    borderColor: theme.elevatedBorder,
-  } satisfies CSSProperties;
-  const panelStyle = {
-    backgroundColor: theme.panelBg,
-    borderColor: theme.border,
-  } satisfies CSSProperties;
-  const hoverableStyle = {
-    color: theme.text,
-  } satisfies CSSProperties;
-  const ctaStyle = {
-    backgroundColor: theme.ctaBg,
-    color: theme.ctaText,
-  } satisfies CSSProperties;
-
   return (
-    <header
-      ref={headerRef}
-      className="sticky top-0 z-50 backdrop-blur transition-[background-color,color] duration-200 ease-out"
-      style={headerStyle}
-    >
-      <div className="mx-auto flex min-h-20 w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        {/* Logo / merknaam */}
-        <Link
-          href="/"
-          className="flex items-center gap-3 text-xl font-semibold tracking-tight"
-          aria-label="Ga naar home"
-          onClick={closeMenu}
-          style={hoverableStyle}
-        >
-          <span>Uitjes NL</span>
-        </Link>
+    <header className="sticky top-0 z-50 px-3 py-3 sm:px-5">
+      <div className="mx-auto w-full max-w-7xl">
+        <div className="relative overflow-hidden rounded-[28px] border border-white/45 bg-[linear-gradient(135deg,rgba(255,255,255,0.74),rgba(255,255,255,0.43)_48%,rgba(226,244,237,0.52))] shadow-[0_22px_70px_rgba(24,37,30,0.14)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_12%,rgba(255,255,255,0.88),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(190,242,100,0.26),transparent_30%),linear-gradient(90deg,rgba(255,255,255,0.15),rgba(255,255,255,0))]" />
+          <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-white/80" />
 
-        {/* Desktop navigatie */}
-        <nav aria-label="Hoofdnavigatie" className="hidden md:flex">
-          <ul className="flex items-center gap-8 text-[15px] font-medium">
-            <li>
-              <Link href="/" className="transition-opacity hover:opacity-80" style={hoverableStyle}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/jaarkalender"
-                className="transition-opacity hover:opacity-80"
-                style={hoverableStyle}
-              >
-                Jaarkalender
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/inspiratie"
-                className="transition-opacity hover:opacity-80"
-                style={hoverableStyle}
-              >
-                Inspiratie
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/inspiratie"
-                className="transition-opacity hover:opacity-80"
-                style={hoverableStyle}
-              >
-                Last minute
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/event-details"
-                className="transition-opacity hover:opacity-80"
-                style={hoverableStyle}
-              >
-                Uitgelichte Events
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/festivals"
-                className="transition-opacity hover:opacity-80"
-                style={hoverableStyle}
-              >
-                Festivals
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/feedback"
-                className="transition-opacity hover:opacity-80"
-                style={hoverableStyle}
-              >
-                Feedback
-              </Link>
-            </li>
-          </ul>
-        </nav>
+          <div className="relative flex min-h-16 items-center justify-between gap-4 px-4 py-3 sm:px-5 lg:px-6">
+            <Link
+              href="/"
+              className="group inline-flex items-center gap-3 rounded-full pr-2 text-neutral-950 outline-none transition duration-200 hover:text-neutral-700 focus-visible:ring-2 focus-visible:ring-lime-500/70"
+              aria-label="Ga naar home"
+            >
+              <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-white/65 bg-[radial-gradient(circle_at_30%_20%,#ffffff,rgba(232,242,208,0.86)_42%,rgba(163,230,53,0.34))] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_10px_28px_rgba(68,92,38,0.18)]">
+                <span className="h-3.5 w-3.5 rounded-full bg-neutral-950 shadow-[10px_4px_0_rgba(22,101,52,0.42),-7px_8px_0_rgba(15,118,110,0.34)]" />
+              </span>
+              <span className="text-lg font-semibold tracking-tight">Uitjes NL</span>
+            </Link>
 
-        {/* Rechter acties desktop */}
-        <div className="hidden items-center gap-3 md:flex">
-          <Link
-            href="/saved"
-            className="text-[15px] font-medium transition-opacity hover:opacity-80"
-            style={mutedTextStyle}
-          >
-            Mijn lijst
-          </Link>
+            <nav aria-label="Hoofdnavigatie" className="hidden min-w-0 flex-1 justify-center lg:flex">
+              <ul className="flex min-w-0 items-center gap-1 rounded-full border border-white/45 bg-white/28 p-1 text-[14px] font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] backdrop-blur-xl">
+                {navItems.map((item) => {
+                  const active = isActivePath(pathname, item.href);
 
-          <Link
-            href="/inspiratie"
-            className="inline-flex min-h-12 items-center justify-center rounded-2xl px-5 py-3 text-[15px] font-semibold transition duration-200 hover:brightness-[0.97]"
-            style={ctaStyle}
-          >
-            Inspiratie
-          </Link>
-        </div>
+                  return (
+                    <li key={`${item.href}-${item.label}`}>
+                      <Link
+                        href={item.href}
+                        aria-current={active ? "page" : undefined}
+                        className={`inline-flex min-h-10 items-center rounded-full px-3.5 transition duration-200 outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 ${
+                          active
+                            ? "bg-neutral-950 text-white shadow-[0_10px_26px_rgba(23,23,23,0.18)]"
+                            : "text-neutral-700 hover:bg-white/58 hover:text-neutral-950"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
 
-        {/* Hamburger knop mobiel */}
-        <button
-          type="button"
-          aria-label={mobileMenuOpen ? "Sluit menu" : "Open menu"}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border shadow-[0_8px_18px_rgba(48,64,28,0.08)] transition duration-200 hover:brightness-[0.98] md:hidden"
-          style={elevatedStyle}
-        >
-          <span className="sr-only">
-            {mobileMenuOpen ? "Sluit menu" : "Open menu"}
-          </span>
-
-          <div className="flex flex-col gap-1.5">
-            <span
-              className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
-                mobileMenuOpen ? "translate-y-2 rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`block h-0.5 w-5 bg-current transition-opacity duration-200 ${
-                mobileMenuOpen ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`block h-0.5 w-5 bg-current transition-transform duration-200 ${
-                mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
-              }`}
-            />
-          </div>
-        </button>
-      </div>
-
-      {/* Mobiel menu */}
-      {mobileMenuOpen && (
-        <div
-          id="mobile-menu"
-          className="border-t md:hidden"
-          style={panelStyle}
-        >
-          <nav
-            aria-label="Mobiele hoofdnavigatie"
-            className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6"
-          >
-            <ul className="flex flex-col gap-2">
-              <li>
-                <Link
-                  href="/"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/jaarkalender"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Jaarkalender
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/inspiratie"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Inspiratie
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/inspiratie"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Last minute
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/saved"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Bewaard
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/event-details"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Uitgelichte Events
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/festivals"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Festivals
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/feedback"
-                  onClick={closeMenu}
-                  className="block rounded-2xl px-4 py-3 text-[15px] font-medium transition-opacity hover:opacity-80"
-                  style={hoverableStyle}
-                >
-                  Feedback
-                </Link>
-              </li>
-            </ul>
-
-            <div className="mt-4 flex flex-col gap-3 border-t pt-4" style={{ borderColor: theme.border }}>
+            <div className="hidden items-center gap-2 lg:flex">
               <Link
                 href="/saved"
-                onClick={closeMenu}
-                className="inline-flex min-h-12 items-center justify-center rounded-2xl border px-4 py-3 text-[15px] font-medium transition duration-200 hover:brightness-[0.98]"
-                style={elevatedStyle}
+                className="inline-flex min-h-11 items-center rounded-full border border-white/46 bg-white/34 px-4 text-[14px] font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition duration-200 hover:bg-white/58 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
               >
-                Bewaard
+                Mijn lijst
               </Link>
 
               <Link
                 href="/inspiratie"
-                onClick={closeMenu}
-                className="inline-flex min-h-12 items-center justify-center rounded-2xl px-5 py-3 text-[15px] font-semibold transition duration-200 hover:brightness-[0.97]"
-                style={ctaStyle}
+                className="inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(23,23,23,0.2)] transition duration-200 hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
               >
                 Inspiratie
               </Link>
             </div>
-          </nav>
+
+            <button
+              type="button"
+              aria-label={mobileMenuOpen ? "Sluit menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/55 bg-white/36 text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_10px_26px_rgba(24,37,30,0.12)] backdrop-blur-xl transition duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 lg:hidden"
+            >
+              <span className="sr-only">
+                {mobileMenuOpen ? "Sluit menu" : "Open menu"}
+              </span>
+
+              <span className="flex flex-col gap-1.5">
+                <span
+                  className={`block h-0.5 w-5 rounded-full bg-current transition-transform duration-200 ${
+                    mobileMenuOpen ? "translate-y-2 rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`block h-0.5 w-5 rounded-full bg-current transition-opacity duration-200 ${
+                    mobileMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
+                />
+                <span
+                  className={`block h-0.5 w-5 rounded-full bg-current transition-transform duration-200 ${
+                    mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
+                  }`}
+                />
+              </span>
+            </button>
+          </div>
+
+          {mobileMenuOpen && (
+            <div id="mobile-menu" className="relative border-t border-white/45 lg:hidden">
+              <nav
+                aria-label="Mobiele hoofdnavigatie"
+                className="px-3 pb-4 pt-3 sm:px-4"
+              >
+                <ul className="grid gap-1">
+                  {navItems.map((item) => {
+                    const active = isActivePath(pathname, item.href);
+
+                    return (
+                      <li key={`mobile-${item.href}-${item.label}`}>
+                        <Link
+                          href={item.href}
+                          aria-current={active ? "page" : undefined}
+                          className={`block rounded-2xl px-4 py-3 text-[15px] font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 ${
+                            active
+                              ? "bg-neutral-950 text-white shadow-[0_12px_28px_rgba(23,23,23,0.16)]"
+                              : "text-neutral-800 hover:bg-white/48 hover:text-neutral-950"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                <div className="mt-3 grid gap-2 border-t border-white/45 pt-3">
+                  <Link
+                    href="/saved"
+                    className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/52 bg-white/34 px-4 py-3 text-[15px] font-semibold text-neutral-800 transition duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                  >
+                    Mijn lijst
+                  </Link>
+
+                  <Link
+                    href="/inspiratie"
+                    className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-neutral-950 px-5 py-3 text-[15px] font-semibold text-white shadow-[0_14px_30px_rgba(23,23,23,0.2)] transition duration-200 hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                  >
+                    Inspiratie
+                  </Link>
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }

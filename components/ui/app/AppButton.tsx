@@ -26,17 +26,17 @@ export type AppButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<AppButtonVariant, string> = {
   primary:
-    "border border-[#d9f1a6] bg-[#e8f2d0] text-[#162016] shadow-[0_14px_30px_rgba(91,121,42,0.14)] hover:bg-[#f1f7df]",
+    "border border-[#e8f2d0]/65 bg-[#e8f2d0] text-[#162016] shadow-[0_18px_36px_rgba(12,20,12,0.18)] hover:bg-[#f1f7df]",
   secondary:
-    "border border-[#ddd3c8] bg-white/78 text-[#2d2925] shadow-[0_12px_28px_rgba(52,38,25,0.06)] hover:bg-white",
+    "border border-white/18 bg-white/10 text-white shadow-[0_18px_36px_rgba(0,0,0,0.16)] backdrop-blur-md hover:bg-white/14",
   ghost:
-    "border border-transparent bg-transparent text-[#3c392f] hover:bg-[#f4f0eb]",
+    "border border-white/18 bg-white/10 text-white shadow-[0_18px_36px_rgba(0,0,0,0.16)] backdrop-blur-md hover:bg-white/14",
   dark:
-    "border border-[#181615] bg-[#181615] text-white shadow-[0_16px_34px_rgba(24,22,21,0.16)] hover:bg-[#2a2622]",
+    "border border-white/12 bg-[#07131a]/78 text-white shadow-[0_20px_44px_rgba(0,0,0,0.22)] backdrop-blur-md hover:bg-[#0f4950]/70",
   subtle:
-    "border border-[#ece5db] bg-[#f7f3ef] text-[#50443b] hover:bg-[#fbfaf7]",
+    "border border-white/14 bg-white/8 text-white/88 backdrop-blur-md hover:bg-white/12",
   outline:
-    "border border-[#d8cfc4] bg-transparent text-[#2d2925] hover:bg-white/70",
+    "border border-white/20 bg-transparent text-white hover:bg-white/10",
 };
 
 const sizeClasses: Record<AppButtonSize, string> = {

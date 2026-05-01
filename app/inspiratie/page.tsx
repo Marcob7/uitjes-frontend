@@ -22,56 +22,56 @@ const categoryCards: CategoryCard[] = [
     title: "Nu",
     description: "Ik wil snel iets vinden dat nu kan.",
     href: "/inspiratie/vandaag",
-    bgClass: "bg-[#dcebd9]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <ClockIcon />,
   },
   {
     title: "Dit weekend",
     description: "Ik wil ideeën voor het weekend.",
     href: "/inspiratie/weekend",
-    bgClass: "bg-[#eee2d9]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <CalendarIcon />,
   },
   {
     title: "Eten & drinken",
     description: "Ik wil iets met horeca, proeven, borrelen of uit eten.",
     href: "/inspiratie/eten-drinken",
-    bgClass: "bg-[#efe3bf]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <FoodIcon />,
   },
   {
     title: "Met gezin",
     description: "Ik zoek iets dat past bij kinderen en samen op pad gaan.",
     href: "/inspiratie/met-kinderen",
-    bgClass: "bg-[#e5e4f2]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <SmileIcon />,
   },
   {
     title: "Relaxed",
     description: "Ik zoek iets rustigs, simpels of laagdrempeligs.",
     href: "/inspiratie/gratis",
-    bgClass: "bg-[#dff0c8]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <MoneyIcon />,
   },
   {
     title: "Cultureel",
     description: "Ik wil inspiratie voor musea, steden, voorstellingen of bijzondere plekken.",
     href: "/inspiratie/binnen",
-    bgClass: "bg-[#e9e6e6]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <BuildingIcon />,
   },
   {
     title: "Actief",
     description: "Ik zoek iets buiten, sportiefs of avontuurlijks.",
     href: "/inspiratie/buiten",
-    bgClass: "bg-[#dbead8]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <TreeIcon />,
   },
   {
     title: "Date",
     description: "Ik zoek iets dat geschikt is om samen te doen.",
     href: "/inspiratie/romantisch",
-    bgClass: "bg-[#efe4dc]",
+    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
     icon: <HeartIcon />,
   },
 ];
@@ -102,13 +102,13 @@ const popularCities: CityCard[] = [
 
 export default function InspiratiePage() {
   return (
-    <main className="min-h-screen bg-[#f7f5f1] text-[#111111]">
+    <main className="uitjes-surface min-h-screen text-white">
    
 
       <section className="px-5 pb-12 pt-10 md:px-8 md:pb-16 md:pt-14">
         <div className="mx-auto max-w-[1280px]">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="mx-auto text-[2.6rem] font-black leading-[0.92] tracking-[-0.04em] text-black md:max-w-[11ch] md:translate-x-6 md:text-[4.5rem]">
+            <h1 className="mx-auto text-[2.6rem] font-black leading-[0.92] tracking-[-0.04em] text-white md:max-w-[11ch] md:translate-x-6 md:text-[4.5rem]">
               Begeleide Ontdekkingsreis
             </h1>
 
@@ -116,6 +116,12 @@ export default function InspiratiePage() {
               <SearchBar
                 placeholder="Waar heb je zin in vandaag?"
                 buttonLabel="Zoeken"
+                formClassName="border border-white/20 bg-white/12 shadow-[0_24px_60px_rgba(3,10,14,0.24)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/10"
+                iconClassName="text-white/68"
+                inputClassName="text-white placeholder:text-white/62"
+                suggestionsPanelClassName="border-white/12 bg-[#0d1920]/96 shadow-[0_24px_60px_rgba(2,8,11,0.34)] backdrop-blur-xl"
+                suggestionItemClassName="text-white/88 hover:bg-white/8"
+                submitButtonClassName="border border-[#e8f2d0]/65 bg-[#e8f2d0] text-[#162016] shadow-[0_18px_36px_rgba(12,20,12,0.18)] hover:bg-[#f1f7df]"
               />
             </div>
           </div>
@@ -127,11 +133,11 @@ export default function InspiratiePage() {
                 href={card.href}
                 className={`group flex min-h-[150px] flex-col items-center justify-center rounded-[28px] px-5 py-6 text-center transition duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] md:min-h-[190px] ${card.bgClass}`}
               >
-                <div className="mb-5 text-black">{card.icon}</div>
-                <span className="text-sm font-semibold tracking-[-0.02em] text-black md:text-base">
+                <div className="mb-5 text-white">{card.icon}</div>
+                <span className="text-sm font-semibold tracking-[-0.02em] text-white md:text-base">
                   {card.title}
                 </span>
-                <span className="mt-2 max-w-[12rem] text-xs leading-5 text-black/60">
+                <span className="mt-2 max-w-[12rem] text-xs leading-5 text-white/76">
                   {card.description}
                 </span>
               </Link>
@@ -140,21 +146,21 @@ export default function InspiratiePage() {
         </div>
       </section>
 
-      <section className="bg-[#efe5dc] px-5 py-14 md:px-8 md:py-20">
+      <section className="bg-white/10 px-5 py-14 md:px-8 md:py-20">
         <div className="mx-auto max-w-[1280px]">
           <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-3xl font-black tracking-[-0.03em] text-black md:text-4xl">
+              <h2 className="text-3xl font-black tracking-[-0.03em] text-white md:text-4xl">
                 Populaire steden
               </h2>
-              <p className="mt-2 max-w-xl text-sm text-black/60 md:text-base">
+              <p className="mt-2 max-w-xl text-sm text-white/76 md:text-base">
                 Ontdek de verborgen parels in de leukste steden van Nederland.
               </p>
             </div>
 
             <Link
               href="/steden"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-black transition hover:opacity-70"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white transition hover:opacity-70"
             >
               Bekijk alle <span aria-hidden="true">→</span>
             </Link>
@@ -165,7 +171,7 @@ export default function InspiratiePage() {
               <Link
                 key={city.name}
                 href={city.href}
-                className="group relative overflow-hidden rounded-[28px] bg-neutral-200"
+                className="group relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[28px] bg-neutral-200"
               >
                 <div
                   className="min-h-[290px] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03] md:min-h-[340px]"
@@ -195,17 +201,17 @@ export default function InspiratiePage() {
 
       <section className="px-5 py-14 md:px-8 md:py-20">
         <div className="mx-auto max-w-[1280px]">
-          <div className="grid gap-8 rounded-[34px] bg-[#ddefc9] px-6 py-8 md:grid-cols-[1.2fr_0.9fr] md:px-10 md:py-12 lg:px-14 lg:py-14">
+          <div className="grid gap-8 rounded-[34px] bg-white/12 px-6 py-8 md:grid-cols-[1.2fr_0.9fr] md:px-10 md:py-12 lg:px-14 lg:py-14">
             <div className="flex flex-col justify-center">
-              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-black/70">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/76">
                 UITJES COMMUNITY
               </p>
 
-              <h2 className="mt-4 max-w-[520px] text-4xl font-black leading-[0.95] tracking-[-0.04em] text-black md:text-5xl">
+              <h2 className="mt-4 max-w-[520px] text-4xl font-black leading-[0.95] tracking-[-0.04em] text-white md:text-5xl">
                 Ontvang wekelijks de beste speciaal geselecteerd-tips.
               </h2>
 
-              <p className="mt-5 max-w-md text-sm leading-6 text-black/65 md:text-base">
+              <p className="mt-5 max-w-md text-sm leading-6 text-white/76 md:text-base">
                 Geen spam, alleen de meest unieke plekjes en evenementen die je
                 echt niet wilt missen.
               </p>
@@ -214,11 +220,11 @@ export default function InspiratiePage() {
                 <input
                   type="email"
                   placeholder="Je e-mailadres"
-                  className="h-14 flex-1 rounded-full border border-black/5 bg-white/70 px-5 text-sm text-black outline-none placeholder:text-black/35"
+                  className="h-14 flex-1 rounded-full border border-white/16 bg-white/10 backdrop-blur-xl px-5 text-sm text-white outline-none placeholder:text-white/48"
                 />
                 <button
                   type="submit"
-                  className="inline-flex h-14 items-center justify-center rounded-full bg-black px-8 text-sm font-semibold text-white transition hover:bg-black/85"
+                  className="uitjes-cta inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-semibold transition hover:-translate-y-0.5"
                 >
                   Aanmelden
                 </button>

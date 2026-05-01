@@ -63,7 +63,7 @@ function ProviderCard({
   subtitle: string;
 }) {
   return (
-    <div className="rounded-[1.5rem] border border-[#e6decd] bg-[#fbfaf6] p-4">
+    <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-[#e6decd] bg-[#fbfaf6] p-4">
       <p className="text-sm font-semibold text-[#1f1b16]">{title}</p>
       <p className="mt-1 text-sm leading-6 text-[#6a5d50]">{subtitle}</p>
       <div className="mt-4 inline-flex rounded-full bg-[#edf3df] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#56683a]">
@@ -99,10 +99,10 @@ export function AgendaImportBanner() {
 
   return (
     <>
-      <section className="rounded-[2rem] border border-[#dbe8c8] bg-[linear-gradient(135deg,#dcefd2,#d1e8cb_48%,#cae3c9)] p-4 shadow-[0_18px_48px_rgba(89,111,54,0.08)] sm:p-5">
+      <section className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-[#dbe8c8] bg-[linear-gradient(135deg,#dcefd2,#d1e8cb_48%,#cae3c9)] p-4 shadow-[0_18px_48px_rgba(89,111,54,0.08)] sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-[#547037] shadow-[0_12px_24px_rgba(73,96,40,0.12)]">
+            <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-[#547037] shadow-[0_12px_24px_rgba(73,96,40,0.12)]">
               <ImportCalendarIcon />
             </div>
             <div>
@@ -137,7 +137,7 @@ export function AgendaImportBanner() {
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Sluit import venster"
-              className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ddd2c2] bg-white text-[#4f453c] transition hover:border-[#c9baa7] hover:bg-[#faf7f1]"
+              className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/16 bg-white/10 backdrop-blur-xl text-[#4f453c] transition hover:border-[#c9baa7] hover:bg-[#faf7f1]"
             >
               <CloseIcon />
             </button>
@@ -148,7 +148,7 @@ export function AgendaImportBanner() {
               </div>
               <h3
                 id="agenda-import-title"
-                className="mt-4 text-[clamp(2rem,5vw,2.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#171511]"
+                className="mt-4 text-[clamp(2rem,5vw,2.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-white"
               >
                 Zet je uitjes straks direct in je eigen agenda.
               </h3>
@@ -169,8 +169,8 @@ export function AgendaImportBanner() {
               />
             </div>
 
-            <div className="mt-6 rounded-[1.4rem] border border-dashed border-[#d9cebf] bg-white/65 p-4">
-              <p className="text-sm font-semibold text-[#2b261f]">
+            <div className="mt-6 rounded-[1.4rem] border border-dashed border-[#d9cebf] bg-white/10 backdrop-blur-xl p-4">
+              <p className="text-sm font-semibold text-white/88">
                 Placeholder voor importfunctionaliteit
               </p>
               <p className="mt-1 text-sm leading-6 text-[#6b5f53]">
@@ -183,7 +183,7 @@ export function AgendaImportBanner() {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d6cab8] px-5 text-sm font-semibold text-[#574b40] transition hover:border-[#c2b29c] hover:bg-white/70"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/18 px-5 text-sm font-semibold text-[#574b40] transition hover:border-[#c2b29c] hover:bg-white/10 backdrop-blur-xl"
               >
                 Sluiten
               </button>

@@ -15,15 +15,15 @@ type AppCardProps<T extends React.ElementType = "div"> = {
 
 const variantClasses: Record<AppCardVariant, string> = {
   default:
-    "border border-[#e7dfd6] bg-white text-[#171511] shadow-[0_14px_34px_rgba(52,38,25,0.05)]",
+    "border border-white/14 bg-white/10 text-white shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl",
   elevated:
-    "border border-white/70 bg-white text-[#171511] shadow-[0_24px_60px_rgba(52,38,25,0.09)]",
+    "border border-white/18 bg-white/12 text-white shadow-[0_28px_70px_rgba(0,0,0,0.22)] backdrop-blur-xl",
   soft:
-    "border border-[#eee4da] bg-[#f7f3ef] text-[#171511] shadow-[0_12px_28px_rgba(52,38,25,0.04)]",
+    "border border-white/12 bg-white/8 text-white shadow-[0_16px_34px_rgba(0,0,0,0.14)] backdrop-blur-xl",
   glass:
-    "border border-white/60 bg-white/72 text-[#171511] shadow-[0_18px_42px_rgba(52,38,25,0.07)] backdrop-blur-xl",
+    "border border-white/16 bg-white/10 text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] backdrop-blur-xl",
   interactive:
-    "border border-[#e7dfd6] bg-[#fbf8f4] text-[#171511] shadow-[0_18px_42px_rgba(52,38,25,0.05)] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_24px_54px_rgba(52,38,25,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]",
+    "border border-white/14 bg-white/10 text-white shadow-[0_18px_42px_rgba(0,0,0,0.16)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/14 hover:shadow-[0_24px_54px_rgba(0,0,0,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]",
 };
 
 const paddingClasses: Record<AppCardPadding, string> = {

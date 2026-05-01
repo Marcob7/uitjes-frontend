@@ -394,7 +394,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="min-h-screen bg-[#f6f4ef] text-[#111111]">
+    <main className="uitjes-surface min-h-screen text-white">
    
 
       <section className="px-4 pb-10 pt-6 md:px-8 md:pb-14">
@@ -409,7 +409,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
             className="mb-6"
           />
 
-          <div className="relative overflow-hidden rounded-[34px]">
+          <div className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[34px]">
             <div
               className="min-h-[360px] w-full bg-cover bg-center md:min-h-[520px]"
               style={{
@@ -429,7 +429,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
                 {page.badges.map((badge) => (
                   <span
                     key={badge}
-                    className="inline-flex rounded-full bg-[#d5efaf] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-black"
+                    className="inline-flex rounded-full bg-[#d5efaf] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white"
                   >
                     {badge}
                   </span>
@@ -454,7 +454,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
             {page.chips.map((chip) => (
               <span
                 key={chip}
-                className="inline-flex rounded-full bg-[#ece6df] px-4 py-2 text-xs font-medium text-black/80"
+                className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-medium text-white/80"
               >
                 {chip}
               </span>
@@ -463,7 +463,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.85fr]">
             <div>
-              <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-black">
+              <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
                 Waarom dit een goede keuze is
               </h2>
 
@@ -473,17 +473,17 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     <div className="mt-0.5 text-[#476a2e]">
                       <LeafIcon />
                     </div>
-                    <p className="text-sm text-black/75">{reason}</p>
+                    <p className="text-sm text-white/82">{reason}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-10 rounded-[34px] bg-[#efe5dc] px-6 py-7 md:px-8 md:py-9">
-                <h3 className="text-[2rem] font-bold tracking-[-0.04em] text-black">
+              <div className="mt-10 rounded-[34px] bg-white/10 px-6 py-7 md:px-8 md:py-9">
+                <h3 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
                   Over deze plek
                 </h3>
 
-                <div className="mt-6 space-y-5 text-sm leading-7 text-black/70 md:text-[15px]">
+                <div className="mt-6 space-y-5 text-sm leading-7 text-white/76 md:text-[15px]">
                   {page.description.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
@@ -492,13 +492,13 @@ export default function InspirationDetailPage({ params }: PageProps) {
             </div>
 
             <aside className="space-y-5">
-              <div className="rounded-[28px] bg-[#f3efe9] p-5 shadow-[0_12px_30px_rgba(0,0,0,0.05)]">
+              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[28px] bg-white/10 p-5 shadow-[0_12px_30px_rgba(0,0,0,0.05)]">
                 <div className="flex flex-col gap-3">
                   <a
                     href={reserveHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-14 items-center justify-center rounded-full bg-[#bde28d] px-6 text-sm font-semibold text-black transition hover:bg-[#add77a]"
+                    className="inline-flex h-14 items-center justify-center rounded-full bg-[#bde28d] px-6 text-sm font-semibold text-white transition hover:bg-[#add77a]"
                   >
                     Reserveer nu
                   </a>
@@ -508,7 +508,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
                       href={routeHref}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white text-sm font-medium text-black/80 transition hover:bg-black/5"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white/10 backdrop-blur-xl text-sm font-medium text-white/80 transition hover:bg-[#faf4eb]"
                     >
                       <MapIcon />
                       Bekijk route
@@ -516,8 +516,8 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
                     <SavePlaceButton
                       item={savedPlace}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#eeece9] text-sm font-medium text-black/80 transition hover:bg-black/5"
-                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#dcefd1] text-sm font-medium text-black transition hover:bg-[#cfe6c1]"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white/10 text-sm font-medium text-white/80 transition hover:bg-[#faf4eb]"
+                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white/12 text-sm font-medium text-white transition hover:bg-[#cfe6c1]"
                       savedChildren={
                         <>
                           <SaveIcon />
@@ -532,8 +532,8 @@ export default function InspirationDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="rounded-[28px] bg-[#dcefd1] p-6">
-                <h3 className="text-xl font-bold tracking-[-0.03em] text-black">
+              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[28px] bg-white/12 p-6">
+                <h3 className="text-xl font-bold tracking-[-0.03em] text-white">
                   Praktisch
                 </h3>
 
@@ -567,7 +567,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
       <section className="px-4 pb-12 md:px-8 md:pb-16">
         <div className="mx-auto max-w-[1280px]">
-          <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-black">
+          <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
             In beeld
           </h2>
 
@@ -591,14 +591,14 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
       <section className="px-4 pb-16 md:px-8 md:pb-24">
         <div className="mx-auto max-w-[1280px]">
-          <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-black">
+          <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
             Vergelijkbare plekken
           </h2>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {page.similar.map((item) => (
               <Link key={item.href} href={item.href} className="group block">
-                <div className="relative overflow-hidden rounded-[26px]">
+                <div className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[26px]">
                   <div
                     className="aspect-[0.95/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                     style={{
@@ -609,16 +609,16 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     }}
                   />
 
-                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
+                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-white/16 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
                     {item.tag}
                   </span>
                 </div>
 
                 <div className="pt-4">
-                  <h3 className="text-[1.7rem] font-semibold leading-[1.05] tracking-[-0.04em] text-black">
+                  <h3 className="text-[1.7rem] font-semibold leading-[1.05] tracking-[-0.04em] text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-2 text-sm text-black/55">{item.meta}</p>
+                  <p className="mt-2 text-sm text-white/68">{item.meta}</p>
                 </div>
               </Link>
             ))}
@@ -643,8 +643,8 @@ function InfoRow({
     <div className="flex items-start gap-3">
       <div className="mt-0.5 text-[#355226]">{icon}</div>
       <div>
-        <p className="text-sm font-semibold text-black">{label}</p>
-        <p className="mt-1 text-sm leading-6 text-black/70">{value}</p>
+        <p className="text-sm font-semibold text-white">{label}</p>
+        <p className="mt-1 text-sm leading-6 text-white/76">{value}</p>
       </div>
     </div>
   );

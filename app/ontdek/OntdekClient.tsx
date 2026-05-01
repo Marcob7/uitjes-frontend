@@ -141,51 +141,51 @@ export default function OntdekClient() {
   }, [baseApiPath]);
 
   return (
-    <main className="min-h-screen bg-[#f5f1e8] px-4 py-8 sm:px-6 lg:px-8">
+    <main className="uitjes-surface min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
           <aside className="space-y-4 xl:sticky xl:top-6">
-            <div className="rounded-[1.75rem] border border-stone-200 bg-white p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
+            <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/10 backdrop-blur-xl p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                     Account
                   </p>
-                  <h2 className="font-heading mt-2 text-2xl text-stone-900">
+                  <h2 className="font-heading mt-2 text-2xl text-white">
                     Jouw ontdekruimte
                   </h2>
                 </div>
-                  <span className="rounded-full bg-stone-900 px-3 py-1 text-xs font-semibold text-white">
+                  <span className="rounded-full bg-[#e8f2d0] px-3 py-1 text-xs font-semibold text-white">
                   Live
                 </span>
               </div>
 
-              <div className="mt-4 rounded-[1.4rem] bg-[#fcfbf8] p-4">
+              <div className="mt-4 rounded-[1.4rem] bg-white/8 p-4">
                 <AuthBlock />
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] border border-stone-200 bg-[linear-gradient(180deg,_rgba(255,255,255,0.96)_0%,_rgba(247,243,237,0.96)_100%)] p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+            <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/10 p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                 Samenvatting
               </p>
-              <h2 className="font-heading mt-2 text-2xl text-stone-900">
+              <h2 className="font-heading mt-2 text-2xl text-white">
                 {cityLabel} op {whenLabel.toLowerCase()}
               </h2>
-              <p className="mt-3 text-sm leading-6 text-stone-600">
+              <p className="mt-3 text-sm leading-6 text-white/70">
                 {activeFilterCount === 0
                   ? "Je kijkt nu naar de brede standaardselectie zonder extra filters."
                   : `${activeFilterCount} actieve filters helpen je sneller de juiste events te vinden.`}
               </p>
 
-              <div className="mt-4 flex flex-wrap gap-2 text-sm text-stone-600">
-                <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+              <div className="mt-4 flex flex-wrap gap-2 text-sm text-white/70">
+                <span className="rounded-full border border-white/18 bg-white/10 backdrop-blur-xl px-3 py-1">
                   Stad: {cityLabel}
                 </span>
-                <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+                <span className="rounded-full border border-white/18 bg-white/10 backdrop-blur-xl px-3 py-1">
                   Prijs: {free === "1" ? "Gratis" : "Alles"}
                 </span>
-                <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+                <span className="rounded-full border border-white/18 bg-white/10 backdrop-blur-xl px-3 py-1">
                   Resultaten per pagina: {LIMIT}
                 </span>
               </div>
@@ -193,16 +193,16 @@ export default function OntdekClient() {
           </aside>
 
           <div className="space-y-6">
-            <section className="overflow-hidden rounded-[2.25rem] border border-white/70 bg-white/88 p-6 shadow-[0_28px_90px_rgba(60,43,24,0.08)] backdrop-blur sm:p-8 lg:p-10">
+            <section className="overflow-hidden rounded-[2.25rem] border border-white/70 bg-white/10 backdrop-blur-xl p-6 shadow-[0_28px_90px_rgba(60,43,24,0.08)] backdrop-blur sm:p-8 lg:p-10">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl">
-                  <span className="inline-flex rounded-full border border-stone-300 bg-[#f8f3eb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-stone-600">
+                  <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
                     Ontdek
                   </span>
-                  <h1 className="font-heading mt-4 text-4xl leading-[0.98] tracking-[-0.05em] text-stone-900 sm:text-5xl">
+                  <h1 className="font-heading mt-4 text-4xl leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl">
                     Verken actuele events met rustiger filters en een duidelijkere flow.
                   </h1>
-                  <p className="mt-4 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
+                  <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
                     Zoek, verfijn en blader door events zonder dat de pagina als een formulier aanvoelt.
                     Deze view combineert nu zoekfocus, filtercontext en resultaten in een meer redactionele layout.
                   </p>
@@ -211,7 +211,7 @@ export default function OntdekClient() {
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-900 transition hover:bg-stone-50"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/18 bg-white/10 backdrop-blur-xl px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/14"
                 >
                   Reset filters
                 </button>
@@ -220,38 +220,38 @@ export default function OntdekClient() {
               <OntdekHeader city={city} free={free} when={when || undefined} cityOptions={CITY_OPTIONS} />
 
               <div className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
-                <div className="rounded-[1.75rem] border border-stone-200 bg-[#fcfbf8] p-5 sm:p-6">
+                <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/8 p-5 sm:p-6">
                   <label className="grid gap-3">
-                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                       Zoeken
                     </span>
                     <input
                       value={q}
                       onChange={(event) => setQ(event.target.value)}
                       placeholder="Zoek op titel, omschrijving of locatie..."
-                      className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-500"
+                      className="min-h-12 rounded-2xl border border-white/18 bg-white/10 backdrop-blur-xl px-4 text-sm text-white outline-none transition placeholder:text-white/48 focus:border-[#e8f2d0]"
                     />
-                    <span className="text-xs text-stone-500">
+                    <span className="text-xs text-white/52">
                       Typ rustig; zoeken wordt automatisch toegepast na een korte pauze.
                     </span>
                   </label>
                 </div>
 
-                <div className="rounded-[1.75rem] border border-stone-200 bg-[#fcfbf8] p-5 sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/8 p-5 sm:p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                     Resultaatstatus
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-sm text-stone-600">
-                    <span className="rounded-full bg-stone-900 px-3 py-1 font-medium text-white">
+                  <div className="mt-3 flex flex-wrap gap-2 text-sm text-white/70">
+                    <span className="rounded-full bg-[#e8f2d0] px-3 py-1 font-medium text-white">
                       {loading ? "Laden..." : `${events.length} zichtbaar`}
                     </span>
                     {when ? (
-                      <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+                      <span className="rounded-full border border-white/18 bg-white/10 backdrop-blur-xl px-3 py-1">
                         Moment: {whenLabel}
                       </span>
                     ) : null}
                     {qFromUrl.trim() ? (
-                      <span className="rounded-full border border-stone-300 bg-white px-3 py-1">
+                      <span className="rounded-full border border-white/18 bg-white/10 backdrop-blur-xl px-3 py-1">
                         Zoekterm actief
                       </span>
                     ) : null}
@@ -260,74 +260,74 @@ export default function OntdekClient() {
               </div>
 
               <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                <div className="rounded-[1.75rem] border border-stone-200 bg-[#fcfbf8] p-5 sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/8 p-5 sm:p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                     Datums
                   </p>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <label className="grid gap-2 text-sm text-stone-700">
+                    <label className="grid gap-2 text-sm text-white/82">
                       <span>Van</span>
                       <input
                         type="date"
                         value={from}
                         onChange={(event) => updateParam("from", event.target.value)}
-                        className="min-h-11 rounded-2xl border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none transition focus:border-stone-500 disabled:bg-stone-100"
+                        className="min-h-11 rounded-2xl border border-white/18 bg-white/10 backdrop-blur-xl px-4 text-sm text-white outline-none transition focus:border-[#e8f2d0] disabled:bg-white/10"
                         disabled={when === "tonight" || when === "weekend"}
                       />
                     </label>
 
-                    <label className="grid gap-2 text-sm text-stone-700">
+                    <label className="grid gap-2 text-sm text-white/82">
                       <span>Tot</span>
                       <input
                         type="date"
                         value={to}
                         onChange={(event) => updateParam("to", event.target.value)}
-                        className="min-h-11 rounded-2xl border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none transition focus:border-stone-500 disabled:bg-stone-100"
+                        className="min-h-11 rounded-2xl border border-white/18 bg-white/10 backdrop-blur-xl px-4 text-sm text-white outline-none transition focus:border-[#e8f2d0] disabled:bg-white/10"
                         disabled={when === "tonight" || when === "weekend"}
                       />
                     </label>
                   </div>
 
                   {(when === "tonight" || when === "weekend") && (
-                    <p className="mt-3 text-xs text-stone-500">
+                    <p className="mt-3 text-xs text-white/52">
                       Datumfilters zijn uitgeschakeld zolang je op "Vanavond" of "Dit weekend" filtert.
                     </p>
                   )}
                 </div>
 
-                <div className="rounded-[1.75rem] border border-stone-200 bg-[#fcfbf8] p-5 sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/8 p-5 sm:p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                     Nu bezig
                   </p>
                   <div className="mt-3 grid gap-3">
-                    <label className="flex items-center gap-3 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700">
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/18 bg-white/10 backdrop-blur-xl px-4 py-3 text-sm text-white/82">
                       <input
                         type="checkbox"
                         checked={free === "1"}
                         onChange={(event) => updateParam("free", event.target.checked ? "1" : "")}
-                        className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-400"
+                        className="h-4 w-4 rounded border-white/18 text-white focus:ring-[#e8f2d0]"
                       />
                       Alleen gratis
                     </label>
 
-                    <label className="flex items-center gap-3 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700">
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/18 bg-white/10 backdrop-blur-xl px-4 py-3 text-sm text-white/82">
                       <input
                         type="checkbox"
                         checked={ongoing === "1"}
                         onChange={(event) => updateParam("ongoing", event.target.checked ? "1" : "")}
                         disabled={ongoingDisabled}
-                        className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-400 disabled:opacity-50"
+                        className="h-4 w-4 rounded border-white/18 text-white focus:ring-[#e8f2d0] disabled:opacity-50"
                       />
                       Alleen nu bezig
                     </label>
 
-                    <label className="flex items-center gap-3 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700">
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/18 bg-white/10 backdrop-blur-xl px-4 py-3 text-sm text-white/82">
                       <input
                         type="checkbox"
                         checked={ongoing === "0"}
                         onChange={(event) => updateParam("ongoing", event.target.checked ? "0" : "")}
                         disabled={ongoingDisabled}
-                        className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-400 disabled:opacity-50"
+                        className="h-4 w-4 rounded border-white/18 text-white focus:ring-[#e8f2d0] disabled:opacity-50"
                       />
                       Verberg nu bezig
                     </label>
@@ -336,33 +336,33 @@ export default function OntdekClient() {
               </div>
             </section>
 
-            <section className="rounded-[2.25rem] border border-stone-200 bg-white p-6 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-8">
+            <section className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.25rem] border border-white/14 bg-white/10 backdrop-blur-xl p-6 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-8">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="max-w-2xl">
-                  <span className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                  <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
                     Resultaten
                   </span>
-                  <h2 className="font-heading mt-3 text-3xl text-stone-900 sm:text-4xl">
+                  <h2 className="font-heading mt-3 text-3xl text-white sm:text-4xl">
                     Events in {cityLabel}
                   </h2>
-                  <p className="mt-2 text-sm leading-6 text-stone-600 sm:text-base">
+                  <p className="mt-2 text-sm leading-6 text-white/70 sm:text-base">
                     De lijst hieronder reageert op dezelfde URL-filters als hierboven. Daardoor blijven
                     delen, refreshen en verder zoeken consistent.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2 text-sm text-stone-600">
-                  <span className="rounded-full border border-stone-300 bg-[#f8f3eb] px-3 py-1">
+                <div className="flex flex-wrap gap-2 text-sm text-white/70">
+                  <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1">
                     Wanneer: {whenLabel}
                   </span>
-                  <span className="rounded-full border border-stone-300 bg-[#f8f3eb] px-3 py-1">
+                  <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1">
                     Prijs: {free === "1" ? "Gratis" : "Alles"}
                   </span>
                 </div>
               </div>
 
               <div
-                className="relative mt-6 overflow-hidden rounded-[1.75rem] border border-[#e7d3b5] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:p-5"
+                className="relative mt-6 overflow-hidden rounded-[1.75rem] border border-white/16 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl sm:p-5"
                 style={{
                   backgroundColor: "#fbf3e8",
                   backgroundImage:
@@ -373,17 +373,17 @@ export default function OntdekClient() {
 
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a5a34]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e8f2d0]">
                       Live overzicht
                     </p>
-                    <p className="mt-1 text-sm text-[#6f5a46]">
+                    <p className="mt-1 text-sm text-white/72">
                       {loading
                         ? "We verversen de selectie op basis van je filters."
                         : `${events.length} events klaar om te bekijken.`}
                     </p>
                   </div>
 
-                  <span className="rounded-full border border-[#d7b488] bg-[rgba(255,250,244,0.88)] px-3 py-1 text-xs font-semibold text-[#8a5a34]">
+                  <span className="rounded-full border border-white/18 bg-white/10 backdrop-blur-md px-3 py-1 text-xs font-semibold text-[#e8f2d0]">
                     {loading ? "Bezig met laden" : hasMore ? "Meer beschikbaar" : "Complete selectie"}
                   </span>
                 </div>
@@ -392,21 +392,21 @@ export default function OntdekClient() {
                   <p
                     role="status"
                     aria-live="polite"
-                    className="rounded-[1.35rem] border border-white/70 bg-white/70 px-4 py-4 text-sm text-[#6f5a46] shadow-[0_10px_30px_rgba(118,78,41,0.06)]"
+                    className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.35rem] border border-white/70 bg-white/10 backdrop-blur-xl px-4 py-4 text-sm text-white/72 shadow-[0_10px_30px_rgba(118,78,41,0.06)]"
                   >
                     Laden...
                   </p>
                 ) : errorMsg ? (
                   <p
                     role="alert"
-                    className="rounded-[1.35rem] border border-red-200 bg-red-50/90 px-4 py-4 text-sm text-red-800"
+                    className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.35rem] border border-red-200 bg-red-50/90 px-4 py-4 text-sm text-red-800"
                   >
                     {errorMsg}
                   </p>
                 ) : events.length === 0 ? (
                   <p
                     aria-live="polite"
-                    className="rounded-[1.35rem] border border-[#eadcc8] bg-white/78 px-4 py-4 text-sm text-[#6f5a46]"
+                    className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.35rem] border border-white/14 bg-white/10 backdrop-blur-xl px-4 py-4 text-sm text-white/72"
                   >
                     Geen events gevonden voor deze filters.
                   </p>
@@ -420,7 +420,7 @@ export default function OntdekClient() {
                           type="button"
                           onClick={() => loadPage(offset + LIMIT, true)}
                           disabled={loadingMore}
-                          className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cfad84] bg-white/90 px-5 py-3 text-sm font-semibold text-[#6b4a2d] shadow-[0_10px_30px_rgba(118,78,41,0.08)] transition hover:border-[#b8844d] hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/18 bg-white/16 backdrop-blur-md px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(118,78,41,0.08)] transition hover:border-[#e8f2d0] hover:bg-white/14 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {loadingMore ? "Laden..." : "Laad meer"}
                         </button>

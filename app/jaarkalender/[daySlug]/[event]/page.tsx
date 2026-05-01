@@ -491,11 +491,11 @@ function NearbyCard({
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#171511]">
+        <div className="absolute left-4 top-4 rounded-full bg-white/16 backdrop-blur-md px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
           {category}
         </div>
       </div>
-      <h3 className="mt-5 text-[1.85rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+      <h3 className="mt-5 text-[1.85rem] leading-[0.98] tracking-[-0.05em] text-white">
         {title}
       </h3>
       <p className="mt-2 text-sm leading-7 text-[#6a5a4c]">{description}</p>
@@ -528,7 +528,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
   const routeHref = buildMapsSearchHref(viewModel.locationLabel);
 
   return (
-    <main className="min-h-screen bg-[#fbf7ef] text-[#171511]">
+    <main className="uitjes-surface min-h-screen text-white">
       <div className="mx-auto max-w-[1320px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="mb-6">
           <Breadcrumbs
@@ -545,7 +545,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
         </div>
 
         <section
-          className="relative overflow-hidden rounded-[2.5rem] bg-[#111218] px-6 pb-7 pt-[19rem] text-white shadow-[0_30px_90px_rgba(15,15,18,0.22)] sm:px-8 sm:pt-[24rem] lg:px-10 lg:pt-[32rem]"
+          className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.5rem] bg-[#111218] px-6 pb-7 pt-[19rem] text-white shadow-[0_30px_90px_rgba(15,15,18,0.22)] sm:px-8 sm:pt-[24rem] lg:px-10 lg:pt-[32rem]"
           style={{
             backgroundImage: `linear-gradient(180deg, rgba(6,8,12,0.1), rgba(6,8,12,0.72)), ${optimizeCssBackground(
               heroImage,
@@ -561,7 +561,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(120,246,217,0.18),transparent_28%),linear-gradient(180deg,rgba(5,7,12,0.08),rgba(5,7,12,0.76))]" />
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-[48rem]">
-              <div className="inline-flex rounded-full bg-[#d6f38b] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#171511]">
+              <div className="inline-flex rounded-full bg-[#e8f2d0] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
                 {viewModel.label}
               </div>
               <h1 className="mt-5 text-[clamp(3rem,7vw,5.5rem)] leading-[0.92] tracking-[-0.07em] text-white">
@@ -587,7 +587,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
               href={calendarHref}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#d6f38b] px-7 text-sm font-semibold text-[#171511] transition hover:bg-[#c9ee77]"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-white transition hover:bg-[#c9ee77]"
             >
               <CalendarIcon />
               {viewModel.importLabel}
@@ -597,12 +597,12 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
 
         <section className="mt-10 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <div className="rounded-[2.2rem] bg-white/76 p-1">
-              <div className="rounded-[2rem] bg-[#fbf7ef] p-6 sm:p-8">
+            <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.2rem] bg-white/10 backdrop-blur-xl p-1">
+              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] bg-[#07131a] p-6 sm:p-8">
                 <div className={`inline-flex rounded-full px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] ${categoryMeta.badgeClass}`}>
                   {categoryMeta.label}
                 </div>
-                <h2 className="mt-5 text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
+                <h2 className="mt-5 text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.05em] text-white">
                   Over dit evenement
                 </h2>
                 <div className="mt-5 space-y-4 text-[1.02rem] leading-8 text-[#56483d]">
@@ -615,14 +615,14 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
                   {viewModel.infoCards.map((card) => (
                     <article
                       key={card.title}
-                      className={`rounded-[1.8rem] p-6 ${
-                        card.tone === "mint" ? "bg-[#ddf3d3]" : "bg-[#f5e6d8]"
+                      className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.8rem] p-6 ${
+                        card.tone === "mint" ? "bg-white/12" : "bg-[#f5e6d8]"
                       }`}
                     >
-                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/60 text-[#171511]">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-xl text-white">
                         {card.tone === "mint" ? <CalendarIcon /> : <TicketIcon />}
                       </div>
-                      <h3 className="mt-5 text-[1.5rem] leading-[1.02] tracking-[-0.04em] text-[#171511]">
+                      <h3 className="mt-5 text-[1.5rem] leading-[1.02] tracking-[-0.04em] text-white">
                         {card.title}
                       </h3>
                       <p className="mt-3 text-sm leading-7 text-[#5f5145]">
@@ -635,19 +635,19 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
             </div>
           </div>
 
-          <aside className="rounded-[2.2rem] border border-[#ede3d6] bg-white/85 p-6 shadow-[0_18px_40px_rgba(35,23,16,0.05)] sm:p-8">
-            <h2 className="text-[2rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+          <aside className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.2rem] border border-white/14 bg-white/10 backdrop-blur-xl p-6 shadow-[0_18px_40px_rgba(35,23,16,0.05)] sm:p-8">
+            <h2 className="text-[2rem] leading-[0.98] tracking-[-0.05em] text-white">
               Praktische informatie
             </h2>
 
             <div className="mt-6 space-y-5">
               {viewModel.practicalInfo.map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
-                  <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f5efe4] text-[#171511]">
+                  <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white">
                     {renderPracticalIcon(item.icon)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#171511]">{item.label}</p>
+                    <p className="text-sm font-semibold text-white">{item.label}</p>
                     <p className="mt-1 text-sm leading-6 text-[#66584d]">{item.value}</p>
                   </div>
                 </div>
@@ -663,7 +663,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
                 href={routeHref}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#171511] px-5 text-sm font-semibold text-[#171511] transition hover:bg-[#171511] hover:text-white"
+                className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#171511] px-5 text-sm font-semibold text-white transition hover:bg-[#171511] hover:text-white"
               >
                 {viewModel.routeAction}
               </a>
@@ -674,7 +674,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
         <section className="mt-20">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-[34rem]">
-              <h2 className="text-[clamp(2rem,4vw,3.2rem)] leading-[0.95] tracking-[-0.06em] text-[#171511]">
+              <h2 className="text-[clamp(2rem,4vw,3.2rem)] leading-[0.95] tracking-[-0.06em] text-white">
                 In de buurt
               </h2>
               <p className="mt-3 text-base leading-8 text-[#66584d]">
@@ -683,7 +683,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
             </div>
             <Link
               href={`/jaarkalender/${eventEntry.day.slug}`}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#171511] underline decoration-[#cfe985] decoration-2 underline-offset-4"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-white underline decoration-[#cfe985] decoration-2 underline-offset-4"
             >
               Bekijk alles
               <ArrowIcon />

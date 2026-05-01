@@ -67,7 +67,7 @@ const mapFestivals: MapFestivalCard[] = [
 
 function MapBadge({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex min-h-11 items-center rounded-full bg-white/92 px-6 text-sm font-medium text-[#6f706d] shadow-[0_10px_18px_rgba(44,42,37,0.06)]">
+    <span className="inline-flex min-h-11 items-center rounded-full bg-white/16 backdrop-blur-md px-6 text-sm font-medium text-[#6f706d] shadow-[0_10px_18px_rgba(44,42,37,0.06)]">
       {children}
     </span>
   );
@@ -183,7 +183,7 @@ function Marker({
 }) {
   const badgeClass =
     item.accent === "lime"
-      ? "bg-[#ddefb1] text-[#3d5d1d]"
+      ? "bg-[#e8f2d0] text-[#3d5d1d]"
       : item.accent === "amber"
         ? "bg-[#ffe7b4] text-[#996701]"
         : "bg-[#e6e2ff] text-[#6960c9]";
@@ -199,16 +199,16 @@ function Marker({
     <div className="absolute" style={{ left: item.pointX, top: item.pointY }}>
       <div className="relative -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center gap-2">
-          <span className={`inline-flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-white shadow-[0_16px_26px_rgba(26,22,17,0.16)] text-lg font-semibold text-[#171511]`}>
+          <span className={`inline-flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-white/10 backdrop-blur-xl shadow-[0_16px_26px_rgba(26,22,17,0.16)] text-lg font-semibold text-white`}>
             {item.indexLabel}
           </span>
-          <span className="rounded-full bg-white px-4 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[#3b332c] shadow-[0_8px_18px_rgba(26,22,17,0.08)]">
+          <span className="rounded-full bg-white/10 backdrop-blur-xl px-4 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[#3b332c] shadow-[0_8px_18px_rgba(26,22,17,0.08)]">
             {item.calloutLabel}
           </span>
           <span className={`absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full ${dotClass} opacity-70 blur-[1px]`} />
         </div>
         <div
-          className="absolute left-[10rem] top-[-4rem] w-[28rem] rounded-[2rem] bg-white/95 p-4 shadow-[0_22px_50px_rgba(27,21,15,0.14)] backdrop-blur-sm"
+          className="absolute left-[10rem] top-[-4rem] w-[28rem] rounded-[2rem] bg-white/14 backdrop-blur-xl p-4 shadow-[0_22px_50px_rgba(27,21,15,0.14)] backdrop-blur-sm"
           style={{
             transform:
               item.slug === "dekmantel-festival"
@@ -235,14 +235,14 @@ function Marker({
             />
 
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6f6559]">
+              <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/58">
                 <span>{item.dateLabel}</span>
                 <span className={`rounded-full px-3 py-1 ${badgeClass}`}>
                   {item.matchLabel}
                 </span>
               </div>
 
-              <h2 className="mt-3 max-w-none text-[2rem] leading-[0.96] tracking-[-0.05em] text-[#171511]">
+              <h2 className="mt-3 max-w-none text-[2rem] leading-[0.96] tracking-[-0.05em] text-white">
                 {item.title}
               </h2>
               <p className="mt-2 text-[1.05rem] text-[#665c51]">{item.venueLabel}</p>
@@ -251,7 +251,7 @@ function Marker({
                 {item.genres.map((genre) => (
                   <span
                     key={`${item.slug}-${genre}`}
-                    className="rounded-full bg-[#f3ede5] px-3 py-1 text-[11px] font-medium text-[#4d463d]"
+                    className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-[#4d463d]"
                   >
                     {genre}
                   </span>
@@ -260,7 +260,7 @@ function Marker({
 
               <Link
                 href={getFestivalDetailHref(item.slug)}
-                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#171511] transition hover:opacity-70"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white transition hover:opacity-70"
               >
                 Bekijk festival
                 <ArrowRightIcon />
@@ -275,7 +275,7 @@ function Marker({
 
 export default function FestivalsMapPage() {
   return (
-    <main className="min-h-screen bg-[#fbf7f1] text-[#171511]">
+    <main className="uitjes-surface min-h-screen text-white">
       <div className="mx-auto max-w-[1360px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <Breadcrumbs
           items={[
@@ -297,7 +297,7 @@ export default function FestivalsMapPage() {
               <Link
                 key={item.slug}
                 href={getFestivalDetailHref(item.slug)}
-                className="block overflow-hidden rounded-[2rem] border border-[#ece2d7] bg-white shadow-[0_18px_36px_rgba(45,37,28,0.08)]"
+                className="block overflow-hidden rounded-[2rem] border border-white/14 bg-white/10 backdrop-blur-xl shadow-[0_18px_36px_rgba(45,37,28,0.08)]"
               >
                 <div
                   className="min-h-[12rem] bg-cover bg-center"
@@ -314,27 +314,27 @@ export default function FestivalsMapPage() {
                 <div className="space-y-4 p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6f6559]">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/58">
                         {item.dateLabel}
                       </p>
-                      <h2 className="mt-2 text-[1.7rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+                      <h2 className="mt-2 text-[1.7rem] leading-[0.98] tracking-[-0.05em] text-white">
                         {item.title}
                       </h2>
                       <p className="mt-2 text-sm text-[#665c51]">{item.venueLabel}</p>
                     </div>
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f3ede5] text-sm font-semibold text-[#171511]">
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-sm font-semibold text-white">
                       {item.indexLabel}
                     </span>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    <span className="rounded-2xl bg-[#f3ede5] px-3 py-2 text-xs font-medium text-[#4d463d]">
+                    <span className="rounded-2xl bg-white/10 px-3 py-2 text-xs font-medium text-[#4d463d]">
                       {item.matchLabel}
                     </span>
                     {item.genres.map((genre) => (
                       <span
                         key={`${item.slug}-${genre}`}
-                        className="rounded-2xl bg-[#f8f4ef] px-3 py-2 text-xs font-medium text-[#4d463d]"
+                        className="rounded-2xl bg-white/8 px-3 py-2 text-xs font-medium text-[#4d463d]"
                       >
                         {genre}
                       </span>
@@ -346,7 +346,7 @@ export default function FestivalsMapPage() {
           </div>
         </section>
 
-        <section className="hidden overflow-hidden rounded-[2.4rem] border border-[#ece2d7] bg-[#c2d7d9] shadow-[0_30px_70px_rgba(45,37,28,0.08)] md:block">
+        <section className="hidden overflow-hidden rounded-[2.4rem] border border-white/14 bg-[#c2d7d9] shadow-[0_30px_70px_rgba(45,37,28,0.08)] md:block">
           <div className="relative min-h-[72rem] overflow-hidden lg:min-h-[76rem]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(255,255,255,0.38),_transparent_34%),radial-gradient(circle_at_85%_18%,_rgba(255,255,255,0.24),_transparent_28%)]" />
 
@@ -370,14 +370,14 @@ export default function FestivalsMapPage() {
             <div className="absolute bottom-8 left-8 z-20 flex flex-col gap-3">
               <button
                 type="button"
-                className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#171511] shadow-[0_14px_24px_rgba(24,21,18,0.12)] transition hover:bg-[#faf8f4]"
+                className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-white shadow-[0_14px_24px_rgba(24,21,18,0.12)] transition hover:bg-white/10"
                 aria-label="Zoom in"
               >
                 <PlusIcon />
               </button>
               <button
                 type="button"
-                className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#171511] shadow-[0_14px_24px_rgba(24,21,18,0.12)] transition hover:bg-[#faf8f4]"
+                className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-white shadow-[0_14px_24px_rgba(24,21,18,0.12)] transition hover:bg-white/10"
                 aria-label="Zoom out"
               >
                 <MinusIcon />

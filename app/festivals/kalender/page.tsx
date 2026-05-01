@@ -224,7 +224,7 @@ function FilterChevron() {
 
 function toneClass(tone: CalendarTone) {
   if (tone === "lime") {
-    return "bg-[#d8efb7] text-[#4c622e]";
+    return "bg-[#e8f2d0] text-[#4c622e]";
   }
 
   if (tone === "pink") {
@@ -265,14 +265,14 @@ function HighlightInfoCard({ card }: { card: HighlightCard }) {
   const buttonClass =
     card.tone === "lavender"
       ? "bg-[#171511] text-white hover:bg-[#2b261f]"
-      : "border border-[#171511] bg-transparent text-[#171511] hover:bg-white/55";
+      : "border border-[#171511] bg-transparent text-white hover:bg-white/10 backdrop-blur-xl";
 
   return (
-    <article className={`rounded-[2rem] ${toneClass} p-6`}>
-      <h3 className="max-w-none text-[2rem] leading-none tracking-[-0.05em] text-[#171511]">
+    <article className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] ${toneClass} p-6`}>
+      <h3 className="max-w-none text-[2rem] leading-none tracking-[-0.05em] text-white">
         {card.title}
       </h3>
-      <p className="mt-4 text-sm leading-7 text-[#5a5046]">{card.description}</p>
+      <p className="mt-4 text-sm leading-7 text-white/72">{card.description}</p>
       <Link
         href={card.href}
         className={`mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-2xl px-6 text-sm font-semibold transition sm:rounded-full ${buttonClass}`}
@@ -285,7 +285,7 @@ function HighlightInfoCard({ card }: { card: HighlightCard }) {
 
 export default function FestivalsCalendarPage() {
   return (
-    <main className="min-h-screen bg-[#fcf8f2] text-[#171511]">
+    <main className="uitjes-surface min-h-screen text-white">
       <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <Breadcrumbs
           items={[
@@ -299,18 +299,18 @@ export default function FestivalsCalendarPage() {
         <section>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-[42rem]">
-              <h1 className="max-w-none text-[clamp(3.4rem,8vw,6rem)] leading-[0.88] tracking-[-0.08em] text-[#171511]">
+              <h1 className="max-w-none text-[clamp(3.4rem,8vw,6rem)] leading-[0.88] tracking-[-0.08em] text-white">
                 Festival Kalender
                 <span className="block text-[#51772a]">Nederland</span>
               </h1>
-              <p className="mt-5 max-w-[34rem] text-base leading-8 text-[#5d5348] sm:text-[1.05rem]">
+              <p className="mt-5 max-w-[34rem] text-base leading-8 text-white/74 sm:text-[1.05rem]">
                 Discover every cultural beat across the country. From underground
                 techno in Amsterdam to jazz by the sea.
               </p>
             </div>
 
             <div className="w-full max-w-[28rem]">
-              <div className="rounded-[1.6rem] bg-[#f7ede2] p-2 sm:rounded-full">
+              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.6rem] bg-[#f7ede2] p-2 sm:rounded-full">
                 <label
                   htmlFor="calendar-search"
                   className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-[#7b7166] sm:rounded-full"
@@ -320,7 +320,7 @@ export default function FestivalsCalendarPage() {
                     id="calendar-search"
                     type="text"
                     placeholder="Search festivals..."
-                    className="h-full flex-1 bg-transparent text-base text-[#171511] outline-none placeholder:text-[#9a8f83] sm:text-sm"
+                    className="h-full flex-1 bg-transparent text-base text-white outline-none placeholder:text-[#9a8f83] sm:text-sm"
                   />
                 </label>
               </div>
@@ -335,28 +335,28 @@ export default function FestivalsCalendarPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#dff1d8] px-5 text-sm font-medium text-[#171511] sm:rounded-full"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#dff1d8] px-5 text-sm font-medium text-white sm:rounded-full"
               >
                 Genre: All
                 <FilterChevron />
               </button>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#f8ebc9] px-5 text-sm font-medium text-[#171511] sm:rounded-full"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#f8ebc9] px-5 text-sm font-medium text-white sm:rounded-full"
               >
                 City: Netherlands
                 <FilterChevron />
               </button>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#e6e7f3] px-5 text-sm font-medium text-[#171511] sm:rounded-full"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#e6e7f3] px-5 text-sm font-medium text-white sm:rounded-full"
               >
                 Vibe Match
                 <span className="text-xs">≋</span>
               </button>
             </div>
 
-            <div className="flex items-center gap-4 self-start text-[#171511] lg:self-end">
+            <div className="flex items-center gap-4 self-start text-white lg:self-end">
               <button
                 type="button"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#8e8377] transition hover:bg-white"
@@ -376,12 +376,12 @@ export default function FestivalsCalendarPage() {
           </div>
         </section>
 
-        <section className="mt-8 overflow-hidden rounded-[2.4rem] border border-[#f0e6db] bg-white shadow-[0_20px_50px_rgba(60,44,23,0.04)]">
+        <section className="mt-8 overflow-hidden rounded-[2.4rem] border border-white/14 bg-white/10 backdrop-blur-xl shadow-[0_20px_50px_rgba(60,44,23,0.04)]">
           <div className="hidden grid-cols-7 bg-[#fbefe4] sm:grid">
             {weekdayLabels.map((label) => (
               <div
                 key={label}
-                className="border-r border-[#f2e6da] px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8e8174] last:border-r-0"
+                className="border-r border-[#f2e6da] px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-white/48 last:border-r-0"
               >
                 {label}
               </div>
@@ -392,14 +392,14 @@ export default function FestivalsCalendarPage() {
             {mobileCalendarDays.map((cell) => (
               <div
                 key={cell.key}
-                className="border-t border-[#f3ece2] px-4 py-4 first:border-t-0"
+                className="border-t border-white/12 px-4 py-4 first:border-t-0"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-lg font-medium text-[#171511]">
+                    <div className="text-lg font-medium text-white">
                       {cell.dayNumber} juli
                     </div>
-                    <p className="mt-1 text-sm text-[#8e8174]">
+                    <p className="mt-1 text-sm text-white/48">
                       {cell.events?.length} festivalmomenten
                     </p>
                   </div>
@@ -421,11 +421,11 @@ export default function FestivalsCalendarPage() {
             {calendarCells.map((cell) => (
               <div
                 key={cell.key}
-                className={`min-h-[7.8rem] border-r border-t border-[#f3ece2] px-3 py-3 sm:min-h-[9rem] lg:min-h-[10rem] ${
-                  cell.muted ? "bg-[#fffcf7] text-[#b0a397]" : "bg-white text-[#171511]"
+                className={`min-h-[7.8rem] border-r border-t border-white/12 px-3 py-3 sm:min-h-[9rem] lg:min-h-[10rem] ${
+                  cell.muted ? "bg-[#fffcf7] text-[#b0a397]" : "bg-white/10 backdrop-blur-xl text-white"
                 }`}
               >
-                <div className={`text-lg font-medium ${cell.muted ? "text-[#a99d90]" : "text-[#171511]"}`}>
+                <div className={`text-lg font-medium ${cell.muted ? "text-[#a99d90]" : "text-white"}`}>
                   {cell.dayNumber}
                 </div>
                 <div className="mt-3 space-y-2">
@@ -439,7 +439,7 @@ export default function FestivalsCalendarPage() {
         </section>
 
         <section className="py-16">
-          <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-[#171511]">
+          <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-white">
             Curator&apos;s Highlights
           </h2>
 
@@ -460,7 +460,7 @@ export default function FestivalsCalendarPage() {
               }}
             >
               <div className="flex min-h-[18rem] flex-col justify-end p-6 sm:min-h-[22rem]">
-                <div className="inline-flex w-fit rounded-full bg-[#ddefb1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3d5d1d]">
+                <div className="inline-flex w-fit rounded-full bg-[#e8f2d0] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3d5d1d]">
                   Editor&apos;s Pick
                 </div>
                 <h3 className="mt-5 max-w-none text-[clamp(2rem,4vw,3.4rem)] leading-[0.94] tracking-[-0.06em] text-white">

@@ -148,3 +148,92 @@ button:disabled {
     font-size: 16px;
   }
 }
+
+@layer components {
+  .uitjes-surface {
+    background:
+      radial-gradient(circle at 18% 8%, rgba(198, 223, 154, 0.18), transparent 28%),
+      radial-gradient(circle at 82% 12%, rgba(122, 213, 217, 0.14), transparent 30%),
+      linear-gradient(135deg, #07131a 0%, #0a2028 46%, #0f4950 100%);
+    color: #ffffff;
+  }
+
+  .uitjes-panel {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background:
+      radial-gradient(circle at 20% 0%, rgba(198, 223, 154, 0.16), transparent 34%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.075));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .uitjes-card {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .uitjes-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .uitjes-muted {
+    color: rgba(255, 255, 255, 0.76);
+  }
+
+  .uitjes-chip {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .uitjes-chip-active {
+    border: 1px solid rgba(232, 242, 208, 0.62);
+    background: #e8f2d0;
+    color: #162016;
+  }
+
+  .uitjes-cta {
+    border: 1px solid rgba(232, 242, 208, 0.65);
+    background: #e8f2d0;
+    color: #162016;
+    box-shadow: 0 18px 36px rgba(12, 20, 12, 0.18);
+  }
+
+  .uitjes-cta:hover {
+    background: #f1f7df;
+  }
+
+  .uitjes-liquid-section {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+      radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.12), transparent 28%),
+      radial-gradient(circle at 78% 22%, rgba(198, 223, 154, 0.18), transparent 24%),
+      linear-gradient(135deg, rgba(7, 19, 26, 0.96), rgba(15, 73, 80, 0.78));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.22);
+  }
+
+  .uitjes-liquid-button {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .uitjes-liquid-button:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}

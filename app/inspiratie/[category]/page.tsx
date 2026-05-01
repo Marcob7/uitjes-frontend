@@ -1150,7 +1150,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f4ef] text-[#111111]">
+    <main className="uitjes-surface min-h-screen text-white">
       <section className="px-4 pb-12 pt-8 md:px-8 md:pb-16 md:pt-12">
         <div className="mx-auto max-w-[1280px]">
           <Breadcrumbs
@@ -1163,21 +1163,21 @@ export default function InspirationCategoryPage({ params }: PageProps) {
           />
 
           <div className="max-w-[620px]">
-            <p className="mb-3 text-sm font-medium text-black/45">
+            <p className="mb-3 text-sm font-medium text-white/52">
               {content.label}
             </p>
 
-            <h1 className="max-w-[560px] text-[2.6rem] font-black leading-[0.92] tracking-[-0.05em] text-black md:text-[4.25rem]">
+            <h1 className="max-w-[560px] text-[2.6rem] font-black leading-[0.92] tracking-[-0.05em] text-white md:text-[4.25rem]">
               {content.headline}
             </h1>
 
-            <p className="mt-5 max-w-[540px] text-sm leading-6 text-black/55 md:text-base">
+            <p className="mt-5 max-w-[540px] text-sm leading-6 text-white/68 md:text-base">
               {content.description}
             </p>
           </div>
 
           <div className="mt-12">
-            <h2 className="text-[1.6rem] font-bold tracking-[-0.04em] text-black">
+            <h2 className="text-[1.6rem] font-bold tracking-[-0.04em] text-white">
               Snelle keuzes
             </h2>
 
@@ -1211,7 +1211,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                     <div className="absolute inset-0 p-4 md:p-5">
                       <div className="flex h-full flex-col justify-end">
                         {item.badge ? (
-                          <span className="mb-3 inline-flex w-fit rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
+                          <span className="mb-3 inline-flex w-fit rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
                             {item.badge}
                           </span>
                         ) : null}
@@ -1230,11 +1230,11 @@ export default function InspirationCategoryPage({ params }: PageProps) {
       </section>
 
       <section className="px-4 pb-10 md:px-8 md:pb-14">
-        <div className="mx-auto max-w-[1280px] rounded-[36px] bg-[#efe5dc] px-5 py-8 md:px-8 md:py-10">
-          <h2 className="text-[1.75rem] font-bold tracking-[-0.04em] text-black">
+        <div className="mx-auto max-w-[1280px] rounded-[36px] bg-white/10 px-5 py-8 md:px-8 md:py-10">
+          <h2 className="text-[1.75rem] font-bold tracking-[-0.04em] text-white">
             Verfijn je keuze
           </h2>
-          <p className="mt-2 text-sm text-black/45">
+          <p className="mt-2 text-sm text-white/52">
             Selecteer wat voor jou belangrijk is.
           </p>
 
@@ -1245,8 +1245,8 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                 type="button"
                 className={`inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-medium transition ${
                   index === 0
-                    ? "bg-[#bde28d] text-black"
-                    : "bg-white text-black/75 hover:bg-black/5"
+                    ? "bg-[#bde28d] text-white"
+                    : "bg-white/10 backdrop-blur-xl text-white/82 hover:bg-[#faf4eb]"
                 }`}
               >
                 <FilterDotIcon />
@@ -1261,17 +1261,17 @@ export default function InspirationCategoryPage({ params }: PageProps) {
         <div className="mx-auto max-w-[1280px]">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-black">
+              <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
                 Suggesties
               </h2>
-              <p className="mt-1 text-sm text-black/45">
+              <p className="mt-1 text-sm text-white/52">
                 Aanraders voor vandaag geselecteerd door onze speciaal geselecteerds.
               </p>
             </div>
 
             <Link
               href="/inspiratie"
-              className="text-xs font-semibold text-black underline decoration-[#bde28d] decoration-2 underline-offset-4"
+              className="text-xs font-semibold text-white underline decoration-[#bde28d] decoration-2 underline-offset-4"
             >
               Bekijk alles
             </Link>
@@ -1280,7 +1280,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
           <div className="mt-8 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
             {content.suggestions.map((item) => (
               <Link key={item.title} href={item.href} className="group block">
-                <div className="relative overflow-hidden rounded-[26px]">
+                <div className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[26px]">
                   <div
                     className="aspect-[0.9/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                     style={{
@@ -1292,26 +1292,26 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                   />
 
                   {item.badge ? (
-                    <span className="absolute left-4 top-4 inline-flex rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-black">
+                    <span className="absolute left-4 top-4 inline-flex rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
                       {item.badge}
                     </span>
                   ) : null}
                 </div>
 
                 <div className="pt-4">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-black/45">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/52">
                     {item.meta}
                   </p>
 
-                  <h3 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.04em] text-black">
+                  <h3 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.04em] text-white">
                     {item.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-black/55">
+                  <p className="mt-3 text-sm leading-6 text-white/68">
                     {item.description}
                   </p>
 
-                  <div className="mt-4 flex items-center gap-2 text-sm font-medium text-black">
+                  <div className="mt-4 flex items-center gap-2 text-sm font-medium text-white">
                     <PinIcon />
                     <span>{item.detail}</span>
                   </div>

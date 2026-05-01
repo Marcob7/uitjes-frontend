@@ -117,7 +117,7 @@ function MonthNavButton({ label }: { label: string }) {
     <button
       type="button"
       aria-label={label}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#ded8cc] bg-white text-[#1a1713] transition hover:-translate-y-0.5 hover:border-[#c7bea8]"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#ded8cc] bg-white/10 backdrop-blur-xl text-white transition hover:-translate-y-0.5 hover:border-[#c7bea8]"
     >
       <span aria-hidden="true" className="text-lg">
         {label}
@@ -185,7 +185,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
               key={`${cell.key}-${label}-${index}`}
               className={`truncate rounded-full px-1.5 py-0.5 text-[9px] font-medium leading-3 ${
                 index === 1 ? "hidden min-[390px]:block" : ""
-              } ${isSelected ? "bg-[#d9efad] text-[#26331a]" : "bg-[#efe8dc] text-[#5f5246]"}`}
+              } ${isSelected ? "bg-[#d9efad] text-[#26331a]" : "bg-white/10 text-[#5f5246]"}`}
             >
               {label}
             </div>
@@ -205,7 +205,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
       ? "bg-[#eee9e2]"
       : isSelected
         ? "bg-[#fbf7ed]"
-        : "bg-[#fbfaf7]"
+        : "bg-white/8"
   }`;
 
   if (cell.href) {
@@ -238,7 +238,7 @@ function CalendarCell({
     <>
       <div
         className={`flex items-baseline gap-2 text-sm font-medium ${
-          muted ? "text-[#9d9489]" : "text-[#2b261f]"
+          muted ? "text-[#9d9489]" : "text-white/88"
         }`}
       >
         <span className="text-lg font-semibold tracking-[-0.03em]">{day}</span>
@@ -262,8 +262,8 @@ function CalendarCell({
     return (
       <Link
         href={href}
-        className={`group relative flex min-h-[168px] flex-col border-b border-r border-[#e7dfd3] px-5 py-5 transition duration-200 hover:bg-[#fffdf9] ${
-          muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-[#fbfaf7] text-[#15120f]"
+        className={`group relative flex min-h-[168px] flex-col border-b border-r border-white/12 px-5 py-5 transition duration-200 hover:bg-[#fffdf9] ${
+          muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-white/8 text-white"
         } ${className}`}
       >
         {content}
@@ -273,8 +273,8 @@ function CalendarCell({
 
   return (
     <div
-      className={`relative flex min-h-[168px] flex-col border-b border-r border-[#e7dfd3] px-5 py-5 ${
-        muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-[#fbfaf7] text-[#15120f]"
+      className={`relative flex min-h-[168px] flex-col border-b border-r border-white/12 px-5 py-5 ${
+        muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-white/8 text-white"
       } ${className}`}
     >
       {content}
@@ -299,13 +299,13 @@ function SeasonalCard({
     <article className={`relative overflow-hidden rounded-[2rem] p-6 ${className}`}>
       <div className="relative z-10">
         {badge ? (
-          <div className="mb-4 inline-flex rounded-full bg-white/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#504538]">
+          <div className="mb-4 inline-flex rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#504538]">
             {badge}
           </div>
         ) : null}
         <h3
           className={`max-w-[12ch] text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] ${
-            dark ? "text-[#15120f]" : "text-[#171511]"
+            dark ? "text-white" : "text-white"
           }`}
         >
           {title}
@@ -324,20 +324,20 @@ function SeasonalCard({
 
 export default function JaarkalenderPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f6f1e8] text-[#171511]">
+    <main className="uitjes-surface min-h-screen overflow-hidden bg-[#07131a] text-white">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-[radial-gradient(circle_at_top_left,_rgba(213,241,174,0.55),_transparent_34%),radial-gradient(circle_at_top_right,_rgba(244,223,192,0.75),_transparent_42%)]" />
 
       <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section className="rounded-[2.4rem] border border-white/70 bg-[#f3e5d9] shadow-[0_24px_80px_rgba(73,52,31,0.08)]">
+        <section className="uitjes-liquid-section rounded-[2.4rem]">
           <div className="grid gap-10 px-6 py-7 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-11 lg:py-12">
             <div className="max-w-[38rem]">
-              <div className="inline-flex rounded-full border border-white/70 bg-white/45 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#705848]">
+              <div className="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/78 backdrop-blur-xl">
                 Nieuwe route
               </div>
-              <h1 className="mt-6 max-w-[10ch] text-[clamp(3.3rem,8vw,5.8rem)] leading-[0.9] tracking-[-0.07em] text-[#171511]">
+              <h1 className="mt-6 max-w-[10ch] text-[clamp(3.3rem,8vw,5.8rem)] leading-[0.9] tracking-[-0.07em] text-white">
                 De Jaarkalender van Nederland
               </h1>
-              <p className="mt-6 max-w-[32rem] text-base leading-8 text-[#5f4c3f] sm:text-lg">
+              <p className="mt-6 max-w-[32rem] text-base leading-8 text-white/76 sm:text-lg">
                 Ontdek de rijkdom van de Nederlandse cultuur, van intieme
                 stadsevenementen tot grootschalige festivals.
               </p>
@@ -345,43 +345,43 @@ export default function JaarkalenderPage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/ontdek"
-                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#c9f07e] px-7 text-sm font-semibold text-[#1c1b15] shadow-[0_14px_36px_rgba(155,192,72,0.24)] transition hover:-translate-y-0.5 hover:bg-[#bde86d]"
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-[#1c1b15] shadow-[0_14px_36px_rgba(155,192,72,0.24)] transition hover:-translate-y-0.5 hover:bg-[#bde86d]"
                 >
                   Plan mijn jaar
                   <ArrowIcon />
                 </Link>
                 <Link
                   href="/festivals"
-                  className="inline-flex min-h-14 items-center justify-center rounded-full border border-[#d8c7b7] px-7 text-sm font-semibold text-[#5f4c3f] transition hover:border-[#bea58c] hover:bg-white/45"
+                  className="uitjes-liquid-button inline-flex min-h-14 items-center justify-center rounded-full px-7 text-sm font-semibold transition hover:-translate-y-0.5"
                 >
                   Bekijk festivals
                 </Link>
               </div>
 
               <div className="mt-10 flex flex-wrap gap-3">
-                <div className="rounded-full bg-white/55 px-4 py-2 text-sm text-[#5b483b]">
+                <div className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl">
                   Culturele weekenden
                 </div>
-                <div className="rounded-full bg-white/40 px-4 py-2 text-sm text-[#5b483b]">
+                <div className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl">
                   Landelijke hoogtepunten
                 </div>
-                <div className="rounded-full bg-white/40 px-4 py-2 text-sm text-[#5b483b]">
+                <div className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl">
                   Slim plannen per seizoen
                 </div>
               </div>
             </div>
 
-            <div className="relative min-h-[280px] overflow-hidden rounded-[2.2rem] bg-[#f7ecdf] p-6 lg:min-h-[360px]">
+            <div className="relative min-h-[280px] overflow-hidden rounded-[2.2rem] border border-white/14 bg-white/10 p-6 backdrop-blur-xl lg:min-h-[360px]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,_rgba(202,240,126,0.45),_transparent_24%),radial-gradient(circle_at_84%_20%,_rgba(15,18,23,0.08),_transparent_22%),linear-gradient(135deg,_rgba(255,255,255,0.6),_rgba(255,255,255,0))]" />
               <div className="relative flex h-full items-end justify-between gap-6">
-                <div className="max-w-[15rem] self-start rounded-[1.6rem] bg-white/75 p-5 shadow-[0_18px_40px_rgba(64,46,31,0.08)] backdrop-blur-sm">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6f5a49]">
+                <div className="max-w-[15rem] self-start rounded-[1.6rem] bg-white/10 backdrop-blur-xl p-5 shadow-[0_18px_40px_rgba(64,46,31,0.08)] backdrop-blur-sm">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/64">
                     Trending nu
                   </p>
-                  <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
+                  <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
                     ADE Amsterdam
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-[#655245]">
+                  <p className="mt-2 text-sm leading-6 text-white/70">
                     Elektronische muziek, talks en creatieve nachten in oktober.
                   </p>
                 </div>
@@ -416,14 +416,14 @@ export default function JaarkalenderPage() {
                     />
                   </svg>
 
-                  <div className="absolute -bottom-4 -left-6 w-[168px] rotate-[-4deg] rounded-[1.5rem] bg-white px-5 py-4 text-[#171511] shadow-[0_20px_30px_rgba(39,27,16,0.14)]">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#6d7f49]">
+                  <div className="absolute -bottom-4 -left-6 w-[168px] rotate-[-4deg] rounded-[1.5rem] bg-white/10 backdrop-blur-xl px-5 py-4 text-white shadow-[0_20px_30px_rgba(39,27,16,0.14)]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#e8f2d0]">
                       Trending
                     </p>
                     <p className="mt-1 text-lg font-semibold tracking-[-0.04em]">
                       ADE Amsterdam
                     </p>
-                    <p className="text-sm text-[#5d5147]">2024</p>
+                    <p className="text-sm text-white/68">2024</p>
                   </div>
                 </div>
               </div>
@@ -438,7 +438,7 @@ export default function JaarkalenderPage() {
 
           <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <div className="flex items-center gap-3 text-[#1a1713]">
+              <div className="flex items-center gap-3 text-white">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#edf7d8] text-[#405028] sm:h-10 sm:w-10">
                   <CalendarIcon />
                 </span>
@@ -446,7 +446,7 @@ export default function JaarkalenderPage() {
                   <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7b6a] sm:text-sm sm:tracking-[0.22em]">
                     Overzicht
                   </p>
-                  <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
+                  <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-white">
                     Oktober 2024
                   </h2>
                 </div>
@@ -467,9 +467,9 @@ export default function JaarkalenderPage() {
             <JaarkalenderFilterControls />
           </div>
 
-          <div className="mt-5 overflow-hidden rounded-[1.4rem] border border-[#e4ddd2] bg-[#f8f6f1] shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8 sm:rounded-[2.2rem]">
+          <div className="mt-5 overflow-hidden rounded-[1.4rem] border border-white/14 bg-white/8 shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8 sm:rounded-[2.2rem]">
             <div className="hidden md:block">
-              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fcfbf8]">
+              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-white/8">
                 {["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"].map((day) => (
                   <div
                     key={day}
@@ -488,11 +488,7 @@ export default function JaarkalenderPage() {
                     monthLabel={cell.monthLabel}
                     muted={cell.muted}
                     href={cell.href}
-                    className={
-                      cell.muted
-                        ? undefined
-                        : "bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(248,245,239,0.98))]"
-                    }
+                    className={cell.muted ? undefined : "bg-white/8"}
                   >
                     <CountBlock count={cell.eventCount} muted={cell.muted} />
                   </CalendarCell>
@@ -501,7 +497,7 @@ export default function JaarkalenderPage() {
             </div>
 
             <div className="md:hidden">
-              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fcfbf8]">
+              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-white/8">
                 {["ma", "di", "wo", "do", "vr", "za", "zo"].map((day) => (
                   <div
                     key={day}
@@ -527,30 +523,30 @@ export default function JaarkalenderPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8b7a69]">
                 Redactie
               </p>
-              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] leading-[0.95] tracking-[-0.05em] text-[#171511]">
+              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] leading-[0.95] tracking-[-0.05em] text-white">
                 Seizoensfavorieten
               </h2>
             </div>
           </div>
 
           <div className="mt-6 grid gap-4 lg:grid-cols-[1.05fr_1fr]">
-            <article className="relative overflow-hidden rounded-[2.2rem] bg-[linear-gradient(135deg,#d7f1c9,#eff7d6_58%,#d7f0c4)] p-7 shadow-[0_20px_60px_rgba(73,52,31,0.06)]">
+            <article className="uitjes-liquid-section rounded-[2.2rem] p-7">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.45),_transparent_34%),radial-gradient(circle_at_70%_25%,_rgba(229,255,202,0.8),_transparent_32%)]" />
               <div className="absolute -right-10 top-6 h-56 w-56 rounded-full bg-white/25 blur-2xl" />
               <div className="relative z-10 max-w-[20rem]">
-                <div className="inline-flex rounded-full bg-white/55 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#536144]">
+                <div className="inline-flex rounded-full border border-white/14 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/76 backdrop-blur-xl">
                   Collectie
                 </div>
-                <h3 className="mt-5 max-w-none text-[clamp(2.2rem,5vw,3.4rem)] leading-[0.94] tracking-[-0.06em] text-[#171511]">
+                <h3 className="mt-5 max-w-none text-[clamp(2.2rem,5vw,3.4rem)] leading-[0.94] tracking-[-0.06em] text-white">
                   Herfstwandelingen door de Veluwe
                 </h3>
-                <p className="mt-4 text-sm leading-7 text-[#47553d]">
+                <p className="mt-4 text-sm leading-7 text-white/76">
                   Beleef de natuur op haar mooist met onze samengestelde routes,
                   stops voor koffie en plekken waar het licht perfect valt.
                 </p>
                 <Link
                   href="/inspiratie"
-                  className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[#171511] px-5 text-sm font-semibold text-[#f7f2ea] transition hover:bg-[#2a241f]"
+                  className="uitjes-cta mt-8 inline-flex min-h-12 items-center justify-center rounded-full px-5 text-sm font-semibold transition hover:-translate-y-0.5"
                 >
                   Bekijk gids
                 </Link>

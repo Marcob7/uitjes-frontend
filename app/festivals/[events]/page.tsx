@@ -214,11 +214,11 @@ function TicketCard({
         : "bg-[#f3e7de]";
 
   return (
-    <article className={`rounded-[1.8rem] ${toneClass} p-5`}>
+    <article className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.8rem] ${toneClass} p-5`}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-lg font-medium text-[#171511]">{tier.name}</p>
-          <p className="mt-2 text-[2rem] font-semibold leading-none tracking-[-0.06em] text-[#171511]">
+          <p className="text-lg font-medium text-white">{tier.name}</p>
+          <p className="mt-2 text-[2rem] font-semibold leading-none tracking-[-0.06em] text-white">
             {tier.priceLabel}
           </p>
         </div>
@@ -232,7 +232,7 @@ function TicketCard({
       <div className="mt-5 space-y-3">
         {tier.bullets.map((bullet) => (
           <div key={bullet} className="flex items-start gap-2 text-sm text-[#4f463d]">
-            <span className="mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/75 text-[#4e6c29]">
+            <span className="mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-[#4e6c29]">
               <CheckIcon />
             </span>
             <span>{bullet}</span>
@@ -255,7 +255,7 @@ function TicketCard({
 function InfoCard({ card }: { card: FestivalInfoCard }) {
   const toneClass =
     card.tone === "mint"
-      ? "bg-[#dff0dc]"
+      ? "bg-white/12"
       : card.tone === "rose"
         ? "bg-[#f2e6dd]"
         : "bg-[#f6ebd6]";
@@ -270,12 +270,12 @@ function InfoCard({ card }: { card: FestivalInfoCard }) {
     );
 
   return (
-    <article className={`rounded-[1.7rem] ${toneClass} px-5 py-6`}>
-      <div className="text-[#171511]">{icon}</div>
-      <h3 className="mt-5 max-w-none text-xl leading-none tracking-[-0.04em] text-[#171511]">
+    <article className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.7rem] ${toneClass} px-5 py-6`}>
+      <div className="text-white">{icon}</div>
+      <h3 className="mt-5 max-w-none text-xl leading-none tracking-[-0.04em] text-white">
         {card.title}
       </h3>
-      <p className="mt-3 text-sm leading-7 text-[#5a5046]">{card.description}</p>
+      <p className="mt-3 text-sm leading-7 text-white/72">{card.description}</p>
       <p className="mt-5 text-xs font-medium text-[#6a5f54]">{card.cta}</p>
     </article>
   );
@@ -295,7 +295,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
   );
 
   return (
-    <main className="min-h-screen bg-[#f8f4ed] text-[#171511]">
+    <main className="uitjes-surface min-h-screen text-white">
       <div className="mx-auto max-w-[1240px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <Breadcrumbs
           items={[
@@ -307,7 +307,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
         />
 
         <section
-          className="relative overflow-hidden rounded-[2rem] bg-[#181614] px-5 py-5 text-white shadow-[0_24px_60px_rgba(26,21,16,0.22)] sm:px-6 sm:py-6"
+          className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] bg-[#181614] px-5 py-5 text-white shadow-[0_24px_60px_rgba(26,21,16,0.22)] sm:px-6 sm:py-6"
           style={{
             backgroundImage: `linear-gradient(180deg, rgba(9,12,12,0.18), rgba(9,12,12,0.58)), ${optimizeCssBackground(
               festival.heroImage,
@@ -322,7 +322,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
         >
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,10,0.02),rgba(10,10,10,0.5))]" />
           <div className="relative flex min-h-[18rem] flex-col justify-end sm:min-h-[24rem] lg:min-h-[31rem]">
-            <div className="inline-flex w-fit rounded-full bg-[#ddefb1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#38571a]">
+            <div className="inline-flex w-fit rounded-full bg-[#e8f2d0] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#38571a]">
               {festival.matchScore}% Match
             </div>
             <h1 className="mt-4 max-w-none text-[clamp(2.7rem,8vw,5.3rem)] leading-[0.9] tracking-[-0.08em] text-white">
@@ -334,15 +334,15 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
         <section className="grid gap-10 py-12 lg:grid-cols-[1fr_0.8fr] lg:items-start">
           <div>
-            <h2 className="max-w-none text-[clamp(2.1rem,5vw,3.3rem)] leading-[0.95] tracking-[-0.06em] text-[#171511]">
+            <h2 className="max-w-none text-[clamp(2.1rem,5vw,3.3rem)] leading-[0.95] tracking-[-0.06em] text-white">
               {festival.benchmarkPrefix}{" "}
-              <span className="bg-[#d8ef99] px-2 text-[#171511]">
+              <span className="bg-[#e8f2d0] px-2 text-white">
                 {festival.benchmarkHighlight}
               </span>{" "}
               {festival.benchmarkSuffix}
             </h2>
 
-            <div className="mt-6 max-w-[36rem] space-y-5 text-[15px] leading-8 text-[#584e44]">
+            <div className="mt-6 max-w-[36rem] space-y-5 text-[15px] leading-8 text-white/74">
               {festival.introParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -365,10 +365,10 @@ export default function FestivalDetailPage({ params }: PageProps) {
           />
         </section>
 
-        <section className="rounded-[2rem] bg-[#f8edcf] px-5 py-8 sm:px-6 lg:px-8">
+        <section className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] bg-[#f8edcf] px-5 py-8 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.8rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+              <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.8rem)] leading-[0.98] tracking-[-0.05em] text-white">
                 Daily Lineup
               </h2>
             </div>
@@ -393,8 +393,8 @@ export default function FestivalDetailPage({ params }: PageProps) {
               return (
                 <article
                   key={day.label}
-                  className={`rounded-[1.6rem] px-5 py-5 shadow-[0_10px_24px_rgba(52,38,22,0.06)] ${
-                    day.featured ? "bg-[#d8f3a8]" : "bg-white/88"
+                  className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.6rem] px-5 py-5 shadow-[0_10px_24px_rgba(52,38,22,0.06)] ${
+                    day.featured ? "bg-[#d8f3a8]" : "bg-white/10 backdrop-blur-xl"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -402,20 +402,20 @@ export default function FestivalDetailPage({ params }: PageProps) {
                       <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f816f]">
                         {day.label}
                       </p>
-                      <h3 className="mt-2 max-w-none text-[1.8rem] leading-none tracking-[-0.05em] text-[#171511]">
+                      <h3 className="mt-2 max-w-none text-[1.8rem] leading-none tracking-[-0.05em] text-white">
                         {day.dateLabel}
                       </h3>
                     </div>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/75 text-[#171511]">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-white">
                       <CalendarMiniIcon />
                     </span>
                   </div>
 
                   <div className="mt-5 space-y-4">
                     {day.acts.map((act) => (
-                      <div key={act.name} className="border-b border-black/8 pb-4 last:border-b-0 last:pb-0">
-                        <p className="text-base font-medium text-[#171511]">{act.name}</p>
-                        <p className="mt-1 text-[13px] text-[#655a4f]">{act.genre}</p>
+                      <div key={act.name} className="border-b border-[#23170f]/8 pb-4 last:border-b-0 last:pb-0">
+                        <p className="text-base font-medium text-white">{act.name}</p>
+                        <p className="mt-1 text-[13px] text-white/68">{act.genre}</p>
                       </div>
                     ))}
                   </div>
@@ -427,7 +427,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
                     className={`mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition ${
                       day.featured
                         ? "bg-[#171511] text-white hover:bg-[#2a241d]"
-                        : "border border-[#e2dacf] bg-white text-[#171511] hover:bg-[#faf7f2]"
+                        : "border border-[#e2dacf] bg-white/10 backdrop-blur-xl text-white hover:bg-white/10"
                     }`}
                   >
                     Add to Calendar
@@ -440,10 +440,10 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
         <section className="py-12">
           <div className="text-center">
-            <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+            <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.98] tracking-[-0.05em] text-white">
               Choose Your Access
             </h2>
-            <p className="mt-2 text-sm text-[#7a6f63]">
+            <p className="mt-2 text-sm text-white/58">
               Limited tiers remaining. Secure your journey into sound.
             </p>
           </div>
@@ -456,7 +456,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
         </section>
 
         <section className="pb-12">
-          <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+          <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-white">
             Practical Info
           </h2>
 
@@ -469,14 +469,14 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
         <section className="pb-8">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+            <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-white">
               Discover More
             </h2>
             <div className="flex gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#e3d9cc] bg-white text-[#8f8171]">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#e3d9cc] bg-white/10 backdrop-blur-xl text-[#8f8171]">
                 <ArrowIcon />
               </span>
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#e3d9cc] bg-white text-[#8f8171]">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#e3d9cc] bg-white/10 backdrop-blur-xl text-[#8f8171]">
                 <ArrowIcon />
               </span>
             </div>

@@ -178,23 +178,23 @@ function AlertRow({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-between gap-4 rounded-[1.2rem] bg-white px-4 py-4 text-left shadow-[0_8px_20px_rgba(66,85,34,0.06)] transition hover:bg-[#fcfcfa]"
+      className="uitjes-liquid-button flex w-full items-center justify-between gap-4 rounded-[1.2rem] px-4 py-4 text-left transition hover:-translate-y-0.5"
       aria-pressed={active}
     >
       <div className="flex items-center gap-3">
         <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#eff5e6] text-[#4a6b27]">
           {icon === "music" ? <MusicIcon /> : <TicketIcon />}
         </span>
-        <span className="text-sm font-medium text-[#171511]">{label}</span>
+        <span className="text-sm font-medium text-white">{label}</span>
       </div>
 
       <span
         className={`relative inline-flex h-7 w-12 rounded-full transition ${
-          active ? "bg-[#4f7628]" : "bg-[#e6e0d8]"
+          active ? "bg-[#e8f2d0]" : "bg-white/18"
         }`}
       >
         <span
-          className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-[0_6px_12px_rgba(0,0,0,0.12)] transition ${
+          className={`absolute top-1 h-5 w-5 rounded-full bg-white/10 backdrop-blur-xl shadow-[0_6px_12px_rgba(0,0,0,0.12)] transition ${
             active ? "left-6" : "left-1"
           }`}
         />
@@ -209,10 +209,10 @@ function FestivalCard({
   festival: (typeof festivalOverviewItems)[number];
 }) {
   return (
-    <article className="rounded-[1.9rem] border border-[#e9e1d7] bg-white px-4 py-4 shadow-[0_12px_30px_rgba(60,44,23,0.04)] sm:px-5">
+    <article className="uitjes-card rounded-[1.9rem] px-4 py-4 sm:px-5">
       <div className="flex flex-col gap-5 md:flex-row md:items-center">
         <div className="flex min-w-0 items-start gap-4 md:flex-1">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1rem] bg-[#f1eeea]">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1rem] bg-white/12">
             <FestivalGlyph icon={festival.icon} />
           </div>
 
@@ -220,14 +220,14 @@ function FestivalCard({
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#85796f]">
               {festival.dateLabel} - {festival.locationLabel}
             </p>
-            <h2 className="mt-2 max-w-none text-[clamp(1.8rem,3vw,2.25rem)] leading-[0.98] tracking-[-0.055em] text-[#171511]">
+            <h2 className="mt-2 max-w-none text-[clamp(1.8rem,3vw,2.25rem)] leading-[0.98] tracking-[-0.055em] text-white">
               {festival.name}
             </h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {festival.genres.map((genre) => (
                 <span
                   key={`${festival.slug}-${genre}`}
-                  className="rounded-full bg-[#f3f0eb] px-3 py-1 text-[11px] font-medium text-[#62584d]"
+                  className="uitjes-chip rounded-full px-3 py-1 text-[11px] font-medium"
                 >
                   {genre}
                 </span>
@@ -248,7 +248,7 @@ function FestivalCard({
 
           <Link
             href={getFestivalDetailHref(festival.slug)}
-            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[#ddd4c8] text-[#171511] transition hover:bg-[#faf8f4] sm:rounded-full"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/16 text-white transition hover:bg-white/10 sm:rounded-full"
             aria-label={`Open ${festival.name}`}
           >
             <ArrowIcon />
@@ -309,20 +309,20 @@ export default function FestivalsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f5f0] text-[#171511]">
+    <main className="uitjes-surface min-h-screen text-white">
       <div className="mx-auto max-w-[1220px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <section className="border-b border-[#ebe3d8] pb-10">
           <div className="max-w-[40rem]">
-            <h1 className="max-w-none text-[clamp(3rem,8vw,5.4rem)] leading-[0.9] tracking-[-0.075em] text-[#171511]">
+            <h1 className="max-w-none text-[clamp(3rem,8vw,5.4rem)] leading-[0.9] tracking-[-0.075em] text-white">
               Vind je match
             </h1>
-            <p className="mt-5 max-w-[33rem] text-base leading-8 text-[#5d5348] sm:text-[1.05rem]">
+            <p className="mt-5 max-w-[33rem] text-base leading-8 text-white/74 sm:text-[1.05rem]">
               Een minimalistische gids naar festivals die resoneren met jouw
               energie. Gefilterd op kwaliteit, niet op volume.
             </p>
           </div>
 
-          <div className="mt-8 rounded-[1.6rem] border border-[#e5ddd2] bg-white p-2 shadow-[0_10px_24px_rgba(60,44,23,0.04)] sm:rounded-full">
+          <div className="mt-8 rounded-[1.6rem] border border-[#e5ddd2] bg-white/10 backdrop-blur-xl p-2 shadow-[0_10px_24px_rgba(60,44,23,0.04)] sm:rounded-full">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <label
                 htmlFor="festival-search"
@@ -335,7 +335,7 @@ export default function FestivalsPage() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Zoek op genre, stad of vibe..."
-                  className="h-full flex-1 bg-transparent text-base text-[#171511] outline-none placeholder:text-[#a09386] sm:text-sm"
+                  className="h-full flex-1 bg-transparent text-base text-white outline-none placeholder:text-[#a09386] sm:text-sm"
                 />
               </label>
 
@@ -361,8 +361,8 @@ export default function FestivalsPage() {
                     onClick={() => setActiveGenre(genre)}
                     className={`min-h-11 rounded-2xl px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition sm:rounded-full ${
                       active
-                        ? "bg-[#ddefb1] text-[#3f5e1f]"
-                        : "bg-white text-[#6f655a] hover:bg-[#f2eee8]"
+                        ? "bg-[#e8f2d0] text-[#3f5e1f]"
+                        : "bg-white/10 backdrop-blur-xl text-white/62 hover:bg-[#f2eee8]"
                     }`}
                     aria-pressed={active}
                   >
@@ -384,22 +384,22 @@ export default function FestivalsPage() {
           </div>
 
           {filteredFestivals.length === 0 ? (
-            <div className="mt-4 rounded-[1.9rem] border border-[#e9e1d7] bg-white px-6 py-10 text-center text-sm text-[#5d5348]">
+            <div className="mt-4 rounded-[1.9rem] border border-white/14 bg-white/10 backdrop-blur-xl px-6 py-10 text-center text-sm text-white/74">
               Geen festivals gevonden voor deze selectie.
             </div>
           ) : null}
         </section>
 
-        <section className="mt-8 rounded-[2.4rem] bg-[linear-gradient(135deg,#edf7da,#f2f7e9_45%,#e7f1d3)] px-6 py-8 shadow-[0_20px_50px_rgba(74,89,41,0.08)] sm:px-8 sm:py-10">
+        <section className="uitjes-liquid-section mt-8 rounded-[2.4rem] px-6 py-8 sm:px-8 sm:py-10">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div className="max-w-[28rem]">
               <div className="inline-flex rounded-full bg-[#4f7628] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
                 Smart alerts
               </div>
-              <h2 className="mt-5 max-w-none text-[clamp(2.1rem,4vw,3.2rem)] leading-[0.96] tracking-[-0.055em] text-[#171511]">
+              <h2 className="mt-5 max-w-none text-[clamp(2.1rem,4vw,3.2rem)] leading-[0.96] tracking-[-0.055em] text-white">
                 Persoonlijke Meldingen
               </h2>
-              <p className="mt-4 max-w-[26rem] text-sm leading-7 text-[#57674b] sm:text-[15px]">
+              <p className="mt-4 max-w-[26rem] text-sm leading-7 text-white/76 sm:text-[15px]">
                 Focus op wat ertoe doet. Krijg alleen bericht over evenementen
                 die exact bij jouw profiel aansluiten.
               </p>
@@ -426,7 +426,7 @@ export default function FestivalsPage() {
               <div className="absolute right-[10%] top-[8%] hidden rounded-full bg-[#4f7628] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_20px_rgba(79,118,40,0.18)] sm:block">
                 Live nu
               </div>
-              <div className="grid h-[15rem] w-[15rem] place-items-center rounded-full border border-white/70 bg-white/75 text-[#4f7628] shadow-[0_18px_44px_rgba(79,118,40,0.12)] sm:h-[22rem] sm:w-[22rem]">
+              <div className="grid h-[15rem] w-[15rem] place-items-center rounded-full border border-white/18 bg-white/10 text-[#e8f2d0] shadow-[0_18px_44px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:h-[22rem] sm:w-[22rem]">
                 <BellIcon />
               </div>
             </div>
@@ -434,10 +434,10 @@ export default function FestivalsPage() {
         </section>
 
         <section className="px-2 py-16 text-center sm:py-20">
-          <h2 className="mx-auto max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-[#171511]">
+          <h2 className="mx-auto max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-white">
             Your Weekly Pulse
           </h2>
-          <p className="mx-auto mt-4 max-w-[32rem] text-sm leading-7 text-[#5d5348] sm:text-[15px]">
+          <p className="mx-auto mt-4 max-w-[32rem] text-sm leading-7 text-white/74 sm:text-[15px]">
             De curator selecteert. Jij beleeft. Geen ruis, alleen de essentie
             elke donderdag in je inbox.
           </p>
@@ -448,12 +448,12 @@ export default function FestivalsPage() {
               value={newsletterEmail}
               onChange={(event) => setNewsletterEmail(event.target.value)}
               placeholder="E-mailadres"
-              className="min-h-14 flex-1 rounded-2xl border border-[#e7dfd4] bg-white px-5 text-base outline-none transition placeholder:text-[#a09386] focus:border-[#cfc1af] sm:rounded-full sm:text-sm"
+              className="min-h-14 flex-1 rounded-2xl border border-[#e7dfd4] bg-white/10 backdrop-blur-xl px-5 text-base outline-none transition placeholder:text-[#a09386] focus:border-[#cfc1af] sm:rounded-full sm:text-sm"
             />
             <button
               type="button"
               onClick={openNewsletterFlow}
-              className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[#171511] px-8 text-sm font-semibold text-white transition hover:bg-[#2b261f] sm:rounded-full"
+              className="uitjes-cta inline-flex min-h-14 items-center justify-center rounded-2xl px-8 text-sm font-semibold transition hover:-translate-y-0.5 sm:rounded-full"
             >
               Inschrijven
             </button>
