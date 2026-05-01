@@ -189,13 +189,13 @@ export default function CityExplorePage({
 
   return (
     <main
-      className="min-h-screen bg-[#fbf8f3] text-[#171717]"
-      style={{ backgroundColor: cityTheme.colors.pageBackground || "#fbf8f3" }}
+      className="min-h-screen bg-[#f8f5f3] px-4 pt-4 text-[#171717] md:px-6 lg:px-8"
+      style={{ backgroundColor: "#f8f5f3" }}
     >
-      <section className="relative overflow-hidden border-b border-black/[0.04]">
+      <div className="relative overflow-hidden rounded-[32px] border border-white/50">
         <div className="absolute inset-0">
           <WebGLLiquid
-            title={cityLabel}
+            title=""
             subtitle=""
             description=""
             colorDeep={cityTheme.liquid.deep}
@@ -211,27 +211,23 @@ export default function CityExplorePage({
             style={{
               minHeight: "100%",
               height: "100%",
-              backgroundColor: cityTheme.colors.pageBackground || "#fbf8f3",
+              backgroundColor: "#09151b",
             }}
-            contentContainerClassName="max-w-[1220px] px-6 pb-0 pt-14 sm:px-8 lg:px-10 lg:pt-16"
-            contentInnerClassName="max-w-none"
-            titleClassName={
-              isDarkLiquid
-                ? "max-w-[9ch] text-[clamp(4.1rem,11vw,8rem)] tracking-[-0.085em] text-white"
-                : "max-w-[9ch] text-[clamp(4.1rem,11vw,8rem)] tracking-[-0.085em] text-[#111111]"
-            }
             overlayClassName={
               isDarkLiquid
-                ? "bg-gradient-to-r from-black/42 via-black/16 to-transparent"
-                : "bg-gradient-to-r from-white/64 via-white/22 to-transparent"
+                ? "bg-gradient-to-br from-[#09151b]/84 via-[#09151b]/64 to-[#0d2027]/58"
+                : "bg-gradient-to-br from-[#09151b]/78 via-[#09151b]/58 to-[#0d2027]/48"
             }
             glowClassName={
               isDarkLiquid
-                ? "bg-[radial-gradient(circle_at_68%_32%,rgba(255,255,255,0.18),transparent_42%)]"
-                : "bg-[radial-gradient(circle_at_68%_30%,rgba(255,255,255,0.3),transparent_40%)]"
+                ? "bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),radial-gradient(circle_at_76%_24%,rgba(198,223,154,0.18),transparent_24%)]"
+                : "bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.18),transparent_28%),radial-gradient(circle_at_76%_24%,rgba(198,223,154,0.2),transparent_24%)]"
             }
           />
         </div>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,19,26,0.1),rgba(7,19,26,0.4))]" />
+        <div className="pointer-events-none absolute -left-10 top-8 h-40 w-40 rounded-full bg-[rgba(198,223,154,0.16)] blur-3xl" />
+        <div className="pointer-events-none absolute right-10 top-10 h-48 w-48 rounded-full bg-[rgba(122,213,217,0.14)] blur-3xl" />
 
         <div className="relative z-10">
           <CityExploreHeroSection
@@ -262,18 +258,18 @@ export default function CityExplorePage({
               })
             }
           />
-        </div>
-      </section>
 
-      <CityExploreResultsSection
-        cityLabel={cityLabel}
-        filteredCards={filteredCards}
-        selectedId={selectedId}
-        onSelectCard={setSelectedId}
-        sectionRef={resultsRef}
-        plannerSelections={plannerSelections}
-        completedStepCount={completedStepCount}
-      />
+          <CityExploreResultsSection
+            cityLabel={cityLabel}
+            filteredCards={filteredCards}
+            selectedId={selectedId}
+            onSelectCard={setSelectedId}
+            sectionRef={resultsRef}
+            plannerSelections={plannerSelections}
+            completedStepCount={completedStepCount}
+          />
+        </div>
+      </div>
 
       <CityExploreMapSection
         cityLabel={cityLabel}

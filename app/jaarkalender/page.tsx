@@ -324,9 +324,7 @@ function SeasonalCard({
 
 export default function JaarkalenderPage() {
   return (
-    <main className="uitjes-surface min-h-screen overflow-hidden bg-[#07131a] text-white">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-[radial-gradient(circle_at_top_left,_rgba(213,241,174,0.55),_transparent_34%),radial-gradient(circle_at_top_right,_rgba(244,223,192,0.75),_transparent_42%)]" />
-
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-white">
       <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <section className="uitjes-liquid-section rounded-[2.4rem]">
           <div className="grid gap-10 px-6 py-7 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-11 lg:py-12">

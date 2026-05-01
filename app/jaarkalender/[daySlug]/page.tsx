@@ -405,7 +405,7 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
   }
 
   return (
-    <main className="uitjes-surface min-h-screen text-white">
+    <main className="min-h-screen bg-[#f8f5f3] text-white">
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <Breadcrumbs
           items={[

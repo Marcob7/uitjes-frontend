@@ -34,10 +34,10 @@ function getStatusClass(status: string | undefined) {
     normalizedStatus.includes("gesloten") ||
     normalizedStatus.includes("afgelopen")
   ) {
-    return "text-[#c95437]";
+    return "text-[#f7b6a6]";
   }
 
-  return "text-[#4a7a24]";
+  return "text-[#e8f2d0]";
 }
 
 function getImageAccent(index: number) {
@@ -77,10 +77,10 @@ export default function ExploreCardItem({
       onMouseEnter={onSelect}
       onFocus={onSelect}
       onClick={onSelect}
-      className={`group flex flex-col gap-5 rounded-[2rem] p-5 ring-1 transition duration-200 sm:flex-row sm:items-start ${
+      className={`group flex flex-col gap-5 rounded-[2rem] border p-5 backdrop-blur-xl transition duration-200 sm:flex-row sm:items-start ${
         isSelected
-          ? "bg-white shadow-[0_24px_44px_rgba(67,86,27,0.12)] ring-[#86ae49]/40"
-          : "bg-[#fbf8f4] shadow-[0_24px_44px_rgba(40,30,20,0.05)] ring-black/[0.04] hover:-translate-y-1 hover:bg-white"
+          ? "border-[#e8f2d0]/42 bg-white/16 shadow-[0_28px_58px_rgba(0,0,0,0.24)]"
+          : "border-white/14 bg-white/10 shadow-[0_22px_48px_rgba(0,0,0,0.16)] hover:-translate-y-1 hover:border-white/22 hover:bg-white/14 hover:shadow-[0_30px_68px_rgba(0,0,0,0.22)]"
       }`}
     >
       <div className="relative h-[108px] w-full shrink-0 overflow-hidden rounded-[1.6rem] bg-[#2b1b12] sm:w-[108px]">
@@ -99,32 +99,32 @@ export default function ExploreCardItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="inline-flex rounded-full bg-[#dff1c5] px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#66873e]">
+            <div className="inline-flex rounded-full border border-[#e8f2d0]/36 bg-[#e8f2d0]/18 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#f1f7df] backdrop-blur-md">
               {card.label}
             </div>
-            <h3 className="mt-3 text-[1.95rem] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151515]">
+            <h3 className="mt-3 text-[1.95rem] font-semibold leading-[0.98] tracking-[-0.055em] text-white">
               {card.title}
             </h3>
           </div>
 
           {typeof card.rating === "number" ? (
-            <div className="inline-flex items-center gap-1.5 pt-1 text-sm font-semibold text-[#111111]">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-white/14 bg-white/10 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-md">
               <StarIcon />
               <span>{card.rating.toFixed(1)}</span>
             </div>
           ) : null}
         </div>
 
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-[0.98rem] text-[#5d5248]">
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-[0.98rem] text-white/72">
           <span>{card.time}</span>
-          <span className="h-1 w-1 rounded-full bg-[#b8aa9b]" />
+          <span className="h-1 w-1 rounded-full bg-white/36" />
           <span>{card.price || "Prijs volgt"}</span>
-          <span className="h-1 w-1 rounded-full bg-[#b8aa9b]" />
+          <span className="h-1 w-1 rounded-full bg-white/36" />
           <span className={getStatusClass(card.status)}>{card.status || "Plan dit moment"}</span>
         </div>
 
         {card.description ? (
-          <p className="mt-3 max-w-[32rem] text-sm leading-7 text-[#605347]">
+          <p className="mt-3 max-w-[32rem] text-sm leading-7 text-white/72">
             {card.description}
           </p>
         ) : null}
@@ -134,7 +134,7 @@ export default function ExploreCardItem({
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-[#d9cfc4] bg-white px-3 py-1 text-[0.78rem] text-[#5a5047]"
+                className="rounded-full border border-white/14 bg-white/10 px-3 py-1 text-[0.78rem] text-white/74 backdrop-blur-md"
               >
                 {tag}
               </span>
