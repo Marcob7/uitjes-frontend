@@ -1,5 +1,7 @@
 import Link from "next/link";
-import SearchBar from "@/components/home/SearchBar";
+import { Suspense } from "react";
+import { InspirationContextLink } from "@/components/inspiration/InspirationContextLink";
+import { InspirationLocationContext } from "@/components/inspiration/InspirationLocationContext";
 import { AppCard, AppSection } from "@/components/ui/app";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
@@ -120,17 +122,15 @@ export default function InspiratiePage() {
                 klopt met je dag.
               </p>
 
-              <div className="mt-8 max-w-[42rem]">
-              <SearchBar
-                placeholder="Waar heb je zin in vandaag?"
-                buttonLabel="Zoeken"
-                formClassName="border border-white/20 bg-white/12 shadow-[0_24px_60px_rgba(3,10,14,0.24)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/10"
-                iconClassName="text-white/68"
-                inputClassName="text-white placeholder:text-white/62"
-                suggestionsPanelClassName="border-white/12 bg-[#0d1920]/96 shadow-[0_24px_60px_rgba(2,8,11,0.34)] backdrop-blur-xl"
-                suggestionItemClassName="text-white/88 hover:bg-white/8"
-                submitButtonClassName="border border-[#e8f2d0]/65 bg-[#e8f2d0] text-[#162016] shadow-[0_18px_36px_rgba(12,20,12,0.18)] hover:bg-[#f1f7df]"
-              />
+              <div className="mt-8 flex flex-wrap gap-3">
+                {["Categorie", "Sfeer", "Moment"].map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl"
+                  >
+                    {label}
+                  </span>
+                ))}
               </div>
             </div>
 
@@ -163,27 +163,13 @@ export default function InspiratiePage() {
             </AppCard>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-            {categoryCards.map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className={`group flex min-h-[142px] flex-col justify-between rounded-[1.5rem] px-4 py-4 text-left transition duration-200 hover:-translate-y-1 hover:bg-white/14 md:min-h-[180px] md:rounded-[1.9rem] md:px-5 md:py-5 ${card.bgClass}`}
-              >
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#e8f2d0] text-[#1c2a17]">
-                  {card.icon}
-                </div>
-                <div>
-                  <span className="block text-lg font-semibold leading-none tracking-[-0.04em] text-white md:text-xl">
-                    {card.title}
-                  </span>
-                  <span className="mt-2 block max-w-[13rem] text-xs leading-5 text-white/70">
-                    {card.description}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <Suspense fallback={null}>
+            <InspirationLocationContext compact className="mt-8" />
+          </Suspense>
+
+          <Suspense fallback={<CategoryGrid contextAware={false} />}>
+            <CategoryGrid contextAware />
+          </Suspense>
         </div>
       </AppSection>
 
@@ -306,6 +292,34 @@ export default function InspiratiePage() {
       </AppSection>
 
     </main>
+  );
+}
+
+function CategoryGrid({ contextAware }: { contextAware: boolean }) {
+  const LinkComponent = contextAware ? InspirationContextLink : Link;
+
+  return (
+    <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+      {categoryCards.map((card) => (
+        <LinkComponent
+          key={card.title}
+          href={card.href}
+          className={`group flex min-h-[142px] flex-col justify-between rounded-[1.5rem] px-4 py-4 text-left transition duration-200 hover:-translate-y-1 hover:bg-white/14 md:min-h-[180px] md:rounded-[1.9rem] md:px-5 md:py-5 ${card.bgClass}`}
+        >
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#e8f2d0] text-[#1c2a17]">
+            {card.icon}
+          </div>
+          <div>
+            <span className="block text-lg font-semibold leading-none tracking-[-0.04em] text-white md:text-xl">
+              {card.title}
+            </span>
+            <span className="mt-2 block max-w-[13rem] text-xs leading-5 text-white/70">
+              {card.description}
+            </span>
+          </div>
+        </LinkComponent>
+      ))}
+    </div>
   );
 }
 

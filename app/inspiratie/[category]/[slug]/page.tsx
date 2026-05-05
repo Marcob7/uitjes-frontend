@@ -7,12 +7,16 @@ import {
   buildActionSearchHref,
   buildMapsSearchHref,
 } from "@/lib/actionLinks";
+import { cityOptions } from "@/lib/cityConfig";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
   params: {
     category: string;
     slug: string;
+  };
+  searchParams?: {
+    location?: string;
   };
 };
 
@@ -316,6 +320,45 @@ function buildSimilarItems(category: SupportedCategory, currentSlug: string) {
     }));
 }
 
+function buildContextQuery(searchParams?: PageProps["searchParams"]) {
+  const params = new URLSearchParams();
+
+  if (searchParams?.location) params.set("location", searchParams.location);
+
+  return params.toString();
+}
+
+function withContext(href: string, query: string) {
+  return query ? `${href}?${query}` : href;
+}
+
+function getLocationContextLabel(searchParams?: PageProps["searchParams"]) {
+  if (
+    searchParams?.location &&
+    searchParams.location !== "nearby" &&
+    searchParams.location !== "surprise"
+  ) {
+    const cityLabel =
+      cityOptions.find((city) => city.value === searchParams.location)?.label ??
+      searchParams.location
+        .split("-")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+
+    return `Bekijk dit soort ideeen in ${cityLabel}`;
+  }
+
+  if (searchParams?.location === "nearby") {
+    return "Zoek vergelijkbare uitjes in de buurt";
+  }
+
+  if (searchParams?.location === "surprise") {
+    return "Inspiratie door heel Nederland";
+  }
+
+  return undefined;
+}
+
 function getPageData(category: SupportedCategory, slug: string): DetailPageData {
   const categoryConfig = categoryMeta[category];
   const key = `${category}/${slug}`;
@@ -368,7 +411,10 @@ export function generateStaticParams() {
   );
 }
 
-export default function InspirationDetailPage({ params }: PageProps) {
+export default function InspirationDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { category, slug } = params;
 
   if (!isSupportedCategory(category)) {
@@ -380,6 +426,8 @@ export default function InspirationDetailPage({ params }: PageProps) {
   }
 
   const page = getPageData(category, slug);
+  const contextQuery = buildContextQuery(searchParams);
+  const locationContextLabel = getLocationContextLabel(searchParams);
   const reserveHref = buildActionSearchHref({
     title: page.title,
     location: page.practical.address,
@@ -389,7 +437,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
   const savedPlace = {
     id: `inspiratie:${category}/${slug}`,
     title: page.title,
-    href: `/inspiratie/${category}/${slug}`,
+    href: withContext(`/inspiratie/${category}/${slug}`, contextQuery),
     meta: page.meta,
     image: page.heroImage,
   };
@@ -402,7 +450,10 @@ export default function InspirationDetailPage({ params }: PageProps) {
             items={[
               { label: "Home", href: "/" },
               { label: "Inspiratie", href: "/inspiratie" },
-              { label: categoryLabels[category], href: `/inspiratie/${category}` },
+              {
+                label: categoryLabels[category],
+                href: withContext(`/inspiratie/${category}`, contextQuery),
+              },
               { label: page.title },
             ]}
             className="mb-6"
@@ -435,6 +486,11 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     {badge}
                   </span>
                 ))}
+                {locationContextLabel ? (
+                  <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
+                    {locationContextLabel}
+                  </span>
+                ) : null}
               </div>
 
               <h1 className="max-w-[760px] text-[clamp(3rem,8vw,5.8rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
@@ -495,6 +551,14 @@ export default function InspirationDetailPage({ params }: PageProps) {
             <aside className="space-y-5">
               <AppCard variant="elevated" padding="md" className="rounded-[1.8rem]">
                 <div className="flex flex-col gap-3">
+                  {locationContextLabel ? (
+                    <Link
+                      href={withContext(`/inspiratie/${category}`, contextQuery)}
+                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e8f2d0]/50 bg-white/12 px-5 text-center text-sm font-semibold text-white transition hover:bg-white/16"
+                    >
+                      {locationContextLabel}
+                    </Link>
+                  ) : null}
                   <a
                     href={reserveHref}
                     target="_blank"
@@ -598,7 +662,11 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {page.similar.map((item) => (
-              <Link key={item.href} href={item.href} className="group block">
+              <Link
+                key={item.href}
+                href={withContext(item.href, contextQuery)}
+                className="group block"
+              >
                 <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
                   <div
                     className="aspect-[0.95/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
@@ -619,7 +687,9 @@ export default function InspirationDetailPage({ params }: PageProps) {
                   <h3 className="text-[1.7rem] font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511]">
                     {item.title}
                   </h3>
-                  <p className="mt-2 text-sm text-[#665d54]">{item.meta}</p>
+                  <p className="mt-2 text-sm text-[#665d54]">
+                    {locationContextLabel ?? item.meta}
+                  </p>
                 </div>
               </Link>
             ))}

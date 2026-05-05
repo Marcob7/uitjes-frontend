@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { InspirationLocationContext } from "@/components/inspiration/InspirationLocationContext";
 import { AppCard, AppSection } from "@/components/ui/app";
+import { cityOptions } from "@/lib/cityConfig";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
   params: {
     category: string;
+  };
+  searchParams?: {
+    location?: string;
   };
 };
 
@@ -43,6 +49,48 @@ type CategoryPageData = {
 
 function toDetailHref(category: string, slug: string): string {
   return `/inspiratie/${category}/${slug}`;
+}
+
+function buildContextQuery(searchParams?: PageProps["searchParams"]) {
+  const params = new URLSearchParams();
+
+  if (searchParams?.location) params.set("location", searchParams.location);
+
+  return params.toString();
+}
+
+function withContext(href: string, query: string) {
+  return query ? `${href}?${query}` : href;
+}
+
+function getLocationContextLabel(
+  categoryLabel: string,
+  searchParams?: PageProps["searchParams"]
+) {
+  if (
+    searchParams?.location &&
+    searchParams.location !== "nearby" &&
+    searchParams.location !== "surprise"
+  ) {
+    const cityLabel =
+      cityOptions.find((city) => city.value === searchParams.location)?.label ??
+      searchParams.location
+        .split("-")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+
+    return `Inspiratie voor ${categoryLabel.toLowerCase()} in ${cityLabel}`;
+  }
+
+  if (searchParams?.location === "nearby") {
+    return `Inspiratie voor ${categoryLabel.toLowerCase()} in de buurt`;
+  }
+
+  if (searchParams?.location === "surprise") {
+    return `Inspiratie voor ${categoryLabel.toLowerCase()} door heel Nederland`;
+  }
+
+  return undefined;
 }
 
 const categoryPageContent: Record<string, CategoryPageData> = {
@@ -1143,12 +1191,21 @@ export function generateStaticParams() {
   }));
 }
 
-export default function InspirationCategoryPage({ params }: PageProps) {
+export default function InspirationCategoryPage({
+  params,
+  searchParams,
+}: PageProps) {
   const content = categoryPageContent[params.category];
 
   if (!content) {
     notFound();
   }
+
+  const contextQuery = buildContextQuery(searchParams);
+  const locationContextLabel = getLocationContextLabel(
+    content.label,
+    searchParams
+  );
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
@@ -1203,6 +1260,18 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                 </div>
               </AppCard>
             </div>
+
+            <div className="mt-8">
+              {locationContextLabel ? (
+                <div className="rounded-[1.4rem] border border-white/14 bg-white/10 px-4 py-3 text-sm font-semibold text-white/82 backdrop-blur-xl">
+                  {locationContextLabel}
+                </div>
+              ) : (
+                <Suspense fallback={null}>
+                  <InspirationLocationContext compact />
+                </Suspense>
+              )}
+            </div>
           </div>
 
           <div className="mt-10 sm:mt-12">
@@ -1217,7 +1286,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                 return (
                   <Link
                     key={`${item.title}-${index}`}
-                    href={item.href}
+                    href={withContext(item.href, contextQuery)}
                     className={`group relative overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:rounded-[1.9rem] ${
                       isLarge
                         ? "col-span-2 min-h-[320px] lg:col-span-1 lg:row-span-2 lg:min-h-[520px]"
@@ -1291,7 +1360,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                Suggesties
+                {locationContextLabel ?? "Suggesties"}
               </h2>
               <p className="mt-1 text-sm text-[#6d6258]">
                 Aanraders voor vandaag geselecteerd door onze speciaal geselecteerds.
@@ -1299,7 +1368,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
             </div>
 
             <Link
-              href="/inspiratie"
+              href={withContext("/inspiratie", contextQuery)}
               className="text-xs font-semibold text-[#171511] underline decoration-[#9cc84e] decoration-2 underline-offset-4"
             >
               Bekijk alles
@@ -1308,7 +1377,11 @@ export default function InspirationCategoryPage({ params }: PageProps) {
 
           <div className="mt-8 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
             {content.suggestions.map((item) => (
-              <Link key={item.title} href={item.href} className="group block">
+              <Link
+                key={item.title}
+                href={withContext(item.href, contextQuery)}
+                className="group block"
+              >
                 <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
                   <div
                     className="aspect-[0.9/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
