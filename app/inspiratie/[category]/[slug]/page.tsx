@@ -21,6 +21,7 @@ type PageProps = {
 };
 
 export const dynamicParams = false;
+export const runtime = "edge";
 
 type SupportedCategory =
   | "vandaag"

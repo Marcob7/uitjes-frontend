@@ -17,6 +17,7 @@ type PageProps = {
 };
 
 export const dynamicParams = false;
+export const runtime = "edge";
 
 type QuickChoiceCard = {
   title: string;
@@ -1237,28 +1238,7 @@ export default function InspirationCategoryPage({
                 </p>
               </div>
 
-              <AppCard
-                variant="glass"
-                padding="lg"
-                className="relative overflow-hidden rounded-[2.1rem]"
-              >
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
-                  Routekaart
-                </p>
-                <p className="mt-4 text-[clamp(2rem,5vw,3rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-white">
-                  Begin breed, kies daarna precies.
-                </p>
-                <div className="mt-7 flex flex-wrap gap-3">
-                  {content.filters.slice(0, 3).map((filter) => (
-                    <span
-                      key={filter}
-                      className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl"
-                    >
-                      {filter}
-                    </span>
-                  ))}
-                </div>
-              </AppCard>
+        
             </div>
 
             <div className="mt-8">
@@ -1327,34 +1307,7 @@ export default function InspirationCategoryPage({
         </div>
       </AppSection>
 
-      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-0 pb-10 md:pb-14">
-        <AppCard variant="glass" padding="lg" className="rounded-[2.1rem]">
-          <h2 className="text-[clamp(1.9rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white">
-            Verfijn je keuze
-          </h2>
-          <p className="mt-2 text-sm text-white/52">
-            Selecteer wat voor jou belangrijk is.
-          </p>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            {content.filters.map((filter, index) => (
-              <button
-                key={filter}
-                type="button"
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-medium transition ${
-                  index === 0
-                    ? "bg-[#e8f2d0] text-[#162016]"
-                    : "bg-white/10 backdrop-blur-xl text-white/82 hover:bg-white/14"
-                }`}
-              >
-                <FilterDotIcon />
-                {filter}
-              </button>
-            ))}
-          </div>
-        </AppCard>
-      </AppSection>
-
+   
       <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16 md:pb-20">
         <div>
           <div className="flex items-end justify-between gap-4">

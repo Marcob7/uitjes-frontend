@@ -1,8 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
+import { AppCard, AppSection } from "@/components/ui/app";
 import {
   buildActionSearchHref,
   buildMapsSearchHref,
@@ -24,6 +25,31 @@ export function generateStaticParams() {
   return getAllExploreDetailSlugs().map((slug) => ({
     slug,
   }));
+}
+
+function CheckIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="m3.5 8.2 2.7 2.7 6.3-6.3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-white/58">
+        {label}
+      </div>
+      <div className="mt-1 text-sm leading-6 text-white/82">{value}</div>
+    </div>
+  );
 }
 
 export default function ExploreDetailPage({ params }: PageProps) {
@@ -48,11 +74,9 @@ export default function ExploreDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="uitjes-surface min-h-screen text-white">
-      <section className="px-4 py-6 md:px-8 md:py-8">
-        <div className="mx-auto max-w-[1280px]">
-     
-
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-12">
+        <div>
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -62,33 +86,34 @@ export default function ExploreDetailPage({ params }: PageProps) {
             className="mb-6"
           />
 
-          <section className="overflow-hidden rounded-[2rem]">
-            <div className="relative h-[360px] w-full md:h-[520px]">
+          <section className="relative overflow-hidden rounded-[2.4rem] border border-white/70 bg-white/50 shadow-[0_28px_80px_rgba(66,49,31,0.16)]">
+            <div className="relative h-[430px] w-full md:h-[580px]">
               <Image
                 src={item.heroImage}
                 alt={item.title}
                 fill
                 className="object-cover"
                 sizes="100vw"
+                priority
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,rgba(7,19,26,0.08),rgba(7,19,26,0.68))]" />
 
-              <div className="absolute bottom-0 left-0 w-full p-5 md:p-8">
+              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 lg:p-10">
                 <div className="mb-4 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[#d8efb5] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+                  <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
                     {item.category}
                   </span>
-                  <span className="rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+                  <span className="rounded-full border border-[#e8f2d0]/50 bg-[#e8f2d0] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#162016]">
                     {item.status}
                   </span>
                 </div>
 
-                <h1 className="max-w-3xl text-4xl font-black leading-[0.95] tracking-[-0.05em] text-white md:text-6xl">
+                <h1 className="max-w-[12ch] text-[clamp(3rem,8vw,5.8rem)] font-semibold leading-[0.9] tracking-[-0.075em] text-white">
                   {item.title}
                 </h1>
 
-                <p className="mt-3 text-sm text-white/90 md:text-base">
+                <p className="mt-4 max-w-[42rem] text-sm leading-6 text-white/88 md:text-base">
                   {item.subtitle}
                 </p>
               </div>
@@ -97,44 +122,54 @@ export default function ExploreDetailPage({ params }: PageProps) {
 
           <section className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_360px]">
             <div>
-              <div className="grid gap-6 rounded-[2rem] bg-white/10 backdrop-blur-xl p-6 md:grid-cols-2 md:p-8">
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="grid gap-7 rounded-[2.1rem] md:grid-cols-[0.9fr_1.1fr]"
+              >
                 <div>
-                  <h2 className="text-3xl font-semibold tracking-[-0.04em]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/58">
+                    Redactie
+                  </p>
+                  <h2 className="mt-2 text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-white">
                     Waarom dit een goede keuze is
                   </h2>
                 </div>
 
-                <div className="grid gap-6 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   {item.reasons.map((reason) => (
-                    <div key={reason} className="flex items-start gap-3">
-                      <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#6d8f3d] text-xs text-white">
-                        ✓
+                    <div
+                      key={reason}
+                      className="flex items-start gap-3 rounded-[1.3rem] border border-white/12 bg-white/8 p-4"
+                    >
+                      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#162016]">
+                        <CheckIcon />
                       </span>
-                      <span className="text-sm leading-6 text-white/76">{reason}</span>
+                      <span className="text-sm leading-6 text-white/78">{reason}</span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </AppCard>
 
-              <div className="mt-8 rounded-[2rem] bg-white/10 p-7 md:p-9">
-                <h2 className="text-4xl font-semibold tracking-[-0.04em]">
+              <AppCard variant="glass" padding="lg" className="mt-8 rounded-[2.1rem]">
+                <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-white">
                   {item.aboutTitle}
                 </h2>
                 <p className="mt-5 max-w-3xl text-sm leading-7 text-white/76 md:text-base">
                   {item.aboutText}
                 </p>
-              </div>
+              </AppCard>
 
               <div className="mt-8">
-                <h2 className="text-4xl font-semibold tracking-[-0.04em]">
+                <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                   In beeld
                 </h2>
 
-                <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
                   {item.gallery.map((image, index) => (
                     <div
                       key={`${image}-${index}`}
-                      className="relative aspect-[0.88/1] overflow-hidden rounded-[1.25rem]"
+                      className="relative aspect-[0.88/1] overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/50 shadow-[0_14px_34px_rgba(66,49,31,0.1)]"
                     >
                       <Image
                         src={image}
@@ -149,14 +184,14 @@ export default function ExploreDetailPage({ params }: PageProps) {
               </div>
 
               <div className="mt-14">
-                <h2 className="text-4xl font-semibold tracking-[-0.04em]">
+                <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                   Vergelijkbare plekken
                 </h2>
 
                 <div className="mt-6 grid gap-6 md:grid-cols-3">
                   {item.similarPlaces.map((place) => (
                     <article key={place.title} className="group">
-                      <div className="relative aspect-[0.88/1] overflow-hidden rounded-[1.5rem]">
+                      <div className="relative aspect-[0.88/1] overflow-hidden rounded-[1.7rem] border border-white/70 bg-white/50 shadow-[0_18px_44px_rgba(66,49,31,0.1)]">
                         <Image
                           src={place.image}
                           alt={place.title}
@@ -165,16 +200,16 @@ export default function ExploreDetailPage({ params }: PageProps) {
                           sizes="(max-width: 768px) 100vw, 33vw"
                         />
 
-                        <span className="absolute left-3 top-3 rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+                        <span className="absolute left-3 top-3 rounded-full border border-white/18 bg-white/14 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-xl">
                           {place.badge}
                         </span>
                       </div>
 
                       <div className="pt-4">
-                        <h3 className="text-2xl font-semibold tracking-[-0.03em]">
+                        <h3 className="text-2xl font-semibold leading-none tracking-[-0.04em] text-[#171511]">
                           {place.title}
                         </h3>
-                        <p className="mt-1 text-sm text-white/68">
+                        <p className="mt-2 text-sm text-[#665d54]">
                           {place.subtitle}
                         </p>
                       </div>
@@ -184,13 +219,13 @@ export default function ExploreDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            <aside className="space-y-5">
-              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] bg-white/10 backdrop-blur-xl p-5 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
+            <aside className="space-y-5 lg:sticky lg:top-28">
+              <AppCard variant="elevated" padding="md" className="rounded-[1.8rem]">
                 <a
                   href={reserveHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="mb-3 inline-flex w-full items-center justify-center rounded-full bg-[#bde28d] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                  className="uitjes-cta mb-3 inline-flex min-h-14 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition hover:-translate-y-0.5"
                 >
                   {item.actions.reserveLabel}
                 </a>
@@ -200,70 +235,37 @@ export default function ExploreDetailPage({ params }: PageProps) {
                     href={routeHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-full bg-[#f1e7dd] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#eadbcd]"
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/14 bg-white/10 px-4 text-sm font-medium text-white/82 transition hover:bg-white/14"
                   >
                     {item.actions.routeLabel}
                   </a>
                   <SavePlaceButton
                     item={savedPlace}
-                    className="inline-flex items-center justify-center rounded-full bg-[#ececf2] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#e0e0ea]"
-                    savedClassName="inline-flex items-center justify-center rounded-full bg-[#dfeecd] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#d4e7ba]"
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/14 bg-white/10 px-4 text-sm font-medium text-white/82 transition hover:bg-white/14"
+                    savedClassName="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e8f2d0]/50 bg-white/12 px-4 text-sm font-medium text-white transition hover:bg-white/16"
                     savedChildren="Opgeslagen"
                   >
                     {item.actions.saveLabel}
                   </SavePlaceButton>
                 </div>
-              </div>
+              </AppCard>
 
-              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] bg-white/12 p-6">
-                <h3 className="text-2xl font-semibold tracking-[-0.03em]">
+              <AppCard variant="glass" padding="lg" className="rounded-[1.8rem]">
+                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-white">
                   Praktisch
                 </h3>
 
                 <div className="mt-5 space-y-5">
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
-                      Adres
-                    </div>
-                    <div className="mt-1 text-sm leading-6 text-white/82">
-                      {item.practical.address}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
-                      Openingstijden
-                    </div>
-                    <div className="mt-1 text-sm leading-6 text-white/82">
-                      {item.practical.openingHours}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
-                      Type
-                    </div>
-                    <div className="mt-1 text-sm leading-6 text-white/82">
-                      {item.practical.cuisine}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-white/68">
-                      Prijs
-                    </div>
-                    <div className="mt-1 text-sm leading-6 text-white/82">
-                      {item.practical.pricing}
-                    </div>
-                  </div>
+                  <DetailRow label="Adres" value={item.practical.address} />
+                  <DetailRow label="Openingstijden" value={item.practical.openingHours} />
+                  <DetailRow label="Type" value={item.practical.cuisine} />
+                  <DetailRow label="Prijs" value={item.practical.pricing} />
                 </div>
-              </div>
+              </AppCard>
             </aside>
           </section>
         </div>
-      </section>
-
-     
+      </AppSection>
     </main>
   );
 }

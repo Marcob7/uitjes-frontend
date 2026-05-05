@@ -122,45 +122,10 @@ export default function InspiratiePage() {
                 klopt met je dag.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
-                {["Categorie", "Sfeer", "Moment"].map((label) => (
-                  <span
-                    key={label}
-                    className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl"
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
+          
             </div>
 
-            <AppCard
-              variant="glass"
-              padding="lg"
-              className="relative min-h-[17rem] overflow-hidden rounded-[2.1rem] lg:min-h-[21rem]"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_24%,rgba(232,242,208,0.38),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04))]" />
-              <div className="relative flex h-full flex-col justify-between gap-8">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
-                    Start bij je moment
-                  </p>
-                  <p className="mt-4 max-w-[13ch] text-[clamp(2.2rem,5vw,3.4rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-white">
-                    Van idee naar plan in een paar keuzes.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {["Vandaag", "Weekend", "Cultureel"].map((label) => (
-                    <span
-                      key={label}
-                      className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </AppCard>
+          
           </div>
 
           <Suspense fallback={null}>
