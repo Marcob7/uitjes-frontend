@@ -117,7 +117,7 @@ function MonthNavButton({ label }: { label: string }) {
     <button
       type="button"
       aria-label={label}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#ded8cc] bg-white/10 backdrop-blur-xl text-white transition hover:-translate-y-0.5 hover:border-[#c7bea8]"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#ded8cc] bg-white/88 text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:-translate-y-0.5 hover:border-[#c7bea8] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
     >
       <span aria-hidden="true" className="text-lg">
         {label}
@@ -185,7 +185,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
               key={`${cell.key}-${label}-${index}`}
               className={`truncate rounded-full px-1.5 py-0.5 text-[9px] font-medium leading-3 ${
                 index === 1 ? "hidden min-[390px]:block" : ""
-              } ${isSelected ? "bg-[#d9efad] text-[#26331a]" : "bg-white/10 text-[#5f5246]"}`}
+            } ${isSelected ? "bg-[#d9efad] text-[#26331a]" : "bg-[#f3eee6] text-[#4f453c]"}`}
             >
               {label}
             </div>
@@ -205,7 +205,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
       ? "bg-[#eee9e2]"
       : isSelected
         ? "bg-[#fbf7ed]"
-        : "bg-white/8"
+        : "bg-white/84"
   }`;
 
   if (cell.href) {
@@ -238,7 +238,7 @@ function CalendarCell({
     <>
       <div
         className={`flex items-baseline gap-2 text-sm font-medium ${
-          muted ? "text-[#9d9489]" : "text-white/88"
+          muted ? "text-[#7c7166]" : "text-[#2f2923]"
         }`}
       >
         <span className="text-lg font-semibold tracking-[-0.03em]">{day}</span>
@@ -250,7 +250,7 @@ function CalendarCell({
       </div>
       <div className="mt-6 flex flex-1 flex-col">{children}</div>
       {href ? (
-        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f72] transition group-hover:text-[#5c6d3e]">
+        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#66594e] transition group-hover:text-[#4f7628]">
           Open
           <ArrowIcon />
         </span>
@@ -262,8 +262,8 @@ function CalendarCell({
     return (
       <Link
         href={href}
-        className={`group relative flex min-h-[168px] flex-col border-b border-r border-white/12 px-5 py-5 transition duration-200 hover:bg-[#fffdf9] ${
-          muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-white/8 text-white"
+        className={`group relative flex min-h-[168px] flex-col border-b border-r border-[#e6dfd3] px-5 py-5 transition duration-200 hover:bg-[#fffdf9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] ${
+          muted ? "bg-[#eee9e2] text-[#7c7166]" : "bg-white/84 text-[#171511]"
         } ${className}`}
       >
         {content}
@@ -273,8 +273,8 @@ function CalendarCell({
 
   return (
     <div
-      className={`relative flex min-h-[168px] flex-col border-b border-r border-white/12 px-5 py-5 ${
-        muted ? "bg-[#eee9e2] text-[#a39a8d]" : "bg-white/8 text-white"
+      className={`relative flex min-h-[168px] flex-col border-b border-r border-[#e6dfd3] px-5 py-5 ${
+        muted ? "bg-[#eee9e2] text-[#7c7166]" : "bg-white/84 text-[#171511]"
       } ${className}`}
     >
       {content}
@@ -305,7 +305,7 @@ function SeasonalCard({
         ) : null}
         <h3
           className={`max-w-[12ch] text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] ${
-            dark ? "text-white" : "text-white"
+            dark ? "text-[#171511]" : "text-[#171511]"
           }`}
         >
           {title}
@@ -324,7 +324,7 @@ function SeasonalCard({
 
 export default function JaarkalenderPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-white">
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <section className="uitjes-liquid-section rounded-[2.4rem]">
           <div className="grid gap-10 px-6 py-7 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-11 lg:py-12">
@@ -436,7 +436,7 @@ export default function JaarkalenderPage() {
 
           <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <div className="flex items-center gap-3 text-white">
+              <div className="flex items-center gap-3 text-[#171511]">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#edf7d8] text-[#405028] sm:h-10 sm:w-10">
                   <CalendarIcon />
                 </span>
@@ -444,7 +444,7 @@ export default function JaarkalenderPage() {
                   <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7b6a] sm:text-sm sm:tracking-[0.22em]">
                     Overzicht
                   </p>
-                  <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-white">
+                  <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
                     Oktober 2024
                   </h2>
                 </div>
@@ -465,9 +465,9 @@ export default function JaarkalenderPage() {
             <JaarkalenderFilterControls />
           </div>
 
-          <div className="mt-5 overflow-hidden rounded-[1.4rem] border border-white/14 bg-white/8 shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8 sm:rounded-[2.2rem]">
+          <div className="mt-5 overflow-hidden rounded-[1.4rem] border border-[#e6dfd3] bg-white/72 shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8 sm:rounded-[2.2rem]">
             <div className="hidden md:block">
-              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-white/8">
+              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fffaf3]">
                 {["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"].map((day) => (
                   <div
                     key={day}
@@ -486,7 +486,7 @@ export default function JaarkalenderPage() {
                     monthLabel={cell.monthLabel}
                     muted={cell.muted}
                     href={cell.href}
-                    className={cell.muted ? undefined : "bg-white/8"}
+                    className={cell.muted ? undefined : "bg-white/84"}
                   >
                     <CountBlock count={cell.eventCount} muted={cell.muted} />
                   </CalendarCell>
@@ -495,7 +495,7 @@ export default function JaarkalenderPage() {
             </div>
 
             <div className="md:hidden">
-              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-white/8">
+              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fffaf3]">
                 {["ma", "di", "wo", "do", "vr", "za", "zo"].map((day) => (
                   <div
                     key={day}
@@ -521,7 +521,7 @@ export default function JaarkalenderPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8b7a69]">
                 Redactie
               </p>
-              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] leading-[0.95] tracking-[-0.05em] text-white">
+              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] leading-[0.95] tracking-[-0.05em] text-[#171511]">
                 Seizoensfavorieten
               </h2>
             </div>

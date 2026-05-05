@@ -54,7 +54,7 @@ export default function Breadcrumbs({
         {backTarget ? (
           <Link
             href={backTarget}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#e7dfd4] bg-white/92 px-4 py-2 text-sm font-medium text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:bg-white"
+            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#e7dfd4] bg-white/92 px-4 py-2 text-sm font-medium text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
           >
             <ArrowLeftIcon />
             Terug
@@ -75,7 +75,7 @@ export default function Breadcrumbs({
                 ) : (
                   <Link
                     href={item.href!}
-                    className="inline-flex min-h-10 max-w-full items-center rounded-full border border-[#e7dfd4] bg-white/92 px-4 py-2 text-sm font-medium text-[#645548] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:bg-white hover:text-[#171511]"
+                    className="inline-flex min-h-10 max-w-full items-center rounded-full border border-[#e7dfd4] bg-white/92 px-4 py-2 text-sm font-medium text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:bg-white hover:text-[#171511] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
                   >
                     <span className="truncate">{item.label}</span>
                   </Link>

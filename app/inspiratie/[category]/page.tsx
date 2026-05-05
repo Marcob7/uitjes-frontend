@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { AppCard, AppSection } from "@/components/ui/app";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
@@ -1150,9 +1151,9 @@ export default function InspirationCategoryPage({ params }: PageProps) {
   }
 
   return (
-    <main className="uitjes-surface min-h-screen text-white">
-      <section className="px-4 pb-12 pt-8 md:px-8 md:pb-16 md:pt-12">
-        <div className="mx-auto max-w-[1280px]">
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-14">
+        <div>
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -1162,26 +1163,54 @@ export default function InspirationCategoryPage({ params }: PageProps) {
             className="mb-6"
           />
 
-          <div className="max-w-[620px]">
-            <p className="mb-3 text-sm font-medium text-white/52">
-              {content.label}
-            </p>
+          <div className="uitjes-liquid-section rounded-[2.4rem] px-5 py-8 sm:px-8 sm:py-10 lg:px-11 lg:py-12">
+            <div className="pointer-events-none absolute -right-12 top-8 h-48 w-48 rounded-full bg-[#c6df9a]/16 blur-3xl" />
+            <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
+              <div className="max-w-[42rem]">
+                <div className="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/78 backdrop-blur-xl">
+                  {content.label}
+                </div>
 
-            <h1 className="max-w-[560px] text-[2.6rem] font-black leading-[0.92] tracking-[-0.05em] text-white md:text-[4.25rem]">
-              {content.headline}
-            </h1>
+                <h1 className="mt-6 max-w-[11ch] text-[clamp(3rem,8vw,5.4rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
+                  {content.headline}
+                </h1>
 
-            <p className="mt-5 max-w-[540px] text-sm leading-6 text-white/68 md:text-base">
-              {content.description}
-            </p>
+                <p className="mt-6 max-w-[34rem] text-base leading-8 text-white/76 sm:text-lg">
+                  {content.description}
+                </p>
+              </div>
+
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="relative overflow-hidden rounded-[2.1rem]"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
+                  Routekaart
+                </p>
+                <p className="mt-4 text-[clamp(2rem,5vw,3rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-white">
+                  Begin breed, kies daarna precies.
+                </p>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  {content.filters.slice(0, 3).map((filter) => (
+                    <span
+                      key={filter}
+                      className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl"
+                    >
+                      {filter}
+                    </span>
+                  ))}
+                </div>
+              </AppCard>
+            </div>
           </div>
 
-          <div className="mt-12">
-            <h2 className="text-[1.6rem] font-bold tracking-[-0.04em] text-white">
+          <div className="mt-10 sm:mt-12">
+            <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
               Snelle keuzes
             </h2>
 
-            <div className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-[2fr_1fr_1fr]">
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-[2fr_1fr_1fr]">
               {content.quickChoices.map((item, index) => {
                 const isLarge = item.size === "large";
 
@@ -1189,7 +1218,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                   <Link
                     key={`${item.title}-${index}`}
                     href={item.href}
-                    className={`group relative overflow-hidden rounded-[28px] ${
+                    className={`group relative overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:rounded-[1.9rem] ${
                       isLarge
                         ? "col-span-2 min-h-[320px] lg:col-span-1 lg:row-span-2 lg:min-h-[520px]"
                         : "min-h-[180px] md:min-h-[210px]"
@@ -1227,11 +1256,11 @@ export default function InspirationCategoryPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-      </section>
+      </AppSection>
 
-      <section className="px-4 pb-10 md:px-8 md:pb-14">
-        <div className="mx-auto max-w-[1280px] rounded-[36px] bg-white/10 px-5 py-8 md:px-8 md:py-10">
-          <h2 className="text-[1.75rem] font-bold tracking-[-0.04em] text-white">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-0 pb-10 md:pb-14">
+        <AppCard variant="glass" padding="lg" className="rounded-[2.1rem]">
+          <h2 className="text-[clamp(1.9rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white">
             Verfijn je keuze
           </h2>
           <p className="mt-2 text-sm text-white/52">
@@ -1245,8 +1274,8 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                 type="button"
                 className={`inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-medium transition ${
                   index === 0
-                    ? "bg-[#bde28d] text-white"
-                    : "bg-white/10 backdrop-blur-xl text-white/82 hover:bg-[#faf4eb]"
+                    ? "bg-[#e8f2d0] text-[#162016]"
+                    : "bg-white/10 backdrop-blur-xl text-white/82 hover:bg-white/14"
                 }`}
               >
                 <FilterDotIcon />
@@ -1254,24 +1283,24 @@ export default function InspirationCategoryPage({ params }: PageProps) {
               </button>
             ))}
           </div>
-        </div>
-      </section>
+        </AppCard>
+      </AppSection>
 
-      <section className="px-4 pb-16 md:px-8 md:pb-20">
-        <div className="mx-auto max-w-[1280px]">
+      <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16 md:pb-20">
+        <div>
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
+              <h2 className="text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                 Suggesties
               </h2>
-              <p className="mt-1 text-sm text-white/52">
+              <p className="mt-1 text-sm text-[#6d6258]">
                 Aanraders voor vandaag geselecteerd door onze speciaal geselecteerds.
               </p>
             </div>
 
             <Link
               href="/inspiratie"
-              className="text-xs font-semibold text-white underline decoration-[#bde28d] decoration-2 underline-offset-4"
+              className="text-xs font-semibold text-[#171511] underline decoration-[#9cc84e] decoration-2 underline-offset-4"
             >
               Bekijk alles
             </Link>
@@ -1280,7 +1309,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
           <div className="mt-8 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
             {content.suggestions.map((item) => (
               <Link key={item.title} href={item.href} className="group block">
-                <div className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[26px]">
+                <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
                   <div
                     className="aspect-[0.9/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                     style={{
@@ -1299,19 +1328,19 @@ export default function InspirationCategoryPage({ params }: PageProps) {
                 </div>
 
                 <div className="pt-4">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/52">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#7b6f64]">
                     {item.meta}
                   </p>
 
-                  <h3 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.04em] text-white">
+                  <h3 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511]">
                     {item.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-white/68">
+                  <p className="mt-3 text-sm leading-6 text-[#665d54]">
                     {item.description}
                   </p>
 
-                  <div className="mt-4 flex items-center gap-2 text-sm font-medium text-white">
+                  <div className="mt-4 flex items-center gap-2 text-sm font-medium text-[#405028]">
                     <PinIcon />
                     <span>{item.detail}</span>
                   </div>
@@ -1320,7 +1349,7 @@ export default function InspirationCategoryPage({ params }: PageProps) {
             ))}
           </div>
         </div>
-      </section>
+      </AppSection>
 
       
     </main>

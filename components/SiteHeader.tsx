@@ -9,7 +9,7 @@ const navItems = [
   { href: "/jaarkalender", label: "Jaarkalender" },
   { href: "/inspiratie", label: "Inspiratie" },
   { href: "/event-details", label: "Uitgelichte Events" },
-  { href: "/festivals", label: "Festivals" },
+  { href: "/festivals/kalender", label: "Festivals" },
   { href: "/feedback", label: "Feedback" },
 ];
 
@@ -21,25 +21,16 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function usesUitjesSurface(pathname: string) {
-  return pathname.startsWith("/inspiratie") || pathname.startsWith("/festivals");
-}
-
 export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const surfaceHeader = usesUitjesSurface(pathname);
 
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
   return (
-    <header
-      className={`sticky top-0 z-50 px-3 py-3 sm:px-5 ${
-        surfaceHeader ? "uitjes-surface" : ""
-      }`}
-    >
+    <header className="sticky top-0 z-50 px-3 py-3 sm:px-5">
       <div className="mx-auto w-full max-w-7xl">
         <div className="relative overflow-hidden rounded-[28px] border border-white/45 bg-[linear-gradient(135deg,rgba(255,255,255,0.74),rgba(255,255,255,0.43)_48%,rgba(226,244,237,0.52))] shadow-[0_22px_70px_rgba(24,37,30,0.14)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_12%,rgba(255,255,255,0.88),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(190,242,100,0.26),transparent_30%),linear-gradient(90deg,rgba(255,255,255,0.15),rgba(255,255,255,0))]" />

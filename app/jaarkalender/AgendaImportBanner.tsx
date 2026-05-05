@@ -148,7 +148,7 @@ export function AgendaImportBanner() {
               </div>
               <h3
                 id="agenda-import-title"
-                className="mt-4 text-[clamp(2rem,5vw,2.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-white"
+                className="mt-4 text-[clamp(2rem,5vw,2.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#171511]"
               >
                 Zet je uitjes straks direct in je eigen agenda.
               </h3>
@@ -169,8 +169,8 @@ export function AgendaImportBanner() {
               />
             </div>
 
-            <div className="mt-6 rounded-[1.4rem] border border-dashed border-[#d9cebf] bg-white/10 backdrop-blur-xl p-4">
-              <p className="text-sm font-semibold text-white/88">
+            <div className="mt-6 rounded-[1.4rem] border border-dashed border-[#d9cebf] bg-white/72 p-4">
+              <p className="text-sm font-semibold text-[#27231f]">
                 Placeholder voor importfunctionaliteit
               </p>
               <p className="mt-1 text-sm leading-6 text-[#6b5f53]">

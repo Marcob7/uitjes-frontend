@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
-import FestivalViewToggle from "@/components/FestivalViewToggle";
+import FestivalHero from "@/components/FestivalHero";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import { getFestivalDetailHref } from "../data";
 
@@ -224,32 +224,35 @@ function FilterChevron() {
 
 function toneClass(tone: CalendarTone) {
   if (tone === "lime") {
-    return "bg-[#e8f2d0] text-[#4c622e]";
+    return "bg-[#e8f2d0] text-[#344c18]";
   }
 
   if (tone === "pink") {
-    return "bg-[#f7d8de] text-[#a43a59]";
+    return "bg-[#f7d8de] text-[#7a213a]";
   }
 
   if (tone === "blue") {
-    return "bg-[#d9e6ff] text-[#4d6ab8]";
+    return "bg-[#d9e6ff] text-[#294987]";
   }
 
   if (tone === "amber") {
-    return "bg-[#ffe9b6] text-[#9b6b07]";
+    return "bg-[#ffe9b6] text-[#704800]";
   }
 
-  return "bg-[#e6ddff] text-[#6f44cd]";
+  return "bg-[#e6ddff] text-[#4b2e91]";
 }
 
 function CalendarPill({ event }: { event: CalendarEvent }) {
-  const classes = `block truncate rounded-full px-3 py-1 text-[11px] font-medium ${toneClass(
+  const classes = `block truncate rounded-full px-3 py-1 text-[11px] font-semibold ${toneClass(
     event.tone
   )}`;
 
   if (event.href) {
     return (
-      <Link href={event.href} className={classes}>
+      <Link
+        href={event.href}
+        className={`${classes} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]`}
+      >
         {event.label}
       </Link>
     );
@@ -265,17 +268,17 @@ function HighlightInfoCard({ card }: { card: HighlightCard }) {
   const buttonClass =
     card.tone === "lavender"
       ? "bg-[#171511] text-white hover:bg-[#2b261f]"
-      : "border border-[#171511] bg-transparent text-white hover:bg-white/10 backdrop-blur-xl";
+      : "border border-[#171511] bg-transparent text-[#171511] hover:bg-white/40";
 
   return (
-    <article className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] ${toneClass} p-6`}>
-      <h3 className="max-w-none text-[2rem] leading-none tracking-[-0.05em] text-white">
+    <article className={`rounded-[2rem] border border-white/18 ${toneClass} p-6 shadow-[0_18px_44px_rgba(0,0,0,0.12)]`}>
+      <h3 className="max-w-none text-[2rem] leading-none tracking-[-0.05em] text-[#171511]">
         {card.title}
       </h3>
-      <p className="mt-4 text-sm leading-7 text-white/72">{card.description}</p>
+      <p className="mt-4 text-sm leading-7 text-[#5d5145]">{card.description}</p>
       <Link
         href={card.href}
-        className={`mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-2xl px-6 text-sm font-semibold transition sm:rounded-full ${buttonClass}`}
+        className={`mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-2xl px-6 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full ${buttonClass}`}
       >
         {card.cta}
       </Link>
@@ -285,7 +288,7 @@ function HighlightInfoCard({ card }: { card: HighlightCard }) {
 
 export default function FestivalsCalendarPage() {
   return (
-    <main className="uitjes-surface min-h-screen text-white">
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <Breadcrumbs
           items={[
@@ -296,92 +299,83 @@ export default function FestivalsCalendarPage() {
           className="mb-6"
         />
 
-        <section>
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-[42rem]">
-              <h1 className="max-w-none text-[clamp(3.4rem,8vw,6rem)] leading-[0.88] tracking-[-0.08em] text-white">
-                Festival Kalender
-                <span className="block text-[#51772a]">Nederland</span>
-              </h1>
-              <p className="mt-5 max-w-[34rem] text-base leading-8 text-white/74 sm:text-[1.05rem]">
-                Discover every cultural beat across the country. From underground
-                techno in Amsterdam to jazz by the sea.
-              </p>
+        <FestivalHero
+          eyebrow="Festivalagenda"
+          title="Festival kalender Nederland"
+          currentView="calendar"
+          description={
+            <>
+              Discover every cultural beat across the country. From underground
+              techno in Amsterdam to jazz by the sea.
+            </>
+          }
+          search={
+            <div className="rounded-[1.6rem] border border-white/18 bg-white/12 p-2 shadow-[0_24px_60px_rgba(3,10,14,0.18)] backdrop-blur-xl sm:rounded-full">
+              <label
+                htmlFor="calendar-search"
+                className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-white/86 sm:rounded-full"
+              >
+                <SearchIcon />
+                <input
+                  id="calendar-search"
+                  type="text"
+                  placeholder="Search festivals..."
+                  className="h-full flex-1 bg-transparent text-base text-white outline-none placeholder:text-white/76 focus-visible:ring-2 focus-visible:ring-[#e8f2d0] sm:text-sm"
+                />
+              </label>
             </div>
-
-            <div className="w-full max-w-[28rem]">
-              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.6rem] bg-[#f7ede2] p-2 sm:rounded-full">
-                <label
-                  htmlFor="calendar-search"
-                  className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-[#7b7166] sm:rounded-full"
-                >
-                  <SearchIcon />
-                  <input
-                    id="calendar-search"
-                    type="text"
-                    placeholder="Search festivals..."
-                    className="h-full flex-1 bg-transparent text-base text-white outline-none placeholder:text-[#9a8f83] sm:text-sm"
-                  />
-                </label>
-              </div>
-
-              <div className="mt-8 flex justify-end">
-                <FestivalViewToggle currentView="calendar" />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-wrap gap-3">
+          }
+          filters={
+            <>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#dff1d8] px-5 text-sm font-medium text-white sm:rounded-full"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl border border-white/24 bg-white/14 px-5 text-sm font-medium text-white/90 backdrop-blur-xl transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
               >
                 Genre: All
                 <FilterChevron />
               </button>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#f8ebc9] px-5 text-sm font-medium text-white sm:rounded-full"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl border border-white/24 bg-white/14 px-5 text-sm font-medium text-white/90 backdrop-blur-xl transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
               >
                 City: Netherlands
                 <FilterChevron />
               </button>
               <button
                 type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl bg-[#e6e7f3] px-5 text-sm font-medium text-white sm:rounded-full"
+                className="inline-flex min-h-12 items-center gap-3 rounded-2xl border border-white/24 bg-white/14 px-5 text-sm font-medium text-white/90 backdrop-blur-xl transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
               >
                 Vibe Match
-                <span className="text-xs">≋</span>
+                <span className="text-xs">=</span>
               </button>
-            </div>
-
-            <div className="flex items-center gap-4 self-start text-white lg:self-end">
+            </>
+          }
+          controls={
+            <>
               <button
                 type="button"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#8e8377] transition hover:bg-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
                 aria-label="Vorige maand"
               >
                 <ArrowLeftIcon />
               </button>
-              <span className="text-lg font-medium">Juli 2024</span>
+              <span className="text-lg font-medium text-white">Juli 2024</span>
               <button
                 type="button"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#8e8377] transition hover:bg-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
                 aria-label="Volgende maand"
               >
                 <ArrowRightIcon />
               </button>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-8 overflow-hidden rounded-[2.4rem] border border-white/14 bg-white/10 backdrop-blur-xl shadow-[0_20px_50px_rgba(60,44,23,0.04)]">
-          <div className="hidden grid-cols-7 bg-[#fbefe4] sm:grid">
+            </>
+          }
+        />
+        <section className="mt-8 overflow-hidden rounded-[2.2rem] border border-white/70 bg-white/55 shadow-[0_20px_60px_rgba(66,49,31,0.08)] backdrop-blur-xl">
+          <div className="hidden grid-cols-7 bg-[#fffaf3] sm:grid">
             {weekdayLabels.map((label) => (
               <div
                 key={label}
-                className="border-r border-[#f2e6da] px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-white/48 last:border-r-0"
+                className="border-r border-[#e6dfd3] px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7e7366] last:border-r-0"
               >
                 {label}
               </div>
@@ -392,14 +386,14 @@ export default function FestivalsCalendarPage() {
             {mobileCalendarDays.map((cell) => (
               <div
                 key={cell.key}
-                className="border-t border-white/12 px-4 py-4 first:border-t-0"
+                className="border-t border-[#e6dfd3] px-4 py-4 first:border-t-0"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-lg font-medium text-white">
+                    <div className="text-lg font-medium text-[#171511]">
                       {cell.dayNumber} juli
                     </div>
-                    <p className="mt-1 text-sm text-white/48">
+                    <p className="mt-1 text-sm text-[#7e7366]">
                       {cell.events?.length} festivalmomenten
                     </p>
                   </div>
@@ -421,11 +415,11 @@ export default function FestivalsCalendarPage() {
             {calendarCells.map((cell) => (
               <div
                 key={cell.key}
-                className={`min-h-[7.8rem] border-r border-t border-white/12 px-3 py-3 sm:min-h-[9rem] lg:min-h-[10rem] ${
-                  cell.muted ? "bg-[#fffcf7] text-[#b0a397]" : "bg-white/10 backdrop-blur-xl text-white"
+                className={`min-h-[7.8rem] border-r border-t border-[#e6dfd3] px-3 py-3 sm:min-h-[9rem] lg:min-h-[10rem] ${
+                  cell.muted ? "bg-[#eee9e2] text-[#7c6f63]" : "bg-white/46 text-[#171511]"
                 }`}
               >
-                <div className={`text-lg font-medium ${cell.muted ? "text-[#a99d90]" : "text-white"}`}>
+                <div className={`text-lg font-medium ${cell.muted ? "text-[#74685e]" : "text-[#171511]"}`}>
                   {cell.dayNumber}
                 </div>
                 <div className="mt-3 space-y-2">
@@ -439,16 +433,16 @@ export default function FestivalsCalendarPage() {
         </section>
 
         <section className="py-16">
-          <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-white">
+          <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-[#171511]">
             Curator&apos;s Highlights
           </h2>
 
           <div className="mt-8 grid gap-6 lg:grid-cols-[1.6fr_0.8fr]">
             <Link
               href={getFestivalDetailHref("dekmantel-festival")}
-              className="group relative block overflow-hidden rounded-[2rem] bg-[#171511] text-white shadow-[0_20px_44px_rgba(31,22,13,0.18)]"
+              className="group relative block overflow-hidden rounded-[2rem] bg-[#171511] text-white shadow-[0_20px_44px_rgba(31,22,13,0.18)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e]"
               style={{
-                backgroundImage: `linear-gradient(180deg, rgba(7,7,7,0.06), rgba(7,7,7,0.7)), ${optimizeCssBackground(
+                backgroundImage: `linear-gradient(180deg, rgba(7,7,7,0.18), rgba(7,7,7,0.78)), ${optimizeCssBackground(
                   "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
                   {
                     width: 1400,

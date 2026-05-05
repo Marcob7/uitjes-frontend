@@ -214,11 +214,11 @@ function TicketCard({
         : "bg-[#f3e7de]";
 
   return (
-    <article className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.8rem] ${toneClass} p-5`}>
+    <article className={`rounded-[1.8rem] border border-white/20 ${toneClass} p-5 shadow-[0_18px_44px_rgba(0,0,0,0.14)]`}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-lg font-medium text-white">{tier.name}</p>
-          <p className="mt-2 text-[2rem] font-semibold leading-none tracking-[-0.06em] text-white">
+          <p className="text-lg font-medium text-[#171511]">{tier.name}</p>
+          <p className="mt-2 text-[2rem] font-semibold leading-none tracking-[-0.06em] text-[#171511]">
             {tier.priceLabel}
           </p>
         </div>
@@ -244,7 +244,7 @@ function TicketCard({
         href={ticketHref}
         target="_blank"
         rel="noreferrer"
-        className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#171511] px-5 text-sm font-semibold text-white transition hover:bg-[#2a241e]"
+        className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#171511] px-5 text-sm font-semibold text-white transition hover:bg-[#2a241e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4e6c29]"
       >
         Purchase
       </a>
@@ -270,12 +270,12 @@ function InfoCard({ card }: { card: FestivalInfoCard }) {
     );
 
   return (
-    <article className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.7rem] ${toneClass} px-5 py-6`}>
-      <div className="text-white">{icon}</div>
-      <h3 className="mt-5 max-w-none text-xl leading-none tracking-[-0.04em] text-white">
+    <article className={`rounded-[1.7rem] border border-white/18 ${toneClass} px-5 py-6 shadow-[0_18px_44px_rgba(0,0,0,0.12)]`}>
+      <div className="text-[#496628]">{icon}</div>
+      <h3 className="mt-5 max-w-none text-xl leading-none tracking-[-0.04em] text-[#171511]">
         {card.title}
       </h3>
-      <p className="mt-3 text-sm leading-7 text-white/72">{card.description}</p>
+      <p className="mt-3 text-sm leading-7 text-[#5d5145]">{card.description}</p>
       <p className="mt-5 text-xs font-medium text-[#6a5f54]">{card.cta}</p>
     </article>
   );
@@ -295,7 +295,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
   );
 
   return (
-    <main className="uitjes-surface min-h-screen text-white">
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <div className="mx-auto max-w-[1240px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <Breadcrumbs
           items={[
@@ -307,9 +307,9 @@ export default function FestivalDetailPage({ params }: PageProps) {
         />
 
         <section
-          className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] bg-[#181614] px-5 py-5 text-white shadow-[0_24px_60px_rgba(26,21,16,0.22)] sm:px-6 sm:py-6"
+          className="relative overflow-hidden rounded-[2.4rem] border border-white/14 bg-[#181614] px-5 py-5 text-white shadow-[0_28px_90px_rgba(0,0,0,0.26)] sm:px-6 sm:py-6"
           style={{
-            backgroundImage: `linear-gradient(180deg, rgba(9,12,12,0.18), rgba(9,12,12,0.58)), ${optimizeCssBackground(
+            backgroundImage: `linear-gradient(180deg, rgba(9,12,12,0.34), rgba(9,12,12,0.76)), ${optimizeCssBackground(
               festival.heroImage,
               {
                 width: 1600,
@@ -320,12 +320,12 @@ export default function FestivalDetailPage({ params }: PageProps) {
             backgroundPosition: "center",
           }}
         >
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,10,0.02),rgba(10,10,10,0.5))]" />
-          <div className="relative flex min-h-[18rem] flex-col justify-end sm:min-h-[24rem] lg:min-h-[31rem]">
-            <div className="inline-flex w-fit rounded-full bg-[#e8f2d0] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#38571a]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),radial-gradient(circle_at_78%_24%,rgba(198,223,154,0.18),transparent_24%),linear-gradient(180deg,rgba(7,19,26,0.06),rgba(7,19,26,0.66))]" />
+          <div className="relative flex min-h-[20rem] flex-col justify-end sm:min-h-[26rem] lg:min-h-[34rem]">
+            <div className="inline-flex w-fit rounded-full border border-white/28 bg-[#07131a]/44 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-xl">
               {festival.matchScore}% Match
             </div>
-            <h1 className="mt-4 max-w-none text-[clamp(2.7rem,8vw,5.3rem)] leading-[0.9] tracking-[-0.08em] text-white">
+            <h1 className="mt-5 max-w-[11ch] text-[clamp(3rem,8vw,5.8rem)] font-semibold leading-[0.9] tracking-[-0.075em] text-white">
               {festival.name}
             </h1>
             <HeroMeta festival={festival} />
@@ -334,15 +334,15 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
         <section className="grid gap-10 py-12 lg:grid-cols-[1fr_0.8fr] lg:items-start">
           <div>
-            <h2 className="max-w-none text-[clamp(2.1rem,5vw,3.3rem)] leading-[0.95] tracking-[-0.06em] text-white">
+            <h2 className="max-w-none text-[clamp(2.1rem,5vw,3.3rem)] leading-[0.95] tracking-[-0.06em] text-[#171511]">
               {festival.benchmarkPrefix}{" "}
-              <span className="bg-[#e8f2d0] px-2 text-white">
+              <span className="rounded-xl bg-[#e8f2d0] px-2 text-[#162016]">
                 {festival.benchmarkHighlight}
               </span>{" "}
               {festival.benchmarkSuffix}
             </h2>
 
-            <div className="mt-6 max-w-[36rem] space-y-5 text-[15px] leading-8 text-white/74">
+            <div className="mt-6 max-w-[36rem] space-y-5 text-[15px] leading-8 text-[#665d54]">
               {festival.introParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -350,7 +350,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
           </div>
 
           <div
-            className="min-h-[18rem] overflow-hidden rounded-[1.8rem] bg-[#161412] shadow-[0_18px_40px_rgba(27,20,14,0.18)]"
+            className="min-h-[18rem] overflow-hidden rounded-[1.8rem] border border-white/14 bg-[#161412] shadow-[0_18px_44px_rgba(0,0,0,0.18)]"
             style={{
               backgroundImage: `linear-gradient(180deg, rgba(7,7,7,0.06), rgba(7,7,7,0.24)), ${optimizeCssBackground(
                 festival.sideImage,
@@ -365,14 +365,14 @@ export default function FestivalDetailPage({ params }: PageProps) {
           />
         </section>
 
-        <section className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] bg-[#f8edcf] px-5 py-8 sm:px-6 lg:px-8">
+        <section className="uitjes-liquid-section rounded-[2.2rem] px-5 py-8 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.8rem)] leading-[0.98] tracking-[-0.05em] text-white">
                 Daily Lineup
               </h2>
             </div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a8a75]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/82">
               Amsterdam 2024
             </p>
           </div>
@@ -393,20 +393,22 @@ export default function FestivalDetailPage({ params }: PageProps) {
               return (
                 <article
                   key={day.label}
-                  className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.6rem] px-5 py-5 shadow-[0_10px_24px_rgba(52,38,22,0.06)] ${
-                    day.featured ? "bg-[#d8f3a8]" : "bg-white/10 backdrop-blur-xl"
+                  className={`rounded-[1.6rem] border px-5 py-5 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl ${
+                    day.featured
+                      ? "border-[#e8f2d0]/54 bg-[#e8f2d0] text-[#171511]"
+                      : "border-white/14 bg-white/10 text-white"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f816f]">
+                      <p className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${day.featured ? "text-[#445b24]" : "text-white/84"}`}>
                         {day.label}
                       </p>
-                      <h3 className="mt-2 max-w-none text-[1.8rem] leading-none tracking-[-0.05em] text-white">
+                      <h3 className={`mt-2 max-w-none text-[1.8rem] leading-none tracking-[-0.05em] ${day.featured ? "text-[#171511]" : "text-white"}`}>
                         {day.dateLabel}
                       </h3>
                     </div>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-white">
+                    <span className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${day.featured ? "bg-[#171511] text-white" : "bg-white/16 text-white"}`}>
                       <CalendarMiniIcon />
                     </span>
                   </div>
@@ -414,8 +416,8 @@ export default function FestivalDetailPage({ params }: PageProps) {
                   <div className="mt-5 space-y-4">
                     {day.acts.map((act) => (
                       <div key={act.name} className="border-b border-[#23170f]/8 pb-4 last:border-b-0 last:pb-0">
-                        <p className="text-base font-medium text-white">{act.name}</p>
-                        <p className="mt-1 text-[13px] text-white/68">{act.genre}</p>
+                        <p className={`text-base font-medium ${day.featured ? "text-[#171511]" : "text-white"}`}>{act.name}</p>
+                        <p className={`mt-1 text-[13px] ${day.featured ? "text-[#4f463d]" : "text-white/82"}`}>{act.genre}</p>
                       </div>
                     ))}
                   </div>
@@ -424,10 +426,10 @@ export default function FestivalDetailPage({ params }: PageProps) {
                     href={calendarHref}
                     target="_blank"
                     rel="noreferrer"
-                    className={`mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition ${
+                    className={`mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] ${
                       day.featured
                         ? "bg-[#171511] text-white hover:bg-[#2a241d]"
-                        : "border border-[#e2dacf] bg-white/10 backdrop-blur-xl text-white hover:bg-white/10"
+                        : "border border-white/28 bg-white/16 backdrop-blur-xl text-white hover:bg-white/22"
                     }`}
                   >
                     Add to Calendar
@@ -440,10 +442,10 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
         <section className="py-12">
           <div className="text-center">
-            <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.98] tracking-[-0.05em] text-white">
+            <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
               Choose Your Access
             </h2>
-            <p className="mt-2 text-sm text-white/58">
+            <p className="mt-2 text-sm text-[#665d54]">
               Limited tiers remaining. Secure your journey into sound.
             </p>
           </div>
@@ -456,7 +458,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
         </section>
 
         <section className="pb-12">
-          <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-white">
+          <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
             Practical Info
           </h2>
 
@@ -469,7 +471,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
 
         <section className="pb-8">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-white">
+            <h2 className="max-w-none text-[clamp(1.9rem,4vw,2.7rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
               Discover More
             </h2>
             <div className="flex gap-2">
@@ -487,9 +489,9 @@ export default function FestivalDetailPage({ params }: PageProps) {
               <Link
                 key={item.slug}
                 href={getFestivalDetailHref(item.slug)}
-                className="group relative block overflow-hidden rounded-[1.5rem] bg-[#171511] text-white shadow-[0_16px_32px_rgba(24,18,12,0.16)]"
+              className="group relative block overflow-hidden rounded-[1.5rem] bg-[#171511] text-white shadow-[0_16px_32px_rgba(24,18,12,0.16)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e]"
                 style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(8,8,8,0.08), rgba(8,8,8,0.72)), ${optimizeCssBackground(
+                  backgroundImage: `linear-gradient(180deg, rgba(8,8,8,0.2), rgba(8,8,8,0.82)), ${optimizeCssBackground(
                     item.heroImage,
                     {
                       width: 720,
@@ -504,7 +506,7 @@ export default function FestivalDetailPage({ params }: PageProps) {
                   <h3 className="max-w-none text-[1.8rem] leading-none tracking-[-0.05em] text-white">
                     {item.name}
                   </h3>
-                  <p className="mt-2 text-sm text-white/78">
+                  <p className="mt-2 text-sm text-white/88">
                     {item.locationLabel} - {item.dateLabel}
                   </p>
                 </div>

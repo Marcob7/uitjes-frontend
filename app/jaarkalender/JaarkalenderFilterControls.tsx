@@ -304,7 +304,7 @@ export function JaarkalenderFilterControls() {
                 </p>
                 <h3
                   id="jaarkalender-filter-title"
-                  className="mt-3 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-[-0.06em] text-white"
+                  className="mt-3 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-[-0.06em] text-[#171511]"
                 >
                   Filter je zoekopdracht
                 </h3>
@@ -318,7 +318,7 @@ export function JaarkalenderFilterControls() {
                 type="button"
                 aria-label="Sluit filter modal"
                 onClick={closeModal}
-                className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-[#eddccd]"
+                className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/80 text-[#4f4339] transition hover:bg-[#eddccd]"
               >
                 <CloseIcon />
               </button>
@@ -327,10 +327,10 @@ export function JaarkalenderFilterControls() {
             <div className="px-6 py-6 sm:px-10 sm:py-8">
               <div className="space-y-8">
                 <div>
-                  <label className="text-sm font-semibold text-white">
+                  <label className="text-sm font-semibold text-[#27231f]">
                     Locatie (stad)
                   </label>
-                  <div className="mt-3 flex min-h-16 items-center gap-3 rounded-full bg-white/10 px-6 text-[#897468] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+                  <div className="mt-3 flex min-h-16 items-center gap-3 rounded-full bg-white/82 px-6 text-[#6f6157] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
                     <SearchIcon />
                     <input
                       type="text"
@@ -342,12 +342,12 @@ export function JaarkalenderFilterControls() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="text-sm font-semibold text-white">
+                    <label className="text-sm font-semibold text-[#27231f]">
                       Periode
                     </label>
                     <button
                       type="button"
-                      className="mt-3 flex min-h-16 w-full items-center justify-between rounded-full bg-white/10 px-6 text-left text-lg text-[#231d18] transition hover:bg-[#f1e0d1]"
+                      className="mt-3 flex min-h-16 w-full items-center justify-between rounded-full bg-white/82 px-6 text-left text-lg text-[#231d18] transition hover:bg-[#f1e0d1]"
                     >
                       <span>{periodOptions[0]}</span>
                       <ChevronDownIcon />
@@ -355,12 +355,12 @@ export function JaarkalenderFilterControls() {
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-white">
+                    <label className="text-sm font-semibold text-[#27231f]">
                       Categorie
                     </label>
                     <button
                       type="button"
-                      className="mt-3 flex min-h-16 w-full items-center justify-between rounded-full bg-white/10 px-6 text-left text-lg text-[#231d18] transition hover:bg-[#f1e0d1]"
+                      className="mt-3 flex min-h-16 w-full items-center justify-between rounded-full bg-white/82 px-6 text-left text-lg text-[#231d18] transition hover:bg-[#f1e0d1]"
                     >
                       <span>{jaarkalenderCategoryMeta[activeCategory].label}</span>
                       <ChevronDownIcon />
@@ -370,7 +370,7 @@ export function JaarkalenderFilterControls() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="text-sm font-semibold text-white">
+                    <label className="text-sm font-semibold text-[#27231f]">
                       Met wie
                     </label>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -381,7 +381,7 @@ export function JaarkalenderFilterControls() {
                           className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                             option === "Alles"
                               ? "border-[#b8df71] bg-[#f3fadf] text-[#2c381d]"
-                              : "border-transparent bg-white/10 text-[#4f4339] hover:bg-[#eedfd2]"
+                              : "border-transparent bg-white/74 text-[#4f4339] hover:bg-[#eedfd2]"
                           }`}
                         >
                           {option}
@@ -391,7 +391,7 @@ export function JaarkalenderFilterControls() {
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-white">
+                    <label className="text-sm font-semibold text-[#27231f]">
                       Sfeer
                     </label>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -403,7 +403,7 @@ export function JaarkalenderFilterControls() {
                           className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                             activeMood === option
                               ? "border-[#b8df71] bg-[#f3fadf] text-[#2c381d]"
-                              : "border-transparent bg-white/10 text-[#4f4339] hover:bg-[#eedfd2]"
+                              : "border-transparent bg-white/74 text-[#4f4339] hover:bg-[#eedfd2]"
                           }`}
                         >
                           {option}
@@ -414,7 +414,7 @@ export function JaarkalenderFilterControls() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-white">
+                  <label className="text-sm font-semibold text-[#27231f]">
                     Interesses
                   </label>
                   <div className="mt-4 flex flex-wrap gap-3">
@@ -453,7 +453,7 @@ export function JaarkalenderFilterControls() {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="inline-flex min-h-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,#d6f48b,#bdf178)] px-6 text-lg font-semibold text-white transition hover:brightness-[0.98]"
+                    className="inline-flex min-h-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,#d6f48b,#bdf178)] px-6 text-lg font-semibold text-[#162016] transition hover:brightness-[0.98]"
                   >
                     Toon resultaten
                   </button>

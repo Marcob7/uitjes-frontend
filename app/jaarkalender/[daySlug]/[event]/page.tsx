@@ -476,7 +476,10 @@ function NearbyCard({
   image: string;
 }) {
   return (
-    <Link href={href} className="group block">
+    <Link
+      href={href}
+      className="group block rounded-[1.9rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e]"
+    >
       <div
         className="relative h-[16rem] overflow-hidden rounded-[1.9rem] bg-[#141310] shadow-[0_18px_45px_rgba(34,25,18,0.12)]"
         style={{
@@ -495,7 +498,7 @@ function NearbyCard({
           {category}
         </div>
       </div>
-      <h3 className="mt-5 text-[1.85rem] leading-[0.98] tracking-[-0.05em] text-white">
+      <h3 className="mt-5 text-[1.85rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
         {title}
       </h3>
       <p className="mt-2 text-sm leading-7 text-[#6a5a4c]">{description}</p>
@@ -528,7 +531,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
   const routeHref = buildMapsSearchHref(viewModel.locationLabel);
 
   return (
-    <main className="min-h-screen bg-[#f8f5f3] text-white">
+    <main className="min-h-screen bg-[#f8f5f3] text-[#171511]">
       <div className="mx-auto max-w-[1320px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="mb-6">
           <Breadcrumbs
@@ -587,7 +590,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
               href={calendarHref}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-[#162016] transition hover:bg-[#c9ee77]"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-[#162016] transition hover:bg-[#c9ee77] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
             >
               <CalendarIcon />
               {viewModel.importLabel}
@@ -597,12 +600,12 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
 
         <section className="mt-10 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.2rem] bg-white/10 backdrop-blur-xl p-1">
-              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] bg-[#07131a] p-6 sm:p-8">
+            <div className="rounded-[2.2rem] border border-[#e7dfd6] bg-white/72 p-1 shadow-[0_24px_60px_rgba(35,23,16,0.06)]">
+              <div className="rounded-[2rem] border border-[#eee6dc] bg-white/88 p-6 sm:p-8">
                 <div className={`inline-flex rounded-full px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] ${categoryMeta.badgeClass}`}>
                   {categoryMeta.label}
                 </div>
-                <h2 className="mt-5 text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.05em] text-white">
+                <h2 className="mt-5 text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
                   Over dit evenement
                 </h2>
                 <div className="mt-5 space-y-4 text-[1.02rem] leading-8 text-[#56483d]">
@@ -615,14 +618,16 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
                   {viewModel.infoCards.map((card) => (
                     <article
                       key={card.title}
-                      className={`border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.8rem] p-6 ${
-                        card.tone === "mint" ? "bg-white/12" : "bg-[#f5e6d8]"
+                      className={`rounded-[1.8rem] border p-6 ${
+                        card.tone === "mint"
+                          ? "border-[#d5e7cc] bg-[#eef8e7]"
+                          : "border-[#edd8ca] bg-[#f8e7dc]"
                       }`}
                     >
-                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-xl text-white">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/76 text-[#4d6630]">
                         {card.tone === "mint" ? <CalendarIcon /> : <TicketIcon />}
                       </div>
-                      <h3 className="mt-5 text-[1.5rem] leading-[1.02] tracking-[-0.04em] text-white">
+                      <h3 className="mt-5 text-[1.5rem] leading-[1.02] tracking-[-0.04em] text-[#171511]">
                         {card.title}
                       </h3>
                       <p className="mt-3 text-sm leading-7 text-[#5f5145]">
@@ -635,19 +640,19 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
             </div>
           </div>
 
-          <aside className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.2rem] border border-white/14 bg-white/10 backdrop-blur-xl p-6 shadow-[0_18px_40px_rgba(35,23,16,0.05)] sm:p-8">
-            <h2 className="text-[2rem] leading-[0.98] tracking-[-0.05em] text-white">
+          <aside className="rounded-[2.2rem] border border-[#e7dfd6] bg-white/88 p-6 shadow-[0_18px_40px_rgba(35,23,16,0.05)] sm:p-8">
+            <h2 className="text-[2rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
               Praktische informatie
             </h2>
 
             <div className="mt-6 space-y-5">
               {viewModel.practicalInfo.map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
-                  <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white">
+                  <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f3ede5] text-[#5a4f45]">
                     {renderPracticalIcon(item.icon)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">{item.label}</p>
+                    <p className="text-sm font-semibold text-[#3f382f]">{item.label}</p>
                     <p className="mt-1 text-sm leading-6 text-[#66584d]">{item.value}</p>
                   </div>
                 </div>
@@ -663,7 +668,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
                 href={routeHref}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#171511] px-5 text-sm font-semibold text-white transition hover:bg-[#171511] hover:text-white"
+                className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#171511] px-5 text-sm font-semibold text-[#171511] transition hover:bg-[#171511] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
               >
                 {viewModel.routeAction}
               </a>
@@ -674,7 +679,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
         <section className="mt-20">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-[34rem]">
-              <h2 className="text-[clamp(2rem,4vw,3.2rem)] leading-[0.95] tracking-[-0.06em] text-white">
+              <h2 className="text-[clamp(2rem,4vw,3.2rem)] leading-[0.95] tracking-[-0.06em] text-[#171511]">
                 In de buurt
               </h2>
               <p className="mt-3 text-base leading-8 text-[#66584d]">
@@ -683,7 +688,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
             </div>
             <Link
               href={`/jaarkalender/${eventEntry.day.slug}`}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-white underline decoration-[#cfe985] decoration-2 underline-offset-4"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#4d6630] underline decoration-[#9cc84e] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
             >
               Bekijk alles
               <ArrowIcon />

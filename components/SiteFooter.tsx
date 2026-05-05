@@ -3,7 +3,7 @@ import Link from "next/link";
 const footerLinks = [
   { name: "Ontdek", href: "/ontdek" },
   { name: "Jaarkalender", href: "/jaarkalender" },
-  { name: "Festivals", href: "/festivals" },
+  { name: "Festivals", href: "/festivals/kalender" },
   { name: "Inspiratie", href: "/inspiratie" },
   { name: "Bewaard", href: "/saved" },
 ];

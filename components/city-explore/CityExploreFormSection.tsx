@@ -70,74 +70,74 @@ function getTonePalette(tone: LiquidToneKey) {
   switch (tone) {
     case "rose":
       return {
-        surface: "rgba(246, 217, 210, 0.38)",
-        surfaceSelected: "rgba(244, 202, 193, 0.68)",
-        ring: "rgba(177, 101, 88, 0.26)",
+        surface: "rgba(246, 217, 210, 0.72)",
+        surfaceSelected: "rgba(244, 202, 193, 0.88)",
+        ring: "rgba(255, 255, 255, 0.42)",
         text: "#2f201d",
-        muted: "rgba(47, 32, 29, 0.74)",
+        muted: "rgba(47, 32, 29, 0.88)",
         badgeBackground: "#f6d9d2",
         badgeText: "#4b241f",
-        iconBackground: "rgba(255, 245, 242, 0.84)",
+        iconBackground: "rgba(255, 245, 242, 0.94)",
         iconText: "#6a2f27",
       };
     case "violet":
       return {
-        surface: "rgba(231, 228, 246, 0.38)",
-        surfaceSelected: "rgba(220, 214, 244, 0.68)",
-        ring: "rgba(104, 88, 160, 0.24)",
+        surface: "rgba(231, 228, 246, 0.72)",
+        surfaceSelected: "rgba(220, 214, 244, 0.88)",
+        ring: "rgba(255, 255, 255, 0.42)",
         text: "#262033",
-        muted: "rgba(38, 32, 51, 0.74)",
+        muted: "rgba(38, 32, 51, 0.88)",
         badgeBackground: "#e7e4f6",
         badgeText: "#2f2943",
-        iconBackground: "rgba(247, 245, 253, 0.84)",
+        iconBackground: "rgba(247, 245, 253, 0.94)",
         iconText: "#41346d",
       };
     case "sage":
       return {
-        surface: "rgba(222, 237, 220, 0.38)",
-        surfaceSelected: "rgba(208, 231, 204, 0.68)",
-        ring: "rgba(86, 125, 88, 0.24)",
+        surface: "rgba(222, 237, 220, 0.72)",
+        surfaceSelected: "rgba(208, 231, 204, 0.88)",
+        ring: "rgba(255, 255, 255, 0.42)",
         text: "#1f3022",
-        muted: "rgba(31, 48, 34, 0.74)",
+        muted: "rgba(31, 48, 34, 0.88)",
         badgeBackground: "#deeddc",
         badgeText: "#243626",
-        iconBackground: "rgba(243, 251, 241, 0.84)",
+        iconBackground: "rgba(243, 251, 241, 0.94)",
         iconText: "#355a3b",
       };
     case "amber":
       return {
-        surface: "rgba(247, 231, 200, 0.38)",
-        surfaceSelected: "rgba(244, 223, 178, 0.68)",
-        ring: "rgba(166, 126, 44, 0.26)",
+        surface: "rgba(247, 231, 200, 0.72)",
+        surfaceSelected: "rgba(244, 223, 178, 0.88)",
+        ring: "rgba(255, 255, 255, 0.42)",
         text: "#332617",
-        muted: "rgba(51, 38, 23, 0.74)",
+        muted: "rgba(51, 38, 23, 0.88)",
         badgeBackground: "#f7e7c8",
         badgeText: "#4b3718",
-        iconBackground: "rgba(255, 249, 236, 0.84)",
+        iconBackground: "rgba(255, 249, 236, 0.94)",
         iconText: "#6d4e14",
       };
     case "mist":
       return {
-        surface: "rgba(228, 235, 245, 0.38)",
-        surfaceSelected: "rgba(214, 226, 242, 0.68)",
-        ring: "rgba(92, 123, 167, 0.22)",
+        surface: "rgba(228, 235, 245, 0.72)",
+        surfaceSelected: "rgba(214, 226, 242, 0.88)",
+        ring: "rgba(255, 255, 255, 0.42)",
         text: "#212b39",
-        muted: "rgba(33, 43, 57, 0.74)",
+        muted: "rgba(33, 43, 57, 0.88)",
         badgeBackground: "#e4ebf5",
         badgeText: "#273347",
-        iconBackground: "rgba(245, 248, 252, 0.84)",
+        iconBackground: "rgba(245, 248, 252, 0.94)",
         iconText: "#365171",
       };
     default:
       return {
-        surface: "rgba(239, 229, 216, 0.38)",
-        surfaceSelected: "rgba(233, 219, 202, 0.68)",
-        ring: "rgba(146, 113, 91, 0.22)",
+        surface: "rgba(239, 229, 216, 0.72)",
+        surfaceSelected: "rgba(233, 219, 202, 0.88)",
+        ring: "rgba(255, 255, 255, 0.42)",
         text: "#2f231c",
-        muted: "rgba(47, 35, 28, 0.74)",
+        muted: "rgba(47, 35, 28, 0.88)",
         badgeBackground: "#efe5d8",
         badgeText: "#453127",
-        iconBackground: "rgba(251, 246, 239, 0.84)",
+        iconBackground: "rgba(251, 246, 239, 0.94)",
         iconText: "#6a4531",
       };
   }
@@ -150,18 +150,18 @@ function getLiquidOptionCardStyle(
 ) {
   return {
     background: isSelected
-      ? `linear-gradient(180deg, rgba(255,255,255,0.28) 0%, ${palette.surfaceSelected} 100%)`
-      : `linear-gradient(180deg, rgba(255,255,255,0.22) 0%, ${palette.surface} 100%)`,
+      ? `linear-gradient(180deg, rgba(255,255,255,0.76) 0%, ${palette.surfaceSelected} 100%)`
+      : `linear-gradient(180deg, rgba(255,255,255,0.62) 0%, ${palette.surface} 100%)`,
     color: palette.text,
     border: `1px solid ${palette.ring}`,
-    backdropFilter: "blur(18px)",
-    WebkitBackdropFilter: "blur(18px)",
+    backdropFilter: "blur(22px) saturate(1.18)",
+    WebkitBackdropFilter: "blur(22px) saturate(1.18)",
     boxShadow: isSelected
       ? isDarkLiquid
-        ? "0 24px 48px rgba(8,15,20,0.22)"
+        ? "0 26px 54px rgba(8,15,20,0.32), inset 0 1px 0 rgba(255,255,255,0.58)"
         : "0 24px 48px rgba(41,31,22,0.13)"
       : isDarkLiquid
-        ? "0 16px 34px rgba(8,15,20,0.14)"
+        ? "0 18px 38px rgba(8,15,20,0.26), inset 0 1px 0 rgba(255,255,255,0.5)"
         : "0 16px 34px rgba(41,31,22,0.08)",
   };
 }
@@ -720,7 +720,7 @@ function CompanionGrid({
             onClick={() => onSelect(option.id)}
             size="large"
             icon={<Icon className="h-6 w-6 sm:h-10 sm:w-10" />}
-            className={`min-h-[68px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[230px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-24 [&>span:first-child]:sm:w-24 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:sm:block ${
+            className={`min-h-[68px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[230px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:border-white/80 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-24 [&>span:first-child]:sm:w-24 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:block ${
               isSelected
                 ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.14)]"
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.09)]"
@@ -729,6 +729,8 @@ function CompanionGrid({
               ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
               "--choice-icon-bg": palette.iconBackground,
               "--choice-icon-text": palette.iconText,
+              "--choice-text": palette.text,
+              "--choice-muted": palette.muted,
             } as React.CSSProperties}
           />
         );
@@ -770,7 +772,7 @@ function SimpleOptionGrid<T extends string>({
             onClick={() => onSelect(option.id)}
             size="large"
             icon={<Icon className="h-6 w-6 sm:h-9 sm:w-9" />}
-            className={`min-h-[64px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[214px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-20 [&>span:first-child]:sm:w-20 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:sm:block ${
+            className={`min-h-[64px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[214px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:border-white/80 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-20 [&>span:first-child]:sm:w-20 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:block ${
               isSelected
                 ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.12)]"
                 : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.08)]"
@@ -779,6 +781,8 @@ function SimpleOptionGrid<T extends string>({
               ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
               "--choice-icon-bg": palette.iconBackground,
               "--choice-icon-text": palette.iconText,
+              "--choice-text": palette.text,
+              "--choice-muted": palette.muted,
             } as React.CSSProperties}
           />
         );

@@ -149,7 +149,7 @@ function CalendarMiniIcon() {
 
 function CategoryBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3e342b]">
+    <span className="inline-flex rounded-full border border-[#e5dbcf] bg-white/86 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3e342b]">
       {children}
     </span>
   );
@@ -163,7 +163,7 @@ function FilterPill({
   children: ReactNode;
 }) {
   return (
-    <div className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#e5ddd2] bg-white/10 px-5 text-sm font-medium text-[#25211c] shadow-[0_10px_25px_rgba(59,39,20,0.04)]">
+    <div className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#e5ddd2] bg-white/88 px-5 text-sm font-semibold text-[#25211c] shadow-[0_10px_25px_rgba(59,39,20,0.04)]">
       {icon}
       {children}
     </div>
@@ -220,7 +220,7 @@ function renderFeatureCard(daySlug: string, slot: TimelineSlot, card: TimelineCa
   return (
     <Link
       href={getJaarkalenderEventHrefForCard(daySlug, slot, card)}
-      className="group block rounded-[2.4rem] bg-white/10 p-6 shadow-[0_24px_50px_rgba(61,40,22,0.06)] transition hover:-translate-y-1 sm:p-7"
+      className="group block rounded-[2.4rem] border border-[#e7dfd6] bg-white/88 p-6 shadow-[0_24px_50px_rgba(61,40,22,0.06)] transition hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e] sm:p-7"
     >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
         <PosterTile card={card} />
@@ -229,7 +229,7 @@ function renderFeatureCard(daySlug: string, slot: TimelineSlot, card: TimelineCa
             <CategoryBadge>{card.category}</CategoryBadge>
             <span className="text-sm text-[#6b5b4d]">{card.label}</span>
           </div>
-          <h2 className="mt-4 max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.94] tracking-[-0.055em] text-white">
+          <h2 className="mt-4 max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.94] tracking-[-0.055em] text-[#171511]">
             {card.title}
           </h2>
           <p className="mt-4 max-w-[34rem] text-base leading-8 text-[#58493d]">
@@ -256,22 +256,22 @@ function renderGridCard(daySlug: string, slot: TimelineSlot, card: TimelineCard)
   return (
     <Link
       href={getJaarkalenderEventHrefForCard(daySlug, slot, card)}
-      className={`group block rounded-[2.1rem] ${toneClasses} p-5 shadow-[0_20px_40px_rgba(61,40,22,0.05)] transition hover:-translate-y-1`}
+      className={`group block rounded-[2.1rem] ${toneClasses} p-5 shadow-[0_20px_40px_rgba(61,40,22,0.05)] transition hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e]`}
     >
       <div className="flex h-full flex-col">
         <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f2a24]">
           <span className={`inline-flex h-2.5 w-2.5 rounded-full ${dotClasses}`} />
           {card.category}
         </div>
-        <h3 className="mt-5 max-w-none text-[2rem] leading-[0.96] tracking-[-0.05em] text-white">
+        <h3 className="mt-5 max-w-none text-[2rem] leading-[0.96] tracking-[-0.05em] text-[#171511]">
           {card.title}
         </h3>
         <p className="mt-4 max-w-[26rem] text-sm leading-7 text-[#5a4f45]">
           {card.description}
         </p>
         <div className="mt-auto flex items-end justify-between gap-4 pt-7">
-          <p className="text-sm font-medium text-white">{card.location}</p>
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#efe5d8] text-white transition group-hover:bg-[#e6d8c8]">
+          <p className="text-sm font-semibold text-[#5a4f45]">{card.location}</p>
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f5efe7] text-[#5a4f45] transition group-hover:bg-[#e6d8c8]">
             <CalendarMiniIcon />
           </span>
         </div>
@@ -307,7 +307,7 @@ function renderHeroCard(daySlug: string, slot: TimelineSlot, card: TimelineCard)
           {card.description}
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <span className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#d1f289] px-6 text-sm font-semibold text-white transition group-hover:bg-[#c2e875]">
+          <span className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#d1f289] px-6 text-sm font-semibold text-[#162016] transition group-hover:bg-[#c2e875]">
             {card.primaryAction ?? "Bekijk event"}
           </span>
           <span className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/8 px-6 text-sm font-semibold text-white backdrop-blur-sm transition group-hover:bg-white/14">
@@ -324,7 +324,7 @@ function renderCompactCard(daySlug: string, slot: TimelineSlot, card: TimelineCa
   return (
     <Link
       href={getJaarkalenderEventHrefForCard(daySlug, slot, card)}
-      className="group block rounded-[2rem] border border-[#ece3d7] bg-white/10 backdrop-blur-xl p-5 shadow-[0_18px_40px_rgba(61,40,22,0.04)] transition hover:-translate-y-1 sm:p-6"
+      className="group block rounded-[2rem] border border-[#ece3d7] bg-white/88 p-5 shadow-[0_18px_40px_rgba(61,40,22,0.04)] transition hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e] sm:p-6"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-4">
@@ -335,7 +335,7 @@ function renderCompactCard(daySlug: string, slot: TimelineSlot, card: TimelineCa
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#ef4e4e]">
               {card.metaNote ?? card.category}
             </p>
-            <h3 className="mt-2 max-w-none text-[1.8rem] leading-[0.98] tracking-[-0.05em] text-white">
+            <h3 className="mt-2 max-w-none text-[1.8rem] leading-[0.98] tracking-[-0.05em] text-[#171511]">
               {card.title}
             </h3>
             <p className="mt-1 text-sm text-[#66594e]">{card.location}</p>
@@ -389,7 +389,7 @@ function SlotAccent({
 
   return (
     <div className="relative flex items-center gap-4 md:block">
-      <div className="text-[2.2rem] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[2.7rem]">
+      <div className="text-[2.2rem] font-semibold leading-none tracking-[-0.05em] text-[#171511] sm:text-[2.7rem]">
         {children}
       </div>
       <span className={`inline-flex h-1.5 w-8 rounded-full ${accentClass}`} />
@@ -405,7 +405,7 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f5f3] text-white">
+    <main className="min-h-screen bg-[#f8f5f3] text-[#171511]">
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <Breadcrumbs
           items={[
@@ -418,7 +418,7 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
 
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[44rem]">
-            <h1 className="mt-5 max-w-none text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.075em] text-white">
+            <h1 className="mt-5 max-w-none text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.075em] text-[#171511]">
               {day.weekdayDisplay}
               <span className="ml-2">{day.dayNumber}</span>
               <span className="ml-3 text-[#c9ef87]">{day.monthDisplay}</span>

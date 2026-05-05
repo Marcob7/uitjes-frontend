@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "@/components/home/SearchBar";
+import { AppCard, AppSection } from "@/components/ui/app";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type CategoryCard = {
@@ -102,17 +103,24 @@ const popularCities: CityCard[] = [
 
 export default function InspiratiePage() {
   return (
-    <main className="uitjes-surface min-h-screen text-white">
-   
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-14">
+        <div className="uitjes-liquid-section rounded-[2.4rem] px-5 py-8 sm:px-8 sm:py-10 lg:px-11 lg:py-12">
+          <div className="pointer-events-none absolute -right-16 top-6 h-56 w-56 rounded-full bg-[#c6df9a]/18 blur-3xl" />
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+            <div className="max-w-[42rem]">
+              <div className="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/78 backdrop-blur-xl">
+                Inspiratiegids
+              </div>
+              <h1 className="mt-6 max-w-[10ch] text-[clamp(3.2rem,8vw,5.7rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
+                Begeleide ontdekkingsreis
+              </h1>
+              <p className="mt-6 max-w-[34rem] text-base leading-8 text-white/76 sm:text-lg">
+                Kies een stemming, moment of stad en vind sneller een uitje dat
+                klopt met je dag.
+              </p>
 
-      <section className="px-5 pb-12 pt-10 md:px-8 md:pb-16 md:pt-14">
-        <div className="mx-auto max-w-[1280px]">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="mx-auto text-[2.6rem] font-black leading-[0.92] tracking-[-0.04em] text-white md:max-w-[11ch] md:translate-x-6 md:text-[4.5rem]">
-              Begeleide Ontdekkingsreis
-            </h1>
-
-            <div className="mx-auto mt-8 max-w-2xl">
+              <div className="mt-8 max-w-[42rem]">
               <SearchBar
                 placeholder="Waar heb je zin in vandaag?"
                 buttonLabel="Zoeken"
@@ -123,44 +131,80 @@ export default function InspiratiePage() {
                 suggestionItemClassName="text-white/88 hover:bg-white/8"
                 submitButtonClassName="border border-[#e8f2d0]/65 bg-[#e8f2d0] text-[#162016] shadow-[0_18px_36px_rgba(12,20,12,0.18)] hover:bg-[#f1f7df]"
               />
+              </div>
             </div>
+
+            <AppCard
+              variant="glass"
+              padding="lg"
+              className="relative min-h-[17rem] overflow-hidden rounded-[2.1rem] lg:min-h-[21rem]"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_24%,rgba(232,242,208,0.38),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04))]" />
+              <div className="relative flex h-full flex-col justify-between gap-8">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
+                    Start bij je moment
+                  </p>
+                  <p className="mt-4 max-w-[13ch] text-[clamp(2.2rem,5vw,3.4rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-white">
+                    Van idee naar plan in een paar keuzes.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {["Vandaag", "Weekend", "Cultureel"].map((label) => (
+                    <span
+                      key={label}
+                      className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </AppCard>
           </div>
 
-          <div className="mt-10 grid grid-cols-2 gap-4 md:mt-14 md:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
             {categoryCards.map((card) => (
               <Link
                 key={card.title}
                 href={card.href}
-                className={`group flex min-h-[150px] flex-col items-center justify-center rounded-[28px] px-5 py-6 text-center transition duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] md:min-h-[190px] ${card.bgClass}`}
+                className={`group flex min-h-[142px] flex-col justify-between rounded-[1.5rem] px-4 py-4 text-left transition duration-200 hover:-translate-y-1 hover:bg-white/14 md:min-h-[180px] md:rounded-[1.9rem] md:px-5 md:py-5 ${card.bgClass}`}
               >
-                <div className="mb-5 text-white">{card.icon}</div>
-                <span className="text-sm font-semibold tracking-[-0.02em] text-white md:text-base">
-                  {card.title}
-                </span>
-                <span className="mt-2 max-w-[12rem] text-xs leading-5 text-white/76">
-                  {card.description}
-                </span>
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#e8f2d0] text-[#1c2a17]">
+                  {card.icon}
+                </div>
+                <div>
+                  <span className="block text-lg font-semibold leading-none tracking-[-0.04em] text-white md:text-xl">
+                    {card.title}
+                  </span>
+                  <span className="mt-2 block max-w-[13rem] text-xs leading-5 text-white/70">
+                    {card.description}
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
         </div>
-      </section>
+      </AppSection>
 
-      <section className="bg-white/10 px-5 py-14 md:px-8 md:py-20">
-        <div className="mx-auto max-w-[1280px]">
+      <AppSection maxWidth="wide" spacing="md" className="bg-white/5">
+        <div>
           <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-3xl font-black tracking-[-0.03em] text-white md:text-4xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8b7a69]">
+                Steden
+              </p>
+              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[#171511]">
                 Populaire steden
               </h2>
-              <p className="mt-2 max-w-xl text-sm text-white/76 md:text-base">
+              <p className="mt-2 max-w-xl text-sm text-[#665d54] md:text-base">
                 Ontdek de verborgen parels in de leukste steden van Nederland.
               </p>
             </div>
 
             <Link
               href="/steden"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white transition hover:opacity-70"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#171511] transition hover:opacity-70"
             >
               Bekijk alle <span aria-hidden="true">→</span>
             </Link>
@@ -171,7 +215,7 @@ export default function InspiratiePage() {
               <Link
                 key={city.name}
                 href={city.href}
-                className="group relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[28px] bg-neutral-200"
+                className="group relative overflow-hidden rounded-[1.8rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl"
               >
                 <div
                   className="min-h-[290px] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03] md:min-h-[340px]"
@@ -197,11 +241,11 @@ export default function InspiratiePage() {
             ))}
           </div>
         </div>
-      </section>
+      </AppSection>
 
-      <section className="px-5 py-14 md:px-8 md:py-20">
-        <div className="mx-auto max-w-[1280px]">
-          <div className="grid gap-8 rounded-[34px] bg-white/12 px-6 py-8 md:grid-cols-[1.2fr_0.9fr] md:px-10 md:py-12 lg:px-14 lg:py-14">
+      <AppSection maxWidth="wide" spacing="lg" innerClassName="pt-10">
+        <div>
+          <div className="grid gap-8 overflow-hidden rounded-[2.2rem] border border-white/14 bg-white/10 px-6 py-8 shadow-[0_24px_70px_rgba(0,0,0,0.18)] backdrop-blur-xl md:grid-cols-[1.2fr_0.9fr] md:px-10 md:py-12 lg:px-14 lg:py-14">
             <div className="flex flex-col justify-center">
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/76">
                 UITJES COMMUNITY
@@ -259,7 +303,7 @@ export default function InspiratiePage() {
             </div>
           </div>
         </div>
-      </section>
+      </AppSection>
 
     </main>
   );

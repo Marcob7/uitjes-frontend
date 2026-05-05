@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
+import { AppCard, AppSection } from "@/components/ui/app";
 import {
   buildActionSearchHref,
   buildMapsSearchHref,
@@ -394,11 +395,9 @@ export default function InspirationDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="uitjes-surface min-h-screen text-white">
-   
-
-      <section className="px-4 pb-10 pt-6 md:px-8 md:pb-14">
-        <div className="mx-auto max-w-[1280px]">
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-12">
+        <div>
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -409,9 +408,9 @@ export default function InspirationDetailPage({ params }: PageProps) {
             className="mb-6"
           />
 
-          <div className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[34px]">
+          <div className="relative overflow-hidden rounded-[2.2rem] border border-white/14 bg-white/10 shadow-[0_28px_80px_rgba(0,0,0,0.24)] backdrop-blur-xl">
             <div
-              className="min-h-[360px] w-full bg-cover bg-center md:min-h-[520px]"
+              className="min-h-[420px] w-full bg-cover bg-center md:min-h-[560px]"
               style={{
                 backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.12)), ${optimizeCssBackground(
                   page.heroImage,
@@ -424,19 +423,21 @@ export default function InspirationDetailPage({ params }: PageProps) {
               aria-label={page.heroAlt}
             />
 
-            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,rgba(7,19,26,0.08),rgba(7,19,26,0.58))]" />
+
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 lg:p-10">
               <div className="mb-4 flex flex-wrap gap-2">
                 {page.badges.map((badge) => (
                   <span
                     key={badge}
-                    className="inline-flex rounded-full bg-[#d5efaf] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white"
+                    className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl"
                   >
                     {badge}
                   </span>
                 ))}
               </div>
 
-              <h1 className="max-w-[720px] text-4xl font-black leading-[0.94] tracking-[-0.05em] text-white md:text-6xl">
+              <h1 className="max-w-[760px] text-[clamp(3rem,8vw,5.8rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
                 {page.title}
               </h1>
 
@@ -446,15 +447,15 @@ export default function InspirationDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-      </section>
+      </AppSection>
 
-      <section className="px-4 pb-8 md:px-8 md:pb-12">
-        <div className="mx-auto max-w-[1280px]">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-0 pb-8 md:pb-12">
+        <div>
           <div className="mb-6 flex flex-wrap gap-3">
             {page.chips.map((chip) => (
               <span
                 key={chip}
-                className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-medium text-white/80"
+                className="inline-flex rounded-full border border-[#ded8cc] bg-white/60 px-4 py-2 text-xs font-medium text-[#4f463d] shadow-[0_10px_24px_rgba(60,44,23,0.04)]"
               >
                 {chip}
               </span>
@@ -463,23 +464,23 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.85fr]">
             <div>
-              <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
+              <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                 Waarom dit een goede keuze is
               </h2>
 
-              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 {page.reasons.map((reason) => (
-                  <div key={reason} className="flex items-start gap-3">
-                    <div className="mt-0.5 text-[#476a2e]">
+                  <AppCard key={reason} variant="soft" padding="sm" className="flex items-start gap-3 rounded-[1.4rem]">
+                    <div className="mt-0.5 text-[#e8f2d0]">
                       <LeafIcon />
                     </div>
                     <p className="text-sm text-white/82">{reason}</p>
-                  </div>
+                  </AppCard>
                 ))}
               </div>
 
-              <div className="mt-10 rounded-[34px] bg-white/10 px-6 py-7 md:px-8 md:py-9">
-                <h3 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
+              <AppCard variant="glass" padding="lg" className="mt-10 rounded-[2.1rem]">
+                <h3 className="text-[clamp(1.9rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white">
                   Over deze plek
                 </h3>
 
@@ -488,17 +489,17 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-              </div>
+              </AppCard>
             </div>
 
             <aside className="space-y-5">
-              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[28px] bg-white/10 p-5 shadow-[0_12px_30px_rgba(0,0,0,0.05)]">
+              <AppCard variant="elevated" padding="md" className="rounded-[1.8rem]">
                 <div className="flex flex-col gap-3">
                   <a
                     href={reserveHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-14 items-center justify-center rounded-full bg-[#bde28d] px-6 text-sm font-semibold text-[#213515] transition hover:bg-[#add77a]"
+                    className="uitjes-cta inline-flex h-14 items-center justify-center rounded-full px-6 text-sm font-semibold transition hover:-translate-y-0.5"
                   >
                     Reserveer nu
                   </a>
@@ -508,7 +509,7 @@ export default function InspirationDetailPage({ params }: PageProps) {
                       href={routeHref}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white/10 backdrop-blur-xl text-sm font-medium text-white/80 transition hover:bg-[#faf4eb]"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/10 text-sm font-medium text-white/80 transition hover:bg-white/14"
                     >
                       <MapIcon />
                       Bekijk route
@@ -516,8 +517,8 @@ export default function InspirationDetailPage({ params }: PageProps) {
 
                     <SavePlaceButton
                       item={savedPlace}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white/10 text-sm font-medium text-white/80 transition hover:bg-[#faf4eb]"
-                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white/12 text-sm font-medium text-white transition hover:bg-[#cfe6c1]"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/10 text-sm font-medium text-white/80 transition hover:bg-white/14"
+                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#e8f2d0]/50 bg-white/12 text-sm font-medium text-white transition hover:bg-white/16"
                       savedChildren={
                         <>
                           <SaveIcon />
@@ -530,10 +531,10 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     </SavePlaceButton>
                   </div>
                 </div>
-              </div>
+              </AppCard>
 
-              <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[28px] bg-white/12 p-6">
-                <h3 className="text-xl font-bold tracking-[-0.03em] text-white">
+              <AppCard variant="glass" padding="lg" className="rounded-[1.8rem]">
+                <h3 className="text-xl font-semibold tracking-[-0.03em] text-white">
                   Praktisch
                 </h3>
 
@@ -559,21 +560,21 @@ export default function InspirationDetailPage({ params }: PageProps) {
                     value={page.practical.price}
                   />
                 </div>
-              </div>
+              </AppCard>
             </aside>
           </div>
         </div>
-      </section>
+      </AppSection>
 
-      <section className="px-4 pb-12 md:px-8 md:pb-16">
-        <div className="mx-auto max-w-[1280px]">
-          <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-0 pb-12 md:pb-16">
+        <div>
+          <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
             In beeld
           </h2>
 
-          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
             {page.gallery.map((image, index) => (
-              <div key={index} className="overflow-hidden rounded-[22px]">
+              <div key={index} className="overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/10 shadow-[0_14px_34px_rgba(0,0,0,0.14)]">
                 <div
                   className="aspect-[0.88/1] w-full bg-cover bg-center"
                   style={{
@@ -587,18 +588,18 @@ export default function InspirationDetailPage({ params }: PageProps) {
             ))}
           </div>
         </div>
-      </section>
+      </AppSection>
 
-      <section className="px-4 pb-16 md:px-8 md:pb-24">
-        <div className="mx-auto max-w-[1280px]">
-          <h2 className="text-[2rem] font-bold tracking-[-0.04em] text-white">
+      <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16 md:pb-24">
+        <div>
+          <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
             Vergelijkbare plekken
           </h2>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {page.similar.map((item) => (
               <Link key={item.href} href={item.href} className="group block">
-                <div className="relative overflow-hidden border border-white/14 bg-white/10 backdrop-blur-xl rounded-[26px]">
+                <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
                   <div
                     className="aspect-[0.95/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                     style={{
@@ -615,16 +616,16 @@ export default function InspirationDetailPage({ params }: PageProps) {
                 </div>
 
                 <div className="pt-4">
-                  <h3 className="text-[1.7rem] font-semibold leading-[1.05] tracking-[-0.04em] text-white">
+                  <h3 className="text-[1.7rem] font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511]">
                     {item.title}
                   </h3>
-                  <p className="mt-2 text-sm text-white/68">{item.meta}</p>
+                  <p className="mt-2 text-sm text-[#665d54]">{item.meta}</p>
                 </div>
               </Link>
             ))}
           </div>
         </div>
-      </section>
+      </AppSection>
 
     </main>
   );

@@ -12,8 +12,8 @@ const toggleItems: Array<{
   label: string;
   href: string;
 }> = [
-  { key: "list", label: "Lijst", href: "/festivals" },
   { key: "calendar", label: "Kalender", href: "/festivals/kalender" },
+  { key: "list", label: "Lijst", href: "/festivals/lijst" },
   { key: "map", label: "Kaart", href: "/festivals/kaart" },
 ];
 
@@ -39,7 +39,7 @@ export default function FestivalViewToggle({
             <Link
               key={item.key}
               href={item.href}
-              className="relative inline-flex min-h-11 items-center justify-center rounded-[1rem] px-3 text-sm font-medium text-[#8c8175] transition hover:bg-white/70 hover:text-[#171511] sm:rounded-full sm:px-5"
+              className="relative inline-flex min-h-11 items-center justify-center rounded-[1rem] px-3 text-sm font-medium text-[#62574d] transition hover:bg-white/70 hover:text-[#171511] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full sm:px-5"
             >
               {item.label}
             </Link>
