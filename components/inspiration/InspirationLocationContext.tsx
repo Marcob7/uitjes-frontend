@@ -5,6 +5,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { AppButton, AppInput } from "@/components/ui/app";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import {
+  getInspirationCityLabel,
+  resolveNearestInspirationCityFromCoordinates,
+} from "@/lib/dummy/inspirationResults";
 import { cn } from "@/lib/utils";
 
 type InspirationLocationContextProps = {
@@ -53,23 +57,33 @@ export function InspirationLocationContext({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const location = searchParams.get("location");
+  const nearbyCity = searchParams.get("nearbyCity") ?? undefined;
   const [isPickingCity, setIsPickingCity] = React.useState(false);
   const [cityInput, setCityInput] = React.useState(getInitialCity(location));
+  const [isResolvingLocation, setIsResolvingLocation] = React.useState(false);
+  const [locationStatus, setLocationStatus] = React.useState<string | null>(null);
+  const [locationError, setLocationError] = React.useState<string | null>(null);
+  const nearbyRequestId = React.useRef(0);
   const selectedMode =
-    location === "nearby" || location === "surprise"
-      ? location
-      : location
+    isPickingCity
+      ? "city"
+      : location === "nearby" || location === "surprise"
+        ? location
+        : location
         ? "city"
-        : isPickingCity
-          ? "city"
-          : undefined;
+        : undefined;
 
   React.useEffect(() => {
     setCityInput(getInitialCity(location));
   }, [location]);
 
-  function updateLocation(nextLocation?: string) {
+  function updateLocation(nextLocation?: string, nextNearbyCity?: string) {
     const params = new URLSearchParams(searchParams.toString());
+
+    if (nextLocation !== "nearby") {
+      nearbyRequestId.current += 1;
+      setIsResolvingLocation(false);
+    }
 
     if (nextLocation) {
       params.set("location", nextLocation);
@@ -77,7 +91,30 @@ export function InspirationLocationContext({
       params.delete("location");
     }
 
+    if (nextLocation === "nearby" && nextNearbyCity) {
+      params.set("nearbyCity", nextNearbyCity);
+    } else {
+      params.delete("nearbyCity");
+    }
+
     setIsPickingCity(false);
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
+
+  function startPickingCity() {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete("location");
+    params.delete("nearbyCity");
+
+    nearbyRequestId.current += 1;
+    setIsResolvingLocation(false);
+    setLocationStatus(null);
+    setLocationError(null);
+    setIsPickingCity(true);
+    setCityInput(getInitialCity(location));
+
     const query = params.toString();
     router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   }
@@ -87,8 +124,66 @@ export function InspirationLocationContext({
 
     if (trimmed.length < 2) return;
 
+    setLocationStatus(null);
+    setLocationError(null);
     updateLocation(findCity(trimmed)?.value ?? normalizeCitySlug(trimmed));
   }
+
+  function requestNearbyLocation() {
+    setIsPickingCity(false);
+    setLocationStatus(null);
+    setLocationError(null);
+
+    if (!("geolocation" in navigator)) {
+      setLocationError(
+        "Je browser ondersteunt locatie ophalen niet. Kies een stad of gebruik 'Maakt niet uit'."
+      );
+      return;
+    }
+
+    setIsResolvingLocation(true);
+    nearbyRequestId.current += 1;
+    const requestId = nearbyRequestId.current;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        if (requestId !== nearbyRequestId.current) return;
+
+        const nearbyCitySlug = resolveNearestInspirationCityFromCoordinates({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        const cityLabel = getInspirationCityLabel(nearbyCitySlug);
+
+        updateLocation("nearby", nearbyCitySlug);
+        setLocationStatus(
+          `We tonen resultaten op basis van je locatie, voorlopig gemapt naar ${cityLabel}.`
+        );
+        setIsResolvingLocation(false);
+      },
+      () => {
+        if (requestId !== nearbyRequestId.current) return;
+
+        setLocationError(
+          "Locatie ophalen is niet gelukt. Kies een stad of gebruik 'Maakt niet uit' om verder te gaan."
+        );
+        setIsResolvingLocation(false);
+      },
+      {
+        enableHighAccuracy: false,
+        maximumAge: 5 * 60 * 1000,
+        timeout: 10000,
+      }
+    );
+  }
+
+  React.useEffect(() => {
+    if (location === "nearby" && nearbyCity && !locationStatus) {
+      const cityLabel = getInspirationCityLabel(nearbyCity);
+      setLocationStatus(
+        `We tonen resultaten op basis van je locatie, voorlopig gemapt naar ${cityLabel}.`
+      );
+    }
+  }, [location, nearbyCity, locationStatus]);
 
   return (
     <div
@@ -114,26 +209,60 @@ export function InspirationLocationContext({
               key={option.value}
               type="button"
               aria-pressed={selectedMode === option.value}
+              disabled={option.value === "nearby" && isResolvingLocation}
               onClick={() => {
                 if (option.value === "city") {
-                  setIsPickingCity(true);
+                  startPickingCity();
                   return;
                 }
 
+                if (option.value === "nearby") {
+                  requestNearbyLocation();
+                  return;
+                }
+
+                setLocationStatus(null);
+                setLocationError(null);
                 updateLocation(option.value);
               }}
               className={cn(
                 "inline-flex min-h-10 items-center rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]",
                 selectedMode === option.value
                   ? "border-[#e8f2d0]/70 bg-[#e8f2d0] text-[#162016]"
-                  : "border-white/16 bg-white/10 text-white/82 hover:bg-white/14"
+                  : "border-white/16 bg-white/10 text-white/82 hover:bg-white/14",
+                option.value === "nearby" && isResolvingLocation
+                  ? "cursor-wait opacity-75"
+                  : ""
               )}
             >
-              {option.label}
+              {option.value === "nearby" && isResolvingLocation
+                ? "Locatie ophalen..."
+                : option.label}
             </button>
           ))}
         </div>
       </div>
+
+      {isResolvingLocation ? (
+        <p className="mt-3 text-sm font-medium text-white/78" role="status">
+          We vragen je browser om locatie-toestemming.
+        </p>
+      ) : null}
+
+      {locationStatus ? (
+        <p className="mt-3 text-sm font-medium text-[#e8f2d0]" role="status">
+          {locationStatus}
+        </p>
+      ) : null}
+
+      {locationError ? (
+        <p
+          className="mt-3 rounded-2xl border border-white/14 bg-white/10 px-4 py-3 text-sm font-medium text-white"
+          role="alert"
+        >
+          {locationError}
+        </p>
+      ) : null}
 
       {selectedMode === "city" || (!location && cityInput) ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -167,7 +296,7 @@ export function InspirationLocationContext({
       {selectedMode === undefined ? (
         <button
           type="button"
-          onClick={() => setIsPickingCity(true)}
+          onClick={startPickingCity}
           className="mt-3 text-sm font-semibold text-[#e8f2d0] underline decoration-white/24 underline-offset-4"
         >
           Of kies een stad

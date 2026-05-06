@@ -1,16 +1,22 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { InspirationContextLink } from "@/components/inspiration/InspirationContextLink";
 import { InspirationLocationContext } from "@/components/inspiration/InspirationLocationContext";
-import { AppCard, AppSection } from "@/components/ui/app";
+import { AppSection } from "@/components/ui/app";
+import {
+  featuredInspirationCities,
+  getInspirationCityLabel,
+  getInspirationLocationMode,
+  getInspirationResults,
+  inspirationCategoryLabels,
+  type InspirationResult,
+} from "@/lib/dummy/inspirationResults";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
-type CategoryCard = {
-  title: string;
-  description: string;
-  href: string;
-  bgClass: string;
-  icon: React.ReactNode;
+type PageProps = {
+  searchParams?: {
+    location?: string;
+    nearbyCity?: string;
+  };
 };
 
 type CityCard = {
@@ -20,90 +26,75 @@ type CityCard = {
   image: string;
 };
 
-const categoryCards: CategoryCard[] = [
-  {
-    title: "Nu",
-    description: "Ik wil snel iets vinden dat nu kan.",
-    href: "/inspiratie/vandaag",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <ClockIcon />,
-  },
-  {
-    title: "Dit weekend",
-    description: "Ik wil ideeën voor het weekend.",
-    href: "/inspiratie/weekend",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <CalendarIcon />,
-  },
-  {
-    title: "Eten & drinken",
-    description: "Ik wil iets met horeca, proeven, borrelen of uit eten.",
-    href: "/inspiratie/eten-drinken",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <FoodIcon />,
-  },
-  {
-    title: "Met gezin",
-    description: "Ik zoek iets dat past bij kinderen en samen op pad gaan.",
-    href: "/inspiratie/met-kinderen",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <SmileIcon />,
-  },
-  {
-    title: "Relaxed",
-    description: "Ik zoek iets rustigs, simpels of laagdrempeligs.",
-    href: "/inspiratie/gratis",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <MoneyIcon />,
-  },
-  {
-    title: "Cultureel",
-    description: "Ik wil inspiratie voor musea, steden, voorstellingen of bijzondere plekken.",
-    href: "/inspiratie/binnen",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <BuildingIcon />,
-  },
-  {
-    title: "Actief",
-    description: "Ik zoek iets buiten, sportiefs of avontuurlijks.",
-    href: "/inspiratie/buiten",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <TreeIcon />,
-  },
-  {
-    title: "Date",
-    description: "Ik zoek iets dat geschikt is om samen te doen.",
-    href: "/inspiratie/romantisch",
-    bgClass: "border border-white/14 bg-white/10 backdrop-blur-xl",
-    icon: <HeartIcon />,
-  },
-];
-
 const popularCities: CityCard[] = [
   {
-    name: "Amsterdam",
-    subtitle: "HOOFDSTAD VAN CULTUUR",
-    href: "/ontdek?city=amsterdam",
+    name: "Apeldoorn",
+    subtitle: "VELUWE & STADSRUST",
+    href: "/inspiratie?location=apeldoorn",
     image:
-      "url('https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=1200&q=80')",
+      "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80')",
   },
   {
-    name: "Utrecht",
-    subtitle: "HISTORISCH & KNUS",
-    href: "/ontdek?city=utrecht",
+    name: "Deventer",
+    subtitle: "IJSSEL & HISTORIE",
+    href: "/inspiratie?location=deventer",
+    image:
+      "url('https://images.unsplash.com/photo-1526243741027-444d633d7365?auto=format&fit=crop&w=1200&q=80')",
+  },
+  {
+    name: "Amersfoort",
+    subtitle: "POORTEN & HOFJES",
+    href: "/inspiratie?location=amersfoort",
     image:
       "url('https://images.unsplash.com/photo-1576924542622-772281a13f0c?auto=format&fit=crop&w=1200&q=80')",
   },
-  {
-    name: "Rotterdam",
-    subtitle: "MODERN & GEDURFD",
-    href: "/ontdek?city=rotterdam",
-    image:
-      "url('https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=1200&q=80')",
-  },
 ];
 
-export default function InspiratiePage() {
+function buildContextQuery(searchParams?: PageProps["searchParams"]) {
+  const params = new URLSearchParams();
+
+  if (searchParams?.location) params.set("location", searchParams.location);
+  if (searchParams?.nearbyCity) params.set("nearbyCity", searchParams.nearbyCity);
+
+  return params.toString();
+}
+
+function withContext(href: string, query: string) {
+  return query ? `${href}?${query}` : href;
+}
+
+function getResultsTitle(location?: string, nearbyCity?: string) {
+  const mode = getInspirationLocationMode(location);
+  const cityLabel = getInspirationCityLabel(location, nearbyCity);
+
+  if (mode === "city" && cityLabel) return `Resultaten in ${cityLabel}`;
+  if (mode === "nearby" && cityLabel) return `Resultaten ${cityLabel}`;
+  return "Brede inspiratie-resultaten";
+}
+
+function getResultsDescription(location?: string, nearbyCity?: string) {
+  const mode = getInspirationLocationMode(location);
+  const cityLabel = getInspirationCityLabel(location, nearbyCity);
+
+  if (mode === "city" && cityLabel) {
+    return `Dummy resultaten gefilterd op ${cityLabel}. Later kan deze selectie uit de service-laag komen.`;
+  }
+
+  if (mode === "nearby") {
+    return `Deze dummy resultaten worden getoond op basis van je browserlocatie. Voor nu mappen we coordinaten tijdelijk naar ${cityLabel ?? "een demo stad"}.`;
+  }
+
+  return "Een gemixte set uit meerdere steden, zodat de pagina niet vastzit aan een plaats.";
+}
+
+export default function InspiratiePage({ searchParams }: PageProps) {
+  const contextQuery = buildContextQuery(searchParams);
+  const results = getInspirationResults({
+    location: searchParams?.location,
+    nearbyCity: searchParams?.nearbyCity,
+    limit: 9,
+  });
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-14">
@@ -118,23 +109,61 @@ export default function InspiratiePage() {
                 Begeleide ontdekkingsreis
               </h1>
               <p className="mt-6 max-w-[34rem] text-base leading-8 text-white/76 sm:text-lg">
-                Kies een stemming, moment of stad en vind sneller een uitje dat
-                klopt met je dag.
+                Kies een locatiecontext en bekijk echte resultaatkaarten met
+                dummy data die later uit de backend kan komen.
               </p>
-
-          
             </div>
-
-          
           </div>
 
           <Suspense fallback={null}>
             <InspirationLocationContext compact className="mt-8" />
           </Suspense>
+        </div>
+      </AppSection>
 
-          <Suspense fallback={<CategoryGrid contextAware={false} />}>
-            <CategoryGrid contextAware />
-          </Suspense>
+      <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16 md:pb-20">
+        <div>
+          <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8b7a69]">
+                Resultaten
+              </p>
+              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[#171511]">
+                {getResultsTitle(searchParams?.location, searchParams?.nearbyCity)}
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#665d54] md:text-base">
+                {getResultsDescription(
+                  searchParams?.location,
+                  searchParams?.nearbyCity
+                )}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(inspirationCategoryLabels).map(([slug, label]) => (
+                <Link
+                  key={slug}
+                  href={withContext(`/inspiratie/${slug}`, contextQuery)}
+                  className="inline-flex min-h-10 items-center rounded-full border border-[#d7cfbf] bg-white/72 px-4 text-xs font-semibold text-[#3f362f] transition hover:bg-white"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+            {results.map((result) => (
+              <ResultCard
+                key={result.slug}
+                result={result}
+                href={withContext(
+                  `/inspiratie/${result.category}/${result.slug}`,
+                  contextQuery
+                )}
+              />
+            ))}
+          </div>
         </div>
       </AppSection>
 
@@ -146,19 +175,16 @@ export default function InspiratiePage() {
                 Steden
               </p>
               <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-[#171511]">
-                Populaire steden
+                Kies een stad
               </h2>
               <p className="mt-2 max-w-xl text-sm text-[#665d54] md:text-base">
-                Ontdek de verborgen parels in de leukste steden van Nederland.
+                Deze dummy steden laten de resultaten zichtbaar veranderen.
               </p>
             </div>
 
-            <Link
-              href="/steden"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#171511] transition hover:opacity-70"
-            >
-              Bekijk alle <span aria-hidden="true">→</span>
-            </Link>
+            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6d6258]">
+              {featuredInspirationCities.length} demo steden
+            </div>
           </div>
 
           <div className="grid gap-5 md:grid-cols-3">
@@ -196,17 +222,17 @@ export default function InspiratiePage() {
 
       <AppSection maxWidth="wide" spacing="lg" innerClassName="pt-10">
         <div>
-          <div className="grid gap-8 overflow-hidden rounded-[2.2rem] border border-white/14 bg-white/10 px-6 py-8 shadow-[0_24px_70px_rgba(0,0,0,0.18)] backdrop-blur-xl md:grid-cols-[1.2fr_0.9fr] md:px-10 md:py-12 lg:px-14 lg:py-14">
+          <div className="grid gap-8 overflow-hidden rounded-[2.2rem] border border-[#ded8cc] bg-white/72 px-6 py-8 shadow-[0_24px_70px_rgba(60,44,23,0.12)] backdrop-blur-xl md:grid-cols-[1.2fr_0.9fr] md:px-10 md:py-12 lg:px-14 lg:py-14">
             <div className="flex flex-col justify-center">
-              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/76">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#6f5f4e]">
                 UITJES COMMUNITY
               </p>
 
-              <h2 className="mt-4 max-w-[520px] text-4xl font-black leading-[0.95] tracking-[-0.04em] text-white md:text-5xl">
+              <h2 className="mt-4 max-w-[520px] text-4xl font-black leading-[0.95] tracking-[-0.04em] text-[#171511] md:text-5xl">
                 Ontvang wekelijks de beste speciaal geselecteerd-tips.
               </h2>
 
-              <p className="mt-5 max-w-md text-sm leading-6 text-white/76 md:text-base">
+              <p className="mt-5 max-w-md text-sm leading-6 text-[#5f554b] md:text-base">
                 Geen spam, alleen de meest unieke plekjes en evenementen die je
                 echt niet wilt missen.
               </p>
@@ -215,7 +241,7 @@ export default function InspiratiePage() {
                 <input
                   type="email"
                   placeholder="Je e-mailadres"
-                  className="h-14 flex-1 rounded-full border border-white/16 bg-white/10 backdrop-blur-xl px-5 text-sm text-white outline-none placeholder:text-white/48"
+                  className="h-14 flex-1 rounded-full border border-[#ded8cc] bg-white/78 px-5 text-sm text-[#171511] outline-none backdrop-blur-xl placeholder:text-[#7c7168]"
                 />
                 <button
                   type="submit"
@@ -255,185 +281,59 @@ export default function InspiratiePage() {
           </div>
         </div>
       </AppSection>
-
     </main>
   );
 }
 
-function CategoryGrid({ contextAware }: { contextAware: boolean }) {
-  const LinkComponent = contextAware ? InspirationContextLink : Link;
-
+function ResultCard({ result, href }: { result: InspirationResult; href: string }) {
   return (
-    <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-      {categoryCards.map((card) => (
-        <LinkComponent
-          key={card.title}
-          href={card.href}
-          className={`group flex min-h-[142px] flex-col justify-between rounded-[1.5rem] px-4 py-4 text-left transition duration-200 hover:-translate-y-1 hover:bg-white/14 md:min-h-[180px] md:rounded-[1.9rem] md:px-5 md:py-5 ${card.bgClass}`}
-        >
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#e8f2d0] text-[#1c2a17]">
-            {card.icon}
-          </div>
-          <div>
-            <span className="block text-lg font-semibold leading-none tracking-[-0.04em] text-white md:text-xl">
-              {card.title}
+    <Link href={href} className="group block">
+      <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
+        <div
+          className="aspect-[0.9/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
+          style={{
+            backgroundImage: optimizeCssBackground(result.image, {
+              width: 840,
+              quality: 58,
+            }),
+          }}
+        />
+
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+          {result.badge ? (
+            <span className="inline-flex rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#203115]">
+              {result.badge}
             </span>
-            <span className="mt-2 block max-w-[13rem] text-xs leading-5 text-white/70">
-              {card.description}
-            </span>
-          </div>
-        </LinkComponent>
-      ))}
-    </div>
+          ) : null}
+          <span className="inline-flex rounded-full bg-white/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#25341c] backdrop-blur-md">
+            {result.city}
+          </span>
+        </div>
+      </div>
+
+      <div className="pt-4">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#7b6f64]">
+          {result.categoryLabel} - {result.price}
+        </p>
+
+        <h3 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511]">
+          {result.title}
+        </h3>
+
+        <p className="mt-3 text-sm leading-6 text-[#665d54]">
+          {result.description}
+        </p>
+
+        <div className="mt-4 flex items-center gap-2 text-sm font-medium text-[#405028]">
+          <PinIcon />
+          <span>{result.location}</span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
-function ClockIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="8" />
-      <path d="M12 8v4l3 2" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="4" y="5" width="16" height="15" rx="2" />
-      <path d="M8 3v4M16 3v4M4 10h16" />
-    </svg>
-  );
-}
-
-function FoodIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 3v8" />
-      <path d="M10 3v8" />
-      <path d="M6 7h4" />
-      <path d="M16 3v18" />
-      <path d="M16 3c2 2 2 5 0 7" />
-    </svg>
-  );
-}
-
-function SmileIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="8" />
-      <path d="M9 10h.01M15 10h.01" />
-      <path d="M9 14c.8 1 1.8 1.5 3 1.5s2.2-.5 3-1.5" />
-    </svg>
-  );
-}
-
-function MoneyIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="3" y="6" width="18" height="12" rx="2" />
-      <circle cx="12" cy="12" r="2.5" />
-      <path d="M7 10h.01M17 14h.01" />
-    </svg>
-  );
-}
-
-function BuildingIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 20V8l6-3 6 3v12" />
-      <path d="M9 20v-3h6v3" />
-      <path d="M10 10h.01M14 10h.01M10 13h.01M14 13h.01" />
-    </svg>
-  );
-}
-
-function TreeIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 21v-5" />
-      <path d="M12 4l6 7h-3l3 4H6l3-4H6l6-7z" />
-    </svg>
-  );
-}
-
-function HeartIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6"
-      fill="currentColor"
-    >
-      <path d="M12 21s-6.7-4.35-9.2-8.18C.3 8.9 2.28 5 6.2 5c2.22 0 3.63 1.22 4.4 2.36C11.37 6.22 12.78 5 15 5c3.92 0 5.9 3.9 3.4 7.82C18.7 16.65 12 21 12 21z" />
-    </svg>
-  );
-}
-
-function UserIcon() {
+function PinIcon() {
   return (
     <svg
       aria-hidden="true"
@@ -445,8 +345,8 @@ function UserIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M5 19c1.8-3 4.2-4.5 7-4.5s5.2 1.5 7 4.5" />
+      <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" />
+      <circle cx="12" cy="10" r="2.5" />
     </svg>
   );
 }

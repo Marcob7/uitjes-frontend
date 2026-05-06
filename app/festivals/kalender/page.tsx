@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -10,6 +13,7 @@ type CalendarTone = "lime" | "pink" | "blue" | "amber" | "violet";
 type CalendarEvent = {
   label: string;
   tone: CalendarTone;
+  date: string;
   href?: string;
 };
 
@@ -30,118 +34,52 @@ type HighlightCard = {
 
 const weekdayLabels = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
 
-const calendarCells: CalendarCell[] = [
-  { key: "prev-24", dayNumber: "24", muted: true },
-  { key: "prev-25", dayNumber: "25", muted: true },
-  { key: "prev-26", dayNumber: "26", muted: true },
-  { key: "prev-27", dayNumber: "27", muted: true },
-  { key: "prev-28", dayNumber: "28", muted: true },
-  { key: "prev-29", dayNumber: "29", muted: true },
-  { key: "prev-30", dayNumber: "30", muted: true },
+const MONTH_NAMES = [
+  "Januari",
+  "Februari",
+  "Maart",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Augustus",
+  "September",
+  "Oktober",
+  "November",
+  "December",
+];
+
+const FESTIVAL_CALENDAR_EVENTS: CalendarEvent[] = [
   {
-    key: "day-1",
-    dayNumber: "1",
-    events: [
-      {
-        label: "North Sea Jazz",
-        tone: "lime",
-        href: getFestivalDetailHref("north-sea-jazz"),
-      },
-    ],
+    label: "North Sea Jazz",
+    tone: "lime",
+    date: "2024-07-01",
+    href: getFestivalDetailHref("north-sea-jazz"),
   },
-  { key: "day-2", dayNumber: "2" },
+  { label: "Vondelpark Openlucht", tone: "pink", date: "2024-07-03" },
+  { label: "Down The Rabbit Hole", tone: "violet", date: "2024-07-05" },
+  { label: "Gentle Giant Expo", tone: "blue", date: "2024-07-05" },
+  { label: "Awakenings Summer", tone: "pink", date: "2024-07-06" },
+  { label: "Bospop Week", tone: "pink", date: "2024-07-06" },
+  { label: "+4 more", tone: "lime", date: "2024-07-06" },
+  { label: "Awakenings Final", tone: "pink", date: "2024-07-07" },
+  { label: "Gouden Carolus Food", tone: "amber", date: "2024-07-09" },
   {
-    key: "day-3",
-    dayNumber: "3",
-    events: [{ label: "Vondelpark Openlucht", tone: "pink" }],
+    label: "Dekmantel Festival",
+    tone: "pink",
+    date: "2024-07-12",
+    href: getFestivalDetailHref("dekmantel-festival"),
   },
-  { key: "day-4", dayNumber: "4" },
-  {
-    key: "day-5",
-    dayNumber: "5",
-    events: [
-      { label: "Down The Rabbit Hole", tone: "violet" },
-      { label: "Gentle Giant Expo", tone: "blue" },
-    ],
-  },
-  {
-    key: "day-6",
-    dayNumber: "6",
-    events: [
-      { label: "Awakenings Summer", tone: "pink" },
-      { label: "Bospop Week", tone: "pink" },
-      { label: "+4 more", tone: "lime" },
-    ],
-  },
-  {
-    key: "day-7",
-    dayNumber: "7",
-    events: [{ label: "Awakenings Final", tone: "pink" }],
-  },
-  { key: "day-8", dayNumber: "8" },
-  {
-    key: "day-9",
-    dayNumber: "9",
-    events: [{ label: "Gouden Carolus Food", tone: "amber" }],
-  },
-  { key: "day-10", dayNumber: "10" },
-  { key: "day-11", dayNumber: "11" },
-  {
-    key: "day-12",
-    dayNumber: "12",
-    events: [
-      {
-        label: "Dekmantel Festival",
-        tone: "pink",
-        href: getFestivalDetailHref("dekmantel-festival"),
-      },
-    ],
-  },
-  {
-    key: "day-13",
-    dayNumber: "13",
-    events: [
-      { label: "Wildeburg Day 2", tone: "pink" },
-      { label: "Theater aan Zee", tone: "violet" },
-    ],
-  },
-  { key: "day-14", dayNumber: "14" },
-  { key: "day-15", dayNumber: "15" },
-  {
-    key: "day-16",
-    dayNumber: "16",
-    events: [{ label: "Vierdaagsefeesten", tone: "lime" }],
-  },
-  {
-    key: "day-17",
-    dayNumber: "17",
-    events: [{ label: "Vierdaagsefeesten", tone: "lime" }],
-  },
-  {
-    key: "day-18",
-    dayNumber: "18",
-    events: [
-      { label: "Zwarte Cross", tone: "pink" },
-      { label: "Vierdaagsefeesten", tone: "lime" },
-    ],
-  },
-  {
-    key: "day-19",
-    dayNumber: "19",
-    events: [
-      { label: "Zwarte Cross", tone: "pink" },
-      { label: "Welcome to the Village", tone: "pink" },
-    ],
-  },
-  {
-    key: "day-20",
-    dayNumber: "20",
-    events: [
-      { label: "Zwarte Cross Final", tone: "pink" },
-      { label: "+2 more", tone: "lime" },
-    ],
-  },
-  { key: "day-21", dayNumber: "21" },
+  { label: "Wildeburg Day 2", tone: "pink", date: "2024-07-13" },
+  { label: "Theater aan Zee", tone: "violet", date: "2024-07-13" },
+  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-16" },
+  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-17" },
+  { label: "Zwarte Cross", tone: "pink", date: "2024-07-18" },
+  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-18" },
+  { label: "Zwarte Cross", tone: "pink", date: "2024-07-19" },
+  { label: "Welcome to the Village", tone: "pink", date: "2024-07-19" },
+  { label: "Zwarte Cross Final", tone: "pink", date: "2024-07-20" },
+  { label: "+2 more", tone: "lime", date: "2024-07-20" },
 ];
 
 const highlightCards: HighlightCard[] = [
@@ -163,9 +101,71 @@ const highlightCards: HighlightCard[] = [
   },
 ];
 
-const mobileCalendarDays = calendarCells.filter(
-  (cell) => !cell.muted && (cell.events?.length ?? 0) > 0
-);
+function formatDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function isSameMonth(date: Date, monthDate: Date) {
+  return (
+    date.getFullYear() === monthDate.getFullYear() &&
+    date.getMonth() === monthDate.getMonth()
+  );
+}
+
+function getMonthGrid(monthDate: Date) {
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+  const startDay = (firstDayOfMonth.getDay() + 6) % 7;
+  const totalDays = lastDayOfMonth.getDate();
+  const dates: Date[] = [];
+
+  for (let index = startDay; index > 0; index -= 1) {
+    dates.push(new Date(year, month, 1 - index));
+  }
+
+  for (let day = 1; day <= totalDays; day += 1) {
+    dates.push(new Date(year, month, day));
+  }
+
+  while (dates.length % 7 !== 0) {
+    const nextDay = dates.length - (startDay + totalDays) + 1;
+    dates.push(new Date(year, month + 1, nextDay));
+  }
+
+  return dates;
+}
+
+function addMonths(date: Date, amount: number) {
+  return new Date(date.getFullYear(), date.getMonth() + amount, 1);
+}
+
+function buildCalendarCells(currentMonth: Date) {
+  const eventsByDate = new Map<string, CalendarEvent[]>();
+
+  for (const event of FESTIVAL_CALENDAR_EVENTS) {
+    const events = eventsByDate.get(event.date) ?? [];
+    events.push(event);
+    eventsByDate.set(event.date, events);
+  }
+
+  return getMonthGrid(currentMonth).map<CalendarCell>((date) => {
+    const dateKey = formatDateKey(date);
+    const isCurrentMonth = isSameMonth(date, currentMonth);
+
+    return {
+      key: dateKey,
+      dayNumber: String(date.getDate()),
+      muted: !isCurrentMonth,
+      events: isCurrentMonth ? eventsByDate.get(dateKey) : undefined,
+    };
+  });
+}
 
 function SearchIcon() {
   return (
@@ -251,7 +251,8 @@ function CalendarPill({ event }: { event: CalendarEvent }) {
     return (
       <Link
         href={event.href}
-        className={`${classes} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]`}
+        aria-label={`Open festivaldetailpagina: ${event.label}`}
+        className={`${classes} transition hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]`}
       >
         {event.label}
       </Link>
@@ -287,6 +288,18 @@ function HighlightInfoCard({ card }: { card: HighlightCard }) {
 }
 
 export default function FestivalsCalendarPage() {
+  const [currentMonth, setCurrentMonth] = useState(() => new Date(2024, 6, 1));
+  const calendarCells = useMemo(
+    () => buildCalendarCells(currentMonth),
+    [currentMonth]
+  );
+  const mobileCalendarDays = calendarCells.filter(
+    (cell) => !cell.muted && (cell.events?.length ?? 0) > 0
+  );
+  const monthTitle = `${
+    MONTH_NAMES[currentMonth.getMonth()]
+  } ${currentMonth.getFullYear()}`;
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
@@ -354,14 +367,16 @@ export default function FestivalsCalendarPage() {
             <>
               <button
                 type="button"
+                onClick={() => setCurrentMonth((month) => addMonths(month, -1))}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
                 aria-label="Vorige maand"
               >
                 <ArrowLeftIcon />
               </button>
-              <span className="text-lg font-medium text-white">Juli 2024</span>
+              <span className="text-lg font-medium text-white">{monthTitle}</span>
               <button
                 type="button"
+                onClick={() => setCurrentMonth((month) => addMonths(month, 1))}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
                 aria-label="Volgende maand"
               >
@@ -383,32 +398,42 @@ export default function FestivalsCalendarPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:hidden">
-            {mobileCalendarDays.map((cell) => (
-              <div
-                key={cell.key}
-                className="border-t border-[#e6dfd3] px-4 py-4 first:border-t-0"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-lg font-medium text-[#171511]">
-                      {cell.dayNumber} juli
+            {mobileCalendarDays.length > 0 ? (
+              mobileCalendarDays.map((cell) => (
+                <div
+                  key={cell.key}
+                  className="border-t border-[#e6dfd3] px-4 py-4 first:border-t-0"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-lg font-medium text-[#171511]">
+                        {cell.dayNumber}{" "}
+                        {MONTH_NAMES[currentMonth.getMonth()].toLowerCase()}
+                      </div>
+                      <p className="mt-1 text-sm text-[#7e7366]">
+                        {cell.events?.length} festivalmomenten
+                      </p>
                     </div>
-                    <p className="mt-1 text-sm text-[#7e7366]">
-                      {cell.events?.length} festivalmomenten
-                    </p>
+                    <span className="rounded-2xl bg-[#f7ede2] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#7a7065]">
+                      Dag {cell.dayNumber}
+                    </span>
                   </div>
-                  <span className="rounded-2xl bg-[#f7ede2] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#7a7065]">
-                    Dag {cell.dayNumber}
-                  </span>
-                </div>
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {cell.events?.map((event) => (
-                    <CalendarPill key={`${cell.key}-${event.label}`} event={event} />
-                  ))}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {cell.events?.map((event) => (
+                      <CalendarPill
+                        key={`${cell.key}-${event.label}`}
+                        event={event}
+                      />
+                    ))}
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="border-t border-[#e6dfd3] px-4 py-6 text-sm text-[#66594e] first:border-t-0">
+                Geen festivals gevonden voor {monthTitle.toLowerCase()}.
               </div>
-            ))}
+            )}
           </div>
 
           <div className="hidden sm:grid sm:grid-cols-7">
@@ -430,6 +455,12 @@ export default function FestivalsCalendarPage() {
               </div>
             ))}
           </div>
+
+          {mobileCalendarDays.length === 0 ? (
+            <div className="hidden border-t border-[#e6dfd3] bg-[#fffaf3] px-5 py-6 text-sm text-[#66594e] sm:block sm:px-8">
+              Geen festivals gevonden voor {monthTitle.toLowerCase()}.
+            </div>
+          ) : null}
         </section>
 
         <section className="py-16">

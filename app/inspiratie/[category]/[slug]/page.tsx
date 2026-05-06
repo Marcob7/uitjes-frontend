@@ -7,7 +7,15 @@ import {
   buildActionSearchHref,
   buildMapsSearchHref,
 } from "@/lib/actionLinks";
-import { cityOptions } from "@/lib/cityConfig";
+import {
+  getInspirationCityLabel,
+  getInspirationDetailStaticParams,
+  getInspirationLocationMode,
+  getInspirationResultBySlug,
+  getSimilarInspirationResults,
+  inspirationCategoryLabels,
+  isInspirationCategorySlug,
+} from "@/lib/dummy/inspirationResults";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type PageProps = {
@@ -17,314 +25,18 @@ type PageProps = {
   };
   searchParams?: {
     location?: string;
+    nearbyCity?: string;
   };
 };
 
 export const dynamicParams = false;
 export const runtime = "edge";
 
-type SupportedCategory =
-  | "vandaag"
-  | "weekend"
-  | "eten-drinken"
-  | "met-kinderen"
-  | "gratis"
-  | "binnen"
-  | "buiten"
-  | "romantisch";
-
-type DetailPageData = {
-  title: string;
-  heroImage: string;
-  heroAlt: string;
-  badges: string[];
-  meta: string;
-  chips: string[];
-  reasons: string[];
-  description: string[];
-  practical: {
-    address: string;
-    openingHours: string;
-    type: string;
-    price: string;
-  };
-  gallery: string[];
-  similar: Array<{
-    title: string;
-    href: string;
-    image: string;
-    meta: string;
-    tag: string;
-  }>;
-};
-
-const categoryLabels: Record<SupportedCategory, string> = {
-  vandaag: "Vandaag iets doen",
-  weekend: "Dit weekend",
-  "eten-drinken": "Eten & Drinken",
-  "met-kinderen": "Met kinderen",
-  gratis: "Gratis",
-  binnen: "Binnen",
-  buiten: "Buiten",
-  romantisch: "Romantisch",
-};
-
-const categoryMeta: Record<
-  SupportedCategory,
-  {
-    badge: string;
-    chips: string[];
-    reasons: string[];
-    type: string;
-    price: string;
-  }
-> = {
-  vandaag: {
-    badge: "VANDAAG OPEN",
-    chips: ["Populair", "Vandaag", "speciaal geselecteerd tip"],
-    reasons: [
-      "Goede keuze voor vandaag",
-      "Past goed binnen deze categorie",
-      "Makkelijk te bezoeken",
-      "Sterke sfeer en duidelijke propositie",
-    ],
-    type: "Aanrader van vandaag",
-    price: "Wisselend",
-  },
-  weekend: {
-    badge: "WEEKEND",
-    chips: ["Weekend", "Populair", "Leuke sfeer"],
-    reasons: [
-      "Sterk weekendidee",
-      "Goed voor langer bezoek",
-      "Leuke setting voor samen of met vrienden",
-      "Past goed bij een vrije dag",
-    ],
-    type: "Weekendactiviteit",
-    price: "Wisselend",
-  },
-  "eten-drinken": {
-    badge: "FOOD",
-    chips: ["Eten", "Drinken", "Aanrader"],
-    reasons: [
-      "Sterk concept binnen eten & drinken",
-      "Goede sfeer",
-      "Makkelijk te combineren met een dagje stad",
-      "Past bij lunch, borrel of diner",
-    ],
-    type: "Horeca",
-    price: "€€ - €€€",
-  },
-  "met-kinderen": {
-    badge: "GEZIN",
-    chips: ["Gezin", "Toegankelijk", "Leuk voor kinderen"],
-    reasons: [
-      "Geschikt voor gezinnen",
-      "Laagdrempelig",
-      "Fijn voor een kort of middellang uitje",
-      "Past goed bij deze doelgroep",
-    ],
-    type: "Gezinsuitje",
-    price: "Betaalbaar",
-  },
-  gratis: {
-    badge: "GRATIS",
-    chips: ["Gratis", "Toegankelijk", "Lokaal"],
-    reasons: [
-      "Kost weinig of niets",
-      "Makkelijk mee te pakken",
-      "Laagdrempelig idee",
-      "Goed als spontaan uitje",
-    ],
-    type: "Gratis activiteit",
-    price: "Gratis",
-  },
-  binnen: {
-    badge: "BINNEN",
-    chips: ["Binnen", "Rustig", "Comfortabel"],
-    reasons: [
-      "Fijne binnenlocatie",
-      "Goed bij minder goed weer",
-      "Comfortabele setting",
-      "Geschikt voor rustig bezoek",
-    ],
-    type: "Binnenlocatie",
-    price: "Wisselend",
-  },
-  buiten: {
-    badge: "BUITEN",
-    chips: ["Buiten", "Frisse lucht", "Ontspannen"],
-    reasons: [
-      "Prettig buitenidee",
-      "Goed voor beweging of ontspanning",
-      "Fijne sfeer in de open lucht",
-      "Makkelijk in te plannen",
-    ],
-    type: "Buitenactiviteit",
-    price: "Wisselend",
-  },
-  romantisch: {
-    badge: "DATE NIGHT",
-    chips: ["Romantisch", "Sfeervol", "Bijzonder"],
-    reasons: [
-      "Goede keuze voor samen",
-      "Sterke sfeer",
-      "Fijn voor een rustige avond",
-      "Past goed bij date night",
-    ],
-    type: "Romantische plek",
-    price: "€€€",
-  },
-};
-
-const imagePool = [
-  "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80')",
-  "url('https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=1600&q=80')",
-];
-
-const supportedRoutes: Record<SupportedCategory, string[]> = {
-  vandaag: [
-    "maison-du-soir",
-    "stadswandeling",
-    "live-muziek-vanavond",
-    "gratis-markt",
-    "expositie-modern-light",
-    "terras-aan-het-water",
-    "foodhall-in-centrum",
-  ],
-  weekend: [
-    "zondagsmarkt",
-    "cocktailbar-met-skyline",
-    "kunsthal-weekendexpo",
-    "boottocht-door-de-grachten",
-    "openluchtfilm",
-    "speurtocht-voor-families",
-  ],
-  "eten-drinken": [
-    "brunch-house",
-    "koffiebar-aan-de-gracht",
-    "streekkeuken",
-    "bar-botanique",
-    "aan-het-water",
-    "pizza-en-natuurwijn",
-  ],
-  "met-kinderen": [
-    "interactief-kindermuseum",
-    "natuurspeeltuin",
-    "kinderboerderij",
-    "pannenkoekenhuis",
-    "voorleesmiddag",
-    "mini-speurroute",
-  ],
-  gratis: [
-    "kunstroute-door-de-stad",
-    "parkpicknick",
-    "gratis-galerieavond",
-    "lokale-markt",
-    "bibliotheektips",
-    "zonsondergangpunt",
-  ],
-  binnen: [
-    "stadsmuseum-collectie",
-    "stille-leeszaal",
-    "kunstkamer",
-    "koffie-en-werken",
-    "filmavond-in-het-filmhuis",
-    "wellnessmoment",
-  ],
-  buiten: [
-    "stadspark-wandeling",
-    "terras-aan-de-kade",
-    "picknickplek-in-het-park",
-    "boottocht-langs-de-oude-stad",
-    "avondroute-met-uitzicht",
-    "lokale-bloemenmarkt",
-  ],
-  romantisch: [
-    "diner-bij-kaarslicht",
-    "wijnbar-met-kleine-bites",
-    "avondwandeling-langs-het-water",
-    "sunset-viewpoint",
-    "intiem-jazzconcert",
-    "boutique-stay",
-  ],
-};
-
-const customOverrides: Record<string, Partial<DetailPageData>> = {
-  "vandaag/maison-du-soir": {
-    title: "Maison du Soir",
-    meta: "Modern Europees • Buitenrand Zwolle • €€€€ • 4.9",
-    chips: ["Romantisch", "Gastronomie", "Toplocatie"],
-    practical: {
-      address: "Luttenbergstraat 12, Zwolle",
-      openingHours: "Di - Zo: 18:00 - 23:00",
-      type: "Restaurant",
-      price: "€€€€",
-    },
-  },
-  "vandaag/foodhall-in-centrum": {
-    title: "Foodhall in centrum",
-    meta: "Centrum • Food & Drinks • €€ • 4.8",
-    practical: {
-      address: "Grote Markt 8, Zwolle",
-      openingHours: "Dagelijks: 11:00 - 23:00",
-      type: "Foodhall",
-      price: "€€",
-    },
-  },
-  "romantisch/diner-bij-kaarslicht": {
-    title: "Diner bij kaarslicht",
-    meta: "Fine dining • Centrum • €€€€ • 4.8",
-    chips: ["Date night", "Intiem", "Bijzonder"],
-    practical: {
-      address: "Melkmarkt 22, Zwolle",
-      openingHours: "Wo - Zo: 19:00 - 23:30",
-      type: "Fine dining",
-      price: "€€€€",
-    },
-  },
-};
-
-function isSupportedCategory(value: string): value is SupportedCategory {
-  return value in supportedRoutes;
-}
-
-function slugToTitle(slug: string): string {
-  return slug
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
-function getImageBySeed(seed: string): string {
-  let total = 0;
-  for (let i = 0; i < seed.length; i++) total += seed.charCodeAt(i);
-  return imagePool[total % imagePool.length];
-}
-
-function buildSimilarItems(category: SupportedCategory, currentSlug: string) {
-  return supportedRoutes[category]
-    .filter((slug) => slug !== currentSlug)
-    .slice(0, 3)
-    .map((slug) => ({
-      title: slugToTitle(slug),
-      href: `/inspiratie/${category}/${slug}`,
-      image: getImageBySeed(`${category}-${slug}-similar`),
-      meta: categoryLabels[category],
-      tag: category.toUpperCase(),
-    }));
-}
-
 function buildContextQuery(searchParams?: PageProps["searchParams"]) {
   const params = new URLSearchParams();
 
   if (searchParams?.location) params.set("location", searchParams.location);
+  if (searchParams?.nearbyCity) params.set("nearbyCity", searchParams.nearbyCity);
 
   return params.toString();
 }
@@ -333,115 +45,61 @@ function withContext(href: string, query: string) {
   return query ? `${href}?${query}` : href;
 }
 
-function getLocationContextLabel(searchParams?: PageProps["searchParams"]) {
-  if (
-    searchParams?.location &&
-    searchParams.location !== "nearby" &&
-    searchParams.location !== "surprise"
-  ) {
-    const cityLabel =
-      cityOptions.find((city) => city.value === searchParams.location)?.label ??
-      searchParams.location
-        .split("-")
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(" ");
-
-    return `Bekijk dit soort ideeen in ${cityLabel}`;
-  }
-
-  if (searchParams?.location === "nearby") {
-    return "Zoek vergelijkbare uitjes in de buurt";
-  }
-
-  if (searchParams?.location === "surprise") {
-    return "Inspiratie door heel Nederland";
-  }
-
-  return undefined;
+function getResultCategoryForRoute(
+  routeCategory: string,
+  categories: string[],
+  fallbackCategory: string
+) {
+  return categories.includes(routeCategory) ? routeCategory : fallbackCategory;
 }
 
-function getPageData(category: SupportedCategory, slug: string): DetailPageData {
-  const categoryConfig = categoryMeta[category];
-  const key = `${category}/${slug}`;
-  const override = customOverrides[key];
+function getLocationContextLabel(searchParams?: PageProps["searchParams"]) {
+  const mode = getInspirationLocationMode(searchParams?.location);
+  const cityLabel = getInspirationCityLabel(
+    searchParams?.location,
+    searchParams?.nearbyCity
+  );
 
-  const baseTitle = slugToTitle(slug);
-  const title = override?.title ?? baseTitle;
-  const heroImage = override?.heroImage ?? getImageBySeed(`${category}-${slug}-hero`);
-  const meta = override?.meta ?? `${categoryLabels[category]} • speciaal geselecteerd tip • 4.7`;
-  const chips = override?.chips ?? categoryConfig.chips;
-
-  return {
-    title,
-    heroImage,
-    heroAlt: title,
-    badges: [categoryConfig.badge, "speciaal geselecteerd TIP"],
-    meta,
-    chips,
-    reasons: override?.reasons ?? categoryConfig.reasons,
-    description:
-      override?.description ?? [
-        `${title} is een sterke keuze binnen de categorie ${categoryLabels[
-          category
-        ].toLowerCase()}. Deze detailpagina is nu nog gevuld met compacte dummy data, zodat je de volledige flow en opbouw alvast goed kunt testen.`,
-        `Later kun je hier echte data vanuit je backend of CMS tonen, zoals openingstijden, locatie, prijs, sfeer, foto's en vergelijkbare plekken.`,
-      ],
-    practical:
-      override?.practical ?? {
-        address: "Voorbeeldstraat 12, Zwolle",
-        openingHours: "Dagelijks: 10:00 - 22:00",
-        type: categoryConfig.type,
-        price: categoryConfig.price,
-      },
-    gallery: [
-      getImageBySeed(`${category}-${slug}-gallery-1`),
-      getImageBySeed(`${category}-${slug}-gallery-2`),
-      getImageBySeed(`${category}-${slug}-gallery-3`),
-      getImageBySeed(`${category}-${slug}-gallery-4`),
-    ],
-    similar: buildSimilarItems(category, slug),
-  };
+  if (mode === "city" && cityLabel) return `Meer in ${cityLabel}`;
+  if (mode === "nearby" && cityLabel) return `Meer ${cityLabel}`;
+  return "Brede inspiratie";
 }
 
 export function generateStaticParams() {
-  return Object.entries(supportedRoutes).flatMap(([category, slugs]) =>
-    slugs.map((slug) => ({
-      category,
-      slug,
-    }))
-  );
+  return getInspirationDetailStaticParams();
 }
 
 export default function InspirationDetailPage({
   params,
   searchParams,
 }: PageProps) {
-  const { category, slug } = params;
-
-  if (!isSupportedCategory(category)) {
+  if (!isInspirationCategorySlug(params.category)) {
     notFound();
   }
 
-  if (!supportedRoutes[category].includes(slug)) {
+  const result = getInspirationResultBySlug(params.category, params.slug);
+
+  if (!result) {
     notFound();
   }
 
-  const page = getPageData(category, slug);
+  const categoryLabel = inspirationCategoryLabels[params.category];
   const contextQuery = buildContextQuery(searchParams);
   const locationContextLabel = getLocationContextLabel(searchParams);
   const reserveHref = buildActionSearchHref({
-    title: page.title,
-    location: page.practical.address,
+    title: result.title,
+    location: result.location,
     actionLabel: "reserveer",
   });
-  const routeHref = buildMapsSearchHref(page.practical.address);
+  const routeHref = buildMapsSearchHref(result.location);
   const savedPlace = {
-    id: `inspiratie:${category}/${slug}`,
-    title: page.title,
-    href: withContext(`/inspiratie/${category}/${slug}`, contextQuery),
-    meta: page.meta,
-    image: page.heroImage,
+    id: `inspiratie:${params.category}/${result.slug}`,
+    title: result.title,
+    href: withContext(`/inspiratie/${params.category}/${result.slug}`, contextQuery),
+    meta: `${result.city} - ${categoryLabel} - ${result.rating}`,
+    image: result.image,
   };
+  const similar = getSimilarInspirationResults(result);
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
@@ -452,10 +110,10 @@ export default function InspirationDetailPage({
               { label: "Home", href: "/" },
               { label: "Inspiratie", href: "/inspiratie" },
               {
-                label: categoryLabels[category],
-                href: withContext(`/inspiratie/${category}`, contextQuery),
+                label: categoryLabel,
+                href: withContext(`/inspiratie/${params.category}`, contextQuery),
               },
-              { label: page.title },
+              { label: result.title },
             ]}
             className="mb-6"
           />
@@ -465,41 +123,37 @@ export default function InspirationDetailPage({
               className="min-h-[420px] w-full bg-cover bg-center md:min-h-[560px]"
               style={{
                 backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.12)), ${optimizeCssBackground(
-                  page.heroImage,
+                  result.image,
                   {
                     width: 1280,
                     quality: 58,
                   }
                 )}`,
               }}
-              aria-label={page.heroAlt}
+              aria-label={result.title}
             />
 
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,rgba(7,19,26,0.08),rgba(7,19,26,0.58))]" />
 
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 lg:p-10">
               <div className="mb-4 flex flex-wrap gap-2">
-                {page.badges.map((badge) => (
-                  <span
-                    key={badge}
-                    className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl"
-                  >
-                    {badge}
-                  </span>
-                ))}
-                {locationContextLabel ? (
-                  <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
-                    {locationContextLabel}
-                  </span>
-                ) : null}
+                <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
+                  {categoryLabel}
+                </span>
+                <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
+                  {result.city}
+                </span>
+                <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
+                  {locationContextLabel}
+                </span>
               </div>
 
               <h1 className="max-w-[760px] text-[clamp(3rem,8vw,5.8rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
-                {page.title}
+                {result.title}
               </h1>
 
               <p className="mt-3 text-sm font-medium text-white/90 md:text-base">
-                {page.meta}
+                {result.city} - {result.categoryLabel} - {result.price} - {result.rating}
               </p>
             </div>
           </div>
@@ -509,12 +163,12 @@ export default function InspirationDetailPage({
       <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-0 pb-8 md:pb-12">
         <div>
           <div className="mb-6 flex flex-wrap gap-3">
-            {page.chips.map((chip) => (
+            {result.tags.map((tag) => (
               <span
-                key={chip}
-                className="inline-flex rounded-full border border-[#ded8cc] bg-white/60 px-4 py-2 text-xs font-medium text-[#4f463d] shadow-[0_10px_24px_rgba(60,44,23,0.04)]"
+                key={tag}
+                className="inline-flex rounded-full border border-[#d7cfbf] bg-white/82 px-4 py-2 text-xs font-semibold text-[#3f362f] shadow-[0_10px_24px_rgba(60,44,23,0.05)]"
               >
-                {chip}
+                {tag}
               </span>
             ))}
           </div>
@@ -526,40 +180,55 @@ export default function InspirationDetailPage({
               </h2>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                {page.reasons.map((reason) => (
-                  <AppCard key={reason} variant="soft" padding="sm" className="flex items-start gap-3 rounded-[1.4rem]">
-                    <div className="mt-0.5 text-[#e8f2d0]">
+                {result.reasons.map((reason) => (
+                  <AppCard
+                    key={reason}
+                    variant="soft"
+                    padding="sm"
+                    className="flex items-start gap-3 rounded-[1.4rem] border-[#ded8cc] bg-white/78 text-[#2f2a24] shadow-[0_16px_34px_rgba(60,44,23,0.08)]"
+                  >
+                    <div className="mt-0.5 text-[#355226]">
                       <LeafIcon />
                     </div>
-                    <p className="text-sm text-white/82">{reason}</p>
+                    <p className="text-sm text-[#4d443b]">{reason}</p>
                   </AppCard>
                 ))}
               </div>
 
-              <AppCard variant="glass" padding="lg" className="mt-10 rounded-[2.1rem]">
-                <h3 className="text-[clamp(1.9rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white">
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="mt-10 rounded-[2.1rem] border-[#ded8cc] bg-white/80 text-[#2f2a24] shadow-[0_18px_42px_rgba(60,44,23,0.1)]"
+              >
+                <h3 className="text-[clamp(1.9rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#171511]">
                   Over deze plek
                 </h3>
 
-                <div className="mt-6 space-y-5 text-sm leading-7 text-white/76 md:text-[15px]">
-                  {page.description.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+                <div className="mt-6 space-y-5 text-sm leading-7 text-[#5a5047] md:text-[15px]">
+                  <p>{result.description}</p>
+                  <p>{result.practicalInfo}</p>
+                  <p>
+                    Deze pagina gebruikt nu dummy result-data met velden voor
+                    titel, stad, categorie, beschrijving, praktische info, tags,
+                    prijs en locatie. De vorm is bewust service-achtig gehouden.
+                  </p>
                 </div>
               </AppCard>
             </div>
 
             <aside className="space-y-5">
-              <AppCard variant="elevated" padding="md" className="rounded-[1.8rem]">
+              <AppCard
+                variant="elevated"
+                padding="md"
+                className="rounded-[1.8rem] border-[#ded8cc] bg-white/82 text-[#2f2a24] shadow-[0_24px_58px_rgba(60,44,23,0.12)]"
+              >
                 <div className="flex flex-col gap-3">
-                  {locationContextLabel ? (
-                    <Link
-                      href={withContext(`/inspiratie/${category}`, contextQuery)}
-                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e8f2d0]/50 bg-white/12 px-5 text-center text-sm font-semibold text-white transition hover:bg-white/16"
-                    >
-                      {locationContextLabel}
-                    </Link>
-                  ) : null}
+                  <Link
+                    href={withContext(`/inspiratie/${params.category}`, contextQuery)}
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b7cc82] bg-[#edf5d8] px-5 text-center text-sm font-semibold text-[#25341c] transition hover:bg-[#f3f8e6]"
+                  >
+                    {locationContextLabel}
+                  </Link>
                   <a
                     href={reserveHref}
                     target="_blank"
@@ -574,7 +243,7 @@ export default function InspirationDetailPage({
                       href={routeHref}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/10 text-sm font-medium text-white/80 transition hover:bg-white/14"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#d7cfbf] bg-white/76 text-sm font-semibold text-[#3f362f] transition hover:bg-white"
                     >
                       <MapIcon />
                       Bekijk route
@@ -582,8 +251,8 @@ export default function InspirationDetailPage({
 
                     <SavePlaceButton
                       item={savedPlace}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/10 text-sm font-medium text-white/80 transition hover:bg-white/14"
-                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#e8f2d0]/50 bg-white/12 text-sm font-medium text-white transition hover:bg-white/16"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#d7cfbf] bg-white/76 text-sm font-semibold text-[#3f362f] transition hover:bg-white"
+                      savedClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#b7cc82] bg-[#edf5d8] text-sm font-semibold text-[#25341c] transition hover:bg-[#f3f8e6]"
                       savedChildren={
                         <>
                           <SaveIcon />
@@ -598,32 +267,20 @@ export default function InspirationDetailPage({
                 </div>
               </AppCard>
 
-              <AppCard variant="glass" padding="lg" className="rounded-[1.8rem]">
-                <h3 className="text-xl font-semibold tracking-[-0.03em] text-white">
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="rounded-[1.8rem] border-[#ded8cc] bg-white/82 text-[#2f2a24] shadow-[0_18px_42px_rgba(60,44,23,0.1)]"
+              >
+                <h3 className="text-xl font-semibold tracking-[-0.03em] text-[#171511]">
                   Praktisch
                 </h3>
 
                 <div className="mt-6 space-y-5">
-                  <InfoRow
-                    icon={<PinIcon />}
-                    label="Adres"
-                    value={page.practical.address}
-                  />
-                  <InfoRow
-                    icon={<ClockIcon />}
-                    label="Openingstijden"
-                    value={page.practical.openingHours}
-                  />
-                  <InfoRow
-                    icon={<TagIcon />}
-                    label="Type"
-                    value={page.practical.type}
-                  />
-                  <InfoRow
-                    icon={<MoneyIcon />}
-                    label="Prijs"
-                    value={page.practical.price}
-                  />
+                  <InfoRow icon={<PinIcon />} label="Locatie" value={result.location} />
+                  <InfoRow icon={<ClockIcon />} label="Openingstijden" value={result.openingHours} />
+                  <InfoRow icon={<TagIcon />} label="Type" value={result.type} />
+                  <InfoRow icon={<MoneyIcon />} label="Prijs" value={result.price} />
                 </div>
               </AppCard>
             </aside>
@@ -638,12 +295,15 @@ export default function InspirationDetailPage({
           </h2>
 
           <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-            {page.gallery.map((image, index) => (
-              <div key={index} className="overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/10 shadow-[0_14px_34px_rgba(0,0,0,0.14)]">
+            {result.gallery.map((galleryImage, index) => (
+              <div
+                key={index}
+                className="overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/10 shadow-[0_14px_34px_rgba(0,0,0,0.14)]"
+              >
                 <div
                   className="aspect-[0.88/1] w-full bg-cover bg-center"
                   style={{
-                    backgroundImage: optimizeCssBackground(image, {
+                    backgroundImage: optimizeCssBackground(galleryImage, {
                       width: 640,
                       quality: 56,
                     }),
@@ -662,10 +322,17 @@ export default function InspirationDetailPage({
           </h2>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {page.similar.map((item) => (
+            {similar.map((item) => (
               <Link
-                key={item.href}
-                href={withContext(item.href, contextQuery)}
+                key={item.slug}
+                href={withContext(
+                  `/inspiratie/${getResultCategoryForRoute(
+                    params.category,
+                    item.categories,
+                    item.category
+                  )}/${item.slug}`,
+                  contextQuery
+                )}
                 className="group block"
               >
                 <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
@@ -679,8 +346,8 @@ export default function InspirationDetailPage({
                     }}
                   />
 
-                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-white/16 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
-                    {item.tag}
+                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-white/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#25341c] backdrop-blur-md">
+                    {item.city}
                   </span>
                 </div>
 
@@ -689,7 +356,7 @@ export default function InspirationDetailPage({
                     {item.title}
                   </h3>
                   <p className="mt-2 text-sm text-[#665d54]">
-                    {locationContextLabel ?? item.meta}
+                    {item.categoryLabel} - {item.location}
                   </p>
                 </div>
               </Link>
@@ -697,7 +364,6 @@ export default function InspirationDetailPage({
           </div>
         </div>
       </AppSection>
-
     </main>
   );
 }
@@ -715,60 +381,10 @@ function InfoRow({
     <div className="flex items-start gap-3">
       <div className="mt-0.5 text-[#355226]">{icon}</div>
       <div>
-        <p className="text-sm font-semibold text-white">{label}</p>
-        <p className="mt-1 text-sm leading-6 text-white/76">{value}</p>
+        <p className="text-sm font-semibold text-[#2f2a24]">{label}</p>
+        <p className="mt-1 text-sm leading-6 text-[#5a5047]">{value}</p>
       </div>
     </div>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M5 19c1.8-3 4.2-4.5 7-4.5s5.2 1.5 7 4.5" />
-    </svg>
-  );
-}
-
-function LeafIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="currentColor"
-    >
-      <path d="M19 3c-7.5.3-12 4.7-12 10.5 0 3.7 2.5 6.5 6.2 6.5 5.5 0 7.8-4.8 7.8-10.8V3Z" />
-      <path d="M7 21c.8-3.8 3.5-7 8-9.5" fill="none" stroke="currentColor" strokeWidth="2" />
-    </svg>
   );
 }
 
@@ -820,8 +436,8 @@ function TagIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M20 10 10 20l-7-7L13 3h7v7Z" />
-      <circle cx="16.5" cy="7.5" r="1" fill="currentColor" stroke="none" />
+      <path d="M20 10 12 2H5a3 3 0 0 0-3 3v7l8 8a3 3 0 0 0 4.2 0l5.8-5.8a3 3 0 0 0 0-4.2Z" />
+      <circle cx="7.5" cy="7.5" r="1" />
     </svg>
   );
 }
@@ -840,6 +456,25 @@ function MoneyIcon() {
     >
       <rect x="3" y="6" width="18" height="12" rx="2" />
       <circle cx="12" cy="12" r="2.5" />
+      <path d="M7 10h.01M17 14h.01" />
+    </svg>
+  );
+}
+
+function LeafIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 4c-7 0-12 4-12 10a6 6 0 0 0 6 6c6 0 8-7 8-16Z" />
+      <path d="M8 14c2-1 4-3 6-6" />
     </svg>
   );
 }
@@ -856,9 +491,8 @@ function MapIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2V6Z" />
-      <path d="M9 4v14" />
-      <path d="M15 6v14" />
+      <path d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3-6-3Z" />
+      <path d="M9 3v15M15 6v15" />
     </svg>
   );
 }
@@ -875,9 +509,7 @@ function SaveIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
-      <path d="M17 21v-8H7v8" />
-      <path d="M7 3v5h8" />
+      <path d="M6 4h12v17l-6-3-6 3V4Z" />
     </svg>
   );
 }
