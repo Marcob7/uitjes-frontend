@@ -26,6 +26,8 @@ type CityCard = {
   image: string;
 };
 
+export const runtime = "edge";
+
 const popularCities: CityCard[] = [
   {
     name: "Apeldoorn",
