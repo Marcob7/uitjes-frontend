@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import maplibregl from "maplibre-gl";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { BackendEvent } from "./types";
@@ -142,8 +142,10 @@ export default function ExploreMap({
   setSelectedId,
 }: ExploreMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<maplibregl.Map | null>(null);
-  const markersRef = useRef<Record<number, maplibregl.Marker>>({});
+  const mapRef = useRef<MapLibreMap | null>(null);
+  const maplibreRef = useRef<typeof import("maplibre-gl") | null>(null);
+  const markersRef = useRef<Record<number, MapLibreMarker>>({});
+  const [mapReadyToken, setMapReadyToken] = useState(0);
 
   const mapPlaces = useMemo<MapPlace[]>(() => {
     if (!events || events.length === 0) {
@@ -180,28 +182,40 @@ export default function ExploreMap({
     }
 
     const firstPlace = mapPlaces[0];
+    let map: MapLibreMap | null = null;
+    let cancelled = false;
 
-    const map = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: "https://tiles.openfreemap.org/styles/bright",
-      center: [firstPlace.longitude, firstPlace.latitude],
-      zoom: 12,
-      attributionControl: false,
+    import("maplibre-gl").then((maplibregl) => {
+      if (cancelled || !mapContainerRef.current) {
+        return;
+      }
+
+      maplibreRef.current = maplibregl;
+      map = new maplibregl.Map({
+        container: mapContainerRef.current,
+        style: "https://tiles.openfreemap.org/styles/bright",
+        center: [firstPlace.longitude, firstPlace.latitude],
+        zoom: 12,
+        attributionControl: false,
+      });
+
+      mapRef.current = map;
+      setMapReadyToken((current) => current + 1);
     });
 
-    mapRef.current = map;
-
     return () => {
+      cancelled = true;
       Object.values(markersRef.current).forEach((marker) => marker.remove());
       markersRef.current = {};
-      map.remove();
+      map?.remove();
       mapRef.current = null;
     };
   }, [mapPlaces]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || mapPlaces.length === 0) return;
+    const maplibregl = maplibreRef.current;
+    if (!map || !maplibregl || mapPlaces.length === 0) return;
 
     const bounds = new maplibregl.LngLatBounds();
     mapPlaces.forEach((place) => {
@@ -213,11 +227,12 @@ export default function ExploreMap({
       maxZoom: mapPlaces.length === 1 ? 14 : 13,
       duration: 0,
     });
-  }, [mapPlaces]);
+  }, [mapPlaces, mapReadyToken]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    const maplibregl = maplibreRef.current;
+    if (!map || !maplibregl) return;
 
     Object.values(markersRef.current).forEach((marker) => marker.remove());
     markersRef.current = {};
@@ -230,7 +245,7 @@ export default function ExploreMap({
       markerElement.dataset.markerKind = markerKind;
       markerElement.setAttribute("aria-label", `Toon ${place.title} op kaart`);
 
-      applyMarkerState(markerElement, markerKind, selectedId === place.id);
+      applyMarkerState(markerElement, markerKind, false);
 
       markerElement.addEventListener("click", () => {
         setSelectedId(place.id);
@@ -244,7 +259,7 @@ export default function ExploreMap({
 
       markersRef.current[place.id] = marker;
     });
-  }, [mapPlaces, selectedId, setSelectedId]);
+  }, [mapPlaces, mapReadyToken, setSelectedId]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -266,7 +281,7 @@ export default function ExploreMap({
 
       applyMarkerState(markerEl, markerKind, Number(id) === selectedId);
     });
-  }, [selectedId, mapPlaces]);
+  }, [selectedId, mapPlaces, mapReadyToken]);
 
   useEffect(() => {
     if (!selectedId && mapPlaces.length > 0) {

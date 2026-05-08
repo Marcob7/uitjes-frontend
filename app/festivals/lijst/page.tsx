@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
@@ -44,6 +44,12 @@ const alertPreferences: AlertPreference[] = [
 const defaultAlerts: Record<AlertKey, boolean> = {
   jazzAmsterdam: true,
   budgetFriendly: false,
+};
+
+type FestivalsPageProps = {
+  searchParams?: {
+    query?: string;
+  };
 };
 
 function SearchIcon() {
@@ -260,9 +266,32 @@ function FestivalCard({
   );
 }
 
-export default function FestivalsPage() {
+function getFestivalSearchTerms(query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) return [];
+
+  const terms = [normalizedQuery];
+
+  if (normalizedQuery.includes("food")) terms.push("culinair");
+  if (normalizedQuery.includes("muziek")) {
+    terms.push("music", "jazz", "techno", "electronic", "multi-genre");
+  }
+
+  const withoutFestival = normalizedQuery
+    .replace(/muziekfestival/g, "")
+    .replace(/food festival/g, "food")
+    .replace(/festivals?/g, "")
+    .trim();
+
+  if (withoutFestival) terms.push(withoutFestival);
+
+  return Array.from(new Set(terms));
+}
+
+export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(searchParams?.query ?? "");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [activeGenre, setActiveGenre] =
     useState<(typeof genreFilters)[number]>("Alle genres");
@@ -270,24 +299,34 @@ export default function FestivalsPage() {
 
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
 
-  const filteredFestivals = festivalOverviewItems.filter((festival) => {
-    const matchesGenre =
-      activeGenre === "Alle genres" || festival.genres.includes(activeGenre);
+  const filteredFestivals = useMemo(() => {
+    const searchTerms = getFestivalSearchTerms(deferredQuery);
+    const isGenericFestivalSearch =
+      deferredQuery.includes("festival") && searchTerms.length === 1;
 
-    const matchesQuery =
-      deferredQuery.length === 0 ||
-      [
-        festival.name,
-        festival.locationLabel,
-        festival.vibe,
-        ...festival.genres,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(deferredQuery);
+    return (
+      festivalOverviewItems.filter((festival) => {
+        const matchesGenre =
+          activeGenre === "Alle genres" || festival.genres.includes(activeGenre);
 
-    return matchesGenre && matchesQuery;
-  });
+        const searchableFestival = [
+          festival.name,
+          festival.locationLabel,
+          festival.vibe,
+          ...festival.genres,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        const matchesQuery =
+          deferredQuery.length === 0 ||
+          isGenericFestivalSearch ||
+          searchTerms.some((term) => searchableFestival.includes(term));
+
+        return matchesGenre && matchesQuery;
+      })
+    );
+  }, [activeGenre, deferredQuery]);
 
   function scrollToResults() {
     document.getElementById("festival-results")?.scrollIntoView({
@@ -401,8 +440,35 @@ export default function FestivalsPage() {
           </div>
 
           {filteredFestivals.length === 0 ? (
-            <div className="mt-4 rounded-[1.9rem] border border-[#e6dfd3] bg-white/72 px-6 py-10 text-center text-sm font-medium text-[#5d5145] shadow-[0_18px_36px_rgba(45,37,28,0.06)] backdrop-blur-xl">
-              Geen festivals gevonden voor deze selectie.
+            <div className="mt-4 rounded-[1.9rem] border border-[#e6dfd3] bg-white/72 px-6 py-10 text-center shadow-[0_18px_36px_rgba(45,37,28,0.06)] backdrop-blur-xl">
+              <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
+                Geen festivals gevonden
+              </h3>
+              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#5d5145]">
+                Probeer een andere zoekterm, kies een genre of bekijk een stad
+                met meer culturele tips.
+              </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                {genreFilters.slice(1).map((genre) => (
+                  <button
+                    key={genre}
+                    type="button"
+                    onClick={() => {
+                      setActiveGenre(genre);
+                      setQuery("");
+                    }}
+                    className="inline-flex min-h-10 items-center rounded-full border border-[#d7cfbf] bg-white px-4 text-xs font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3]"
+                  >
+                    {genre}
+                  </button>
+                ))}
+                <Link
+                  href="/ontdek"
+                  className="inline-flex min-h-10 items-center rounded-full border border-[#d7cfbf] bg-white px-4 text-xs font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3]"
+                >
+                  Kies een stad
+                </Link>
+              </div>
             </div>
           ) : null}
         </section>

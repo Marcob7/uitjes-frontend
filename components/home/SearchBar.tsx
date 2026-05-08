@@ -4,6 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppButton } from "@/components/ui/app";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { getSearchRoute } from "@/lib/searchIntent";
 import { cn } from "@/lib/utils";
 
 type SearchBarProps = {
@@ -59,8 +60,7 @@ export default function SearchBar({
     );
   }, [query]);
 
-  // Deze functie zet de ingevoerde stad om naar een geldige slug
-  // en stuurt de gebruiker daarna door naar de ontdekpagina.
+  // Deze functie behoudt de bestaande stadssuggestie-flow.
   function goToCity(cityValue: string): void {
     const trimmedValue = cityValue.trim();
 
@@ -83,7 +83,7 @@ export default function SearchBar({
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    goToCity(query);
+    router.push(getSearchRoute(query));
   }
 
   function handleSuggestionClick(city: CityOption): void {

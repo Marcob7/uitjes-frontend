@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { AgendaImportBanner } from "./AgendaImportBanner";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
 
@@ -146,10 +145,6 @@ export default function JaarkalenderPage() {
         </section>
 
         <section id="jaarkalender-kalender" className="mt-6 scroll-mt-6 sm:mt-10 sm:scroll-mt-8">
-          <div className="mb-4 sm:mb-6">
-            <AgendaImportBanner />
-          </div>
-
           <JaarkalenderInteractiveCalendar />
         </section>
 

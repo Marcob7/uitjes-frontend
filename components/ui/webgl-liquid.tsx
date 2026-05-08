@@ -102,6 +102,7 @@ const HEX_COLOR_REGEX = /^#?[0-9a-fA-F]{6}$/;
 const FALLBACK_DEEP = "#04050b";
 const FALLBACK_MID = "#134d93";
 const FALLBACK_HIGHLIGHT = "#8cecff";
+const MOBILE_VIEWPORT_WIDTH = 768;
 
 function sanitizeHexColor(value: string, fallback: string) {
   const trimmed = value.trim();
@@ -180,6 +181,7 @@ export function WebGLLiquid({
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [hasWebGLError, setHasWebGLError] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const settings = useMemo(
     () => ({
@@ -210,6 +212,15 @@ export function WebGLLiquid({
     ],
   );
 
+  const colorUniforms = useMemo(
+    () => ({
+      deep: hexToRgb01(colorDeep),
+      mid: hexToRgb01(colorMid),
+      highlight: hexToRgb01(colorHighlight),
+    }),
+    [colorDeep, colorMid, colorHighlight],
+  );
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updateMotionPreference = () => setPrefersReducedMotion(mediaQuery.matches);
@@ -223,7 +234,32 @@ export function WebGLLiquid({
   }, []);
 
   useEffect(() => {
-    if (hasWebGLError) {
+    const host = hostRef.current;
+    if (!host) {
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { rootMargin: "160px 0px" },
+    );
+
+    observer.observe(host);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (hasWebGLError || !isVisible) {
       return;
     }
 
@@ -234,7 +270,11 @@ export function WebGLLiquid({
     }
 
     try {
-      const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
+      const gl = canvas.getContext("webgl", {
+        antialias: false,
+        alpha: true,
+        powerPreference: "low-power",
+      });
       if (!gl) {
         setHasWebGLError(true);
         return;
@@ -327,7 +367,8 @@ export function WebGLLiquid({
       }
 
       const resize = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const maxDpr = window.innerWidth < MOBILE_VIEWPORT_WIDTH ? 1.25 : 1.5;
+        const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
         const { width, height } = host.getBoundingClientRect();
         canvas.width = Math.max(1, Math.floor(width * dpr));
         canvas.height = Math.max(1, Math.floor(height * dpr));
@@ -352,17 +393,28 @@ export function WebGLLiquid({
             : Math.min(1, elapsedSec / Math.max(settings.revealDuration, 0.05))
           : 1;
 
-        const deep = hexToRgb01(settings.colorDeep);
-        const mid = hexToRgb01(settings.colorMid);
-        const highlight = hexToRgb01(settings.colorHighlight);
-
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         gl.uniform1f(uTime, elapsedSec);
-        gl.uniform3f(uColorDeep, deep[0], deep[1], deep[2]);
-        gl.uniform3f(uColorMid, mid[0], mid[1], mid[2]);
-        gl.uniform3f(uColorHighlight, highlight[0], highlight[1], highlight[2]);
+        gl.uniform3f(
+          uColorDeep,
+          colorUniforms.deep[0],
+          colorUniforms.deep[1],
+          colorUniforms.deep[2],
+        );
+        gl.uniform3f(
+          uColorMid,
+          colorUniforms.mid[0],
+          colorUniforms.mid[1],
+          colorUniforms.mid[2],
+        );
+        gl.uniform3f(
+          uColorHighlight,
+          colorUniforms.highlight[0],
+          colorUniforms.highlight[1],
+          colorUniforms.highlight[2],
+        );
         gl.uniform1f(uSpeed, settings.speed);
         gl.uniform1f(uFlowStrength, settings.flowStrength);
         gl.uniform1f(uGrain, settings.grain);
@@ -390,7 +442,7 @@ export function WebGLLiquid({
       setHasWebGLError(true);
       return;
     }
-  }, [hasWebGLError, prefersReducedMotion, settings]);
+  }, [colorUniforms, hasWebGLError, isVisible, prefersReducedMotion, settings]);
 
   const content = (title || subtitle || description || children) && (
     <div

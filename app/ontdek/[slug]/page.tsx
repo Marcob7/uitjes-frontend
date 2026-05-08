@@ -44,10 +44,10 @@ function CheckIcon() {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-white/58">
+      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#746355]">
         {label}
       </div>
-      <div className="mt-1 text-sm leading-6 text-white/82">{value}</div>
+      <div className="mt-1 text-sm leading-6 text-[#211a14]">{value}</div>
     </div>
   );
 }
@@ -101,7 +101,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
 
               <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 lg:p-10">
                 <div className="mb-4 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/88 backdrop-blur-xl">
+                  <span className="rounded-full border border-[#e8f2d0]/30 bg-[#152017]/72 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#f7f4ed] backdrop-blur-xl">
                     {item.category}
                   </span>
                   <span className="rounded-full border border-[#e8f2d0]/50 bg-[#e8f2d0] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#162016]">
@@ -125,13 +125,13 @@ export default function ExploreDetailPage({ params }: PageProps) {
               <AppCard
                 variant="glass"
                 padding="lg"
-                className="grid gap-7 rounded-[2.1rem] md:grid-cols-[0.9fr_1.1fr]"
+                className="grid gap-7 rounded-[2.1rem] border-[#d9cec1]/70 bg-white/78 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)] md:grid-cols-[0.9fr_1.1fr]"
               >
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/58">
+                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#746355]">
                     Redactie
                   </p>
-                  <h2 className="mt-2 text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-white">
+                  <h2 className="mt-2 text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                     Waarom dit een goede keuze is
                   </h2>
                 </div>
@@ -140,22 +140,26 @@ export default function ExploreDetailPage({ params }: PageProps) {
                   {item.reasons.map((reason) => (
                     <div
                       key={reason}
-                      className="flex items-start gap-3 rounded-[1.3rem] border border-white/12 bg-white/8 p-4"
+                      className="flex items-start gap-3 rounded-[1.3rem] border border-[#d9cec1]/70 bg-[#fbf8f3]/82 p-4"
                     >
                       <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#162016]">
                         <CheckIcon />
                       </span>
-                      <span className="text-sm leading-6 text-white/78">{reason}</span>
+                      <span className="text-sm leading-6 text-[#2d241c]">{reason}</span>
                     </div>
                   ))}
                 </div>
               </AppCard>
 
-              <AppCard variant="glass" padding="lg" className="mt-8 rounded-[2.1rem]">
-                <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-white">
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="mt-8 rounded-[2.1rem] border-[#d9cec1]/70 bg-white/78 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+              >
+                <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                   {item.aboutTitle}
                 </h2>
-                <p className="mt-5 max-w-3xl text-sm leading-7 text-white/76 md:text-base">
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-[#3f3429] md:text-base">
                   {item.aboutText}
                 </p>
               </AppCard>
@@ -200,7 +204,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
                           sizes="(max-width: 768px) 100vw, 33vw"
                         />
 
-                        <span className="absolute left-3 top-3 rounded-full border border-white/18 bg-white/14 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-xl">
+                        <span className="absolute left-3 top-3 rounded-full border border-[#e8f2d0]/35 bg-[#152017]/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f7f4ed] backdrop-blur-xl">
                           {place.badge}
                         </span>
                       </div>
@@ -220,7 +224,11 @@ export default function ExploreDetailPage({ params }: PageProps) {
             </div>
 
             <aside className="space-y-5 lg:sticky lg:top-28">
-              <AppCard variant="elevated" padding="md" className="rounded-[1.8rem]">
+              <AppCard
+                variant="elevated"
+                padding="md"
+                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+              >
                 <a
                   href={reserveHref}
                   target="_blank"
@@ -235,14 +243,14 @@ export default function ExploreDetailPage({ params }: PageProps) {
                     href={routeHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/14 bg-white/10 px-4 text-sm font-medium text-white/82 transition hover:bg-white/14"
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
                   >
                     {item.actions.routeLabel}
                   </a>
                   <SavePlaceButton
                     item={savedPlace}
-                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/14 bg-white/10 px-4 text-sm font-medium text-white/82 transition hover:bg-white/14"
-                    savedClassName="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e8f2d0]/50 bg-white/12 px-4 text-sm font-medium text-white transition hover:bg-white/16"
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
+                    savedClassName="inline-flex min-h-12 items-center justify-center rounded-full border border-[#c8dc9a] bg-[#e8f2d0] px-4 text-sm font-medium text-[#162016] transition hover:bg-[#f1f7df]"
                     savedChildren="Opgeslagen"
                   >
                     {item.actions.saveLabel}
@@ -250,8 +258,12 @@ export default function ExploreDetailPage({ params }: PageProps) {
                 </div>
               </AppCard>
 
-              <AppCard variant="glass" padding="lg" className="rounded-[1.8rem]">
-                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-white">
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+              >
+                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
                   Praktisch
                 </h3>
 

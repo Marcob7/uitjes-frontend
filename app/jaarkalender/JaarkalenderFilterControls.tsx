@@ -5,9 +5,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import {
+  AgendaImportBanner,
+  type AgendaImportEvent,
+} from "./AgendaImportBanner";
+import {
   jaarkalenderCategoryMeta,
   jaarkalenderDays,
-  type JaarkalenderCalendarItem,
   type JaarkalenderDay,
   type JaarkalenderCategoryKey,
 } from "./data";
@@ -23,6 +26,7 @@ type MonthCalendarCell = {
   href?: string;
   eventCount?: number;
   eventLabels?: string[];
+  isToday?: boolean;
 };
 
 const MONTH_NAMES = [
@@ -57,7 +61,6 @@ const MONTH_SHORT_NAMES = [
 
 const JAARKALENDER_DATA_YEAR = 2024;
 const JAARKALENDER_DATA_MONTH = 9;
-const selectedCalendarDay = 10;
 
 function getCityFromLocation(location: string) {
   return location.split(",").at(-1)?.trim() ?? location;
@@ -67,6 +70,14 @@ function isSameMonth(date: Date, monthDate: Date) {
   return (
     date.getFullYear() === monthDate.getFullYear() &&
     date.getMonth() === monthDate.getMonth()
+  );
+}
+
+function isSameDay(date: Date, dayDate: Date) {
+  return (
+    date.getFullYear() === dayDate.getFullYear() &&
+    date.getMonth() === dayDate.getMonth() &&
+    date.getDate() === dayDate.getDate()
   );
 }
 
@@ -293,14 +304,14 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
   const eventLabels = cell.eventLabels ?? [];
   const visibleLabels = eventLabels.slice(0, 2);
   const hiddenCount = Math.max((cell.eventCount ?? 0) - visibleLabels.length, 0);
-  const isSelected = cell.dayNumber === selectedCalendarDay;
+  const isToday = cell.isToday;
 
   const content = (
     <>
       <div className="flex items-start justify-between gap-1">
         <div
           className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[12px] font-semibold leading-none ${
-            isSelected
+            isToday
               ? "bg-[#171511] text-white"
               : cell.muted
                 ? "text-[#a79d91]"
@@ -323,7 +334,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
               key={`${cell.key}-${label}-${index}`}
               className={`truncate rounded-full px-1.5 py-0.5 text-[9px] font-medium leading-3 ${
                 index === 1 ? "hidden min-[390px]:block" : ""
-              } ${isSelected ? "bg-[#d9efad] text-[#26331a]" : "bg-[#f3eee6] text-[#4f453c]"}`}
+              } ${isToday ? "bg-[#d9efad] text-[#26331a]" : "bg-[#f3eee6] text-[#4f453c]"}`}
             >
               {label}
             </div>
@@ -341,7 +352,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
   const className = `min-h-[74px] border-b border-r border-[#e5ded2] p-1.5 ${
     cell.muted
       ? "bg-[#eee9e2]"
-      : isSelected
+      : isToday
         ? "bg-[#fbf7ed]"
         : "bg-white/84"
   }`;
@@ -365,6 +376,7 @@ function CalendarCell({
   day,
   monthLabel,
   muted = false,
+  isToday = false,
   className = "",
   href,
   children,
@@ -372,6 +384,7 @@ function CalendarCell({
   day: string;
   monthLabel?: string;
   muted?: boolean;
+  isToday?: boolean;
   className?: string;
   href?: string;
   children?: ReactNode;
@@ -383,7 +396,13 @@ function CalendarCell({
           muted ? "text-[#7c7166]" : "text-[#2f2923]"
         }`}
       >
-        <span className="text-lg font-semibold tracking-[-0.03em]">{day}</span>
+        <span
+          className={`inline-flex h-8 min-w-8 items-center justify-center rounded-full px-2 text-lg font-semibold tracking-[-0.03em] ${
+            isToday ? "bg-[#171511] text-white" : ""
+          }`}
+        >
+          {day}
+        </span>
         {monthLabel ? (
           <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#a19485]">
             {monthLabel}
@@ -450,6 +469,7 @@ function EmptyState({
 export function JaarkalenderInteractiveCalendar() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<FilterModalMode>("city");
+  const [today, setToday] = useState(() => new Date());
   const [currentMonth, setCurrentMonth] = useState(
     () => new Date(JAARKALENDER_DATA_YEAR, JAARKALENDER_DATA_MONTH, 1)
   );
@@ -476,34 +496,34 @@ export function JaarkalenderInteractiveCalendar() {
     []
   );
 
-  const getFilteredItems = (items: JaarkalenderCalendarItem[]) =>
-    items.filter((item) => {
-      const cityMatches =
-        !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
-      const categoryMatches =
-        !selectedCategory || item.categorie === selectedCategory;
-
-      return cityMatches && categoryMatches;
-    });
-
   const monthCalendarCells = useMemo<MonthCalendarCell[]>(
     () =>
       getMonthGrid(currentMonth).map((date) => {
         const isCurrentMonth = isSameMonth(date, currentMonth);
+        const isToday = isCurrentMonth && isSameDay(date, today);
         const day = getJaarkalenderDayForDate(date, daysByNumber);
 
         if (!isCurrentMonth || !day) {
           return {
             key: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
             day: String(date.getDate()),
+            dayNumber: isCurrentMonth ? date.getDate() : undefined,
             monthLabel: isCurrentMonth
               ? undefined
               : MONTH_SHORT_NAMES[date.getMonth()],
             muted: !isCurrentMonth,
+            isToday,
           };
         }
 
-        const filteredItems = getFilteredItems(day.calendarItems);
+        const filteredItems = day.calendarItems.filter((item) => {
+          const cityMatches =
+            !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
+          const categoryMatches =
+            !selectedCategory || item.categorie === selectedCategory;
+
+          return cityMatches && categoryMatches;
+        });
 
         return {
           key: `day-${day.dayNumber}`,
@@ -512,14 +532,42 @@ export function JaarkalenderInteractiveCalendar() {
           href: `/jaarkalender/${day.slug}`,
           eventCount: filteredItems.length,
           eventLabels: filteredItems.slice(0, 2).map((item) => item.title),
+          isToday,
         };
       }),
-    [currentMonth, daysByNumber, selectedCategory, selectedCity]
+    [currentMonth, daysByNumber, selectedCategory, selectedCity, today]
   );
 
-  const totalVisibleItems = monthCalendarCells.reduce(
-    (total, cell) => total + (cell.eventCount ?? 0),
-    0
+  const visibleImportEvents = useMemo<AgendaImportEvent[]>(() => {
+    if (!hasJaarkalenderDataForMonth(currentMonth)) {
+      return [];
+    }
+
+    return jaarkalenderDays.flatMap((day) => {
+      const filteredItems = day.calendarItems.filter((item) => {
+        const cityMatches =
+          !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
+        const categoryMatches =
+          !selectedCategory || item.categorie === selectedCategory;
+
+        return cityMatches && categoryMatches;
+      });
+
+      return filteredItems.map((item) => ({
+        dayIsoDate: day.isoDate,
+        daySlug: day.slug,
+        item,
+      }));
+    });
+  }, [currentMonth, selectedCategory, selectedCity]);
+
+  const totalVisibleItems = useMemo(
+    () =>
+      monthCalendarCells.reduce(
+        (total, cell) => total + (cell.eventCount ?? 0),
+        0
+      ),
+    [monthCalendarCells]
   );
   const monthTitle = `${
     MONTH_NAMES[currentMonth.getMonth()]
@@ -527,6 +575,12 @@ export function JaarkalenderInteractiveCalendar() {
 
   const closeModal = () => {
     setIsOpen(false);
+  };
+
+  const goToToday = () => {
+    const nextToday = new Date();
+    setToday(nextToday);
+    setCurrentMonth(new Date(nextToday.getFullYear(), nextToday.getMonth(), 1));
   };
 
   useEffect(() => {
@@ -603,6 +657,10 @@ export function JaarkalenderInteractiveCalendar() {
 
   return (
     <>
+      <div className="mb-4 sm:mb-6">
+        <AgendaImportBanner events={visibleImportEvents} />
+      </div>
+
       <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
           <div className="flex items-center gap-3 text-[#171511]">
@@ -630,12 +688,7 @@ export function JaarkalenderInteractiveCalendar() {
             />
             <button
               type="button"
-              onClick={() => {
-                const today = new Date();
-                setCurrentMonth(
-                  new Date(today.getFullYear(), today.getMonth(), 1)
-                );
-              }}
+              onClick={goToToday}
               className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#d9efad] px-4 text-sm font-semibold text-[#2a331d] transition hover:bg-[#cee797] sm:min-h-11 sm:px-5"
             >
               Vandaag
@@ -684,7 +737,14 @@ export function JaarkalenderInteractiveCalendar() {
                 monthLabel={cell.monthLabel}
                 muted={cell.muted}
                 href={cell.href}
-                className={cell.muted ? undefined : "bg-white/84"}
+                isToday={cell.isToday}
+                className={
+                  cell.muted
+                    ? undefined
+                    : cell.isToday
+                      ? "bg-[#fbf7ed] ring-1 ring-inset ring-[#cfe89d]"
+                      : "bg-white/84"
+                }
               >
                 <CountBlock count={cell.eventCount} muted={cell.muted} />
               </CalendarCell>
