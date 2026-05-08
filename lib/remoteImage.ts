@@ -87,9 +87,13 @@ export function optimizeRemoteImageUrl(src: string, options?: RemoteImageOptions
   return src;
 }
 
-export function optimizeCssBackground(value: string, options?: RemoteImageOptions) {
+export function unwrapCssImageUrl(value: string) {
   const match = value.trim().match(/^url\((['"]?)(.*?)\1\)$/);
-  const rawUrl = match ? match[2] : value;
+  return match ? match[2] : value;
+}
+
+export function optimizeCssBackground(value: string, options?: RemoteImageOptions) {
+  const rawUrl = unwrapCssImageUrl(value);
   const optimizedUrl = optimizeRemoteImageUrl(rawUrl, options);
 
   return `url('${optimizedUrl}')`;

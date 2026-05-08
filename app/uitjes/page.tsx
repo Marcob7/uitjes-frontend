@@ -4,6 +4,7 @@ import {
   inspirationCategoryLabels,
   inspirationResults,
 } from "@/lib/dummy/inspirationResults";
+import { unwrapCssImageUrl } from "@/lib/remoteImage";
 
 export const runtime = "edge";
 
@@ -63,8 +64,7 @@ function getReadableResultCount(count: number) {
 }
 
 function getCardImageUrl(image: string) {
-  const match = image.match(/^url\(['"]?(.*?)['"]?\)$/);
-  return match?.[1] ?? image;
+  return unwrapCssImageUrl(image);
 }
 
 export default function UitjesPage({ searchParams }: UitjesPageProps) {

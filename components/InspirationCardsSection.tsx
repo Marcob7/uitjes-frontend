@@ -87,13 +87,12 @@ export default function InspirationCardsSection() {
               className={`${card.width} ${card.height} relative shrink-0 overflow-hidden rounded-[2rem]`}
             >
               <Image
-                src={optimizeRemoteImageUrl(card.src, { width: 900 })}
+                src={optimizeRemoteImageUrl(card.src, { width: 360, quality: 58 })}
                 alt={card.alt}
                 fill
                 className="object-cover"
                 style={{ objectPosition: card.imagePosition }}
-                sizes="(max-width: 768px) 50vw, 25vw"
-                priority={index < 2}
+                sizes="(max-width: 768px) 42vw, 260px"
               />
 
               <div className="absolute inset-0 bg-black/5" />

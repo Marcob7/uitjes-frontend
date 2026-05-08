@@ -14,6 +14,7 @@ export default function SearchSection() {
           fill
           priority
           className="object-cover"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-[#07111d]/70" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#07111d]/40 via-[#07111d]/65 to-[#07111d]/85" />

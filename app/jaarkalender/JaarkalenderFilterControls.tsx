@@ -16,6 +16,7 @@ import {
 } from "./data";
 
 type FilterModalMode = "city" | "category";
+type MobileCalendarView = "month" | "week";
 
 type MonthCalendarCell = {
   key: string;
@@ -27,6 +28,17 @@ type MonthCalendarCell = {
   eventCount?: number;
   eventLabels?: string[];
   isToday?: boolean;
+};
+
+type MobileWeekDay = {
+  date: Date;
+  dateKey: string;
+  dayLabel: string;
+  dayNumber: number;
+  isSelected: boolean;
+  isToday: boolean;
+  itemCount: number;
+  routeLabel: string;
 };
 
 const MONTH_NAMES = [
@@ -62,6 +74,8 @@ const MONTH_SHORT_NAMES = [
 const JAARKALENDER_DATA_YEAR = 2024;
 const JAARKALENDER_DATA_MONTH = 9;
 
+const WEEKDAY_SHORT_LABELS = ["ma", "di", "wo", "do", "vr", "za", "zo"];
+
 function getCityFromLocation(location: string) {
   return location.split(",").at(-1)?.trim() ?? location;
 }
@@ -79,6 +93,38 @@ function isSameDay(date: Date, dayDate: Date) {
     date.getMonth() === dayDate.getMonth() &&
     date.getDate() === dayDate.getDate()
   );
+}
+
+function getDateKey(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function addDays(date: Date, amount: number) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+}
+
+function getWeekDates(date: Date) {
+  const dayIndex = (date.getDay() + 6) % 7;
+  const monday = addDays(date, -dayIndex);
+
+  return Array.from({ length: 7 }, (_, index) => addDays(monday, index));
+}
+
+function formatWeekPeriod(weekDates: Date[]) {
+  const firstDate = weekDates[0];
+  const lastDate = weekDates[weekDates.length - 1];
+  const firstMonth = MONTH_SHORT_NAMES[firstDate.getMonth()];
+  const lastMonth = MONTH_SHORT_NAMES[lastDate.getMonth()];
+
+  if (firstDate.getFullYear() !== lastDate.getFullYear()) {
+    return `${firstDate.getDate()} ${firstMonth} ${firstDate.getFullYear()} - ${lastDate.getDate()} ${lastMonth} ${lastDate.getFullYear()}`;
+  }
+
+  if (firstDate.getMonth() !== lastDate.getMonth()) {
+    return `${firstDate.getDate()} ${firstMonth} - ${lastDate.getDate()} ${lastMonth} ${lastDate.getFullYear()}`;
+  }
+
+  return `${firstDate.getDate()} - ${lastDate.getDate()} ${lastMonth} ${lastDate.getFullYear()}`;
 }
 
 function getMonthGrid(monthDate: Date) {
@@ -126,6 +172,25 @@ function getJaarkalenderDayForDate(
   }
 
   return daysByNumber.get(date.getDate()) ?? null;
+}
+
+function filterCalendarItems(
+  day: JaarkalenderDay,
+  selectedCity: string | null,
+  selectedCategory: JaarkalenderCategoryKey | null
+) {
+  return day.calendarItems.filter((item) => {
+    const cityMatches =
+      !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
+    const categoryMatches =
+      !selectedCategory || item.categorie === selectedCategory;
+
+    return cityMatches && categoryMatches;
+  });
+}
+
+function getCalendarItemTime(item: JaarkalenderDay["calendarItems"][number]) {
+  return item.datum.split(/(?:Â·|·)/).at(-1)?.trim() || "Tijd volgt";
 }
 
 function ArrowIcon() {
@@ -466,11 +531,166 @@ function EmptyState({
   );
 }
 
+function MobileWeekView({
+  weekPeriod,
+  weekDays,
+  selectedDay,
+  selectedItems,
+  selectedCity,
+  selectedCategory,
+  onPreviousWeek,
+  onNextWeek,
+  onSelectDate,
+}: {
+  weekPeriod: string;
+  weekDays: MobileWeekDay[];
+  selectedDay: JaarkalenderDay | null;
+  selectedItems: JaarkalenderDay["calendarItems"];
+  selectedCity: string | null;
+  selectedCategory: JaarkalenderCategoryKey | null;
+  onPreviousWeek: () => void;
+  onNextWeek: () => void;
+  onSelectDate: (date: Date) => void;
+}) {
+  const categoryLabel = selectedCategory
+    ? jaarkalenderCategoryMeta[selectedCategory].label
+    : null;
+  const filterText = [selectedCity, categoryLabel].filter(Boolean).join(" en ");
+  const selectedDayLabel = selectedDay
+    ? `${selectedDay.weekdayDisplay} ${selectedDay.dayNumber} ${selectedDay.monthDisplay}`
+    : "Deze dag";
+
+  return (
+    <div className="bg-[#fffdf9]">
+      <div className="flex items-center justify-between gap-3 border-b border-[#e6dfd3] px-3 py-3">
+        <button
+          type="button"
+          aria-label="Vorige week"
+          onClick={onPreviousWeek}
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded8cc] bg-white text-base font-semibold text-[#4d433a] transition hover:bg-[#f7f1e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+        >
+          <span aria-hidden="true">{"<"}</span>
+        </button>
+
+        <div className="min-w-0 text-center">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8b7a69]">
+            Week
+          </p>
+          <h3 className="truncate text-lg font-semibold tracking-[-0.03em] text-[#171511]">
+            {weekPeriod}
+          </h3>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Volgende week"
+          onClick={onNextWeek}
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded8cc] bg-white text-base font-semibold text-[#4d433a] transition hover:bg-[#f7f1e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+        >
+          <span aria-hidden="true">{">"}</span>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 border-b border-[#e6dfd3] bg-[#fffaf3] px-2 py-2">
+        {weekDays.map((day) => {
+          return (
+            <button
+              key={day.dateKey}
+              type="button"
+              aria-label={`${day.routeLabel} selecteren`}
+              aria-pressed={day.isSelected}
+              aria-current={day.isToday ? "date" : undefined}
+              onClick={() => onSelectDate(day.date)}
+              className={`min-h-14 rounded-xl px-1 py-1.5 text-center transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] ${
+                day.isSelected
+                  ? "bg-[#171511] text-white shadow-[0_8px_18px_rgba(35,28,20,0.16)]"
+                  : day.isToday
+                    ? "bg-[#edf7d8] text-[#26331a]"
+                    : "bg-white/70 text-[#3b332b]"
+              }`}
+            >
+              <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] opacity-75">
+                {day.dayLabel}
+              </span>
+              <span className="mt-0.5 block text-base font-semibold leading-none">
+                {day.dayNumber}
+              </span>
+              <span
+                className={`mx-auto mt-1 block h-1.5 w-1.5 rounded-full ${
+                  day.itemCount > 0
+                    ? day.isSelected
+                      ? "bg-[#d9efad]"
+                      : "bg-[#77994a]"
+                    : "bg-transparent"
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="px-3 py-3">
+        <div className="mb-2 flex items-baseline justify-between gap-2">
+          <h4 className="min-w-0 truncate text-sm font-semibold text-[#241f19]">
+            {selectedDayLabel}
+          </h4>
+          <span className="shrink-0 text-xs font-medium text-[#827568]">
+            {selectedItems.length} items
+          </span>
+        </div>
+
+        {selectedItems.length === 0 ? (
+          <div className="rounded-2xl border border-[#eee4d8] bg-[#f8f2ea] px-4 py-4 text-sm leading-6 text-[#66594e]">
+            Geen activiteiten op deze dag
+            {filterText ? ` met ${filterText}` : ""}.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {selectedItems.map((item, index) => {
+              const meta = jaarkalenderCategoryMeta[item.categorie];
+
+              return (
+                <Link
+                  key={`${item.title}-${item.locatie}-${index}`}
+                  href={`/jaarkalender/${selectedDay?.slug}`}
+                  aria-label={`Bekijk dag ${selectedDayLabel} voor ${item.title}`}
+                  className="rounded-2xl border border-[#eee4d8] bg-white px-3.5 py-3 shadow-[0_8px_22px_rgba(66,49,31,0.04)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h5 className="min-w-0 text-sm font-semibold leading-5 text-[#1f1a15]">
+                      {item.title}
+                    </h5>
+                    <span
+                      className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-semibold ${meta.badgeClass}`}
+                    >
+                      {meta.label}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs leading-5 text-[#75695d]">
+                    <span>{getCalendarItemTime(item)}</span>
+                    <span>{getCityFromLocation(item.locatie)}</span>
+                    <span>{item.prijs}</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function JaarkalenderInteractiveCalendar() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<FilterModalMode>("city");
   const [today, setToday] = useState(() => new Date());
+  const [mobileView, setMobileView] = useState<MobileCalendarView>("month");
   const [currentMonth, setCurrentMonth] = useState(
+    () => new Date(JAARKALENDER_DATA_YEAR, JAARKALENDER_DATA_MONTH, 1)
+  );
+  const [selectedWeekDate, setSelectedWeekDate] = useState(
     () => new Date(JAARKALENDER_DATA_YEAR, JAARKALENDER_DATA_MONTH, 1)
   );
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -516,14 +736,11 @@ export function JaarkalenderInteractiveCalendar() {
           };
         }
 
-        const filteredItems = day.calendarItems.filter((item) => {
-          const cityMatches =
-            !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
-          const categoryMatches =
-            !selectedCategory || item.categorie === selectedCategory;
-
-          return cityMatches && categoryMatches;
-        });
+        const filteredItems = filterCalendarItems(
+          day,
+          selectedCity,
+          selectedCategory
+        );
 
         return {
           key: `day-${day.dayNumber}`,
@@ -544,14 +761,11 @@ export function JaarkalenderInteractiveCalendar() {
     }
 
     return jaarkalenderDays.flatMap((day) => {
-      const filteredItems = day.calendarItems.filter((item) => {
-        const cityMatches =
-          !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
-        const categoryMatches =
-          !selectedCategory || item.categorie === selectedCategory;
-
-        return cityMatches && categoryMatches;
-      });
+      const filteredItems = filterCalendarItems(
+        day,
+        selectedCity,
+        selectedCategory
+      );
 
       return filteredItems.map((item) => ({
         dayIsoDate: day.isoDate,
@@ -573,6 +787,48 @@ export function JaarkalenderInteractiveCalendar() {
     MONTH_NAMES[currentMonth.getMonth()]
   } ${currentMonth.getFullYear()}`;
 
+  const weekDates = useMemo(() => getWeekDates(selectedWeekDate), [
+    selectedWeekDate,
+  ]);
+  const weekPeriod = useMemo(() => formatWeekPeriod(weekDates), [weekDates]);
+  const mobileWeekDays = useMemo<MobileWeekDay[]>(
+    () =>
+      weekDates.map((date, index) => {
+        const day = getJaarkalenderDayForDate(date, daysByNumber);
+        const itemCount = day
+          ? filterCalendarItems(day, selectedCity, selectedCategory).length
+          : 0;
+        const routeLabel = day
+          ? `${day.weekday} ${day.dayNumber} ${day.monthDisplay.toLowerCase()} ${day.year}`
+          : `${WEEKDAY_SHORT_LABELS[index]} ${date.getDate()} ${
+              MONTH_NAMES[date.getMonth()]
+            } ${date.getFullYear()}`;
+
+        return {
+          date,
+          dateKey: getDateKey(date),
+          dayLabel: WEEKDAY_SHORT_LABELS[index],
+          dayNumber: date.getDate(),
+          isSelected: isSameDay(date, selectedWeekDate),
+          isToday: isSameDay(date, today),
+          itemCount,
+          routeLabel,
+        };
+      }),
+    [daysByNumber, selectedCategory, selectedCity, selectedWeekDate, today, weekDates]
+  );
+  const selectedWeekDay = useMemo(
+    () => getJaarkalenderDayForDate(selectedWeekDate, daysByNumber),
+    [daysByNumber, selectedWeekDate]
+  );
+  const selectedWeekItems = useMemo(
+    () =>
+      selectedWeekDay
+        ? filterCalendarItems(selectedWeekDay, selectedCity, selectedCategory)
+        : [],
+    [selectedCategory, selectedCity, selectedWeekDay]
+  );
+
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -582,6 +838,12 @@ export function JaarkalenderInteractiveCalendar() {
     setToday(nextToday);
     setCurrentMonth(new Date(nextToday.getFullYear(), nextToday.getMonth(), 1));
   };
+
+  useEffect(() => {
+    setSelectedWeekDate(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
+    );
+  }, [currentMonth]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -753,22 +1015,75 @@ export function JaarkalenderInteractiveCalendar() {
         </div>
 
         <div className="md:hidden">
-          <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fffaf3]">
-            {["ma", "di", "wo", "do", "vr", "za", "zo"].map((day) => (
-              <div
-                key={day}
-                className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7e7366]"
+          <div className="border-b border-[#e6dfd3] bg-[#fffaf3] px-3 py-2">
+            <div
+              className="grid grid-cols-2 rounded-full bg-[#ebe3d8] p-1"
+              role="group"
+              aria-label="Kalenderweergave"
+            >
+              <button
+                type="button"
+                aria-pressed={mobileView === "month"}
+                onClick={() => setMobileView("month")}
+                className={`min-h-10 rounded-full px-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] ${
+                  mobileView === "month"
+                    ? "bg-white text-[#171511] shadow-[0_6px_14px_rgba(66,49,31,0.08)]"
+                    : "text-[#66594e]"
+                }`}
               >
-                {day}
-              </div>
-            ))}
+                Maand
+              </button>
+              <button
+                type="button"
+                aria-pressed={mobileView === "week"}
+                onClick={() => setMobileView("week")}
+                className={`min-h-10 rounded-full px-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] ${
+                  mobileView === "week"
+                    ? "bg-white text-[#171511] shadow-[0_6px_14px_rgba(66,49,31,0.08)]"
+                    : "text-[#66594e]"
+                }`}
+              >
+                Week
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-7">
-            {monthCalendarCells.map((cell) => (
-              <MobileCalendarCell key={cell.key} cell={cell} />
-            ))}
-          </div>
+          {mobileView === "month" ? (
+            <>
+              <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fffaf3]">
+                {["ma", "di", "wo", "do", "vr", "za", "zo"].map((day) => (
+                  <div
+                    key={day}
+                    className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7e7366]"
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-7">
+                {monthCalendarCells.map((cell) => (
+                  <MobileCalendarCell key={cell.key} cell={cell} />
+                ))}
+              </div>
+            </>
+          ) : (
+            <MobileWeekView
+              weekPeriod={weekPeriod}
+              weekDays={mobileWeekDays}
+              selectedDay={selectedWeekDay}
+              selectedItems={selectedWeekItems}
+              selectedCity={selectedCity}
+              selectedCategory={selectedCategory}
+              onPreviousWeek={() =>
+                setSelectedWeekDate((date) => addDays(date, -7))
+              }
+              onNextWeek={() =>
+                setSelectedWeekDate((date) => addDays(date, 7))
+              }
+              onSelectDate={setSelectedWeekDate}
+            />
+          )}
         </div>
 
         {totalVisibleItems === 0 ? (

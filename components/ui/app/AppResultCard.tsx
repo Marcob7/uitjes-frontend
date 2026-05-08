@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 
+import { optimizeRemoteImageUrl, unwrapCssImageUrl } from "@/lib/remoteImage";
 import { cn } from "@/lib/utils";
 
 import { AppCard } from "./AppCard";
@@ -32,6 +34,9 @@ export function AppResultCard({
   onClick,
   className,
 }: AppResultCardProps) {
+  const imageSrc = image
+    ? optimizeRemoteImageUrl(unwrapCssImageUrl(image), { width: 420, quality: 56 })
+    : undefined;
   const content = (
     <AppCard
       as="article"
@@ -39,11 +44,14 @@ export function AppResultCard({
       padding="sm"
       className={cn("group flex h-full flex-col gap-4 sm:flex-row sm:p-5", className)}
     >
-      {image ? (
+      {imageSrc ? (
         <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-[1.35rem] bg-[#efe7dd] sm:h-28 sm:w-32">
-          <div
-            className="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-[1.03]"
-            style={{ backgroundImage: `url(${image})` }}
+          <Image
+            src={imageSrc}
+            alt=""
+            fill
+            className="object-cover transition duration-300 group-hover:scale-[1.03]"
+            sizes="(max-width: 640px) 100vw, 128px"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/8 via-transparent to-black/22" />
         </div>

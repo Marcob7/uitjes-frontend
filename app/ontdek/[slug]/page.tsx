@@ -180,7 +180,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
                         alt={`${item.title} sfeerbeeld ${index + 1}`}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 50vw, 25vw"
+                        sizes="(max-width: 768px) 50vw, 300px"
                       />
                     </div>
                   ))}
@@ -201,7 +201,7 @@ export default function ExploreDetailPage({ params }: PageProps) {
                           alt={place.title}
                           fill
                           className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 33vw"
+                          sizes="(max-width: 768px) 100vw, 400px"
                         />
 
                         <span className="absolute left-3 top-3 rounded-full border border-[#e8f2d0]/35 bg-[#152017]/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f7f4ed] backdrop-blur-xl">
