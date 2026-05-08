@@ -5,6 +5,8 @@ export type FestivalOverviewItem = {
   name: string;
   dateLabel: string;
   locationLabel: string;
+  latitude: number;
+  longitude: number;
   genres: string[];
   vibe: string;
   matchScore: number;
@@ -57,6 +59,8 @@ export const festivalDetails: FestivalDetail[] = [
     name: "Dekmantel Festival",
     dateLabel: "12 - 14 juli",
     locationLabel: "Amsterdamse Bos",
+    latitude: 52.3276,
+    longitude: 4.8259,
     genres: ["Techno", "Electronic"],
     vibe: "amsterdam techno electronic curated",
     matchScore: 95,
@@ -165,6 +169,8 @@ export const festivalDetails: FestivalDetail[] = [
     name: "Lowlands",
     dateLabel: "15 - 18 augustus",
     locationLabel: "Biddinghuizen",
+    latitude: 52.4398,
+    longitude: 5.7651,
     genres: ["Multi-genre", "Kunst"],
     vibe: "kunst multi-genre camping weekend",
     matchScore: 89,
@@ -261,6 +267,8 @@ export const festivalDetails: FestivalDetail[] = [
     name: "North Sea Jazz",
     dateLabel: "11 - 13 juli",
     locationLabel: "Rotterdam",
+    latitude: 51.8827,
+    longitude: 4.4886,
     genres: ["Jazz", "Soul"],
     vibe: "jazz soul rotterdam live",
     matchScore: 91,
@@ -360,6 +368,8 @@ export const festivalOverviewItems: FestivalOverviewItem[] = festivalDetails.map
     name,
     dateLabel,
     locationLabel,
+    latitude,
+    longitude,
     genres,
     vibe,
     matchScore,
@@ -370,6 +380,8 @@ export const festivalOverviewItems: FestivalOverviewItem[] = festivalDetails.map
     name,
     dateLabel,
     locationLabel,
+    latitude,
+    longitude,
     genres,
     vibe,
     matchScore,

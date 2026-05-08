@@ -83,5 +83,5 @@ export function getSearchRoute(query: string) {
     return `/ontdek?city=${encodeURIComponent(normalizeCitySlug(trimmedQuery))}`;
   }
 
-  return `/ontdek?query=${encodedQuery}`;
+  return `/uitjes?query=${encodedQuery}`;
 }
