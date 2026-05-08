@@ -12,6 +12,8 @@ import {
   type FestivalIcon,
 } from "../data";
 
+export const runtime = "edge";
+
 type AlertKey = "jazzAmsterdam" | "budgetFriendly";
 
 type AlertPreference = {
