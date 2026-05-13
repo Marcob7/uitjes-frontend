@@ -18,21 +18,33 @@ export type CityContentItem = {
   slug: string | null;
   title: string | null;
   city: string | null;
+  cityName: string | null;
   kind: string | null;
   category: string | null;
   summary: string | null;
+  description: string | null;
   imageUrl: string | null;
+  imageAlt: string | null;
   venue: string | null;
+  venueAddress: string | null;
+  address: string | null;
   latitude: number | null;
   longitude: number | null;
+  priceMin: number | null;
+  priceMax: number | null;
   priceNote: string | null;
   isFree: boolean;
   startAt: string | null;
   endAt: string | null;
+  dateText: string | null;
+  rawDateText: string | null;
+  openingHoursText: string | null;
+  status: string | null;
   sourceUrl: string | null;
   ticketUrl: string | null;
   reservationUrl: string | null;
   tags: string[];
+  practicalInfo: string | null;
 };
 
 type BackendCityContentItem = {
@@ -40,21 +52,34 @@ type BackendCityContentItem = {
   slug?: unknown;
   title?: unknown;
   city?: unknown;
+  city_name?: unknown;
   kind?: unknown;
   category?: unknown;
+  category_label?: unknown;
   summary?: unknown;
+  description?: unknown;
   image_url?: unknown;
+  image_alt?: unknown;
   venue?: unknown;
+  venue_address?: unknown;
+  address?: unknown;
   latitude?: unknown;
   longitude?: unknown;
+  price_min?: unknown;
+  price_max?: unknown;
   price_note?: unknown;
   is_free?: unknown;
   start_at?: unknown;
   end_at?: unknown;
+  date_text?: unknown;
+  raw_date_text?: unknown;
+  opening_hours_text?: unknown;
+  status?: unknown;
   source_url?: unknown;
   ticket_url?: unknown;
   reservation_url?: unknown;
   tags?: unknown;
+  practical_info?: unknown;
 };
 
 type CityContentApiResponse = {
@@ -107,7 +132,13 @@ function normalizeTags(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
 
   return value
-    .map((tag) => normalizeString(tag))
+    .map((tag) => {
+      if (tag && typeof tag === "object" && "slug" in tag) {
+        return normalizeString((tag as { slug?: unknown }).slug);
+      }
+
+      return normalizeString(tag);
+    })
     .filter((tag): tag is string => Boolean(tag));
 }
 
@@ -119,21 +150,33 @@ export function normalizeCityContentItem(
     slug: normalizeString(item.slug),
     title: normalizeString(item.title),
     city: normalizeString(item.city),
+    cityName: normalizeString(item.city_name),
     kind: normalizeString(item.kind),
-    category: normalizeString(item.category),
+    category: normalizeString(item.category_label) ?? normalizeString(item.category),
     summary: normalizeString(item.summary),
+    description: normalizeString(item.description),
     imageUrl: normalizeString(item.image_url),
+    imageAlt: normalizeString(item.image_alt),
     venue: normalizeString(item.venue),
+    venueAddress: normalizeString(item.venue_address),
+    address: normalizeString(item.address),
     latitude: normalizeNumber(item.latitude),
     longitude: normalizeNumber(item.longitude),
+    priceMin: normalizeNumber(item.price_min),
+    priceMax: normalizeNumber(item.price_max),
     priceNote: normalizeString(item.price_note),
     isFree: normalizeBoolean(item.is_free),
     startAt: normalizeString(item.start_at),
     endAt: normalizeString(item.end_at),
+    dateText: normalizeString(item.date_text),
+    rawDateText: normalizeString(item.raw_date_text),
+    openingHoursText: normalizeString(item.opening_hours_text),
+    status: normalizeString(item.status),
     sourceUrl: normalizeString(item.source_url),
     ticketUrl: normalizeString(item.ticket_url),
     reservationUrl: normalizeString(item.reservation_url),
     tags: normalizeTags(item.tags),
+    practicalInfo: normalizeString(item.practical_info),
   };
 }
 

@@ -14,7 +14,11 @@ import type {
   EditorialContent,
   ExploreCard,
   IconicCard,
+  PlannerCompanion,
+  PlannerMoment,
   PlannerSelections,
+  PlannerVibe,
+  ResultFilterKey,
   SafeCityTheme,
 } from "./types";
 
@@ -301,14 +305,20 @@ export function buildExploreCards(
   events: BackendEvent[],
   cityLabel: string,
   fallbackImage: string,
-  useMockFallback = true
+  useMockFallback = true,
+  citySlug?: string
 ): ExploreCard[] {
   if (activeTab !== "events") {
     return mockCardsByCategory[activeTab];
   }
 
   if (!events?.length) {
-    return useMockFallback ? mockCardsByCategory.events : [];
+    return useMockFallback
+      ? mockCardsByCategory.events.map((card) => ({
+          ...card,
+          href: appendCityToExploreHref(card.href, citySlug),
+        }))
+      : [];
   }
 
   return sortEventsByStartDate(events).map((event) => ({
@@ -318,7 +328,10 @@ export function buildExploreCards(
     time: formatTimeRange(event.start_at, event.end_at),
     location: formatVenue(event.venue, cityLabel),
     image: event.image || fallbackImage,
-    href: `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
+    href: appendCityToExploreHref(
+      `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
+      event.city || citySlug
+    ),
     description:
       event.summary ||
       "Een zorgvuldig geselecteerd moment dat goed past in een spontane stadsdag.",
@@ -326,23 +339,419 @@ export function buildExploreCards(
     distance: formatDistance(event),
     status: formatStatus(event),
     rating: event.rating || null,
+    startAt: event.start_at,
+    endAt: event.end_at,
+    isOngoing: event.is_ongoing,
+    kind: event.kind,
+    tags: event.tags,
     audiences: event.audiences,
     moments: event.moments,
     vibes: event.vibes,
   }));
 }
 
+function appendCityToExploreHref(href: string, city?: string | null) {
+  if (!city || !href.startsWith("/ontdek/")) {
+    return href;
+  }
+
+  const cityParam = slugify(city);
+  if (!cityParam) {
+    return href;
+  }
+
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}city=${encodeURIComponent(cityParam)}`;
+}
+
+type PlannerFilterItem = {
+  title?: string | null;
+  label?: string | null;
+  category_label?: string | null;
+  kind?: string | null;
+  location?: string | null;
+  venue?: string | null;
+  description?: string | null;
+  summary?: string | null;
+  price?: string | null;
+  price_min?: number | null;
+  status?: string | null;
+  date_text?: string | null;
+  start_at?: string | null;
+  end_at?: string | null;
+  startAt?: string | null;
+  endAt?: string | null;
+  is_free?: boolean;
+  is_ongoing?: boolean;
+  isOngoing?: boolean;
+  tags?: string[];
+  audiences?: PlannerCompanion[];
+  moments?: PlannerMoment[];
+  vibes?: PlannerVibe[];
+};
+
+const RESULT_FILTERS = {
+  food_drink: {
+    label: "Eten & drinken",
+    description: "Kind food_drink of duidelijke horeca/food-signalen.",
+  },
+  outings: {
+    label: "Uitjes",
+    description: "Kind outings of items die niet als food_drink zijn gemarkeerd.",
+  },
+  free: {
+    label: "Gratis",
+    description: "is_free, prijs 0 of prijstekst met gratis/free.",
+  },
+  now: {
+    label: "Nu",
+    description: "Dezelfde momentlogica als CityFormSelect: Nu.",
+  },
+  evening: {
+    label: "Vanavond",
+    description: "Dezelfde momentlogica als CityFormSelect: Vanavond.",
+  },
+  culture: {
+    label: "Cultureel",
+    description: "Dezelfde sfeerlogica als CityFormSelect: Cultureel.",
+  },
+  active: {
+    label: "Actief/buiten",
+    description: "Dezelfde sfeerlogica als CityFormSelect: Actief.",
+  },
+} satisfies Record<ResultFilterKey, { label: string; description: string }>;
+
+const RESULT_FILTER_GROUPS: Record<ResultFilterKey, "kind" | "price" | "moment" | "vibe"> = {
+  food_drink: "kind",
+  outings: "kind",
+  free: "price",
+  now: "moment",
+  evening: "moment",
+  culture: "vibe",
+  active: "vibe",
+};
+
+export const RESULT_FILTER_OPTIONS = Object.entries(RESULT_FILTERS).map(
+  ([id, filter]) => ({
+    id: id as ResultFilterKey,
+    label: filter.label,
+    description: filter.description,
+  })
+);
+
+function normalizeFilterText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function buildFilterText(item: PlannerFilterItem) {
+  return normalizeFilterText(
+    [
+      item.title,
+      item.label,
+      item.category_label,
+      item.kind,
+      item.location,
+      item.venue,
+      item.description,
+      item.summary,
+      item.price,
+      item.status,
+      item.date_text,
+      ...(item.tags ?? []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
+}
+
+function textHasAny(text: string, terms: string[]) {
+  return terms.some((term) => text.includes(term));
+}
+
+function inferAudienceMatch(item: PlannerFilterItem, companion: PlannerCompanion) {
+  const text = buildFilterText(item);
+
+  switch (companion) {
+    case "gezin":
+      return textHasAny(text, [
+        "gezin",
+        "familie",
+        "kind",
+        "kinderen",
+        "speel",
+        "workshop",
+      ]);
+    case "vrienden":
+      return textHasAny(text, [
+        "vrienden",
+        "muziek",
+        "festival",
+        "bar",
+        "borrel",
+        "drank",
+        "bier",
+        "markt",
+        "actief",
+      ]);
+    case "solo":
+      return textHasAny(text, [
+        "solo",
+        "museum",
+        "kunst",
+        "route",
+        "wandeling",
+        "expositie",
+        "bibliotheek",
+        "rondkijken",
+      ]);
+    default:
+      return textHasAny(text, [
+        "date",
+        "avond",
+        "restaurant",
+        "diner",
+        "terras",
+        "film",
+        "theater",
+        "wandeling",
+        "romant",
+      ]);
+  }
+}
+
+function getEventStart(item: PlannerFilterItem) {
+  const startAt = item.start_at ?? item.startAt;
+  if (!startAt) return null;
+
+  const date = new Date(startAt);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function isSameDate(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function isTomorrow(date: Date, now: Date) {
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  return isSameDate(date, tomorrow);
+}
+
+function isWeekend(date: Date) {
+  const day = date.getDay();
+  return day === 0 || day === 6;
+}
+
+function inferMomentMatch(item: PlannerFilterItem, moment: PlannerMoment) {
+  const text = buildFilterText(item);
+  const start = getEventStart(item);
+  const flexiblePlace = !start && item.kind === "food_drink";
+  const now = new Date();
+
+  switch (moment) {
+    case "nu":
+      return (
+        item.is_ongoing ||
+        item.isOngoing ||
+        flexiblePlace ||
+        textHasAny(text, ["nu", "vandaag", "doorlopend"]) ||
+        Boolean(start && isSameDate(start, now))
+      );
+    case "vanavond":
+      return (
+        textHasAny(text, ["avond", "vanavond", "diner", "borrel", "theater"]) ||
+        Boolean(start && start.getHours() >= 17)
+      );
+    case "morgen":
+      return (
+        flexiblePlace ||
+        textHasAny(text, ["morgen", "later plannen"]) ||
+        Boolean(start && isTomorrow(start, now))
+      );
+    default:
+      return (
+        flexiblePlace ||
+        textHasAny(text, ["weekend", "zaterdag", "zondag"]) ||
+        Boolean(start && isWeekend(start))
+      );
+  }
+}
+
+function inferVibeMatch(item: PlannerFilterItem, vibe: PlannerVibe) {
+  const text = buildFilterText(item);
+
+  switch (vibe) {
+    case "cultureel":
+      return textHasAny(text, [
+        "cultuur",
+        "cultureel",
+        "museum",
+        "kunst",
+        "theater",
+        "erfgoed",
+        "monument",
+        "expositie",
+        "galerie",
+        "film",
+        "histor",
+      ]);
+    case "actief":
+      return textHasAny(text, [
+        "actief",
+        "buiten",
+        "wandeling",
+        "fiets",
+        "route",
+        "sport",
+        "park",
+        "natuur",
+        "haven",
+        "water",
+        "tour",
+      ]);
+    case "eten-drinken":
+      return (
+        item.kind === "food_drink" ||
+        textHasAny(text, [
+          "eten",
+          "drinken",
+          "restaurant",
+          "cafe",
+          "lunch",
+          "diner",
+          "culinair",
+          "proeverij",
+          "terras",
+          "food",
+          "koffie",
+          "borrel",
+        ])
+      );
+    default:
+      return textHasAny(text, [
+        "relaxed",
+        "rustig",
+        "ontspannen",
+        "park",
+        "wandeling",
+        "rondkijken",
+        "koffie",
+        "terras",
+        "laagdrempelig",
+      ]);
+  }
+}
+
 function matchesPlannerSelections(
-  item: Pick<ExploreCard, "audiences" | "moments" | "vibes">,
+  item: PlannerFilterItem,
   selections: PlannerSelections
 ) {
   const matchesCompanion =
-    !item.audiences?.length || item.audiences.includes(selections.companion);
+    item.audiences?.length
+      ? item.audiences.includes(selections.companion)
+      : inferAudienceMatch(item, selections.companion);
   const matchesMoment =
-    !item.moments?.length || item.moments.includes(selections.moment);
-  const matchesVibe = !item.vibes?.length || item.vibes.includes(selections.vibe);
+    item.moments?.length
+      ? item.moments.includes(selections.moment)
+      : inferMomentMatch(item, selections.moment);
+  const matchesVibe = item.vibes?.length
+    ? item.vibes.includes(selections.vibe)
+    : inferVibeMatch(item, selections.vibe);
 
   return matchesCompanion && matchesMoment && matchesVibe;
+}
+
+function matchesPlannerProgress(
+  item: PlannerFilterItem,
+  selections: PlannerSelections,
+  completedStepCount: number
+) {
+  if (completedStepCount < 1) return true;
+
+  const matchesCompanion = item.audiences?.length
+    ? item.audiences.includes(selections.companion)
+    : inferAudienceMatch(item, selections.companion);
+
+  if (completedStepCount < 2) return matchesCompanion;
+
+  const matchesMoment = item.moments?.length
+    ? item.moments.includes(selections.moment)
+    : inferMomentMatch(item, selections.moment);
+
+  if (completedStepCount < 3) return matchesCompanion && matchesMoment;
+
+  const matchesVibe = item.vibes?.length
+    ? item.vibes.includes(selections.vibe)
+    : inferVibeMatch(item, selections.vibe);
+
+  return matchesCompanion && matchesMoment && matchesVibe;
+}
+
+function isFreeItem(item: PlannerFilterItem) {
+  if (item.is_free || item.price_min === 0) {
+    return true;
+  }
+
+  const text = buildFilterText(item);
+  return textHasAny(text, ["gratis", "free", "vrij entree", "0,00", "eur 0"]);
+}
+
+function matchesResultFilter(item: PlannerFilterItem, filter: ResultFilterKey) {
+  const normalizedKind = item.kind?.toLowerCase() ?? "";
+
+  switch (filter) {
+    case "food_drink":
+      return normalizedKind === "food_drink" || inferVibeMatch(item, "eten-drinken");
+    case "outings":
+      return normalizedKind === "outings" || normalizedKind !== "food_drink";
+    case "free":
+      return isFreeItem(item);
+    case "now":
+      return inferMomentMatch(item, "nu");
+    case "evening":
+      return inferMomentMatch(item, "vanavond");
+    case "culture":
+      return inferVibeMatch(item, "cultureel");
+    case "active":
+      return inferVibeMatch(item, "actief");
+    default:
+      return true;
+  }
+}
+
+function matchesResultFilters(
+  item: PlannerFilterItem,
+  resultFilters: ResultFilterKey[]
+) {
+  if (resultFilters.length === 0) return true;
+
+  const groupedFilters = resultFilters.reduce<
+    Record<"kind" | "price" | "moment" | "vibe", ResultFilterKey[]>
+  >(
+    (groups, filter) => {
+      groups[RESULT_FILTER_GROUPS[filter]].push(filter);
+      return groups;
+    },
+    {
+      kind: [],
+      price: [],
+      moment: [],
+      vibe: [],
+    }
+  );
+
+  return Object.values(groupedFilters).every((filters) => {
+    if (filters.length === 0) return true;
+
+    return filters.some((filter) => matchesResultFilter(item, filter));
+  });
 }
 
 export function filterEventsByPlanner(
@@ -352,11 +761,45 @@ export function filterEventsByPlanner(
   return events.filter((event) => matchesPlannerSelections(event, selections));
 }
 
+export function filterEventsByPlannerProgress(
+  events: BackendEvent[],
+  selections: PlannerSelections,
+  completedStepCount: number
+) {
+  return events.filter((event) =>
+    matchesPlannerProgress(event, selections, completedStepCount)
+  );
+}
+
+export function filterEventsByResultFilters(
+  events: BackendEvent[],
+  resultFilters: ResultFilterKey[]
+) {
+  return events.filter((event) => matchesResultFilters(event, resultFilters));
+}
+
 export function filterCardsByPlanner(
   cards: ExploreCard[],
   selections: PlannerSelections
 ) {
   return cards.filter((card) => matchesPlannerSelections(card, selections));
+}
+
+export function filterCardsByPlannerProgress(
+  cards: ExploreCard[],
+  selections: PlannerSelections,
+  completedStepCount: number
+) {
+  return cards.filter((card) =>
+    matchesPlannerProgress(card, selections, completedStepCount)
+  );
+}
+
+export function filterCardsByResultFilters(
+  cards: ExploreCard[],
+  resultFilters: ResultFilterKey[]
+) {
+  return cards.filter((card) => matchesResultFilters(card, resultFilters));
 }
 
 export function buildIconicCards(

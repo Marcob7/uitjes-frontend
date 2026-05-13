@@ -14,10 +14,14 @@ import {
   mapCityContentToExploreDetail,
 } from "@/lib/exploreDetailData";
 import { getCityContentBySlug } from "@/lib/api/cityContent";
+import { normalizeCitySlug } from "@/lib/cityConfig";
 
 type PageProps = {
   params: {
     slug: string;
+  };
+  searchParams?: {
+    city?: string;
   };
 };
 
@@ -43,7 +47,9 @@ function CheckIcon() {
   );
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
+function DetailRow({ label, value }: { label: string; value?: string | null }) {
+  if (!value) return null;
+
   return (
     <div>
       <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#746355]">
@@ -52,6 +58,17 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       <div className="mt-1 text-sm leading-6 text-[#211a14]">{value}</div>
     </div>
   );
+}
+
+function getSafeExternalUrl(value?: string | null) {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
 }
 
 async function getExploreDetail(slug: string) {
@@ -70,19 +87,36 @@ async function getExploreDetail(slug: string) {
   return mapCityContentToExploreDetail(cityContentItem, slug);
 }
 
-export default async function ExploreDetailPage({ params }: PageProps) {
+function getExploreBackHref(item: Awaited<ReturnType<typeof getExploreDetail>>, city?: string) {
+  const citySlug = normalizeCitySlug(city || item?.citySlug || item?.city);
+
+  return citySlug ? `/ontdek?city=${encodeURIComponent(citySlug)}` : "/ontdek";
+}
+
+export default async function ExploreDetailPage({ params, searchParams }: PageProps) {
   const item = await getExploreDetail(params.slug);
 
   if (!item) {
     notFound();
   }
 
-  const reserveHref = buildActionSearchHref({
-    title: item.title,
-    location: `${item.city} ${item.practical.address}`,
-    actionLabel: item.actions.reserveLabel,
-  });
-  const routeHref = buildMapsSearchHref(item.practical.address);
+  const exploreBackHref = getExploreBackHref(item, searchParams?.city);
+
+  const locationQuery = [item.practical.venue, item.practical.address, item.city]
+    .filter(Boolean)
+    .join(", ");
+  const ticketHref = getSafeExternalUrl(item.links?.ticketUrl);
+  const reservationHref = getSafeExternalUrl(item.links?.reservationUrl);
+  const sourceHref = getSafeExternalUrl(item.links?.sourceUrl);
+  const reserveHref =
+    ticketHref ||
+    reservationHref ||
+    buildActionSearchHref({
+      title: item.title,
+      location: locationQuery,
+      actionLabel: item.actions.reserveLabel,
+    });
+  const routeHref = locationQuery ? buildMapsSearchHref(locationQuery) : null;
   const savedPlace = {
     id: `explore:${item.slug}`,
     title: item.title,
@@ -98,7 +132,7 @@ export default async function ExploreDetailPage({ params }: PageProps) {
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
-              { label: "Ontdek", href: "/ontdek" },
+              { label: "Ontdek", href: exploreBackHref },
               { label: item.title },
             ]}
             className="mb-6"
@@ -108,7 +142,7 @@ export default async function ExploreDetailPage({ params }: PageProps) {
             <div className="relative h-[430px] w-full md:h-[580px]">
               <Image
                 src={item.heroImage}
-                alt={item.title}
+                alt={item.heroImageAlt || item.title}
                 fill
                 className="object-cover"
                 sizes="100vw"
@@ -180,6 +214,12 @@ export default async function ExploreDetailPage({ params }: PageProps) {
                 <p className="mt-5 max-w-3xl text-sm leading-7 text-[#3f3429] md:text-base">
                   {item.aboutText}
                 </p>
+
+                {item.description ? (
+                  <p className="mt-5 max-w-3xl border-t border-[#d9cec1]/70 pt-5 text-sm leading-7 text-[#5b4c3e]">
+                    {item.description}
+                  </p>
+                ) : null}
               </AppCard>
 
               <div className="mt-8">
@@ -205,40 +245,64 @@ export default async function ExploreDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mt-14">
-                <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                  Vergelijkbare plekken
-                </h2>
+              {item.tags && item.tags.length > 0 ? (
+                <AppCard
+                  variant="glass"
+                  padding="lg"
+                  className="mt-8 rounded-[2.1rem] border-[#d9cec1]/70 bg-white/78 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+                >
+                  <h2 className="text-[clamp(1.75rem,3vw,2.4rem)] font-semibold leading-[0.96] tracking-[-0.04em] text-[#171511]">
+                    Tags en categorie
+                  </h2>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {[item.category, ...item.tags].map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-[#d9cec1]/80 bg-[#fbf8f3] px-3 py-1.5 text-xs font-semibold text-[#4b4036]"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </AppCard>
+              ) : null}
 
-                <div className="mt-6 grid gap-6 md:grid-cols-3">
-                  {item.similarPlaces.map((place) => (
-                    <article key={place.title} className="group">
-                      <div className="relative aspect-[0.88/1] overflow-hidden rounded-[1.7rem] border border-white/70 bg-white/50 shadow-[0_18px_44px_rgba(66,49,31,0.1)]">
-                        <Image
-                          src={place.image}
-                          alt={place.title}
-                          fill
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 400px"
-                        />
+              {item.similarPlaces.length > 0 ? (
+                <div className="mt-14">
+                  <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
+                    Vergelijkbare plekken
+                  </h2>
 
-                        <span className="absolute left-3 top-3 rounded-full border border-[#e8f2d0]/35 bg-[#152017]/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f7f4ed] backdrop-blur-xl">
-                          {place.badge}
-                        </span>
-                      </div>
+                  <div className="mt-6 grid gap-6 md:grid-cols-3">
+                    {item.similarPlaces.map((place) => (
+                      <article key={place.title} className="group">
+                        <div className="relative aspect-[0.88/1] overflow-hidden rounded-[1.7rem] border border-white/70 bg-white/50 shadow-[0_18px_44px_rgba(66,49,31,0.1)]">
+                          <Image
+                            src={place.image}
+                            alt={place.title}
+                            fill
+                            className="object-cover transition duration-500 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 400px"
+                          />
 
-                      <div className="pt-4">
-                        <h3 className="text-2xl font-semibold leading-none tracking-[-0.04em] text-[#171511]">
-                          {place.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-[#665d54]">
-                          {place.subtitle}
-                        </p>
-                      </div>
-                    </article>
-                  ))}
+                          <span className="absolute left-3 top-3 rounded-full border border-[#e8f2d0]/35 bg-[#152017]/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f7f4ed] backdrop-blur-xl">
+                            {place.badge}
+                          </span>
+                        </div>
+
+                        <div className="pt-4">
+                          <h3 className="text-2xl font-semibold leading-none tracking-[-0.04em] text-[#171511]">
+                            {place.title}
+                          </h3>
+                          <p className="mt-2 text-sm text-[#665d54]">
+                            {place.subtitle}
+                          </p>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
 
             <aside className="space-y-5 lg:sticky lg:top-28">
@@ -253,18 +317,24 @@ export default async function ExploreDetailPage({ params }: PageProps) {
                   rel="noreferrer"
                   className="uitjes-cta mb-3 inline-flex min-h-14 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition hover:-translate-y-0.5"
                 >
-                  {item.actions.reserveLabel}
+                  {ticketHref
+                    ? "Bekijk tickets"
+                    : reservationHref
+                      ? "Reserveer"
+                      : item.actions.reserveLabel}
                 </a>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <a
-                    href={routeHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
-                  >
-                    {item.actions.routeLabel}
-                  </a>
+                <div className={`grid gap-3 ${routeHref ? "grid-cols-2" : "grid-cols-1"}`}>
+                  {routeHref ? (
+                    <a
+                      href={routeHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
+                    >
+                      {item.actions.routeLabel}
+                    </a>
+                  ) : null}
                   <SavePlaceButton
                     item={savedPlace}
                     className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
@@ -274,6 +344,17 @@ export default async function ExploreDetailPage({ params }: PageProps) {
                     {item.actions.saveLabel}
                   </SavePlaceButton>
                 </div>
+
+                {sourceHref ? (
+                  <a
+                    href={sourceHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#d9cec1]/80 bg-white/70 px-4 text-sm font-medium text-[#4b4036] transition hover:bg-[#fbf8f3]"
+                  >
+                    Open website
+                  </a>
+                ) : null}
               </AppCard>
 
               <AppCard
@@ -286,10 +367,13 @@ export default async function ExploreDetailPage({ params }: PageProps) {
                 </h3>
 
                 <div className="mt-5 space-y-5">
+                  <DetailRow label="Locatie" value={item.practical.venue} />
                   <DetailRow label="Adres" value={item.practical.address} />
-                  <DetailRow label="Openingstijden" value={item.practical.openingHours} />
+                  <DetailRow label="Datum en tijd" value={item.practical.openingHours} />
                   <DetailRow label="Type" value={item.practical.cuisine} />
                   <DetailRow label="Prijs" value={item.practical.pricing} />
+                  <DetailRow label="Coordinaten" value={item.practical.coordinates} />
+                  <DetailRow label="Praktische info" value={item.practical.practicalInfo} />
                 </div>
               </AppCard>
             </aside>

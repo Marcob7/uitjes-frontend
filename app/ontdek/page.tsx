@@ -36,6 +36,8 @@ type BackendEvent = {
   image?: string | null;
   category_label?: string | null;
   status?: string | null;
+  kind?: string | null;
+  tags?: string[];
 };
 
 const CITY_CONTENT_CITIES = new Set(["harderwijk", "lelystad"]);
@@ -144,6 +146,8 @@ function mapCityContentToBackendEvent(
     summary: item.summary,
     image: item.imageUrl,
     category_label: item.category,
+    kind: item.kind,
+    tags: item.tags,
     status: isFoodDrink ? "Eten & drinken" : item.startAt ? null : "Plan dit moment",
   };
 }

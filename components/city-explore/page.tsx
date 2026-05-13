@@ -14,11 +14,14 @@ import type {
   PlannerMoment,
   PlannerSelections,
   PlannerVibe,
+  ResultFilterKey,
 } from "./types";
 import {
   buildExploreCards,
-  filterCardsByPlanner,
-  filterEventsByPlanner,
+  filterCardsByPlannerProgress,
+  filterCardsByResultFilters,
+  filterEventsByPlannerProgress,
+  filterEventsByResultFilters,
   getCityEditorialContent,
   getEventsWithFallback,
   isLiquidPaletteDark,
@@ -32,49 +35,6 @@ const DEFAULT_PLANNER_SELECTIONS: PlannerSelections = {
   vibe: "eten-drinken",
 };
 
-function matchesPlannerProgress<
-  T extends {
-    audiences?: PlannerCompanion[];
-    moments?: PlannerMoment[];
-    vibes?: PlannerVibe[];
-  },
->(item: T, selections: PlannerSelections, completedStepCount: number) {
-  const matchesCompanion =
-    completedStepCount < 1 ||
-    !item.audiences?.length ||
-    item.audiences.includes(selections.companion);
-  const matchesMoment =
-    completedStepCount < 2 ||
-    !item.moments?.length ||
-    item.moments.includes(selections.moment);
-  const matchesVibe =
-    completedStepCount < 3 ||
-    !item.vibes?.length ||
-    item.vibes.includes(selections.vibe);
-
-  return matchesCompanion && matchesMoment && matchesVibe;
-}
-
-function filterByPlannerProgress<
-  T extends {
-    audiences?: PlannerCompanion[];
-    moments?: PlannerMoment[];
-    vibes?: PlannerVibe[];
-  },
->(
-  items: T[],
-  selections: PlannerSelections,
-  completedStepCount: number
-) {
-  if (completedStepCount === 0) {
-    return items;
-  }
-
-  return items.filter((item) =>
-    matchesPlannerProgress(item, selections, completedStepCount)
-  );
-}
-
 export default function CityExplorePage({
   city,
   events,
@@ -86,6 +46,7 @@ export default function CityExplorePage({
   const [plannerSelections, setPlannerSelections] = useState<PlannerSelections>(
     DEFAULT_PLANNER_SELECTIONS
   );
+  const [resultFilters, setResultFilters] = useState<ResultFilterKey[]>([]);
   const plannerRef = useRef<HTMLElement | null>(null);
   const resultsRef = useRef<HTMLElement | null>(null);
 
@@ -104,29 +65,34 @@ export default function CityExplorePage({
       displayEvents,
       cityLabel,
       cityTheme.fallbackImage,
-      useEventFallback
+      useEventFallback,
+      city
     );
-  }, [cityLabel, cityTheme.fallbackImage, displayEvents, useEventFallback]);
+  }, [city, cityLabel, cityTheme.fallbackImage, displayEvents, useEventFallback]);
 
-  const filteredCards = useMemo(() => {
-    if (completedStepCount >= 3) {
-      return filterCardsByPlanner(cards, plannerSelections);
-    }
-
-    return filterByPlannerProgress(cards, plannerSelections, completedStepCount);
+  const plannerFilteredCards = useMemo(() => {
+    return filterCardsByPlannerProgress(
+      cards,
+      plannerSelections,
+      completedStepCount
+    );
   }, [cards, completedStepCount, plannerSelections]);
 
-  const filteredEvents = useMemo(() => {
-    if (completedStepCount >= 3) {
-      return filterEventsByPlanner(displayEvents, plannerSelections);
-    }
-
-    return filterByPlannerProgress(
+  const plannerFilteredEvents = useMemo(() => {
+    return filterEventsByPlannerProgress(
       displayEvents,
       plannerSelections,
       completedStepCount
     );
   }, [completedStepCount, displayEvents, plannerSelections]);
+
+  const filteredCards = useMemo(() => {
+    return filterCardsByResultFilters(plannerFilteredCards, resultFilters);
+  }, [plannerFilteredCards, resultFilters]);
+
+  const filteredEvents = useMemo(() => {
+    return filterEventsByResultFilters(plannerFilteredEvents, resultFilters);
+  }, [plannerFilteredEvents, resultFilters]);
 
   const eventsForMap = useMemo(() => {
     return sortEventsByStartDate(filteredEvents);
@@ -199,6 +165,18 @@ export default function CityExplorePage({
   function handleClearStep(step: number) {
     setCurrentStep(step);
     setCompletedStepCount(step - 1);
+  }
+
+  function handleToggleResultFilter(filter: ResultFilterKey) {
+    setResultFilters((current) =>
+      current.includes(filter)
+        ? current.filter((item) => item !== filter)
+        : [...current, filter]
+    );
+  }
+
+  function handleClearResultFilters() {
+    setResultFilters([]);
   }
 
   useEffect(() => {
@@ -292,6 +270,9 @@ export default function CityExplorePage({
             plannerSelections={plannerSelections}
             completedStepCount={completedStepCount}
             onEditSelection={showPlannerStep}
+            resultFilters={resultFilters}
+            onToggleResultFilter={handleToggleResultFilter}
+            onClearResultFilters={handleClearResultFilters}
           />
         </div>
       </div>

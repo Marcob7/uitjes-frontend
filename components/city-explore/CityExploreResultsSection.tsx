@@ -10,7 +10,9 @@ import type {
   PlannerMoment,
   PlannerSelections,
   PlannerVibe,
+  ResultFilterKey,
 } from "./types";
+import { RESULT_FILTER_OPTIONS } from "./utils";
 
 const INITIAL_VISIBLE_RESULTS = 6;
 const RESULTS_INCREMENT = 6;
@@ -24,6 +26,9 @@ type CityExploreResultsSectionProps = {
   plannerSelections: PlannerSelections;
   completedStepCount: number;
   onEditSelection: (step: number) => void;
+  resultFilters: ResultFilterKey[];
+  onToggleResultFilter: (filter: ResultFilterKey) => void;
+  onClearResultFilters: () => void;
 };
 
 type ActiveFilter = {
@@ -233,6 +238,9 @@ export default function CityExploreResultsSection({
   plannerSelections,
   completedStepCount,
   onEditSelection,
+  resultFilters,
+  onToggleResultFilter,
+  onClearResultFilters,
 }: CityExploreResultsSectionProps) {
   const [visibleState, setVisibleState] = useState({
     count: INITIAL_VISIBLE_RESULTS,
@@ -256,6 +264,7 @@ export default function CityExploreResultsSection({
   const visibleResultCount = displayedCards.length;
   const hasMoreResults = visibleResultCount < filteredCards.length;
   const hasExpandableResults = filteredCards.length > INITIAL_VISIBLE_RESULTS;
+  const hasResultFilters = resultFilters.length > 0;
   const resultsLabel =
     filteredCards.length === 1
       ? "1 match"
@@ -349,18 +358,41 @@ export default function CityExploreResultsSection({
             <div className="mt-8 flex flex-wrap items-center gap-3 md:mt-0">
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-sm font-medium text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/14"
+                onClick={onClearResultFilters}
+                disabled={!hasResultFilters}
+                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] ${
+                  hasResultFilters
+                    ? "border-[#e8f2d0]/34 bg-[#e8f2d0]/18 text-white hover:-translate-y-0.5 hover:bg-[#e8f2d0]/24"
+                    : "cursor-default border-white/16 bg-white/10 text-white/72"
+                }`}
               >
                 <FilterIcon className="h-4 w-4" />
-                <span>Filter</span>
+                <span>{hasResultFilters ? "Reset filters" : "Filter"}</span>
               </button>
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-sm font-medium text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/14"
-              >
+              {RESULT_FILTER_OPTIONS.map((filter) => {
+                const active = resultFilters.includes(filter.id);
+
+                return (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => onToggleResultFilter(filter.id)}
+                    aria-pressed={active}
+                    title={filter.description}
+                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] ${
+                      active
+                        ? "border-[#e8f2d0]/44 bg-[#e8f2d0]/24 text-white"
+                        : "border-white/16 bg-white/10 text-white hover:bg-white/14"
+                    }`}
+                  >
+                    <span>{filter.label}</span>
+                  </button>
+                );
+              })}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-4 py-2.5 text-sm font-medium text-white/72 shadow-[0_12px_28px_rgba(0,0,0,0.1)] backdrop-blur-md">
                 <span>Sorteren op match</span>
                 <ChevronDownIcon className="h-4 w-4" />
-              </button>
+              </div>
             </div>
           </div>
         </div>

@@ -27,6 +27,8 @@ export type BackendEvent = {
   image?: string | null;
   status?: string | null;
   category_label?: string | null;
+  kind?: string | null;
+  tags?: string[];
   audiences?: PlannerCompanion[];
   moments?: PlannerMoment[];
   vibes?: PlannerVibe[];
@@ -51,6 +53,11 @@ export type ExploreCard = {
   distance?: string;
   status?: string;
   rating?: number | null;
+  startAt?: string | null;
+  endAt?: string | null;
+  isOngoing?: boolean;
+  kind?: string | null;
+  tags?: string[];
   audiences?: PlannerCompanion[];
   moments?: PlannerMoment[];
   vibes?: PlannerVibe[];
@@ -67,6 +74,15 @@ export type PlannerSelections = {
   moment: PlannerMoment;
   vibe: PlannerVibe;
 };
+
+export type ResultFilterKey =
+  | "food_drink"
+  | "outings"
+  | "free"
+  | "now"
+  | "evening"
+  | "culture"
+  | "active";
 
 export type CalendarView = "dag" | "week" | "maand" | "jaar";
 

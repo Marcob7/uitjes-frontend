@@ -5,24 +5,38 @@ import {
 } from "@/components/city-explore/data";
 import { slugify } from "@/components/city-explore/utils";
 import type { CityContentItem } from "@/lib/api/cityContent";
+import { normalizeCitySlug } from "@/lib/cityConfig";
 
 export type ExploreDetailItem = {
   slug: string;
   title: string;
   city: string;
+  citySlug?: string;
+  kind?: string | null;
   category: string;
   status: string;
   subtitle: string;
   heroImage: string;
+  heroImageAlt?: string;
   gallery: string[];
   reasons: string[];
   aboutTitle: string;
   aboutText: string;
+  description?: string;
+  tags?: string[];
+  links?: {
+    sourceUrl?: string | null;
+    ticketUrl?: string | null;
+    reservationUrl?: string | null;
+  };
   practical: {
-    address: string;
-    openingHours: string;
-    cuisine: string;
-    pricing: string;
+    venue?: string;
+    address?: string;
+    openingHours?: string;
+    cuisine?: string;
+    pricing?: string;
+    coordinates?: string;
+    practicalInfo?: string;
   };
   actions: {
     reserveLabel: string;
@@ -66,6 +80,14 @@ function formatCityName(city: string | null) {
     .join(" ");
 }
 
+function formatTagLabel(tag: string) {
+  return tag
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function formatDateTimeRange(startAt: string | null, endAt: string | null) {
   if (!startAt) return "Planning volgt";
 
@@ -104,47 +126,81 @@ function formatDateTimeRange(startAt: string | null, endAt: string | null) {
 function formatCityContentPricing(item: CityContentItem) {
   if (item.priceNote) return item.priceNote;
   if (item.isFree) return "Gratis";
-  return "Prijs volgt";
+  if (typeof item.priceMin === "number" && typeof item.priceMax === "number") {
+    if (item.priceMin === item.priceMax) return `EUR ${item.priceMin.toFixed(2).replace(".", ",")}`;
+    return `EUR ${item.priceMin.toFixed(2).replace(".", ",")} - EUR ${item.priceMax
+      .toFixed(2)
+      .replace(".", ",")}`;
+  }
+  if (typeof item.priceMin === "number") {
+    return `Vanaf EUR ${item.priceMin.toFixed(2).replace(".", ",")}`;
+  }
+  return undefined;
 }
 
 export function mapCityContentToExploreDetail(
   item: CityContentItem,
   slug: string
 ): ExploreDetailItem {
-  const city = formatCityName(item.city);
+  const city = formatCityName(item.cityName || item.city);
+  const citySlug = normalizeCitySlug(item.city || item.cityName);
   const title = item.title || titleFromSlug(slug);
   const category = item.category || (item.kind === "food_drink" ? "Eten & drinken" : "Moment");
   const image = item.imageUrl || "/images/apeldoorn_img.jpg";
   const pricing = formatCityContentPricing(item);
+  const isFoodDrink = item.kind === "food_drink";
+  const dateLabel =
+    item.rawDateText ||
+    item.dateText ||
+    (item.startAt ? formatDateTimeRange(item.startAt, item.endAt) : null);
   const openingHours =
-    item.kind === "food_drink"
-      ? "Openingstijden volgen"
-      : formatDateTimeRange(item.startAt, item.endAt);
+    item.openingHoursText || (!isFoodDrink && dateLabel ? dateLabel : undefined);
+  const effectiveAddress = item.address || item.venueAddress || undefined;
+  const coordinates =
+    typeof item.latitude === "number" && typeof item.longitude === "number"
+      ? `${item.latitude.toFixed(5)}, ${item.longitude.toFixed(5)}`
+      : undefined;
+  const tags = item.tags.map(formatTagLabel);
+  const aboutText =
+    item.description ||
+    item.summary ||
+    `${title} is opgenomen in de city-content data voor ${city}. We tonen alvast de beschikbare informatie, ook als nog niet alle detailvelden zijn ingevuld.`;
 
   return {
     slug: item.slug || slug,
     title,
+    citySlug,
+    kind: item.kind,
     city,
     category: category.toUpperCase(),
-    status: item.kind === "food_drink" ? "ETEN & DRINKEN" : "PLAN DIT MOMENT",
-    subtitle: [category, item.venue || city, pricing].filter(Boolean).join(" | "),
+    status: isFoodDrink ? "ETEN & DRINKEN" : item.status?.toUpperCase() || "PLAN DIT MOMENT",
+    subtitle: [category, item.venue || city, dateLabel, pricing].filter(Boolean).join(" | "),
     heroImage: image,
+    heroImageAlt: item.imageAlt || title,
     gallery: [image, "/images/apeldoorn_img.jpg", "/images/julianatoren.jpg", image],
     reasons: [
       "Geselecteerd uit de actuele city-content data",
-      "Past bij een route door de stad",
-      "Handig te combineren met andere lokale stops",
+      item.venue ? `Locatie: ${item.venue}` : "Past bij een route door de stad",
+      dateLabel ? `Moment: ${dateLabel}` : "Flexibel te plannen",
       "Beschikbaar zonder extra planning in deze ontdekflow",
     ],
     aboutTitle: "Over deze plek",
-    aboutText:
-      item.summary ||
-      `${title} is opgenomen in de city-content data voor ${city}. We tonen alvast de beschikbare informatie, ook als nog niet alle detailvelden zijn ingevuld.`,
+    aboutText,
+    description: item.summary && item.summary !== aboutText ? item.summary : undefined,
+    tags,
+    links: {
+      sourceUrl: item.sourceUrl,
+      ticketUrl: item.ticketUrl,
+      reservationUrl: item.reservationUrl,
+    },
     practical: {
-      address: item.venue || `${city} centrum`,
+      venue: item.venue || undefined,
+      address: effectiveAddress,
       openingHours,
       cuisine: category,
       pricing,
+      coordinates,
+      practicalInfo: item.practicalInfo || undefined,
     },
     actions: {
       reserveLabel: item.ticketUrl || item.reservationUrl ? "Bekijk tickets" : "Bekijk moment",
@@ -336,6 +392,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       slug,
       title: eventMatch.title,
       city,
+      citySlug: normalizeCitySlug(eventMatch.city),
       category: (eventMatch.category_label || "speciaal geselecteerd TIP").toUpperCase(),
       status: (eventMatch.status || "PLAN DIT MOMENT").toUpperCase(),
       subtitle: [
@@ -409,6 +466,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       slug,
       title: cardMatch.title,
       city: "Haarlem",
+      citySlug: "haarlem",
       category: cardMatch.label.toUpperCase(),
       status: (cardMatch.status || "CURATED PICK").toUpperCase(),
       subtitle: [cardMatch.location, cardMatch.price, cardMatch.rating?.toFixed(1)]
