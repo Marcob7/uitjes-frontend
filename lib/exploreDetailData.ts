@@ -4,6 +4,7 @@ import {
   mockCardsByCategory,
 } from "@/components/city-explore/data";
 import { slugify } from "@/components/city-explore/utils";
+import type { CityContentItem } from "@/lib/api/cityContent";
 
 export type ExploreDetailItem = {
   slug: string;
@@ -53,6 +54,105 @@ function titleFromSlug(slug: string) {
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function formatCityName(city: string | null) {
+  if (!city) return "Nederland";
+
+  return city
+    .split(/[\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function formatDateTimeRange(startAt: string | null, endAt: string | null) {
+  if (!startAt) return "Planning volgt";
+
+  const start = new Date(startAt);
+
+  if (Number.isNaN(start.getTime())) {
+    return "Planning volgt";
+  }
+
+  const date = start.toLocaleDateString("nl-NL", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  const startTime = start.toLocaleTimeString("nl-NL", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  if (!endAt) return `${date} | ${startTime}`;
+
+  const end = new Date(endAt);
+
+  if (Number.isNaN(end.getTime())) {
+    return `${date} | ${startTime}`;
+  }
+
+  const endTime = end.toLocaleTimeString("nl-NL", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `${date} | ${startTime} - ${endTime}`;
+}
+
+function formatCityContentPricing(item: CityContentItem) {
+  if (item.priceNote) return item.priceNote;
+  if (item.isFree) return "Gratis";
+  return "Prijs volgt";
+}
+
+export function mapCityContentToExploreDetail(
+  item: CityContentItem,
+  slug: string
+): ExploreDetailItem {
+  const city = formatCityName(item.city);
+  const title = item.title || titleFromSlug(slug);
+  const category = item.category || (item.kind === "food_drink" ? "Eten & drinken" : "Moment");
+  const image = item.imageUrl || "/images/apeldoorn_img.jpg";
+  const pricing = formatCityContentPricing(item);
+  const openingHours =
+    item.kind === "food_drink"
+      ? "Openingstijden volgen"
+      : formatDateTimeRange(item.startAt, item.endAt);
+
+  return {
+    slug: item.slug || slug,
+    title,
+    city,
+    category: category.toUpperCase(),
+    status: item.kind === "food_drink" ? "ETEN & DRINKEN" : "PLAN DIT MOMENT",
+    subtitle: [category, item.venue || city, pricing].filter(Boolean).join(" | "),
+    heroImage: image,
+    gallery: [image, "/images/apeldoorn_img.jpg", "/images/julianatoren.jpg", image],
+    reasons: [
+      "Geselecteerd uit de actuele city-content data",
+      "Past bij een route door de stad",
+      "Handig te combineren met andere lokale stops",
+      "Beschikbaar zonder extra planning in deze ontdekflow",
+    ],
+    aboutTitle: "Over deze plek",
+    aboutText:
+      item.summary ||
+      `${title} is opgenomen in de city-content data voor ${city}. We tonen alvast de beschikbare informatie, ook als nog niet alle detailvelden zijn ingevuld.`,
+    practical: {
+      address: item.venue || `${city} centrum`,
+      openingHours,
+      cuisine: category,
+      pricing,
+    },
+    actions: {
+      reserveLabel: item.ticketUrl || item.reservationUrl ? "Bekijk tickets" : "Bekijk moment",
+      routeLabel: "Bekijk route",
+      saveLabel: "Sla op",
+    },
+    similarPlaces: [],
+  };
 }
 
 export const exploreDetailData: Record<string, ExploreDetailItem> = {

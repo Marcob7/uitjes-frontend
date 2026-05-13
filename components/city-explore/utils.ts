@@ -244,6 +244,10 @@ export function formatTimeRange(startAt: string | null, endAt: string | null) {
 }
 
 function formatPrice(event: BackendEvent) {
+  if (event.price_note) {
+    return event.price_note;
+  }
+
   if (event.is_free || event.price_min === 0) {
     return "Gratis";
   }
@@ -296,24 +300,25 @@ export function buildExploreCards(
   activeTab: CategoryKey,
   events: BackendEvent[],
   cityLabel: string,
-  fallbackImage: string
+  fallbackImage: string,
+  useMockFallback = true
 ): ExploreCard[] {
   if (activeTab !== "events") {
     return mockCardsByCategory[activeTab];
   }
 
   if (!events?.length) {
-    return mockCardsByCategory.events;
+    return useMockFallback ? mockCardsByCategory.events : [];
   }
 
-  return sortEventsByStartDate(events).slice(0, 6).map((event) => ({
+  return sortEventsByStartDate(events).map((event) => ({
     id: event.id,
     title: event.title || "Onbekend event",
     label: event.category_label || (event.is_free ? "Free event" : "Event"),
     time: formatTimeRange(event.start_at, event.end_at),
     location: formatVenue(event.venue, cityLabel),
     image: event.image || fallbackImage,
-    href: `/ontdek/${slugify(event.title || `event-${event.id}`)}`,
+    href: `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
     description:
       event.summary ||
       "Een zorgvuldig geselecteerd moment dat goed past in een spontane stadsdag.",

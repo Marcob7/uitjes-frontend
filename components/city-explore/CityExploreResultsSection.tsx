@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import type { ReactElement, RefObject } from "react";
 
 import ExploreCardItem from "./ExploreCardItem";
@@ -10,6 +11,9 @@ import type {
   PlannerSelections,
   PlannerVibe,
 } from "./types";
+
+const INITIAL_VISIBLE_RESULTS = 6;
+const RESULTS_INCREMENT = 6;
 
 type CityExploreResultsSectionProps = {
   cityLabel: string;
@@ -230,16 +234,59 @@ export default function CityExploreResultsSection({
   completedStepCount,
   onEditSelection,
 }: CityExploreResultsSectionProps) {
+  const [visibleState, setVisibleState] = useState({
+    count: INITIAL_VISIBLE_RESULTS,
+    resultSetKey: "",
+  });
   const activeFilters = buildActiveFilters(
     cityLabel,
     plannerSelections,
     completedStepCount
   );
   const hasNoResults = filteredCards.length === 0;
+  const resultSetKey = useMemo(
+    () => `${cityLabel}:${filteredCards.map((card) => card.id).join(",")}`,
+    [cityLabel, filteredCards]
+  );
+  const visibleCount =
+    visibleState.resultSetKey === resultSetKey
+      ? visibleState.count
+      : INITIAL_VISIBLE_RESULTS;
+  const displayedCards = filteredCards.slice(0, visibleCount);
+  const visibleResultCount = displayedCards.length;
+  const hasMoreResults = visibleResultCount < filteredCards.length;
+  const hasExpandableResults = filteredCards.length > INITIAL_VISIBLE_RESULTS;
   const resultsLabel =
     filteredCards.length === 1
       ? "1 match"
       : `${filteredCards.length} matches`;
+
+  useEffect(() => {
+    setVisibleState((current) => {
+      if (current.resultSetKey === resultSetKey) {
+        return current;
+      }
+
+      return {
+        count: INITIAL_VISIBLE_RESULTS,
+        resultSetKey,
+      };
+    });
+  }, [resultSetKey]);
+
+  function handleShowMoreResults() {
+    setVisibleState((current) => {
+      const currentCount =
+        current.resultSetKey === resultSetKey
+          ? current.count
+          : INITIAL_VISIBLE_RESULTS;
+
+      return {
+        count: Math.min(currentCount + RESULTS_INCREMENT, filteredCards.length),
+        resultSetKey,
+      };
+    });
+  }
 
   return (
     <section
@@ -319,7 +366,7 @@ export default function CityExploreResultsSection({
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          {filteredCards.map((card, index) => (
+          {displayedCards.map((card, index) => (
             <ExploreCardItem
               key={card.id}
               card={card}
@@ -329,6 +376,27 @@ export default function CityExploreResultsSection({
             />
           ))}
         </div>
+
+        {hasExpandableResults && !hasNoResults ? (
+          <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-medium text-white/72">
+              {visibleResultCount} van {filteredCards.length} resultaten
+            </p>
+            {hasMoreResults ? (
+              <button
+                type="button"
+                onClick={handleShowMoreResults}
+                className="inline-flex w-full items-center justify-center rounded-full border border-white/16 bg-white/10 px-4 py-2.5 text-sm font-medium text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/14 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:w-auto"
+              >
+                Meer resultaten tonen
+              </button>
+            ) : (
+              <p className="text-sm font-medium text-white/72">
+                Alle resultaten getoond
+              </p>
+            )}
+          </div>
+        ) : null}
 
         {hasNoResults ? (
           <div className="mt-8 rounded-[2rem] border border-white/16 bg-white/10 p-6 text-white shadow-[0_22px_48px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:p-8">

@@ -7,6 +7,7 @@ export type CategoryKey =
 
 export type BackendEvent = {
   id: number;
+  slug?: string | null;
   title: string;
   city: string;
   venue: string | null;
@@ -16,6 +17,7 @@ export type BackendEvent = {
   is_ongoing: boolean;
   is_free: boolean;
   price_min: number | null;
+  price_note?: string | null;
   source_url: string | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -33,6 +35,7 @@ export type BackendEvent = {
 export type CityExploreViewProps = {
   city: string;
   events: BackendEvent[];
+  useEventFallback?: boolean;
 };
 
 export type ExploreCard = {

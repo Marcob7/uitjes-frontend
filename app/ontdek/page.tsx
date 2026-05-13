@@ -3,6 +3,11 @@ export const runtime = "edge";
 import CityExplorePage from "@/components/city-explore/page";
 import { getEventsWithFallback } from "@/components/city-explore/utils";
 import { AppButton, AppEmptyState, AppSection } from "@/components/ui/app";
+import {
+  getCityContentByCity,
+  type CityContentItem,
+} from "@/lib/api/cityContent";
+import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 
 type OntdekPageProps = {
   searchParams?: {
@@ -13,6 +18,7 @@ type OntdekPageProps = {
 
 type BackendEvent = {
   id: number;
+  slug?: string | null;
   title: string;
   city: string;
   venue: string | null;
@@ -22,13 +28,35 @@ type BackendEvent = {
   is_ongoing: boolean;
   is_free: boolean;
   price_min: number | null;
+  price_note?: string | null;
   source_url: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  summary?: string | null;
+  image?: string | null;
+  category_label?: string | null;
+  status?: string | null;
 };
+
+const CITY_CONTENT_CITIES = new Set(["harderwijk", "lelystad"]);
 
 function normalizeCity(value: string | undefined) {
   if (!value) return "apeldoorn";
 
-  return value.trim().toLowerCase().replace(/\s+/g, "-");
+  return normalizeCitySlug(value);
+}
+
+function getCitySlugFromQuery(query: string | undefined) {
+  const normalizedQuery = normalizeCitySlug(query);
+  if (!normalizedQuery) return null;
+
+  const matchedCity = cityOptions.find(
+    (city) =>
+      city.value === normalizedQuery ||
+      normalizeCitySlug(city.label) === normalizedQuery
+  );
+
+  return matchedCity?.value ?? null;
 }
 
 function NoResultsForQuery({ query }: { query: string }) {
@@ -81,7 +109,61 @@ function shouldUseDummyData(city: string) {
   return getEventsWithFallback(city, []).length > 0;
 }
 
+function isCityContentCity(city: string) {
+  return CITY_CONTENT_CITIES.has(city);
+}
+
+function logCityContentFallback(city: string, error: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(`${city} city-content fallback gebruikt:`, error);
+  }
+}
+
+function mapCityContentToBackendEvent(
+  item: CityContentItem,
+  fallbackCity: string
+): BackendEvent {
+  const isFoodDrink = item.kind === "food_drink";
+
+  return {
+    id: item.id ?? 0,
+    slug: item.slug,
+    title: item.title ?? "Onbekende plek",
+    city: item.city ?? fallbackCity,
+    venue: item.venue,
+    start_at: isFoodDrink ? null : item.startAt,
+    end_at: isFoodDrink ? null : item.endAt,
+    date_text: null,
+    is_ongoing: false,
+    is_free: item.isFree,
+    price_min: null,
+    price_note: item.priceNote,
+    source_url: item.sourceUrl,
+    latitude: item.latitude,
+    longitude: item.longitude,
+    summary: item.summary,
+    image: item.imageUrl,
+    category_label: item.category,
+    status: isFoodDrink ? "Eten & drinken" : item.startAt ? null : "Plan dit moment",
+  };
+}
+
+async function getCityContentEvents(city: string): Promise<BackendEvent[]> {
+  try {
+    const cityContent = await getCityContentByCity(city);
+
+    return cityContent.map((item) => mapCityContentToBackendEvent(item, city));
+  } catch (error) {
+    logCityContentFallback(city, error);
+    return [];
+  }
+}
+
 async function getCityEvents(city: string): Promise<BackendEvent[]> {
+  if (isCityContentCity(city)) {
+    return getCityContentEvents(city);
+  }
+
   if (shouldUseDummyData(city)) {
     return [];
   }
@@ -122,13 +204,20 @@ async function getCityEvents(city: string): Promise<BackendEvent[]> {
 
 export default async function OntdekPage({ searchParams }: OntdekPageProps) {
   const query = searchParams?.query?.trim();
+  const cityFromQuery = getCitySlugFromQuery(query);
 
-  if (query && !searchParams?.city) {
+  if (query && !searchParams?.city && !cityFromQuery) {
     return <NoResultsForQuery query={query} />;
   }
 
-  const city = normalizeCity(searchParams?.city);
+  const city = normalizeCity(searchParams?.city ?? cityFromQuery ?? undefined);
   const events = await getCityEvents(city);
 
-  return <CityExplorePage city={city} events={events} />;
+  return (
+    <CityExplorePage
+      city={city}
+      events={events}
+      useEventFallback={!isCityContentCity(city)}
+    />
+  );
 }

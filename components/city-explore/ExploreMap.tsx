@@ -29,6 +29,7 @@ const CITY_CENTERS: Record<string, [number, number]> = {
   haarlem: [4.6462, 52.3874],
   deventer: [6.1639, 52.255],
   zwolle: [6.0944, 52.5168],
+  lelystad: [5.4714, 52.5185],
   "den-haag": [4.3007, 52.0705],
   groningen: [6.5665, 53.2194],
   eindhoven: [5.4697, 51.4416],

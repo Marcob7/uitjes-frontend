@@ -11,7 +11,9 @@ import {
 import {
   getAllExploreDetailSlugs,
   getExploreDetailBySlug,
+  mapCityContentToExploreDetail,
 } from "@/lib/exploreDetailData";
+import { getCityContentBySlug } from "@/lib/api/cityContent";
 
 type PageProps = {
   params: {
@@ -19,7 +21,7 @@ type PageProps = {
   };
 };
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return getAllExploreDetailSlugs().map((slug) => ({
@@ -52,8 +54,24 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function ExploreDetailPage({ params }: PageProps) {
-  const item = getExploreDetailBySlug(params.slug);
+async function getExploreDetail(slug: string) {
+  const fallbackItem = getExploreDetailBySlug(slug);
+
+  if (fallbackItem) {
+    return fallbackItem;
+  }
+
+  const cityContentItem = await getCityContentBySlug(slug);
+
+  if (!cityContentItem) {
+    return null;
+  }
+
+  return mapCityContentToExploreDetail(cityContentItem, slug);
+}
+
+export default async function ExploreDetailPage({ params }: PageProps) {
+  const item = await getExploreDetail(params.slug);
 
   if (!item) {
     notFound();

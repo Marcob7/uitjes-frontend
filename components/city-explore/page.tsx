@@ -78,6 +78,7 @@ function filterByPlannerProgress<
 export default function CityExplorePage({
   city,
   events,
+  useEventFallback = true,
 }: CityExploreViewProps) {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
@@ -94,17 +95,18 @@ export default function CityExplorePage({
   const isDarkLiquid = useMemo(() => isLiquidPaletteDark(cityTheme), [cityTheme]);
 
   const displayEvents = useMemo(() => {
-    return getEventsWithFallback(city, events);
-  }, [city, events]);
+    return useEventFallback ? getEventsWithFallback(city, events) : events;
+  }, [city, events, useEventFallback]);
 
   const cards = useMemo(() => {
     return buildExploreCards(
       "events",
       displayEvents,
       cityLabel,
-      cityTheme.fallbackImage
+      cityTheme.fallbackImage,
+      useEventFallback
     );
-  }, [cityLabel, cityTheme.fallbackImage, displayEvents]);
+  }, [cityLabel, cityTheme.fallbackImage, displayEvents, useEventFallback]);
 
   const filteredCards = useMemo(() => {
     if (completedStepCount >= 3) {
