@@ -26,6 +26,7 @@ type PageProps = {
 };
 
 export const dynamicParams = true;
+export const runtime = "edge";
 
 export function generateStaticParams() {
   return getAllExploreDetailSlugs().map((slug) => ({
