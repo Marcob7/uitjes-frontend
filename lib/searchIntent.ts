@@ -1,6 +1,6 @@
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 
-export type SearchIntent = "festival" | "uitje" | "stad" | "onbekend";
+export type SearchIntent = "festival" | "zoeken" | "stad" | "onbekend";
 
 const festivalTerms = [
   "festival",
@@ -22,12 +22,24 @@ const activityTerms = [
   "uitje",
   "uitjes",
   "museum",
+  "musea",
   "wandelen",
   "wandeling",
   "kind",
   "kinderen",
   "restaurant",
   "restaurants",
+  "bowlen",
+  "bowling",
+  "klimmen",
+  "klimhal",
+  "regen",
+  "slecht weer",
+  "escaperoom",
+  "escape room",
+  "karten",
+  "karting",
+  "rondvaart",
   "date",
   "eten",
   "drinken",
@@ -64,7 +76,7 @@ export function detectSearchIntent(query: string): SearchIntent {
   }
 
   if (activityTerms.some((term) => normalized.includes(normalizeQuery(term)))) {
-    return "uitje";
+    return "zoeken";
   }
 
   return "onbekend";
@@ -78,10 +90,10 @@ export function getSearchRoute(query: string) {
   if (!trimmedQuery) return "/ontdek";
 
   if (intent === "festival") return `/festivals/lijst?query=${encodedQuery}`;
-  if (intent === "uitje") return `/uitjes?query=${encodedQuery}`;
+  if (intent === "zoeken") return `/zoeken?query=${encodedQuery}`;
   if (intent === "stad") {
     return `/ontdek?city=${encodeURIComponent(normalizeCitySlug(trimmedQuery))}`;
   }
 
-  return `/uitjes?query=${encodedQuery}`;
+  return `/zoeken?query=${encodedQuery}`;
 }
