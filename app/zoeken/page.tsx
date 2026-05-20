@@ -1,4 +1,5 @@
 import { AppButton, AppEmptyState, AppResultCard, AppSection } from "@/components/ui/app";
+import EmptyStateSearchActions from "@/components/search/EmptyStateSearchActions";
 import { getGeneralSearchResults } from "@/lib/search/searchResults";
 
 export const runtime = "edge";
@@ -72,27 +73,31 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           </div>
         ) : (
           <AppEmptyState
-            title="Geen resultaten gevonden"
+            title={query ? `Geen resultaten voor "${query}"` : "Vul een zoekterm in"}
             description={
               query
-                ? `We vonden geen activiteiten voor "${query}". Probeer een andere zoekterm, kies een stad of bekijk festivals.`
-                : "Vul een zoekterm in, kies een stad of bekijk festivals."
+                ? "Probeer een andere zoekterm of zoek op een stad."
+                : "Zoek op een stad, activiteit of festival om resultaten te vinden."
             }
             className="mx-auto max-w-3xl"
-          />
+          >
+            <EmptyStateSearchActions initialQuery={query} />
+          </AppEmptyState>
         )}
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          <AppButton href="/ontdek" variant="dark">
-            Kies een stad
-          </AppButton>
-          <AppButton href="/inspiratie" variant="dark">
-            Bekijk inspiratie
-          </AppButton>
-          <AppButton href="/festivals/lijst" variant="dark">
-            Bekijk festivals
-          </AppButton>
-        </div>
+        {results.length > 0 ? (
+          <div className="mt-8 flex flex-wrap gap-3">
+            <AppButton href="/ontdek" variant="dark">
+              Kies een stad
+            </AppButton>
+            <AppButton href="/inspiratie" variant="dark">
+              Bekijk inspiratie
+            </AppButton>
+            <AppButton href="/uitjes" variant="dark">
+              Populaire categorieen
+            </AppButton>
+          </div>
+        ) : null}
       </AppSection>
     </main>
   );

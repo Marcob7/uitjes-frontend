@@ -12,6 +12,7 @@ export type AppEmptyStateProps = {
   actionLabel?: string;
   onAction?: () => void;
   icon?: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
 };
 
@@ -21,6 +22,7 @@ export function AppEmptyState({
   actionLabel,
   onAction,
   icon,
+  children,
   className,
 }: AppEmptyStateProps) {
   return (
@@ -50,6 +52,7 @@ export function AppEmptyState({
           </AppButton>
         </div>
       ) : null}
+      {children ? <div className="mt-5">{children}</div> : null}
     </div>
   );
 }

@@ -29,6 +29,7 @@ type CityExploreResultsSectionProps = {
   resultFilters: ResultFilterKey[];
   onToggleResultFilter: (filter: ResultFilterKey) => void;
   onClearResultFilters: () => void;
+  onClearAllFilters: () => void;
 };
 
 type ActiveFilter = {
@@ -241,6 +242,7 @@ export default function CityExploreResultsSection({
   resultFilters,
   onToggleResultFilter,
   onClearResultFilters,
+  onClearAllFilters,
 }: CityExploreResultsSectionProps) {
   const [visibleState, setVisibleState] = useState({
     count: INITIAL_VISIBLE_RESULTS,
@@ -265,6 +267,8 @@ export default function CityExploreResultsSection({
   const hasMoreResults = visibleResultCount < filteredCards.length;
   const hasExpandableResults = filteredCards.length > INITIAL_VISIBLE_RESULTS;
   const hasResultFilters = resultFilters.length > 0;
+  const hasPlannerFilters = completedStepCount > 0;
+  const hasActiveFilters = hasResultFilters || hasPlannerFilters;
   const resultsLabel =
     filteredCards.length === 1
       ? "1 match"
@@ -436,12 +440,32 @@ export default function CityExploreResultsSection({
               Geen directe matches
             </div>
             <h3 className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white">
-              Geen resultaten voor deze combinatie
+              {hasActiveFilters
+                ? `Geen resultaten gevonden in ${cityLabel} met deze filters`
+                : `Geen resultaten gevonden in ${cityLabel}`}
             </h3>
             <p className="mt-3 max-w-[40rem] text-sm leading-7 text-white/74 sm:text-base">
-              Pas hierboven je moment, gezelschap of sfeer aan om opnieuw te zoeken
-              in {cityLabel}.
+              {hasActiveFilters
+                ? `Pas je filters aan of bekijk alle resultaten in ${cityLabel}.`
+                : `Kies een andere stad of probeer later opnieuw voor ${cityLabel}.`}
             </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  onClick={onClearAllFilters}
+                  className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#e8f2d0]/45 bg-[#e8f2d0] px-5 py-2.5 text-sm font-semibold text-[#162016] shadow-[0_12px_28px_rgba(0,0,0,0.14)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
+                >
+                  Bekijk alle resultaten in {cityLabel}
+                </button>
+              ) : null}
+              <a
+                href="/ontdek"
+                className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/16 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/14 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
+              >
+                Kies een andere stad
+              </a>
+            </div>
           </div>
         ) : null}
       </div>

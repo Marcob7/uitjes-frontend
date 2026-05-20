@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 type InspirationLocationContextProps = {
   compact?: boolean;
   className?: string;
+  surface?: "glass" | "plain";
 };
 
 const locationOptions = [
@@ -52,6 +53,7 @@ function getInitialCity(location: string | null) {
 export function InspirationLocationContext({
   compact = false,
   className,
+  surface = "glass",
 }: InspirationLocationContextProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -188,17 +190,30 @@ export function InspirationLocationContext({
   return (
     <div
       className={cn(
-        "rounded-[1.4rem] border border-white/14 bg-white/10 p-4 text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] backdrop-blur-xl",
+        "rounded-[1.4rem] p-4",
+        surface === "glass"
+          ? "border border-white/14 bg-white/10 text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] backdrop-blur-xl"
+          : "bg-transparent text-[#171511]",
         compact ? "max-w-none" : "max-w-[46rem]",
         className
       )}
     >
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/64">
+          <p
+            className={cn(
+              "text-[11px] font-semibold uppercase tracking-[0.2em]",
+              surface === "glass" ? "text-white/64" : "text-[#8b7a69]"
+            )}
+          >
             Waar wil je inspiratie voor?
           </p>
-          <p className="mt-1 text-sm leading-6 text-white/76">
+          <p
+            className={cn(
+              "mt-1 text-sm leading-6",
+              surface === "glass" ? "text-white/76" : "text-[#665d54]"
+            )}
+          >
             Kies alleen context; je inspiratiecategorie blijft leidend.
           </p>
         </div>
@@ -229,7 +244,9 @@ export function InspirationLocationContext({
                 "inline-flex min-h-10 items-center rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]",
                 selectedMode === option.value
                   ? "border-[#e8f2d0]/70 bg-[#e8f2d0] text-[#162016]"
-                  : "border-white/16 bg-white/10 text-white/82 hover:bg-white/14",
+                  : surface === "glass"
+                    ? "border-white/16 bg-white/10 text-white/82 hover:bg-white/14"
+                    : "border-[#d7cfbf] bg-white/72 text-[#3f362f] hover:bg-white",
                 option.value === "nearby" && isResolvingLocation
                   ? "cursor-wait opacity-75"
                   : ""
@@ -244,20 +261,37 @@ export function InspirationLocationContext({
       </div>
 
       {isResolvingLocation ? (
-        <p className="mt-3 text-sm font-medium text-white/78" role="status">
+        <p
+          className={cn(
+            "mt-3 text-sm font-medium",
+            surface === "glass" ? "text-white/78" : "text-[#665d54]"
+          )}
+          role="status"
+        >
           We vragen je browser om locatie-toestemming.
         </p>
       ) : null}
 
       {locationStatus ? (
-        <p className="mt-3 text-sm font-medium text-[#e8f2d0]" role="status">
+        <p
+          className={cn(
+            "mt-3 text-sm font-medium",
+            surface === "glass" ? "text-[#e8f2d0]" : "text-[#405028]"
+          )}
+          role="status"
+        >
           {locationStatus}
         </p>
       ) : null}
 
       {locationError ? (
         <p
-          className="mt-3 rounded-2xl border border-white/14 bg-white/10 px-4 py-3 text-sm font-medium text-white"
+          className={cn(
+            "mt-3 rounded-2xl border px-4 py-3 text-sm font-medium",
+            surface === "glass"
+              ? "border-white/14 bg-white/10 text-white"
+              : "border-[#e2d7cb] bg-white/72 text-[#3f362f]"
+          )}
           role="alert"
         >
           {locationError}
@@ -297,7 +331,12 @@ export function InspirationLocationContext({
         <button
           type="button"
           onClick={startPickingCity}
-          className="mt-3 text-sm font-semibold text-[#e8f2d0] underline decoration-white/24 underline-offset-4"
+          className={cn(
+            "mt-3 text-sm font-semibold underline underline-offset-4",
+            surface === "glass"
+              ? "text-[#e8f2d0] decoration-white/24"
+              : "text-[#405028] decoration-[#b8c89c]"
+          )}
         >
           Of kies een stad
         </button>

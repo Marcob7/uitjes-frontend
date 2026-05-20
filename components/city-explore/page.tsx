@@ -179,6 +179,12 @@ export default function CityExplorePage({
     setResultFilters([]);
   }
 
+  function handleClearAllFilters() {
+    setResultFilters([]);
+    setCompletedStepCount(0);
+    setCurrentStep(1);
+  }
+
   useEffect(() => {
     const firstAvailableId = eventsForMap[0]?.id ?? filteredCards[0]?.id ?? null;
 
@@ -273,6 +279,7 @@ export default function CityExplorePage({
             resultFilters={resultFilters}
             onToggleResultFilter={handleToggleResultFilter}
             onClearResultFilters={handleClearResultFilters}
+            onClearAllFilters={handleClearAllFilters}
           />
         </div>
       </div>

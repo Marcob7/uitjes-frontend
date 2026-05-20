@@ -17,8 +17,8 @@ export default function CityExploreMapSection({
   setSelectedId,
 }: CityExploreMapSectionProps) {
   return (
-    <section className="bg-white">
-      <div className="mx-auto max-w-[1220px] px-6 pb-12 sm:px-8 lg:px-10 lg:pb-14">
+    <section className="my-6">
+      <div className=" mx-auto max-w-[1220px] px-6 pb-12 sm:px-8 lg:px-10 lg:pb-14">
         <ExploreMap
           cityLabel={cityLabel}
           events={events}

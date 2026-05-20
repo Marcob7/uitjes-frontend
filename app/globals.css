@@ -160,6 +160,18 @@ button:disabled {
   }
 }
 
+@keyframes wizardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @layer components {
   .uitjes-surface {
     background:

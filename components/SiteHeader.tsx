@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/jaarkalender", label: "Jaarkalender" },
+  { href: "/", label: "Home" },  
   { href: "/inspiratie", label: "Inspiratie" },
+  { href: "/jaarkalender", label: "Jaarkalender" },
   { href: "/event-details", label: "Uitgelichte Events" },
   { href: "/festivals/kalender", label: "Festivals" },
   { href: "/feedback", label: "Feedback" },
