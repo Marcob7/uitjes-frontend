@@ -70,75 +70,75 @@ function getTonePalette(tone: LiquidToneKey) {
   switch (tone) {
     case "rose":
       return {
-        surface: "rgba(246, 217, 210, 0.72)",
-        surfaceSelected: "rgba(244, 202, 193, 0.88)",
-        ring: "rgba(255, 255, 255, 0.42)",
-        text: "#2f201d",
-        muted: "rgba(47, 32, 29, 0.88)",
+        surface: "rgba(246, 217, 210, 0.16)",
+        surfaceSelected: "rgba(232, 242, 208, 0.26)",
+        ring: "rgba(255, 255, 255, 0.14)",
+        text: "#ffffff",
+        muted: "rgba(255, 255, 255, 0.72)",
         badgeBackground: "#f6d9d2",
         badgeText: "#4b241f",
-        iconBackground: "rgba(255, 245, 242, 0.94)",
-        iconText: "#6a2f27",
+        iconBackground: "rgba(246, 217, 210, 0.16)",
+        iconText: "#f6d9d2",
       };
     case "violet":
       return {
-        surface: "rgba(231, 228, 246, 0.72)",
-        surfaceSelected: "rgba(220, 214, 244, 0.88)",
-        ring: "rgba(255, 255, 255, 0.42)",
-        text: "#262033",
-        muted: "rgba(38, 32, 51, 0.88)",
+        surface: "rgba(231, 228, 246, 0.15)",
+        surfaceSelected: "rgba(232, 242, 208, 0.26)",
+        ring: "rgba(255, 255, 255, 0.14)",
+        text: "#ffffff",
+        muted: "rgba(255, 255, 255, 0.72)",
         badgeBackground: "#e7e4f6",
         badgeText: "#2f2943",
-        iconBackground: "rgba(247, 245, 253, 0.94)",
-        iconText: "#41346d",
+        iconBackground: "rgba(231, 228, 246, 0.16)",
+        iconText: "#e7e4f6",
       };
     case "sage":
       return {
-        surface: "rgba(222, 237, 220, 0.72)",
-        surfaceSelected: "rgba(208, 231, 204, 0.88)",
-        ring: "rgba(255, 255, 255, 0.42)",
-        text: "#1f3022",
-        muted: "rgba(31, 48, 34, 0.88)",
+        surface: "rgba(222, 237, 220, 0.18)",
+        surfaceSelected: "rgba(232, 242, 208, 0.28)",
+        ring: "rgba(255, 255, 255, 0.14)",
+        text: "#ffffff",
+        muted: "rgba(255, 255, 255, 0.72)",
         badgeBackground: "#deeddc",
         badgeText: "#243626",
-        iconBackground: "rgba(243, 251, 241, 0.94)",
-        iconText: "#355a3b",
+        iconBackground: "rgba(222, 237, 220, 0.18)",
+        iconText: "#e8f2d0",
       };
     case "amber":
       return {
-        surface: "rgba(247, 231, 200, 0.72)",
-        surfaceSelected: "rgba(244, 223, 178, 0.88)",
-        ring: "rgba(255, 255, 255, 0.42)",
-        text: "#332617",
-        muted: "rgba(51, 38, 23, 0.88)",
+        surface: "rgba(247, 231, 200, 0.16)",
+        surfaceSelected: "rgba(232, 242, 208, 0.26)",
+        ring: "rgba(255, 255, 255, 0.14)",
+        text: "#ffffff",
+        muted: "rgba(255, 255, 255, 0.72)",
         badgeBackground: "#f7e7c8",
         badgeText: "#4b3718",
-        iconBackground: "rgba(255, 249, 236, 0.94)",
-        iconText: "#6d4e14",
+        iconBackground: "rgba(247, 231, 200, 0.16)",
+        iconText: "#f7e7c8",
       };
     case "mist":
       return {
-        surface: "rgba(228, 235, 245, 0.72)",
-        surfaceSelected: "rgba(214, 226, 242, 0.88)",
-        ring: "rgba(255, 255, 255, 0.42)",
-        text: "#212b39",
-        muted: "rgba(33, 43, 57, 0.88)",
+        surface: "rgba(228, 235, 245, 0.15)",
+        surfaceSelected: "rgba(232, 242, 208, 0.26)",
+        ring: "rgba(255, 255, 255, 0.14)",
+        text: "#ffffff",
+        muted: "rgba(255, 255, 255, 0.72)",
         badgeBackground: "#e4ebf5",
         badgeText: "#273347",
-        iconBackground: "rgba(245, 248, 252, 0.94)",
-        iconText: "#365171",
+        iconBackground: "rgba(228, 235, 245, 0.16)",
+        iconText: "#e4ebf5",
       };
     default:
       return {
-        surface: "rgba(239, 229, 216, 0.72)",
-        surfaceSelected: "rgba(233, 219, 202, 0.88)",
-        ring: "rgba(255, 255, 255, 0.42)",
-        text: "#2f231c",
-        muted: "rgba(47, 35, 28, 0.88)",
+        surface: "rgba(239, 229, 216, 0.16)",
+        surfaceSelected: "rgba(232, 242, 208, 0.26)",
+        ring: "rgba(255, 255, 255, 0.14)",
+        text: "#ffffff",
+        muted: "rgba(255, 255, 255, 0.72)",
         badgeBackground: "#efe5d8",
         badgeText: "#453127",
-        iconBackground: "rgba(251, 246, 239, 0.94)",
-        iconText: "#6a4531",
+        iconBackground: "rgba(239, 229, 216, 0.16)",
+        iconText: "#efe5d8",
       };
   }
 }
@@ -150,19 +150,21 @@ function getLiquidOptionCardStyle(
 ) {
   return {
     background: isSelected
-      ? `linear-gradient(180deg, rgba(255,255,255,0.76) 0%, ${palette.surfaceSelected} 100%)`
-      : `linear-gradient(180deg, rgba(255,255,255,0.62) 0%, ${palette.surface} 100%)`,
+      ? `radial-gradient(circle at 16% 8%, ${palette.surfaceSelected} 0%, transparent 42%), linear-gradient(135deg, rgba(232,242,208,0.20) 0%, rgba(255,255,255,0.14) 42%, rgba(255,255,255,0.08) 100%)`
+      : `radial-gradient(circle at 12% 0%, ${palette.surface} 0%, transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 48%, rgba(18,28,19,0.18) 100%)`,
     color: palette.text,
-    border: `1px solid ${palette.ring}`,
+    border: isSelected
+      ? "1px solid rgba(232, 242, 208, 0.42)"
+      : `1px solid ${palette.ring}`,
     backdropFilter: "blur(22px) saturate(1.18)",
     WebkitBackdropFilter: "blur(22px) saturate(1.18)",
     boxShadow: isSelected
       ? isDarkLiquid
-        ? "0 26px 54px rgba(8,15,20,0.32), inset 0 1px 0 rgba(255,255,255,0.58)"
-        : "0 24px 48px rgba(41,31,22,0.13)"
+        ? "0 28px 58px rgba(0,0,0,0.24), 0 0 0 1px rgba(232,242,208,0.12) inset, inset 0 1px 0 rgba(255,255,255,0.16)"
+        : "0 24px 48px rgba(49,69,26,0.16), 0 0 0 1px rgba(232,242,208,0.16) inset"
       : isDarkLiquid
-        ? "0 18px 38px rgba(8,15,20,0.26), inset 0 1px 0 rgba(255,255,255,0.5)"
-        : "0 16px 34px rgba(41,31,22,0.08)",
+        ? "0 18px 42px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.12)"
+        : "0 16px 36px rgba(49,69,26,0.10), inset 0 1px 0 rgba(255,255,255,0.14)",
   };
 }
 
@@ -719,11 +721,11 @@ function CompanionGrid({
             selected={isSelected}
             onClick={() => onSelect(option.id)}
             size="large"
-            icon={<Icon className="h-6 w-6 sm:h-10 sm:w-10" />}
-            className={`min-h-[68px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[230px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:border-white/80 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-24 [&>span:first-child]:sm:w-24 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:block ${
+            icon={<Icon className="h-5 w-5 sm:h-6 sm:w-6" />}
+            className={`relative min-h-[92px] items-start overflow-hidden rounded-[1.05rem] p-3.5 text-left duration-200 before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(232,242,208,0.14),rgba(255,255,255,0.10)_48%,transparent)] before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 sm:min-h-[164px] sm:items-start sm:rounded-[1.8rem] sm:p-5 sm:text-left [&>span:first-child]:relative [&>span:first-child]:h-11 [&>span:first-child]:w-11 [&>span:first-child]:border-[#e8f2d0]/20 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_26px_rgba(0,0,0,0.10)] [&>span:first-child]:sm:mx-0 [&>span:first-child]:sm:h-12 [&>span:first-child]:sm:w-12 [&>span:last-child]:relative [&>span:last-child]:pt-0.5 [&>span:last-child>span:first-child]:text-[1.02rem] [&>span:last-child>span:first-child]:font-semibold [&>span:last-child>span:first-child]:leading-tight [&>span:last-child>span:first-child]:tracking-[-0.025em] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:first-child]:sm:text-[1.16rem] [&>span:last-child>span:last-child]:mt-1 [&>span:last-child>span:last-child]:block [&>span:last-child>span:last-child]:text-[0.82rem] [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:leading-5 [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:mt-2 [&>span:last-child>span:last-child]:sm:text-sm ${
               isSelected
-                ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.14)]"
-                : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.09)]"
+                ? "translate-y-[-1px] ring-1 ring-[#e8f2d0]/30 [&>span:first-child]:border-[#e8f2d0]/40 [&>span:first-child]:bg-[#e8f2d0]/18 [&>span:first-child]:text-[#f1f7df]"
+                : "hover:translate-y-[-2px] hover:border-white/22 hover:bg-white/14 hover:shadow-[0_26px_58px_rgba(0,0,0,0.18)]"
             }`}
             style={{
               ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
@@ -771,11 +773,11 @@ function SimpleOptionGrid<T extends string>({
             selected={isSelected}
             onClick={() => onSelect(option.id)}
             size="large"
-            icon={<Icon className="h-6 w-6 sm:h-9 sm:w-9" />}
-            className={`min-h-[64px] items-center rounded-[1.15rem] p-3 text-left sm:min-h-[214px] sm:items-stretch sm:rounded-[2rem] sm:p-6 sm:text-center [&>span:first-child]:h-9 [&>span:first-child]:w-9 [&>span:first-child]:border-white/80 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:sm:h-20 [&>span:first-child]:sm:w-20 [&>span:last-child>span:first-child]:text-[0.98rem] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:last-child]:hidden [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:block ${
+            icon={<Icon className="h-5 w-5 sm:h-6 sm:w-6" />}
+            className={`relative min-h-[92px] items-start overflow-hidden rounded-[1.05rem] p-3.5 text-left duration-200 before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(232,242,208,0.14),rgba(255,255,255,0.10)_48%,transparent)] before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 sm:min-h-[154px] sm:items-start sm:rounded-[1.8rem] sm:p-5 sm:text-left [&>span:first-child]:relative [&>span:first-child]:h-11 [&>span:first-child]:w-11 [&>span:first-child]:border-[#e8f2d0]/20 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_26px_rgba(0,0,0,0.10)] [&>span:first-child]:sm:mx-0 [&>span:first-child]:sm:h-12 [&>span:first-child]:sm:w-12 [&>span:last-child]:relative [&>span:last-child]:pt-0.5 [&>span:last-child>span:first-child]:text-[1.02rem] [&>span:last-child>span:first-child]:font-semibold [&>span:last-child>span:first-child]:leading-tight [&>span:last-child>span:first-child]:tracking-[-0.025em] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:first-child]:sm:text-[1.12rem] [&>span:last-child>span:last-child]:mt-1 [&>span:last-child>span:last-child]:block [&>span:last-child>span:last-child]:text-[0.82rem] [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:leading-5 [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:mt-2 [&>span:last-child>span:last-child]:sm:text-sm ${
               isSelected
-                ? "translate-y-[-2px] shadow-[0_24px_48px_rgba(41,31,22,0.12)]"
-                : "hover:translate-y-[-2px] hover:shadow-[0_16px_34px_rgba(41,31,22,0.08)]"
+                ? "translate-y-[-1px] ring-1 ring-[#e8f2d0]/30 [&>span:first-child]:border-[#e8f2d0]/40 [&>span:first-child]:bg-[#e8f2d0]/18 [&>span:first-child]:text-[#f1f7df]"
+                : "hover:translate-y-[-2px] hover:border-white/22 hover:bg-white/14 hover:shadow-[0_26px_58px_rgba(0,0,0,0.18)]"
             }`}
             style={{
               ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
