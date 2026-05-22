@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { useAuth } from "@/components/AuthProvider";
+
 const navItems = [
   { href: "/", label: "Home" },  
   { href: "/inspiratie", label: "Inspiratie" },
@@ -23,7 +25,14 @@ function isActivePath(pathname: string, href: string) {
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const { isAuthenticated, logout, status, user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const displayName = user?.first_name || user?.username || user?.email || "Account";
+
+  function handleLogout() {
+    logout();
+    setMobileMenuOpen(false);
+  }
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -86,6 +95,32 @@ export default function SiteHeader() {
               >
                 Inspiratie
               </Link>
+
+              {status === "checking" ? (
+                <span className="inline-flex min-h-11 items-center rounded-full border border-white/46 bg-white/34 px-4 text-[13px] font-semibold text-neutral-600">
+                  Account laden
+                </span>
+              ) : isAuthenticated ? (
+                <div className="flex items-center gap-2 rounded-full border border-white/46 bg-white/34 p-1 pl-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+                  <span className="max-w-36 truncate text-[13px] font-semibold text-neutral-800">
+                    {displayName}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="inline-flex min-h-9 items-center rounded-full bg-neutral-950 px-3 text-[13px] font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                  >
+                    Uitloggen
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="inline-flex min-h-11 items-center rounded-full border border-white/46 bg-white/34 px-4 text-[14px] font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition duration-200 hover:bg-white/58 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                >
+                  Inloggen
+                </Link>
+              )}
             </div>
 
             <button
@@ -162,6 +197,32 @@ export default function SiteHeader() {
                   >
                     Inspiratie
                   </Link>
+
+                  {status === "checking" ? (
+                    <div className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/52 bg-white/34 px-4 py-3 text-[15px] font-semibold text-neutral-700">
+                      Account laden
+                    </div>
+                  ) : isAuthenticated ? (
+                    <div className="grid gap-2 rounded-2xl border border-white/52 bg-white/34 p-3">
+                      <div className="min-w-0 text-center text-[14px] font-semibold text-neutral-800">
+                        Ingelogd als <span className="break-words">{displayName}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="inline-flex min-h-11 items-center justify-center rounded-xl bg-neutral-950 px-4 text-[14px] font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                      >
+                        Uitloggen
+                      </button>
+                    </div>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/52 bg-white/34 px-4 py-3 text-[15px] font-semibold text-neutral-800 transition duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                    >
+                      Inloggen
+                    </Link>
+                  )}
                 </div>
               </nav>
             </div>

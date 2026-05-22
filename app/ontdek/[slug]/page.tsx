@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -11,6 +12,7 @@ import {
 import {
   getAllExploreDetailSlugs,
   getExploreDetailBySlug,
+  getFallbackExploreTitle,
   mapCityContentToExploreDetail,
 } from "@/lib/exploreDetailData";
 import { getCityContentBySlug } from "@/lib/api/cityContent";
@@ -32,6 +34,52 @@ export function generateStaticParams() {
   return getAllExploreDetailSlugs().map((slug) => ({
     slug,
   }));
+}
+
+function cleanMetadataText(value?: string | null) {
+  const cleaned = value?.trim();
+
+  if (!cleaned || ["undefined", "null", "nan"].includes(cleaned.toLowerCase())) {
+    return null;
+  }
+
+  return cleaned;
+}
+
+function getMetadataDescription(item: NonNullable<Awaited<ReturnType<typeof getExploreDetail>>>) {
+  return (
+    cleanMetadataText(item.description) ||
+    cleanMetadataText(item.aboutText) ||
+    `${item.title} is een uitje in ${item.city}.`
+  );
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  try {
+    const item = await getExploreDetail(params.slug);
+
+    if (!item) {
+      const fallbackTitle = getFallbackExploreTitle(params.slug);
+
+      return {
+        title: `${fallbackTitle} | Uitjes`,
+        description: "Bekijk dit uitje en ontdek meer activiteiten in Nederland.",
+      };
+    }
+
+    const title = cleanMetadataText(item.title) || getFallbackExploreTitle(params.slug);
+    const city = cleanMetadataText(item.city) || "Nederland";
+
+    return {
+      title: `${title} in ${city} | Uitjes`,
+      description: getMetadataDescription(item),
+    };
+  } catch {
+    return {
+      title: `${getFallbackExploreTitle(params.slug)} | Uitjes`,
+      description: "Bekijk dit uitje en ontdek meer activiteiten in Nederland.",
+    };
+  }
 }
 
 function CheckIcon() {

@@ -25,10 +25,10 @@ export default function SavedPage() {
       setLoading(true);
       setNeedsLogin(false);
 
-      const me = await apiGetAuth("/api/auth/user/");
+      const me = await apiGetAuth("/api/auth/me/");
       if (cancelled) return;
 
-      if (!me) {
+      if (!me?.is_authenticated) {
         setEvents([]);
         setNeedsLogin(true);
         setLoading(false);

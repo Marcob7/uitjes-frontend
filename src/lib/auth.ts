@@ -1,12 +1,11 @@
-import { API_BASE } from "@/lib/api";
+import { getCurrentUser, getStoredTokens } from "@/lib/jwtAuth";
 
 export async function fetchMe() {
-  const res = await fetch(`${API_BASE}/api/auth/user/`, {
-    credentials: "include",
-    cache: "no-store",
-  });
+  const tokens = getStoredTokens();
+  if (tokens?.access) {
+    const jwtUser = await getCurrentUser(tokens.access);
+    if (jwtUser) return jwtUser;
+  }
 
-  if (res.status === 401 || res.status === 403) return null;
-  if (!res.ok) throw new Error("fetchMe failed");
-  return res.json();
+  return null;
 }

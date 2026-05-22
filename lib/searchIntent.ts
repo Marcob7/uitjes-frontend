@@ -58,15 +58,20 @@ function normalizeQuery(query: string) {
   return normalizeCitySlug(query).replace(/-/g, " ");
 }
 
-export function detectSearchIntent(query: string): SearchIntent {
-  const normalized = normalizeQuery(query);
+function normalizeRouteQuery(query: string | null | undefined) {
+  return (query ?? "").trim().replace(/\s+/g, " ");
+}
+
+export function detectSearchIntent(query: string | null | undefined): SearchIntent {
+  const routeQuery = normalizeRouteQuery(query);
+  const normalized = normalizeQuery(routeQuery);
 
   if (!normalized) return "onbekend";
 
   const matchedCity = cityOptions.some(
     (city) =>
-      normalizeCitySlug(city.label) === normalizeCitySlug(query) ||
-      city.value === normalizeCitySlug(query)
+      normalizeCitySlug(city.label) === normalizeCitySlug(routeQuery) ||
+      city.value === normalizeCitySlug(routeQuery)
   );
 
   if (matchedCity) return "stad";
@@ -82,8 +87,8 @@ export function detectSearchIntent(query: string): SearchIntent {
   return "onbekend";
 }
 
-export function getSearchRoute(query: string) {
-  const trimmedQuery = query.trim();
+export function getSearchRoute(query: string | null | undefined) {
+  const trimmedQuery = normalizeRouteQuery(query);
   const intent = detectSearchIntent(trimmedQuery);
   const encodedQuery = encodeURIComponent(trimmedQuery);
 

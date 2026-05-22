@@ -25,8 +25,10 @@ export type GeneralSearchResult = {
 const queryAliases: Record<string, string[]> = {
   museum: ["musea", "cultuur", "expositie", "bibliotheek"],
   musea: ["museum", "cultuur", "expositie"],
+  vandaag: ["nu", "doorlopend", "actueel"],
   restaurant: ["restaurants", "eten", "drinken", "lunch", "diner", "horeca", "food"],
   restaurants: ["restaurant", "eten", "drinken", "lunch", "diner", "horeca", "food"],
+  eten: ["restaurant", "restaurants", "drinken", "lunch", "diner", "horeca", "food"],
   lunch: ["eten", "drinken", "restaurant", "horeca"],
   kinderen: ["kind", "gezin", "familie", "kids", "workshop"],
   kind: ["kinderen", "gezin", "familie", "kids"],
@@ -34,6 +36,7 @@ const queryAliases: Record<string, string[]> = {
   regen: ["binnen", "slecht weer", "overdekt", "museum", "workshop"],
   wandelen: ["wandeling", "wandelroute", "route", "buiten", "natuur", "park"],
   wandeling: ["wandelen", "wandelroute", "route", "buiten", "natuur", "park"],
+  buiten: ["wandelen", "wandeling", "wandelroute", "route", "natuur", "park"],
   gratis: ["budget", "free", "vrij entree"],
   bowlen: ["bowling", "actief", "binnen"],
   klimmen: ["klimhal", "actief", "binnen"],

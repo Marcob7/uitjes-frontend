@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { AppButton, AppEmptyState, AppResultCard, AppSection } from "@/components/ui/app";
 import EmptyStateSearchActions from "@/components/search/EmptyStateSearchActions";
 import { getGeneralSearchResults } from "@/lib/search/searchResults";
@@ -9,6 +11,21 @@ type SearchPageProps = {
     query?: string;
   };
 };
+
+export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
+  const query = searchParams?.query?.trim();
+
+  if (query) {
+    return {
+      title: `Zoeken naar ${query} | Uitjes`,
+      description: `Bekijk zoekresultaten voor ${query}.`,
+    };
+  }
+
+  return {
+    title: "Zoeken | Uitjes",
+  };
+}
 
 function getResultCountLabel(count: number) {
   if (count === 1) return "1 resultaat gevonden";

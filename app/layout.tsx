@@ -1,5 +1,6 @@
 import "./globals.css";
 import AppFrame from "@/components/AppFrame";
+import { AuthProvider } from "@/components/AuthProvider";
 import { FavoritesProvider } from "@/components/FavouritesProvider";
 
 export const metadata = {
@@ -15,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
-        <FavoritesProvider>
-          <AppFrame>{children}</AppFrame>
-        </FavoritesProvider>
+        <AuthProvider>
+          <FavoritesProvider>
+            <AppFrame>{children}</AppFrame>
+          </FavoritesProvider>
+        </AuthProvider>
       </body>
     </html>
   );

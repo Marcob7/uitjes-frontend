@@ -3,17 +3,17 @@
 import Link from "next/link";
 import * as React from "react";
 
-import { AppButton, AppFilterChip, AppInput, AppSection } from "@/components/ui/app";
+import { AppButton, AppEmptyState, AppFilterChip, AppInput, AppSection } from "@/components/ui/app";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import {
   getInspirationCityLabel,
   getNearbyInspirationCitySlug,
-  inspirationResults,
   isInspirationCategorySlug,
   resolveNearestInspirationCityFromCoordinates,
   type InspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
+import { getInspirationFlowResults } from "@/lib/inspiration/cityContentMapper";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import { cn } from "@/lib/utils";
 
@@ -197,12 +197,13 @@ function getFilteredResults({
   selectedMoment?: MomentChoice;
   selectedVibe?: VibeChoice;
 }) {
+  const inspirationFlowResults = getInspirationFlowResults();
   const locationFiltered =
     selectedLocation === "city" && selectedCity
-      ? inspirationResults.filter((result) => result.citySlug === selectedCity)
+      ? inspirationFlowResults.filter((result) => result.citySlug === selectedCity)
       : selectedLocation === "nearby" && selectedCity
-        ? inspirationResults.filter((result) => result.citySlug === selectedCity)
-        : inspirationResults;
+        ? inspirationFlowResults.filter((result) => result.citySlug === selectedCity)
+        : inspirationFlowResults;
 
   return locationFiltered
     .filter((result) => matchesAudience(result, selectedAudience))
@@ -236,6 +237,22 @@ function getLocationSummary(selectedLocation?: LocationMode, selectedCity?: stri
   }
   if (selectedLocation === "surprise") return "Maakt niet uit";
   return undefined;
+}
+
+function getManualSearchQuery({
+  locationSummary,
+  audienceSummary,
+  momentSummary,
+  vibeSummary,
+}: {
+  locationSummary?: string;
+  audienceSummary?: string;
+  momentSummary?: string;
+  vibeSummary?: string;
+}) {
+  return [locationSummary, audienceSummary, momentSummary, vibeSummary]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function getInitialWizardStep({
@@ -508,6 +525,12 @@ export function InspirationChoiceFlow({
   )?.label;
   const vibeSummary = vibeOptions.find((option) => option.value === selectedVibe)?.label;
   const isWizardComplete = Boolean(locationSummary && selectedAudience && selectedMoment && selectedVibe);
+  const manualSearchQuery = getManualSearchQuery({
+    locationSummary,
+    audienceSummary,
+    momentSummary,
+    vibeSummary,
+  });
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
@@ -702,7 +725,7 @@ export function InspirationChoiceFlow({
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#665d54] md:text-base">
                 {filteredResults.length === 0
-                  ? "Geen resultaten voor deze combinatie. Pas een keuze aan om breder te zoeken."
+                  ? "Deze combinatie levert nog geen passende inspiratie op."
                   : `${filteredResults.length} suggesties op basis van je huidige keuzes.`}
               </p>
             </div>
@@ -722,14 +745,47 @@ export function InspirationChoiceFlow({
                 <ResultCard
                   key={result.slug}
                   result={result}
-                  href={`/inspiratie/${result.category}/${result.slug}`}
+                  href={result.href ?? `/inspiratie/${result.category}/${result.slug}`}
                 />
               ))}
             </div>
           ) : (
-            <div className="rounded-[1.4rem] border border-[#ded8cc] bg-white/72 p-6 text-sm leading-6 text-[#665d54]">
-              Probeer bijvoorbeeld een ander moment of kies `Maakt niet uit` bij locatie.
-            </div>
+            <AppEmptyState
+              title="Geen suggesties gevonden"
+              description="Deze combinatie levert nog geen passende inspiratie op. Pas je keuzes aan of begin opnieuw."
+              className="mx-auto max-w-3xl bg-[#fbf8f4]/92"
+            >
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+                <AppButton
+                  type="button"
+                  variant="dark"
+                  size="sm"
+                  onClick={resetFilters}
+                  className="w-full sm:w-auto"
+                >
+                  Wis keuzes
+                </AppButton>
+                <AppButton
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentStep(4)}
+                  className="w-full border-[#d6c9b8] bg-white text-[#4b3a28] shadow-none hover:border-[#c9b693] hover:bg-[#fffaf4] sm:w-auto"
+                >
+                  Pas keuzes aan
+                </AppButton>
+                {manualSearchQuery ? (
+                  <AppButton
+                    href={`/zoeken?query=${encodeURIComponent(manualSearchQuery)}`}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full border-[#d6c9b8] bg-white text-[#4b3a28] shadow-none hover:border-[#c9b693] hover:bg-[#fffaf4] sm:w-auto"
+                  >
+                    Zoek handmatig
+                  </AppButton>
+                ) : null}
+              </div>
+            </AppEmptyState>
           )}
           </>
           ) : null}

@@ -1,5 +1,6 @@
 export const runtime = "edge";
 
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import CityExplorePage from "@/components/city-explore/page";
@@ -35,6 +36,13 @@ type BackendEvent = {
   longitude?: number | null;
   summary?: string | null;
   image?: string | null;
+  imageAlt?: string | null;
+  priority_score?: number | null;
+  featured?: boolean;
+  is_featured?: boolean;
+  editors_pick?: boolean;
+  hidden_gem?: boolean;
+  is_hidden_gem?: boolean;
   category_label?: string | null;
   status?: string | null;
   kind?: string | null;
@@ -42,6 +50,36 @@ type BackendEvent = {
 };
 
 const CITY_CONTENT_CITIES = new Set(["amersfoort", "harderwijk", "lelystad"]);
+
+function getDisplayCity(city: string) {
+  const normalizedCity = normalizeCitySlug(city);
+  const matchedCity = cityOptions.find((option) => option.value === normalizedCity);
+
+  return matchedCity?.label ?? "Nederland";
+}
+
+export function generateMetadata({ searchParams }: OntdekPageProps): Metadata {
+  const cityFromQuery = getCitySlugFromQuery(searchParams?.query);
+  const city = searchParams?.city
+    ? normalizeCity(searchParams.city)
+    : cityFromQuery
+      ? normalizeCity(cityFromQuery)
+      : null;
+
+  if (city) {
+    const cityLabel = getDisplayCity(city);
+
+    return {
+      title: `Wat te doen in ${cityLabel} | Uitjes en activiteiten`,
+      description: `Ontdek uitjes, activiteiten, evenementen en restaurants in ${cityLabel}.`,
+    };
+  }
+
+  return {
+    title: "Ontdek uitjes in Nederland",
+    description: "Zoek leuke activiteiten, evenementen en restaurants per stad.",
+  };
+}
 
 function normalizeCity(value: string | undefined) {
   if (!value) return "apeldoorn";
@@ -96,10 +134,17 @@ function mapCityContentToBackendEvent(
     longitude: item.longitude,
     summary: item.summary,
     image: item.imageUrl,
+    imageAlt: item.imageAlt,
+    priority_score: item.priorityScore,
+    featured: item.featured,
+    editors_pick: item.editorsPick,
+    hidden_gem: item.hiddenGem,
     category_label: item.category,
     kind: item.kind,
     tags: item.tags,
-    status: isFoodDrink ? "Eten & drinken" : item.startAt ? null : "Plan dit moment",
+    status:
+      item.statusOverride ||
+      (isFoodDrink ? "Eten & drinken" : item.startAt ? null : "Plan dit moment"),
   };
 }
 

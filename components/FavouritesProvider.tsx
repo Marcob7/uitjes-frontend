@@ -6,39 +6,35 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import { apiGetAuth, apiFetchAuth } from "@/lib/api";
+import { useAuth } from "@/components/AuthProvider";
+import { apiFetchAuth, apiGetAuth } from "@/lib/api";
 
 const FavoritesContext = createContext(null);
 
 export function FavoritesProvider({ children }) {
+  const auth = useAuth();
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState(null);
   const [favoriteIds, setFavoriteIds] = useState(new Set());
 
-  // Voorkomt dubbele refresh in dev (React StrictMode kan useEffect 2x triggeren)
-  const didInit = useRef(false);
-
   async function refresh() {
-    setLoading(true);
+    if (auth.status === "checking") {
+      setLoading(true);
+      return;
+    }
 
-    // Haal huidige user op via backend session (Google login)
-    // Verwacht: { is_authenticated: boolean, user: {...} | null }
-    const meRes = await apiGetAuth("/api/me/");
-
-    // Niet ingelogd → reset favorieten
-    if (!meRes || meRes.is_authenticated === false || !meRes.user) {
+    if (!auth.user) {
       setMe(null);
       setFavoriteIds(new Set());
       setLoading(false);
       return;
     }
 
-    setMe(meRes.user);
+    setLoading(true);
+    setMe(auth.user);
 
-    // Favorieten ophalen
     const favs = await apiGetAuth("/api/favorites/");
     const ids = Array.isArray(favs) ? favs.map((f) => f.event_id) : [];
     setFavoriteIds(new Set(ids));
@@ -47,22 +43,17 @@ export function FavoritesProvider({ children }) {
   }
 
   useEffect(() => {
-    if (didInit.current) return;
-    didInit.current = true;
     refresh();
-  }, []);
+  }, [auth.status, auth.user]);
 
   const value = useMemo(() => {
     return {
       loading,
       me,
 
-      // Check of een event in favorieten zit
       isFavorite: (eventId) => favoriteIds.has(eventId),
 
-      // Voeg toe
       add: async (eventId) => {
-        // Tijdens initial load is me nog null, maar user kan wel ingelogd zijn
         if (loading) return { ok: false, reason: "loading" };
         if (!me) return { ok: false, reason: "not_logged_in" };
 
@@ -80,7 +71,6 @@ export function FavoritesProvider({ children }) {
           };
         }
 
-        // Optimistic update in state
         setFavoriteIds((prev) => {
           const next = new Set(prev);
           next.add(eventId);
@@ -90,7 +80,6 @@ export function FavoritesProvider({ children }) {
         return { ok: true };
       },
 
-      // Verwijder
       remove: async (eventId) => {
         if (loading) return { ok: false, reason: "loading" };
         if (!me) return { ok: false, reason: "not_logged_in" };
@@ -108,7 +97,6 @@ export function FavoritesProvider({ children }) {
           };
         }
 
-        // Optimistic update in state
         setFavoriteIds((prev) => {
           const next = new Set(prev);
           next.delete(eventId);
@@ -118,7 +106,6 @@ export function FavoritesProvider({ children }) {
         return { ok: true };
       },
 
-      // Handig om na login/logout opnieuw te syncen
       refresh,
     };
   }, [loading, me, favoriteIds]);

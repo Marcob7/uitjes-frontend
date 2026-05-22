@@ -300,6 +300,47 @@ export function sortEventsByStartDate(events: BackendEvent[]) {
   });
 }
 
+function getEventPriorityScore(event: BackendEvent) {
+  return typeof event.priority_score === "number" ? event.priority_score : 0;
+}
+
+function isHighlightedEvent(event: BackendEvent) {
+  return Boolean(
+    event.featured ||
+      event.is_featured ||
+      event.editors_pick ||
+      event.hidden_gem ||
+      event.is_hidden_gem ||
+      getEventPriorityScore(event) >= 80
+  );
+}
+
+export function sortEventsByHighlightAndStartDate(events: BackendEvent[]) {
+  return [...events].sort((a, b) => {
+    const highlightDiff =
+      Number(isHighlightedEvent(b)) - Number(isHighlightedEvent(a));
+
+    if (highlightDiff !== 0) {
+      return highlightDiff;
+    }
+
+    const priorityDiff = getEventPriorityScore(b) - getEventPriorityScore(a);
+
+    if (priorityDiff !== 0) {
+      return priorityDiff;
+    }
+
+    const aTime = a.start_at
+      ? new Date(a.start_at).getTime()
+      : Number.POSITIVE_INFINITY;
+    const bTime = b.start_at
+      ? new Date(b.start_at).getTime()
+      : Number.POSITIVE_INFINITY;
+
+    return aTime - bTime;
+  });
+}
+
 export function buildExploreCards(
   activeTab: CategoryKey,
   events: BackendEvent[],
@@ -321,13 +362,14 @@ export function buildExploreCards(
       : [];
   }
 
-  return sortEventsByStartDate(events).map((event) => ({
+  return sortEventsByHighlightAndStartDate(events).map((event) => ({
     id: event.id,
     title: event.title || "Onbekend event",
     label: event.category_label || (event.is_free ? "Free event" : "Event"),
     time: formatTimeRange(event.start_at, event.end_at),
     location: formatVenue(event.venue, cityLabel),
-    image: event.image || fallbackImage,
+    image: event.image || null,
+    imageAlt: event.imageAlt,
     href: appendCityToExploreHref(
       `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
       event.city || citySlug
@@ -339,6 +381,10 @@ export function buildExploreCards(
     distance: formatDistance(event),
     status: formatStatus(event),
     rating: event.rating || null,
+    priorityScore: event.priority_score ?? null,
+    featured: Boolean(event.featured || event.is_featured),
+    editorsPick: Boolean(event.editors_pick),
+    hiddenGem: Boolean(event.hidden_gem || event.is_hidden_gem),
     startAt: event.start_at,
     endAt: event.end_at,
     isOngoing: event.is_ongoing,

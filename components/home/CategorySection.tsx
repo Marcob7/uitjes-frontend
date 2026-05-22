@@ -1,32 +1,33 @@
 import Link from "next/link";
+import { getSearchRoute } from "@/lib/searchIntent";
 
 const categories = [
   {
     id: 1,
     title: "Vandaag iets doen",
     icon: "⚡",
-    href: "/ontdek?vibe=vandaag",
+    href: getSearchRoute("vandaag"),
     bg: "bg-lime-100",
   },
   {
     id: 2,
     title: "Festivals",
     icon: "🏛️",
-    href: "/ontdek?category=festivals",
+    href: getSearchRoute("festival"),
     bg: "bg-slate-100",
   },
   {
     id: 3,
     title: "Eten & Drinken",
     icon: "🍽️",
-    href: "/ontdek?category=eten-drinken",
+    href: getSearchRoute("restaurant"),
     bg: "bg-orange-50",
   },
   {
     id: 4,
     title: "Met kinderen",
     icon: "🧸",
-    href: "/ontdek?category=kinderen",
+    href: getSearchRoute("kinderen"),
     bg: "bg-yellow-50",
   },
 ];

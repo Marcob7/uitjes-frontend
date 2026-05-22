@@ -1,0 +1,107 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3001
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1223ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 659ms (544 modules)
+ GET /login 200 in 786ms
+ GET /login 200 in 68ms
+ GET /login 200 in 55ms
+ GET /login 200 in 58ms
+   Reload env: .env.local
+ ✓ Compiled in 161ms (271 modules)
+ ✓ Compiled in 485ms (271 modules)
+ ✓ Compiled in 78ms (257 modules)
+ ⨯ ./components/FavouritesProvider.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\FavouritesProvider.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/FavouritesProvider.tsx
+ ✓ Compiled in 195ms (271 modules)
+ ✓ Compiled in 238ms (271 modules)
+ ✓ Compiled in 270ms (271 modules)
+ ✓ Compiled in 190ms (271 modules)
+ ✓ Compiled in 175ms (271 modules)
+ ✓ Compiled in 179ms (271 modules)
+ ✓ Compiled in 128ms (271 modules)
+ ✓ Compiled in 228ms (271 modules)
+ ✓ Compiled in 258ms (271 modules)
+ ✓ Compiled in 177ms (271 modules)
+ ✓ Compiled in 178ms (271 modules)
+ ✓ Compiled /login in 365ms (287 modules)
+ GET /login 200 in 466ms
+ ✓ Compiled in 230ms (271 modules)
+ ✓ Compiled in 163ms (271 modules)
+ ✓ Compiled in 232ms (271 modules)
+ ✓ Compiled in 259ms (271 modules)
+ ✓ Compiled in 187ms (271 modules)
+ ✓ Compiled in 162ms (271 modules)
+ ✓ Compiled in 218ms (271 modules)
+ ✓ Compiled in 187ms (271 modules)
+ ✓ Compiled in 167ms (271 modules)
+ ✓ Compiled in 167ms (271 modules)
+ ✓ Compiled in 172ms (271 modules)
+ ✓ Compiled in 151ms (271 modules)
+ ✓ Compiled in 155ms (271 modules)
+ ✓ Compiled in 155ms (271 modules)
+ ✓ Compiled in 129ms (271 modules)
+ ✓ Compiled in 188ms (271 modules)
+ ✓ Compiled in 152ms (271 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\4.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\4.pack.gz'
+ ✓ Compiled in 181ms (271 modules)
+ ✓ Compiled in 147ms (271 modules)
+ ✓ Compiled in 137ms (271 modules)
+ ✓ Compiled in 141ms (271 modules)
+ ✓ Compiled in 159ms (271 modules)
+ ✓ Compiled in 35ms (257 modules)
+ ✓ Compiled in 172ms (271 modules)
+ ✓ Compiled in 184ms (271 modules)
+ ✓ Compiled in 166ms (271 modules)
+ ✓ Compiled in 42ms (257 modules)
+ ✓ Compiled in 194ms (271 modules)
+ ✓ Compiled in 182ms (271 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 723ms (662 modules)
+ GET / 200 in 821ms
+ GET / 200 in 55ms
+ ○ Compiling /ontdek ...
+ ✓ Compiled /ontdek in 1021ms (911 modules)
+ GET /ontdek 200 in 1239ms
+ GET /ontdek?city=harderwijk 200 in 90ms
+ GET /ontdek?city=lelystad 200 in 173ms
+ GET /ontdek?city=amersfoort 200 in 44ms
+ ✓ Compiled /ontdek/[slug] in 389ms (937 modules)
+ GET /ontdek/de-zondagse-fietstocht 200 in 600ms
+ ✓ Compiled /zoeken in 154ms (949 modules)
+ GET /zoeken?query=museum 200 in 362ms
+ GET /zoeken?query=onzinzoektermtest 200 in 77ms
+ ✓ Compiled /inspiratie in 187ms (961 modules)
+ GET /inspiratie 200 in 358ms
+ ✓ Compiled /festivals/lijst in 181ms (977 modules)
+ GET /festivals/lijst 200 in 363ms
+ GET /festivals/lijst?query=festival 200 in 73ms
+ GET / 200 in 30ms
+ GET /ontdek 200 in 213ms
+ GET /ontdek?city=harderwijk 200 in 88ms
+ GET /ontdek?city=lelystad 200 in 63ms
+ GET /ontdek?city=amersfoort 200 in 63ms
+ GET /ontdek/de-zondagse-fietstocht 200 in 178ms
+ GET /zoeken?query=museum 200 in 183ms
+ GET /zoeken?query=onzinzoektermtest 200 in 62ms
+ GET /inspiratie 200 in 142ms
+ GET /festivals/lijst 200 in 57ms
+ GET /festivals/lijst?query=festival 200 in 72ms
+ ✓ Compiled in 274ms (344 modules)
+ ✓ Compiled in 314ms (344 modules)
+ ✓ Compiled in 276ms (345 modules)
+ ✓ Compiled in 161ms (345 modules)
+ ✓ Compiled in 237ms (345 modules)

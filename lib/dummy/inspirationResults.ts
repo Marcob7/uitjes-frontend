@@ -13,6 +13,7 @@ export type InspirationLocationMode = "nearby" | "surprise" | "city";
 export type InspirationResult = {
   slug: string;
   title: string;
+  href?: string;
   city: string;
   citySlug: string;
   category: InspirationCategorySlug;

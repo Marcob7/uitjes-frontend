@@ -138,6 +138,10 @@ function formatCityContentPricing(item: CityContentItem) {
   return undefined;
 }
 
+function getFallbackImage(image?: string | null) {
+  return image || "/images/apeldoorn_img.jpg";
+}
+
 export function mapCityContentToExploreDetail(
   item: CityContentItem,
   slug: string
@@ -146,7 +150,7 @@ export function mapCityContentToExploreDetail(
   const citySlug = normalizeCitySlug(item.city || item.cityName);
   const title = item.title || titleFromSlug(slug);
   const category = item.category || (item.kind === "food_drink" ? "Eten & drinken" : "Moment");
-  const image = item.imageUrl || "/images/apeldoorn_img.jpg";
+  const image = getFallbackImage(item.imageUrl);
   const pricing = formatCityContentPricing(item);
   const isFoodDrink = item.kind === "food_drink";
   const dateLabel =
@@ -472,12 +476,12 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       subtitle: [cardMatch.location, cardMatch.price, cardMatch.rating?.toFixed(1)]
         .filter(Boolean)
         .join(" | "),
-      heroImage: cardMatch.image,
+      heroImage: getFallbackImage(cardMatch.image),
       gallery: [
-        cardMatch.image,
+        getFallbackImage(cardMatch.image),
         "/images/apeldoorn_img.jpg",
         "/images/julianatoren.jpg",
-        cardMatch.image,
+        getFallbackImage(cardMatch.image),
       ],
       reasons: [
         "Handige fallback op basis van je huidige mock card",
@@ -508,7 +512,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
           subtitle: [card.label, card.price, card.rating?.toFixed(1)]
             .filter(Boolean)
             .join(" | "),
-          image: card.image,
+          image: getFallbackImage(card.image),
           badge: "CURATED",
         })),
     };

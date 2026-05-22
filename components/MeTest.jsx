@@ -1,18 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { API_BASE } from "@/lib/api";
+import { getCurrentUser, getStoredTokens } from "@/lib/jwtAuth";
 export default function MeTest() {
 const [me, setMe] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/auth/user/`, { credentials: "include" })
-      .then(async (res) => {
-        if (res.status === 401 || res.status === 403) return null;
-        if (!res.ok) throw new Error("me request failed");
-        return res.json();
-      })
+    const tokens = getStoredTokens();
+    Promise.resolve(tokens?.access ? getCurrentUser(tokens.access) : null)
       .then((user) => setMe(user))
       .finally(() => setLoading(false));
   }, []);

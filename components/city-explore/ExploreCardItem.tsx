@@ -67,6 +67,26 @@ function buildLocationLine(card: ExploreCard) {
   return [card.location, card.distance].filter(Boolean).join(" · ");
 }
 
+function isHighlightedCard(card: ExploreCard) {
+  return Boolean(
+    card.featured ||
+      card.editorsPick ||
+      card.hiddenGem ||
+      (typeof card.priorityScore === "number" && card.priorityScore >= 80)
+  );
+}
+
+function getHighlightLabel(card: ExploreCard) {
+  if (card.editorsPick) return "Redactietip";
+  if (card.featured) return "Uitgelicht";
+  if (card.hiddenGem) return "Verborgen tip";
+  if (typeof card.priorityScore === "number" && card.priorityScore >= 80) {
+    return "Aanrader";
+  }
+
+  return null;
+}
+
 export default function ExploreCardItem({
   card,
   index,
@@ -74,8 +94,11 @@ export default function ExploreCardItem({
   onSelect,
 }: ExploreCardItemProps) {
   const tags = buildTags(card);
-  const hasImage = Boolean(card.image?.trim());
+  const imageSrc = card.image?.trim() || null;
+  const hasImage = Boolean(imageSrc);
   const locationLine = buildLocationLine(card);
+  const highlightLabel = getHighlightLabel(card);
+  const isHighlighted = isHighlightedCard(card);
 
   return (
     <Link
@@ -83,17 +106,23 @@ export default function ExploreCardItem({
       onMouseEnter={onSelect}
       onFocus={onSelect}
       onClick={onSelect}
-      className={`group flex items-start gap-3 rounded-[1.05rem] border px-3 py-3 backdrop-blur-xl transition duration-200 sm:gap-5 sm:rounded-[2rem] sm:p-5 ${
+      className={`group relative flex items-start gap-3 rounded-[1.05rem] border px-3 py-3 backdrop-blur-xl transition duration-200 sm:gap-5 sm:rounded-[2rem] sm:p-5 ${
         isSelected
           ? "border-[#e8f2d0]/38 bg-white/15 shadow-[0_12px_26px_rgba(0,0,0,0.18)] sm:shadow-[0_28px_58px_rgba(0,0,0,0.24)]"
-          : "border-white/12 bg-white/8 shadow-[0_10px_22px_rgba(0,0,0,0.11)] hover:border-white/22 hover:bg-white/12 sm:bg-white/10 sm:shadow-[0_22px_48px_rgba(0,0,0,0.16)] sm:hover:-translate-y-1 sm:hover:bg-white/14 sm:hover:shadow-[0_30px_68px_rgba(0,0,0,0.22)]"
+          : isHighlighted
+            ? "border-[#e8f2d0]/34 bg-[#e8f2d0]/12 shadow-[0_12px_26px_rgba(0,0,0,0.15)] hover:border-[#e8f2d0]/46 hover:bg-[#e8f2d0]/16 sm:shadow-[0_24px_54px_rgba(0,0,0,0.2)] sm:hover:-translate-y-1"
+            : "border-white/12 bg-white/8 shadow-[0_10px_22px_rgba(0,0,0,0.11)] hover:border-white/22 hover:bg-white/12 sm:bg-white/10 sm:shadow-[0_22px_48px_rgba(0,0,0,0.16)] sm:hover:-translate-y-1 sm:hover:bg-white/14 sm:hover:shadow-[0_30px_68px_rgba(0,0,0,0.22)]"
       }`}
     >
+      {isHighlighted ? (
+        <div className="absolute inset-y-3 left-0 w-0.5 rounded-r-full bg-[#e8f2d0]/70 sm:inset-y-5 sm:w-1" />
+      ) : null}
+
       {hasImage ? (
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[0.85rem] bg-[#251b15] sm:h-[108px] sm:w-[108px] sm:rounded-[1.6rem]">
           <Image
-            src={optimizeRemoteImageUrl(card.image, { width: 420 })}
-            alt={card.title}
+            src={optimizeRemoteImageUrl(imageSrc ?? "", { width: 420 })}
+            alt={card.imageAlt || card.title}
             fill
             className="object-cover transition duration-300 group-hover:scale-[1.04]"
             sizes="(max-width: 640px) 56px, 108px"
@@ -107,8 +136,15 @@ export default function ExploreCardItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2 sm:gap-4">
           <div className="min-w-0">
-            <div className="inline-flex max-w-full text-[0.62rem] font-semibold uppercase leading-4 tracking-[0.14em] text-[#e8f2d0] sm:rounded-full sm:border sm:border-[#e8f2d0]/30 sm:bg-[#e8f2d0]/14 sm:px-3 sm:py-1 sm:text-[0.62rem] sm:tracking-[0.18em] sm:text-[#f1f7df] sm:backdrop-blur-md">
-              {card.label}
+            <div className="flex max-w-full flex-wrap items-center gap-2">
+              <div className="inline-flex max-w-full text-[0.62rem] font-semibold uppercase leading-4 tracking-[0.14em] text-[#e8f2d0] sm:rounded-full sm:border sm:border-[#e8f2d0]/30 sm:bg-[#e8f2d0]/14 sm:px-3 sm:py-1 sm:text-[0.62rem] sm:tracking-[0.18em] sm:text-[#f1f7df] sm:backdrop-blur-md">
+                {card.label}
+              </div>
+              {highlightLabel ? (
+                <span className="inline-flex rounded-full border border-[#f6e8bf]/35 bg-[#f6e8bf]/18 px-2.5 py-0.5 text-[0.62rem] font-semibold uppercase leading-4 tracking-[0.14em] text-[#fff5cf] backdrop-blur-md">
+                  {highlightLabel}
+                </span>
+              ) : null}
             </div>
             <h3 className="mt-1 overflow-hidden text-[1.02rem] font-semibold leading-[1.12] tracking-[-0.03em] text-white [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] sm:mt-3 sm:text-[1.95rem] sm:leading-[0.98] sm:tracking-[-0.055em]">
               {card.title}

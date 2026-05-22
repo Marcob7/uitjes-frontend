@@ -25,6 +25,11 @@ export type CityContentItem = {
   description: string | null;
   imageUrl: string | null;
   imageAlt: string | null;
+  priorityScore: number | null;
+  featured: boolean;
+  editorsPick: boolean;
+  hiddenGem: boolean;
+  statusOverride: string | null;
   venue: string | null;
   venueAddress: string | null;
   address: string | null;
@@ -60,6 +65,13 @@ type BackendCityContentItem = {
   description?: unknown;
   image_url?: unknown;
   image_alt?: unknown;
+  priority_score?: unknown;
+  featured?: unknown;
+  is_featured?: unknown;
+  editors_pick?: unknown;
+  hidden_gem?: unknown;
+  is_hidden_gem?: unknown;
+  status_override?: unknown;
   venue?: unknown;
   venue_address?: unknown;
   address?: unknown;
@@ -96,6 +108,7 @@ type CityContentFetchOptions = {
 };
 
 const DEFAULT_LIMIT = 100;
+const SEARCH_LIMIT = 24;
 
 function normalizeString(value: unknown): string | null {
   if (typeof value !== "string") {
@@ -157,6 +170,11 @@ export function normalizeCityContentItem(
     description: normalizeString(item.description),
     imageUrl: normalizeString(item.image_url),
     imageAlt: normalizeString(item.image_alt),
+    priorityScore: normalizeNumber(item.priority_score),
+    featured: normalizeBoolean(item.featured) || normalizeBoolean(item.is_featured),
+    editorsPick: normalizeBoolean(item.editors_pick),
+    hiddenGem: normalizeBoolean(item.hidden_gem) || normalizeBoolean(item.is_hidden_gem),
+    statusOverride: normalizeString(item.status_override),
     venue: normalizeString(item.venue),
     venueAddress: normalizeString(item.venue_address),
     address: normalizeString(item.address),
@@ -367,5 +385,8 @@ export async function searchCityContent(
   query: string,
   options: CityContentFetchOptions = {}
 ) {
-  return getCityContent({ query }, options);
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) return [];
+
+  return getCityContent({ query: trimmedQuery, limit: SEARCH_LIMIT }, options);
 }
