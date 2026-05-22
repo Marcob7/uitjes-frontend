@@ -105,3 +105,10 @@ Import trace for requested module:
  ✓ Compiled in 276ms (345 modules)
  ✓ Compiled in 161ms (345 modules)
  ✓ Compiled in 237ms (345 modules)
+ ✓ Compiled in 219ms (345 modules)
+ ✓ Compiled in 217ms (345 modules)
+ ✓ Compiled in 208ms (345 modules)
+ ✓ Compiled in 197ms (345 modules)
+ ✓ Compiled /festivals/lijst in 193ms (535 modules)
+ GET /festivals/lijst 200 in 399ms
+ ✓ Compiled in 173ms (345 modules)

@@ -89,13 +89,7 @@ export default function SiteHeader() {
                 Mijn lijst
               </Link>
 
-              <Link
-                href="/inspiratie"
-                className="inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(23,23,23,0.2)] transition duration-200 hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
-              >
-                Inspiratie
-              </Link>
-
+       
               {status === "checking" ? (
                 <span className="inline-flex min-h-11 items-center rounded-full border border-white/46 bg-white/34 px-4 text-[13px] font-semibold text-neutral-600">
                   Account laden

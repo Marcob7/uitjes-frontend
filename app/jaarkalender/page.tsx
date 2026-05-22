@@ -71,17 +71,7 @@ export default function JaarkalenderPage() {
                 <JaarkalenderScrollButton targetId="jaarkalender-kalender" />
               </div>
 
-              <div className="mt-10 flex flex-wrap gap-3">
-                <div className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl">
-                  Culturele weekenden
-                </div>
-                <div className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl">
-                  Landelijke hoogtepunten
-                </div>
-                <div className="rounded-full border border-white/14 bg-white/10 px-4 py-2 text-sm text-white/78 backdrop-blur-xl">
-                  Slim plannen per seizoen
-                </div>
-              </div>
+           
             </div>
 
             <div className="relative min-h-[320px] overflow-hidden rounded-[2.2rem] border border-white/18 bg-white/14 p-5 shadow-[0_30px_80px_rgba(18,16,13,0.16)] backdrop-blur-xl sm:p-7 lg:min-h-[390px]">
