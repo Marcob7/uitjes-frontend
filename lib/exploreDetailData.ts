@@ -8,6 +8,7 @@ import type { CityContentItem } from "@/lib/api/cityContent";
 import { normalizeCitySlug } from "@/lib/cityConfig";
 
 export type ExploreDetailItem = {
+  eventId?: number | null;
   slug: string;
   title: string;
   city: string;
@@ -171,6 +172,7 @@ export function mapCityContentToExploreDetail(
     `${title} is opgenomen in de city-content data voor ${city}. We tonen alvast de beschikbare informatie, ook als nog niet alle detailvelden zijn ingevuld.`;
 
   return {
+    eventId: item.id,
     slug: item.slug || slug,
     title,
     citySlug,

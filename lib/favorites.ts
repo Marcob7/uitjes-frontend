@@ -1,36 +1,37 @@
-// frontend/lib/favorites.ts
+import { apiFetchAuth, apiGetAuth } from "@/lib/api";
 
-// We slaan favorieten op in localStorage zodat de gebruiker geen account nodig heeft.
-// Dit is perfect voor een MVP: snel, simpel en werkt na refresh.
+export type FavoriteItem = {
+  id: number;
+  event_id: number;
+  title: string | null;
+  slug: string | null;
+  city: string | null;
+  kind: string | null;
+  category: string | null;
+  summary: string | null;
+  image_url: string | null;
+  created_at: string;
+};
 
-const STORAGE_KEY = "savedEventIds";
-
-export function getSavedIds(): number[] {
-  if (typeof window === "undefined") return []; // Server-side heeft geen localStorage
-
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-
-    // We verwachten een array van nummers, anders fallback naar leeg.
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((x) => typeof x === "number");
-  } catch {
-    return [];
-  }
+export async function getFavorites(): Promise<FavoriteItem[] | null> {
+  const data = await apiGetAuth("/api/favorites/");
+  return Array.isArray(data) ? data : null;
 }
 
-export function isSaved(id: number): boolean {
-  return getSavedIds().includes(id);
+export async function addFavorite(eventId: number) {
+  return apiFetchAuth("/api/favorites/", {
+    method: "POST",
+    body: JSON.stringify({ event_id: eventId }),
+  });
 }
 
-export function toggleSaved(id: number): number[] {
-  const current = getSavedIds();
-  const next = current.includes(id)
-    ? current.filter((x) => x !== id)
-    : [...current, id];
+export async function removeFavorite(eventId: number) {
+  return apiFetchAuth(`/api/favorites/${eventId}/`, {
+    method: "DELETE",
+  });
+}
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  return next;
+export async function isFavorite(eventId: number): Promise<boolean> {
+  const favorites = await getFavorites();
+  return favorites?.some((favorite) => favorite.event_id === eventId) ?? false;
 }

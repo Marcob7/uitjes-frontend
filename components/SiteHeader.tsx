@@ -28,6 +28,7 @@ export default function SiteHeader() {
   const { isAuthenticated, logout, status, user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const displayName = user?.first_name || user?.username || user?.email || "Account";
+  const savedActive = isActivePath(pathname, "/bewaard");
 
   function handleLogout() {
     logout();
@@ -83,10 +84,15 @@ export default function SiteHeader() {
 
             <div className="hidden items-center gap-2 lg:flex">
               <Link
-                href="/saved"
-                className="inline-flex min-h-11 items-center rounded-full border border-white/46 bg-white/34 px-4 text-[14px] font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition duration-200 hover:bg-white/58 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                href="/bewaard"
+                aria-current={savedActive ? "page" : undefined}
+                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-[14px] font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 ${
+                  savedActive
+                    ? "border-neutral-950 bg-neutral-950 text-white"
+                    : "border-white/46 bg-white/34 text-neutral-800 hover:bg-white/58 hover:text-neutral-950"
+                }`}
               >
-                Mijn lijst
+                Bewaard
               </Link>
 
        
@@ -179,10 +185,15 @@ export default function SiteHeader() {
 
                 <div className="mt-3 grid gap-2 border-t border-white/45 pt-3">
                   <Link
-                    href="/saved"
-                    className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/52 bg-white/34 px-4 py-3 text-[15px] font-semibold text-neutral-800 transition duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                    href="/bewaard"
+                    aria-current={savedActive ? "page" : undefined}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-2xl border px-4 py-3 text-[15px] font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 ${
+                      savedActive
+                        ? "border-neutral-950 bg-neutral-950 text-white shadow-[0_12px_28px_rgba(23,23,23,0.16)]"
+                        : "border-white/52 bg-white/34 text-neutral-800 hover:bg-white/58"
+                    }`}
                   >
-                    Mijn lijst
+                    Bewaard
                   </Link>
 
                   <Link

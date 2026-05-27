@@ -1,5 +1,5 @@
 import SavedFavoritesPage from "@/components/SavedFavoritesPage";
 
-export default function SavedPage() {
+export default function BewaardPage() {
   return <SavedFavoritesPage />;
 }

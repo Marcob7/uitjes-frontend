@@ -364,6 +364,7 @@ export function buildExploreCards(
 
   return sortEventsByHighlightAndStartDate(events).map((event) => ({
     id: event.id,
+    eventId: !useMockFallback && Number.isFinite(event.id) && event.id > 0 ? event.id : null,
     title: event.title || "Onbekend event",
     label: event.category_label || (event.is_free ? "Free event" : "Event"),
     time: formatTimeRange(event.start_at, event.end_at),

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import FavouriteButton from "@/components/FavouriteButton";
 import { optimizeRemoteImageUrl } from "@/lib/remoteImage";
 
 import type { ExploreCard } from "./types";
@@ -99,13 +100,14 @@ export default function ExploreCardItem({
   const locationLine = buildLocationLine(card);
   const highlightLabel = getHighlightLabel(card);
   const isHighlighted = isHighlightedCard(card);
+  const eventId =
+    typeof card.eventId === "number" && Number.isFinite(card.eventId) && card.eventId > 0
+      ? card.eventId
+      : null;
 
   return (
-    <Link
-      href={card.href}
+    <article
       onMouseEnter={onSelect}
-      onFocus={onSelect}
-      onClick={onSelect}
       className={`group relative flex items-start gap-3 rounded-[1.05rem] border px-3 py-3 backdrop-blur-xl transition duration-200 sm:gap-5 sm:rounded-[2rem] sm:p-5 ${
         isSelected
           ? "border-[#e8f2d0]/38 bg-white/15 shadow-[0_12px_26px_rgba(0,0,0,0.18)] sm:shadow-[0_28px_58px_rgba(0,0,0,0.24)]"
@@ -114,12 +116,20 @@ export default function ExploreCardItem({
             : "border-white/12 bg-white/8 shadow-[0_10px_22px_rgba(0,0,0,0.11)] hover:border-white/22 hover:bg-white/12 sm:bg-white/10 sm:shadow-[0_22px_48px_rgba(0,0,0,0.16)] sm:hover:-translate-y-1 sm:hover:bg-white/14 sm:hover:shadow-[0_30px_68px_rgba(0,0,0,0.22)]"
       }`}
     >
+      <Link
+        href={card.href}
+        onFocus={onSelect}
+        onClick={onSelect}
+        className="absolute inset-0 z-0 rounded-[1.05rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8f2d0]/80 sm:rounded-[2rem]"
+        aria-label={`Bekijk ${card.title}`}
+      />
+
       {isHighlighted ? (
         <div className="absolute inset-y-3 left-0 w-0.5 rounded-r-full bg-[#e8f2d0]/70 sm:inset-y-5 sm:w-1" />
       ) : null}
 
       {hasImage ? (
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[0.85rem] bg-[#251b15] sm:h-[108px] sm:w-[108px] sm:rounded-[1.6rem]">
+        <div className="pointer-events-none relative z-10 h-14 w-14 shrink-0 overflow-hidden rounded-[0.85rem] bg-[#251b15] sm:h-[108px] sm:w-[108px] sm:rounded-[1.6rem]">
           <Image
             src={optimizeRemoteImageUrl(imageSrc ?? "", { width: 420 })}
             alt={card.imageAlt || card.title}
@@ -133,7 +143,7 @@ export default function ExploreCardItem({
         </div>
       ) : null}
 
-      <div className="min-w-0 flex-1">
+      <div className="pointer-events-none relative z-10 min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2 sm:gap-4">
           <div className="min-w-0">
             <div className="flex max-w-full flex-wrap items-center gap-2">
@@ -151,13 +161,28 @@ export default function ExploreCardItem({
             </h3>
           </div>
 
-          {typeof card.rating === "number" ? (
-            <div className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-white/88 sm:rounded-full sm:border sm:border-white/14 sm:bg-white/10 sm:px-3 sm:py-1.5 sm:text-sm sm:text-white sm:backdrop-blur-md">
-              <StarIcon />
-              <span>{card.rating.toFixed(1)}</span>
-            </div>
-          ) : null}
+          <div className="pointer-events-auto relative z-20 flex shrink-0 flex-col items-end gap-2">
+            {eventId ? (
+              <div className="hidden sm:block">
+                <FavouriteButton eventId={eventId} variant="compact" />
+              </div>
+            ) : null}
+            {typeof card.rating === "number" ? (
+              <div className="inline-flex items-center gap-1 text-xs font-semibold text-white/88 sm:rounded-full sm:border sm:border-white/14 sm:bg-white/10 sm:px-3 sm:py-1.5 sm:text-sm sm:text-white sm:backdrop-blur-md">
+                <StarIcon />
+                <span>{card.rating.toFixed(1)}</span>
+              </div>
+            ) : null}
+          </div>
         </div>
+
+        {eventId ? (
+          <div className="pointer-events-auto relative z-20 mt-2 sm:hidden">
+            <div className="max-w-max">
+              <FavouriteButton eventId={eventId} variant="compact" />
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.78rem] leading-5 text-white/72 sm:mt-2 sm:gap-x-2 sm:text-[0.98rem]">
           <span>{card.time}</span>
@@ -192,6 +217,6 @@ export default function ExploreCardItem({
           </div>
         ) : null}
       </div>
-    </Link>
+    </article>
   );
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
-import { optimizeCssBackground } from "@/lib/remoteImage";
+import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
 import { getFestivalDetailHref } from "../data";
 
 type CalendarTone = "lime" | "pink" | "blue" | "amber" | "violet";
@@ -22,14 +22,6 @@ type CalendarCell = {
   dayNumber: string;
   muted?: boolean;
   events?: CalendarEvent[];
-};
-
-type HighlightCard = {
-  title: string;
-  description: string;
-  cta: string;
-  href: string;
-  tone: "lavender" | "butter";
 };
 
 const weekdayLabels = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
@@ -80,25 +72,6 @@ const FESTIVAL_CALENDAR_EVENTS: CalendarEvent[] = [
   { label: "Welcome to the Village", tone: "pink", date: "2024-07-19" },
   { label: "Zwarte Cross Final", tone: "pink", date: "2024-07-20" },
   { label: "+2 more", tone: "lime", date: "2024-07-20" },
-];
-
-const highlightCards: HighlightCard[] = [
-  {
-    title: "Jazz & Blues",
-    description:
-      "Rotterdam transforms into a global jazz hub this month. Check out the North Sea Jazz fringe events across the city.",
-    cta: "Explore Category",
-    href: getFestivalDetailHref("north-sea-jazz"),
-    tone: "lavender",
-  },
-  {
-    title: "Culinary Tours",
-    description:
-      "Don't miss the food truck rallies in Amsterdam and Utrecht. A gastronomic journey through local and global flavors.",
-    cta: "View Schedule",
-    href: "/festivals",
-    tone: "butter",
-  },
 ];
 
 function formatDateKey(date: Date) {
@@ -260,31 +233,6 @@ function CalendarPill({ event }: { event: CalendarEvent }) {
   }
 
   return <span className={classes}>{event.label}</span>;
-}
-
-function HighlightInfoCard({ card }: { card: HighlightCard }) {
-  const toneClass =
-    card.tone === "lavender" ? "bg-[#e8e7f7]" : "bg-[#f7e8be]";
-
-  const buttonClass =
-    card.tone === "lavender"
-      ? "bg-[#171511] text-white hover:bg-[#2b261f]"
-      : "border border-[#171511] bg-transparent text-[#171511] hover:bg-white/40";
-
-  return (
-    <article className={`rounded-[2rem] border border-white/18 ${toneClass} p-6 shadow-[0_18px_44px_rgba(0,0,0,0.12)]`}>
-      <h3 className="max-w-none text-[2rem] leading-none tracking-[-0.05em] text-[#171511]">
-        {card.title}
-      </h3>
-      <p className="mt-4 text-sm leading-7 text-[#5d5145]">{card.description}</p>
-      <Link
-        href={card.href}
-        className={`mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-2xl px-6 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full ${buttonClass}`}
-      >
-        {card.cta}
-      </Link>
-    </article>
-  );
 }
 
 export default function FestivalsCalendarPage() {
@@ -463,48 +411,7 @@ export default function FestivalsCalendarPage() {
           ) : null}
         </section>
 
-        <section className="py-16">
-          <h2 className="max-w-none text-[clamp(2rem,4vw,3rem)] leading-[0.96] tracking-[-0.055em] text-[#171511]">
-            Curator&apos;s Highlights
-          </h2>
-
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1.6fr_0.8fr]">
-            <Link
-              href={getFestivalDetailHref("dekmantel-festival")}
-              className="group relative block overflow-hidden rounded-[2rem] bg-[#171511] text-white shadow-[0_20px_44px_rgba(31,22,13,0.18)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e]"
-              style={{
-                backgroundImage: `linear-gradient(180deg, rgba(7,7,7,0.18), rgba(7,7,7,0.78)), ${optimizeCssBackground(
-                  "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
-                  {
-                    width: 1400,
-                    quality: 58,
-                  }
-                )}`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            >
-              <div className="flex min-h-[18rem] flex-col justify-end p-6 sm:min-h-[22rem]">
-                <div className="inline-flex w-fit rounded-full bg-[#e8f2d0] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#3d5d1d]">
-                  Editor&apos;s Pick
-                </div>
-                <h3 className="mt-5 max-w-none text-[clamp(2rem,4vw,3.4rem)] leading-[0.94] tracking-[-0.06em] text-white">
-                  Awakenings Summer Festival
-                </h3>
-                <p className="mt-3 max-w-[30rem] text-sm leading-7 text-white/82 sm:text-[15px]">
-                  The world&apos;s biggest techno festival returns to Hilvarenbeek
-                  for three days of immersive soundscapes.
-                </p>
-              </div>
-            </Link>
-
-            <div className="grid gap-5">
-              {highlightCards.map((card) => (
-                <HighlightInfoCard key={card.title} card={card} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <WeeklyPulseSignupSection className="mt-8" />
       </div>
     </main>
   );

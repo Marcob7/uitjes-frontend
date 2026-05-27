@@ -49,6 +49,7 @@ export type CityExploreViewProps = {
 
 export type ExploreCard = {
   id: number;
+  eventId?: number | null;
   title: string;
   label: string;
   time: string;

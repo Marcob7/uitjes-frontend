@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import {
@@ -7,17 +6,39 @@ import {
   useEffect,
   useMemo,
   useState,
+  type ReactNode,
 } from "react";
+
 import { useAuth } from "@/components/AuthProvider";
-import { apiFetchAuth, apiGetAuth } from "@/lib/api";
+import {
+  addFavorite,
+  getFavorites,
+  removeFavorite,
+  type FavoriteItem,
+} from "@/lib/favorites";
 
-const FavoritesContext = createContext(null);
+type FavoriteActionResult = {
+  ok: boolean;
+  reason?: "loading" | "not_logged_in" | "failed";
+  status?: number;
+  data?: unknown;
+};
 
-export function FavoritesProvider({ children }) {
+type FavoritesContextValue = {
+  loading: boolean;
+  favorites: FavoriteItem[];
+  isFavorite: (eventId: number) => boolean;
+  add: (eventId: number) => Promise<FavoriteActionResult>;
+  remove: (eventId: number) => Promise<FavoriteActionResult>;
+  refresh: () => Promise<void>;
+};
+
+const FavoritesContext = createContext<FavoritesContextValue | null>(null);
+
+export function FavoritesProvider({ children }: { children: ReactNode }) {
   const auth = useAuth();
   const [loading, setLoading] = useState(true);
-  const [me, setMe] = useState(null);
-  const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
 
   async function refresh() {
     if (auth.status === "checking") {
@@ -26,19 +47,14 @@ export function FavoritesProvider({ children }) {
     }
 
     if (!auth.user) {
-      setMe(null);
-      setFavoriteIds(new Set());
+      setFavorites([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    setMe(auth.user);
-
-    const favs = await apiGetAuth("/api/favorites/");
-    const ids = Array.isArray(favs) ? favs.map((f) => f.event_id) : [];
-    setFavoriteIds(new Set(ids));
-
+    const nextFavorites = await getFavorites();
+    setFavorites(nextFavorites ?? []);
     setLoading(false);
   }
 
@@ -46,69 +62,57 @@ export function FavoritesProvider({ children }) {
     refresh();
   }, [auth.status, auth.user]);
 
-  const value = useMemo(() => {
+  const favoriteIds = useMemo(
+    () => new Set(favorites.map((favorite) => favorite.event_id)),
+    [favorites]
+  );
+
+  const value = useMemo<FavoritesContextValue>(() => {
     return {
       loading,
-      me,
-
-      isFavorite: (eventId) => favoriteIds.has(eventId),
-
-      add: async (eventId) => {
+      favorites,
+      isFavorite: (eventId: number) => favoriteIds.has(eventId),
+      add: async (eventId: number) => {
         if (loading) return { ok: false, reason: "loading" };
-        if (!me) return { ok: false, reason: "not_logged_in" };
+        if (!auth.user) return { ok: false, reason: "not_logged_in" };
 
-        const r = await apiFetchAuth("/api/favorites/add/", {
-          method: "POST",
-          body: JSON.stringify({ event_id: eventId }),
-        });
+        const response = await addFavorite(eventId);
 
-        if (!r.ok) {
+        if (!response.ok) {
           return {
             ok: false,
-            reason: r.auth === false ? "not_logged_in" : "failed",
-            status: r.status,
-            data: r.data,
+            reason: response.auth === false ? "not_logged_in" : "failed",
+            status: response.status,
+            data: response.data,
           };
         }
 
-        setFavoriteIds((prev) => {
-          const next = new Set(prev);
-          next.add(eventId);
-          return next;
-        });
-
+        await refresh();
         return { ok: true };
       },
-
-      remove: async (eventId) => {
+      remove: async (eventId: number) => {
         if (loading) return { ok: false, reason: "loading" };
-        if (!me) return { ok: false, reason: "not_logged_in" };
+        if (!auth.user) return { ok: false, reason: "not_logged_in" };
 
-        const r = await apiFetchAuth(`/api/favorites/${eventId}/`, {
-          method: "DELETE",
-        });
+        const response = await removeFavorite(eventId);
 
-        if (!r.ok) {
+        if (!response.ok) {
           return {
             ok: false,
-            reason: r.auth === false ? "not_logged_in" : "failed",
-            status: r.status,
-            data: r.data,
+            reason: response.auth === false ? "not_logged_in" : "failed",
+            status: response.status,
+            data: response.data,
           };
         }
 
-        setFavoriteIds((prev) => {
-          const next = new Set(prev);
-          next.delete(eventId);
-          return next;
-        });
-
+        setFavorites((current) =>
+          current.filter((favorite) => favorite.event_id !== eventId)
+        );
         return { ok: true };
       },
-
       refresh,
     };
-  }, [loading, me, favoriteIds]);
+  }, [auth.user, favoriteIds, favorites, loading]);
 
   return (
     <FavoritesContext.Provider value={value}>
@@ -118,9 +122,9 @@ export function FavoritesProvider({ children }) {
 }
 
 export function useFavorites() {
-  const ctx = useContext(FavoritesContext);
-  if (!ctx) {
+  const context = useContext(FavoritesContext);
+  if (!context) {
     throw new Error("useFavorites must be used inside <FavoritesProvider>");
   }
-  return ctx;
+  return context;
 }

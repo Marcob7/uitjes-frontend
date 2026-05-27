@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
-import SavePlaceButton from "@/components/SavePlaceButton";
+import FavouriteButton from "@/components/FavouriteButton";
 import { AppCard, AppSection } from "@/components/ui/app";
 import {
   buildActionSearchHref,
@@ -166,14 +166,6 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
       actionLabel: item.actions.reserveLabel,
     });
   const routeHref = locationQuery ? buildMapsSearchHref(locationQuery) : null;
-  const savedPlace = {
-    id: `explore:${item.slug}`,
-    title: item.title,
-    href: `/ontdek/${item.slug}`,
-    meta: item.subtitle,
-    image: item.heroImage,
-  };
-
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-12">
@@ -373,7 +365,7 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
                       : item.actions.reserveLabel}
                 </a>
 
-                <div className={`grid gap-3 ${routeHref ? "grid-cols-2" : "grid-cols-1"}`}>
+                <div className={`grid gap-3 ${routeHref ? "sm:grid-cols-2" : "grid-cols-1"}`}>
                   {routeHref ? (
                     <a
                       href={routeHref}
@@ -384,14 +376,13 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
                       {item.actions.routeLabel}
                     </a>
                   ) : null}
-                  <SavePlaceButton
-                    item={savedPlace}
-                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
-                    savedClassName="inline-flex min-h-12 items-center justify-center rounded-full border border-[#c8dc9a] bg-[#e8f2d0] px-4 text-sm font-medium text-[#162016] transition hover:bg-[#f1f7df]"
-                    savedChildren="Opgeslagen"
-                  >
-                    {item.actions.saveLabel}
-                  </SavePlaceButton>
+                  {typeof item.eventId === "number" ? (
+                    <FavouriteButton eventId={item.eventId} />
+                  ) : (
+                    <div className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d9cec1]/80 bg-white/55 px-4 text-sm font-medium text-[#746355]">
+                      Bewaren binnenkort beschikbaar
+                    </div>
+                  )}
                 </div>
 
                 {sourceHref ? (

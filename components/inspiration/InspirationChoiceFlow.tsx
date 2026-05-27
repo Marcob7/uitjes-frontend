@@ -239,20 +239,22 @@ function getLocationSummary(selectedLocation?: LocationMode, selectedCity?: stri
   return undefined;
 }
 
-function getManualSearchQuery({
-  locationSummary,
-  audienceSummary,
-  momentSummary,
-  vibeSummary,
-}: {
-  locationSummary?: string;
-  audienceSummary?: string;
-  momentSummary?: string;
-  vibeSummary?: string;
-}) {
-  return [locationSummary, audienceSummary, momentSummary, vibeSummary]
-    .filter(Boolean)
-    .join(" ");
+function scrollToElementWithHeaderOffset(element: HTMLElement | null) {
+  if (!element || typeof window === "undefined") return;
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+  const stickyHeaderOffset = window.matchMedia("(max-width: 640px)").matches
+    ? 120
+    : 112;
+  const top =
+    element.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
+
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: prefersReducedMotion ? "auto" : "smooth",
+  });
 }
 
 function getInitialWizardStep({
@@ -301,7 +303,7 @@ function getStepColorClasses(step: WizardStep) {
     case 2:
       return {
         panel:
-          "bg-[radial-gradient(circle_at_88%_0%,rgba(246,217,210,0.42),transparent_34%),linear-gradient(180deg,rgba(255,251,247,0.9),rgba(249,241,237,0.78))] ring-[#e9c4ba]/55",
+          "bg-[radial-gradient(circle_at_88%_0%,rgba(246,217,210,0.24),transparent_34%),linear-gradient(180deg,rgba(255,251,247,0.48),rgba(249,241,237,0.32))]",
         active:
           "border-[#e5b7aa] bg-[linear-gradient(180deg,#fff7f3,#f7ddd6)] text-[#4b241f] shadow-[0_12px_28px_rgba(154,80,62,0.12)]",
         option:
@@ -311,7 +313,7 @@ function getStepColorClasses(step: WizardStep) {
     case 3:
       return {
         panel:
-          "bg-[radial-gradient(circle_at_88%_0%,rgba(247,231,200,0.52),transparent_34%),linear-gradient(180deg,rgba(255,252,245,0.92),rgba(250,244,231,0.8))] ring-[#e8cf9f]/60",
+          "bg-[radial-gradient(circle_at_88%_0%,rgba(247,231,200,0.3),transparent_34%),linear-gradient(180deg,rgba(255,252,245,0.52),rgba(250,244,231,0.34))]",
         active:
           "border-[#e2c47d] bg-[linear-gradient(180deg,#fff9e8,#f6e7bd)] text-[#4b3718] shadow-[0_12px_28px_rgba(139,98,26,0.12)]",
         option:
@@ -321,7 +323,7 @@ function getStepColorClasses(step: WizardStep) {
     case 4:
       return {
         panel:
-          "bg-[radial-gradient(circle_at_88%_0%,rgba(220,235,231,0.58),transparent_34%),linear-gradient(180deg,rgba(248,253,249,0.92),rgba(237,247,241,0.82))] ring-[#b9d8c5]/65",
+          "bg-[radial-gradient(circle_at_88%_0%,rgba(220,235,231,0.34),transparent_34%),linear-gradient(180deg,rgba(248,253,249,0.52),rgba(237,247,241,0.38))]",
         active:
           "border-[#a7cdb4] bg-[linear-gradient(180deg,#f4fbf4,#dff0e5)] text-[#243f2b] shadow-[0_12px_28px_rgba(57,111,72,0.12)]",
         option:
@@ -331,7 +333,7 @@ function getStepColorClasses(step: WizardStep) {
     default:
       return {
         panel:
-          "bg-[radial-gradient(circle_at_88%_0%,rgba(198,223,154,0.46),transparent_34%),linear-gradient(180deg,rgba(251,255,244,0.92),rgba(242,248,231,0.8))] ring-[#cfe4a8]/65",
+          "bg-[radial-gradient(circle_at_88%_0%,rgba(198,223,154,0.28),transparent_34%),linear-gradient(180deg,rgba(251,255,244,0.52),rgba(242,248,231,0.36))]",
         active:
           "border-[#b8df71] bg-[linear-gradient(180deg,#f8fdec,#e8f6cf)] text-[#344125] shadow-[0_12px_28px_rgba(109,144,51,0.12)]",
         option:
@@ -387,6 +389,20 @@ export function InspirationChoiceFlow({
       selectedVibe: defaults.vibe,
     })
   );
+  const [areResultsVisible, setAreResultsVisible] = React.useState(() =>
+    Boolean(
+      getLocationSummary(
+        getInitialLocationMode(initialLocation),
+        getInitialSelectedCity(initialLocation, initialNearbyCity)
+      ) &&
+        defaults.audience &&
+        defaults.moment &&
+        defaults.vibe
+    )
+  );
+  const wizardRef = React.useRef<HTMLDivElement | null>(null);
+  const resultsRef = React.useRef<HTMLDivElement | null>(null);
+  const shouldScrollToResultsRef = React.useRef(false);
 
   const filteredResults = React.useMemo(
     () =>
@@ -408,6 +424,7 @@ export function InspirationChoiceFlow({
   function handleLocationSelect(mode: LocationMode) {
     setLocationStatus(null);
     setLocationError(null);
+    setAreResultsVisible(false);
 
     if (mode !== "nearby") cancelPendingNearby();
 
@@ -480,6 +497,7 @@ export function InspirationChoiceFlow({
     if (trimmed.length < 2) return;
 
     cancelPendingNearby();
+    setAreResultsVisible(false);
     setSelectedLocation("city");
     setSelectedCity(findCity(trimmed)?.value ?? normalizeCitySlug(trimmed));
     setLocationStatus(null);
@@ -490,6 +508,8 @@ export function InspirationChoiceFlow({
 
   function resetFilters() {
     cancelPendingNearby();
+    shouldScrollToResultsRef.current = false;
+    setAreResultsVisible(false);
     setSelectedLocation(undefined);
     setSelectedCity(undefined);
     setSelectedAudience(undefined);
@@ -503,16 +523,22 @@ export function InspirationChoiceFlow({
   }
 
   function handleAudienceSelect(value: AudienceChoice | undefined) {
+    setAreResultsVisible(false);
     setSelectedAudience(value);
     if (value) setCurrentStep(3);
   }
 
   function handleMomentSelect(value: MomentChoice | undefined) {
+    setAreResultsVisible(false);
     setSelectedMoment(value);
     if (value) setCurrentStep(4);
   }
 
   function handleVibeSelect(value: VibeChoice | undefined) {
+    if (value) {
+      shouldScrollToResultsRef.current = true;
+    }
+    setAreResultsVisible(Boolean(value));
     setSelectedVibe(value);
   }
 
@@ -525,12 +551,21 @@ export function InspirationChoiceFlow({
   )?.label;
   const vibeSummary = vibeOptions.find((option) => option.value === selectedVibe)?.label;
   const isWizardComplete = Boolean(locationSummary && selectedAudience && selectedMoment && selectedVibe);
-  const manualSearchQuery = getManualSearchQuery({
-    locationSummary,
-    audienceSummary,
-    momentSummary,
-    vibeSummary,
-  });
+  const shouldShowResults = isWizardComplete && areResultsVisible;
+
+  React.useEffect(() => {
+    if (!shouldShowResults || !shouldScrollToResultsRef.current) return;
+
+    shouldScrollToResultsRef.current = false;
+    const frameId = window.requestAnimationFrame(() => {
+      const resultsElement = resultsRef.current;
+      if (!resultsElement) return;
+
+      scrollToElementWithHeaderOffset(resultsElement);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [shouldShowResults, selectedVibe]);
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
@@ -558,14 +593,18 @@ export function InspirationChoiceFlow({
             </AppButton>
           </div>
 
-          <div className="rounded-[1.8rem] bg-[radial-gradient(circle_at_12%_0%,rgba(198,223,154,0.22),transparent_32%),radial-gradient(circle_at_92%_18%,rgba(246,217,210,0.28),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.74),rgba(249,244,236,0.62))] p-3 shadow-[0_20px_58px_rgba(80,56,31,0.08)] sm:p-4 lg:p-5">
+          <div
+            ref={wizardRef}
+            tabIndex={-1}
+            className="grid gap-4 focus:outline-none"
+          >
             <WizardProgress
               currentStep={currentStep}
               summaries={[locationSummary, audienceSummary, momentSummary, vibeSummary]}
               onStepSelect={setCurrentStep}
             />
 
-            <div className="mt-4">
+            <div>
               {currentStep === 1 ? (
                 <WizardPanel
                   tone={1}
@@ -573,83 +612,85 @@ export function InspirationChoiceFlow({
                   title="Waar?"
                   description="Kies eerst je locatiecontext."
                 >
-              <div className="grid gap-3 min-[420px]:grid-cols-3">
-                <AppFilterChip
-                  active={selectedLocation === "nearby"}
-                  onClick={() => handleLocationSelect("nearby")}
-                  disabled={isResolvingLocation}
-                  className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
-                >
-                  {isResolvingLocation ? "Locatie ophalen..." : "In de buurt van mij"}
-                </AppFilterChip>
-                <AppFilterChip
-                  active={selectedLocation === "city" || isPickingCity}
-                  onClick={() => handleLocationSelect("city")}
-                  className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
-                >
-                  Kies een stad
-                </AppFilterChip>
-                <AppFilterChip
-                  active={selectedLocation === "surprise"}
-                  onClick={() => handleLocationSelect("surprise")}
-                  className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
-                >
-                  Maakt niet uit
-                </AppFilterChip>
-              </div>
+                  <div className="grid gap-3 min-[420px]:grid-cols-3">
+                    <AppFilterChip
+                      active={selectedLocation === "nearby"}
+                      onClick={() => handleLocationSelect("nearby")}
+                      disabled={isResolvingLocation}
+                      className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
+                    >
+                      {isResolvingLocation
+                        ? "Locatie ophalen..."
+                        : "In de buurt van mij"}
+                    </AppFilterChip>
+                    <AppFilterChip
+                      active={selectedLocation === "city" || isPickingCity}
+                      onClick={() => handleLocationSelect("city")}
+                      className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
+                    >
+                      Kies een stad
+                    </AppFilterChip>
+                    <AppFilterChip
+                      active={selectedLocation === "surprise"}
+                      onClick={() => handleLocationSelect("surprise")}
+                      className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
+                    >
+                      Maakt niet uit
+                    </AppFilterChip>
+                  </div>
 
-              {isResolvingLocation ? (
-                <p className="text-sm font-medium text-[#665d54]" role="status">
-                  We vragen je browser om locatie-toestemming.
-                </p>
-              ) : null}
+                  {isResolvingLocation ? (
+                    <p className="text-sm font-medium text-[#665d54]" role="status">
+                      We vragen je browser om locatie-toestemming.
+                    </p>
+                  ) : null}
 
-              {locationStatus ? (
-                <p className="text-sm font-medium text-[#405028]" role="status">
-                  {locationStatus}
-                </p>
-              ) : null}
+                  {locationStatus ? (
+                    <p className="text-sm font-medium text-[#405028]" role="status">
+                      {locationStatus}
+                    </p>
+                  ) : null}
 
-              {locationError ? (
-                <p
-                  className="rounded-2xl border border-[#e2d7cb] bg-white/72 px-4 py-3 text-sm font-medium text-[#3f362f]"
-                  role="alert"
-                >
-                  {locationError}
-                </p>
-              ) : null}
+                  {locationError ? (
+                    <p
+                      className="rounded-2xl bg-white/64 px-4 py-3 text-sm font-medium text-[#3f362f] shadow-[inset_0_0_0_1px_rgba(214,201,184,0.48)]"
+                      role="alert"
+                    >
+                      {locationError}
+                    </p>
+                  ) : null}
 
-              {isPickingCity ? (
-                <div className="grid max-w-[36rem] gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-                  <AppInput
-                    label="Stad"
-                    name="inspiration-local-city"
-                    list="inspiration-local-city-options"
-                    value={cityInput}
-                    onChange={(event) => setCityInput(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        event.preventDefault();
-                        confirmCity();
-                      }
-                    }}
-                    placeholder="Bijvoorbeeld Apeldoorn"
-                    className="min-h-11"
-                  />
-                  <datalist id="inspiration-local-city-options">
-                    {cityOptions.map((city) => (
-                      <option key={city.value} value={city.label} />
-                    ))}
-                  </datalist>
-                  <AppButton
-                    onClick={confirmCity}
-                    disabled={cityInput.trim().length < 2}
-                    className="bg-[#e8f2d0] text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] hover:bg-[#f2f8df] sm:min-w-[8.5rem]"
-                  >
-                    Gebruik stad
-                  </AppButton>
-                </div>
-              ) : null}
+                  {isPickingCity ? (
+                    <div className="grid max-w-[36rem] gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                      <AppInput
+                        label="Stad"
+                        name="inspiration-local-city"
+                        list="inspiration-local-city-options"
+                        value={cityInput}
+                        onChange={(event) => setCityInput(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            confirmCity();
+                          }
+                        }}
+                        placeholder="Bijvoorbeeld Apeldoorn"
+                        className="min-h-11"
+                      />
+                      <datalist id="inspiration-local-city-options">
+                        {cityOptions.map((city) => (
+                          <option key={city.value} value={city.label} />
+                        ))}
+                      </datalist>
+                      <AppButton
+                        onClick={confirmCity}
+                        disabled={cityInput.trim().length < 2}
+                        className="bg-[#e8f2d0] text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] hover:bg-[#f2f8df] sm:min-w-[8.5rem]"
+                      >
+                        Gebruik stad
+                      </AppButton>
+                    </div>
+                  ) : null}
                 </WizardPanel>
               ) : null}
 
@@ -706,16 +747,16 @@ export function InspirationChoiceFlow({
       </AppSection>
 
       <AppSection maxWidth="default" spacing="md" innerClassName="pt-1 pb-16 md:pb-20">
-        <div className="mx-auto max-w-[1080px]">
-          {!isWizardComplete ? (
-            <div className="mx-auto max-w-[980px] rounded-[1.25rem] bg-[linear-gradient(90deg,rgba(255,250,240,0.76),rgba(242,248,231,0.58))] px-5 py-5 text-sm leading-6 text-[#665d54] sm:py-6">
+        <div ref={resultsRef} className="mx-auto max-w-[1080px] scroll-mt-28">
+          {!shouldShowResults ? (
+            <div className="mx-auto max-w-[980px] px-1 text-sm font-medium leading-6 text-[#665d54] sm:px-0">
               {getStepPrompt(currentStep)}
             </div>
           ) : null}
 
-          {isWizardComplete ? (
+          {shouldShowResults ? (
           <>
-          <div className="mb-8 flex flex-col gap-4 rounded-[1.4rem] bg-[linear-gradient(90deg,rgba(242,248,231,0.76),rgba(255,250,240,0.72))] px-5 py-5 md:mb-10 md:flex-row md:items-end md:justify-between md:gap-6">
+          <div className="mb-8 flex flex-col gap-4 bg-[linear-gradient(90deg,rgba(242,248,231,0.54),rgba(255,250,240,0.24),transparent)] py-3 md:mb-10 md:flex-row md:items-end md:justify-between md:gap-6">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#667b36]">
                 Resultaten
@@ -766,24 +807,13 @@ export function InspirationChoiceFlow({
                   Wis keuzes
                 </AppButton>
                 <AppButton
-                  type="button"
+                  href="/"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setCurrentStep(4)}
                   className="w-full border-[#d6c9b8] bg-white text-[#4b3a28] shadow-none hover:border-[#c9b693] hover:bg-[#fffaf4] sm:w-auto"
                 >
-                  Pas keuzes aan
+                  Probeer opnieuw te zoeken
                 </AppButton>
-                {manualSearchQuery ? (
-                  <AppButton
-                    href={`/zoeken?query=${encodeURIComponent(manualSearchQuery)}`}
-                    variant="ghost"
-                    size="sm"
-                    className="w-full border-[#d6c9b8] bg-white text-[#4b3a28] shadow-none hover:border-[#c9b693] hover:bg-[#fffaf4] sm:w-auto"
-                  >
-                    Zoek handmatig
-                  </AppButton>
-                ) : null}
               </div>
             </AppEmptyState>
           )}
@@ -813,7 +843,7 @@ function WizardPanel({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[1.35rem] p-5 shadow-[0_16px_42px_rgba(60,44,23,0.075)] ring-1 transition motion-safe:animate-[wizardIn_220ms_ease-out] sm:p-6",
+        "overflow-hidden rounded-[1.1rem] px-1 py-4 transition motion-safe:animate-[wizardIn_220ms_ease-out] sm:px-4 sm:py-5",
         toneClasses.panel
       )}
     >
@@ -828,7 +858,7 @@ function WizardPanel({
           {description}
         </p>
       </div>
-      <div className="grid min-w-0 content-start gap-2.5">{children}</div>
+      <div className="grid min-w-0 content-start gap-3">{children}</div>
     </section>
   );
 }
