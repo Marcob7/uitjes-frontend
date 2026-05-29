@@ -65,7 +65,54 @@ function buildTags(card: ExploreCard) {
 }
 
 function buildLocationLine(card: ExploreCard) {
-  return [card.location, card.distance].filter(Boolean).join(" · ");
+  return [card.location, card.distance].filter(Boolean).join(" / ");
+}
+
+function formatRatingValue(value: number, maxValue?: number | null) {
+  const formattedValue = new Intl.NumberFormat("nl-NL", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 1,
+  }).format(value);
+
+  if (typeof maxValue === "number" && Number.isFinite(maxValue) && maxValue !== 5) {
+    return `${formattedValue}/${new Intl.NumberFormat("nl-NL", {
+      maximumFractionDigits: 1,
+    }).format(maxValue)}`;
+  }
+
+  return formattedValue;
+}
+
+function formatReviewCount(value: number) {
+  const formattedValue = new Intl.NumberFormat("nl-NL").format(value);
+  return value === 1 ? `${formattedValue} review` : `${formattedValue} reviews`;
+}
+
+function buildReviewMeta(card: ExploreCard) {
+  const rating =
+    typeof card.ratingValue === "number" && Number.isFinite(card.ratingValue)
+      ? card.ratingValue
+      : typeof card.rating === "number" && Number.isFinite(card.rating)
+        ? card.rating
+        : null;
+  const reviewCount =
+    typeof card.reviewCount === "number" && Number.isFinite(card.reviewCount)
+      ? card.reviewCount
+      : null;
+  const parts = [
+    rating == null ? null : formatRatingValue(rating, card.ratingMax),
+    reviewCount == null ? null : formatReviewCount(reviewCount),
+  ].filter((part): part is string => Boolean(part));
+
+  if (parts.length === 0) return null;
+
+  const label = parts.join(" · ");
+
+  return {
+    hasRating: rating != null,
+    label,
+    title: card.ratingSource ? `${label} via ${card.ratingSource}` : label,
+  };
 }
 
 function isHighlightedCard(card: ExploreCard) {
@@ -100,6 +147,7 @@ export default function ExploreCardItem({
   const locationLine = buildLocationLine(card);
   const highlightLabel = getHighlightLabel(card);
   const isHighlighted = isHighlightedCard(card);
+  const reviewMeta = buildReviewMeta(card);
   const eventId =
     typeof card.eventId === "number" && Number.isFinite(card.eventId) && card.eventId > 0
       ? card.eventId
@@ -167,10 +215,13 @@ export default function ExploreCardItem({
                 <FavouriteButton eventId={eventId} variant="compact" />
               </div>
             ) : null}
-            {typeof card.rating === "number" ? (
-              <div className="inline-flex items-center gap-1 text-xs font-semibold text-white/88 sm:rounded-full sm:border sm:border-white/14 sm:bg-white/10 sm:px-3 sm:py-1.5 sm:text-sm sm:text-white sm:backdrop-blur-md">
-                <StarIcon />
-                <span>{card.rating.toFixed(1)}</span>
+            {reviewMeta ? (
+              <div
+                className="inline-flex max-w-[9.5rem] items-center gap-1 text-xs font-semibold text-white/88 sm:max-w-none sm:rounded-full sm:border sm:border-white/14 sm:bg-white/10 sm:px-3 sm:py-1.5 sm:text-sm sm:text-white sm:backdrop-blur-md"
+                title={reviewMeta.title}
+              >
+                {reviewMeta.hasRating ? <StarIcon /> : null}
+                <span className="truncate">{reviewMeta.label}</span>
               </div>
             ) : null}
           </div>

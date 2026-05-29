@@ -26,6 +26,10 @@ export type CityContentItem = {
   imageUrl: string | null;
   imageAlt: string | null;
   priorityScore: number | null;
+  ratingValue: number | null;
+  reviewCount: number | null;
+  ratingSource: string | null;
+  ratingMax: number | null;
   featured: boolean;
   editorsPick: boolean;
   hiddenGem: boolean;
@@ -66,6 +70,10 @@ type BackendCityContentItem = {
   image_url?: unknown;
   image_alt?: unknown;
   priority_score?: unknown;
+  rating_value?: unknown;
+  review_count?: unknown;
+  rating_source?: unknown;
+  rating_max?: unknown;
   featured?: unknown;
   is_featured?: unknown;
   editors_pick?: unknown;
@@ -132,6 +140,45 @@ function normalizeNumber(value: unknown): number | null {
   return Number.isFinite(numericValue) ? numericValue : null;
 }
 
+function normalizeRatingNumber(value: unknown, maxValue: number | null = 5): number | null {
+  if (value == null || value === "") return null;
+
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) return null;
+    return value > 0 && value <= (maxValue ?? 5) ? value : null;
+  }
+
+  if (typeof value !== "string") return null;
+
+  const cleaned = value.trim();
+  if (!cleaned) return null;
+
+  const match = cleaned.match(/\d+(?:[,.]\d+)?/);
+  if (!match) return null;
+
+  const numericValue = Number(match[0].replace(",", "."));
+  if (!Number.isFinite(numericValue)) return null;
+
+  return numericValue > 0 && numericValue <= (maxValue ?? 5) ? numericValue : null;
+}
+
+function normalizeReviewCount(value: unknown): number | null {
+  if (value == null || value === "") return null;
+
+  if (typeof value === "number") {
+    if (!Number.isFinite(value) || value < 0) return null;
+    return Math.floor(value);
+  }
+
+  if (typeof value !== "string") return null;
+
+  const cleaned = value.trim();
+  if (!/^\d+(?:[.\s]\d{3})*$/.test(cleaned)) return null;
+
+  const numericValue = Number(cleaned.replace(/[.\s]/g, ""));
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
 function normalizeBoolean(value: unknown): boolean {
   if (typeof value === "boolean") return value;
   if (typeof value === "number") return value === 1;
@@ -158,6 +205,8 @@ function normalizeTags(value: unknown): string[] {
 export function normalizeCityContentItem(
   item: BackendCityContentItem
 ): CityContentItem {
+  const ratingMax = normalizeRatingNumber(item.rating_max, Number.POSITIVE_INFINITY) ?? 5;
+
   return {
     id: normalizeNumber(item.id),
     slug: normalizeString(item.slug),
@@ -171,6 +220,10 @@ export function normalizeCityContentItem(
     imageUrl: normalizeString(item.image_url),
     imageAlt: normalizeString(item.image_alt),
     priorityScore: normalizeNumber(item.priority_score),
+    ratingValue: normalizeRatingNumber(item.rating_value, ratingMax),
+    reviewCount: normalizeReviewCount(item.review_count),
+    ratingSource: normalizeString(item.rating_source),
+    ratingMax,
     featured: normalizeBoolean(item.featured) || normalizeBoolean(item.is_featured),
     editorsPick: normalizeBoolean(item.editors_pick),
     hiddenGem: normalizeBoolean(item.hidden_gem) || normalizeBoolean(item.is_hidden_gem),
@@ -229,6 +282,11 @@ function buildCityContentPath(params: CityContentParams = {}) {
 function getCityContentRequestUrls(params: CityContentParams = {}) {
   const path = buildCityContentPath(params);
   const primaryUrl = buildCityContentUrl(params);
+
+  if (typeof window !== "undefined") {
+    return [path.replace("/api/city-content/?", "/api/city-content?")];
+  }
+
   const urls = [primaryUrl];
 
   if (

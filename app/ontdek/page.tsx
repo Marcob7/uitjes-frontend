@@ -4,11 +4,13 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import CityExplorePage from "@/components/city-explore/page";
+import type { BackendEvent } from "@/components/city-explore/types";
 import { getEventsWithFallback } from "@/components/city-explore/utils";
 import {
   getCityContentByCity,
   type CityContentItem,
 } from "@/lib/api/cityContent";
+import { isCityContentCity } from "@/lib/cityContentCities";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 
 type OntdekPageProps = {
@@ -17,39 +19,6 @@ type OntdekPageProps = {
     query?: string;
   };
 };
-
-type BackendEvent = {
-  id: number;
-  slug?: string | null;
-  title: string;
-  city: string;
-  venue: string | null;
-  start_at: string | null;
-  end_at: string | null;
-  date_text: string | null;
-  is_ongoing: boolean;
-  is_free: boolean;
-  price_min: number | null;
-  price_note?: string | null;
-  source_url: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  summary?: string | null;
-  image?: string | null;
-  imageAlt?: string | null;
-  priority_score?: number | null;
-  featured?: boolean;
-  is_featured?: boolean;
-  editors_pick?: boolean;
-  hidden_gem?: boolean;
-  is_hidden_gem?: boolean;
-  category_label?: string | null;
-  status?: string | null;
-  kind?: string | null;
-  tags?: string[];
-};
-
-const CITY_CONTENT_CITIES = new Set(["amersfoort", "harderwijk", "lelystad"]);
 
 function getDisplayCity(city: string) {
   const normalizedCity = normalizeCitySlug(city);
@@ -100,10 +69,6 @@ function getCitySlugFromQuery(query: string | undefined) {
   return matchedCity?.value ?? null;
 }
 
-function isCityContentCity(city: string) {
-  return CITY_CONTENT_CITIES.has(city);
-}
-
 function logCityContentFallback(city: string, error: unknown) {
   if (process.env.NODE_ENV !== "production") {
     console.warn(`${city} city-content fallback gebruikt:`, error);
@@ -136,6 +101,10 @@ function mapCityContentToBackendEvent(
     image: item.imageUrl,
     imageAlt: item.imageAlt,
     priority_score: item.priorityScore,
+    rating_value: item.ratingValue,
+    review_count: item.reviewCount,
+    rating_source: item.ratingSource,
+    rating_max: item.ratingMax,
     featured: item.featured,
     editors_pick: item.editorsPick,
     hidden_gem: item.hiddenGem,

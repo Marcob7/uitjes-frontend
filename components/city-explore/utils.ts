@@ -287,6 +287,42 @@ function formatStatus(event: BackendEvent) {
   return "Plan dit moment";
 }
 
+function normalizeRatingValue(value: unknown, maxValue: number | null = 5) {
+  if (value == null || value === "") return null;
+
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) return null;
+    return value > 0 && value <= (maxValue ?? 5) ? value : null;
+  }
+
+  if (typeof value !== "string") return null;
+
+  const match = value.trim().match(/\d+(?:[,.]\d+)?/);
+  if (!match) return null;
+
+  const numericValue = Number(match[0].replace(",", "."));
+  if (!Number.isFinite(numericValue)) return null;
+
+  return numericValue > 0 && numericValue <= (maxValue ?? 5) ? numericValue : null;
+}
+
+function normalizeReviewCount(value: unknown) {
+  if (value == null || value === "") return null;
+
+  if (typeof value === "number") {
+    if (!Number.isFinite(value) || value < 0) return null;
+    return Math.floor(value);
+  }
+
+  if (typeof value !== "string") return null;
+
+  const cleaned = value.trim();
+  if (!/^\d+(?:[.\s]\d{3})*$/.test(cleaned)) return null;
+
+  const numericValue = Number(cleaned.replace(/[.\s]/g, ""));
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
 export function sortEventsByStartDate(events: BackendEvent[]) {
   return [...events].sort((a, b) => {
     const aTime = a.start_at
@@ -362,39 +398,50 @@ export function buildExploreCards(
       : [];
   }
 
-  return sortEventsByHighlightAndStartDate(events).map((event) => ({
-    id: event.id,
-    eventId: !useMockFallback && Number.isFinite(event.id) && event.id > 0 ? event.id : null,
-    title: event.title || "Onbekend event",
-    label: event.category_label || (event.is_free ? "Free event" : "Event"),
-    time: formatTimeRange(event.start_at, event.end_at),
-    location: formatVenue(event.venue, cityLabel),
-    image: event.image || null,
-    imageAlt: event.imageAlt,
-    href: appendCityToExploreHref(
-      `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
-      event.city || citySlug
-    ),
-    description:
-      event.summary ||
-      "Een zorgvuldig geselecteerd moment dat goed past in een spontane stadsdag.",
-    price: formatPrice(event),
-    distance: formatDistance(event),
-    status: formatStatus(event),
-    rating: event.rating || null,
-    priorityScore: event.priority_score ?? null,
-    featured: Boolean(event.featured || event.is_featured),
-    editorsPick: Boolean(event.editors_pick),
-    hiddenGem: Boolean(event.hidden_gem || event.is_hidden_gem),
-    startAt: event.start_at,
-    endAt: event.end_at,
-    isOngoing: event.is_ongoing,
-    kind: event.kind,
-    tags: event.tags,
-    audiences: event.audiences,
-    moments: event.moments,
-    vibes: event.vibes,
-  }));
+  return sortEventsByHighlightAndStartDate(events).map((event) => {
+    const ratingMax = normalizeRatingValue(
+      event.rating_max,
+      Number.POSITIVE_INFINITY
+    ) ?? 5;
+
+    return {
+      id: event.id,
+      eventId: !useMockFallback && Number.isFinite(event.id) && event.id > 0 ? event.id : null,
+      title: event.title || "Onbekend event",
+      label: event.category_label || (event.is_free ? "Free event" : "Event"),
+      time: formatTimeRange(event.start_at, event.end_at),
+      location: formatVenue(event.venue, cityLabel),
+      image: event.image || null,
+      imageAlt: event.imageAlt,
+      href: appendCityToExploreHref(
+        `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
+        event.city || citySlug
+      ),
+      description:
+        event.summary ||
+        "Een zorgvuldig geselecteerd moment dat goed past in een spontane stadsdag.",
+      price: formatPrice(event),
+      distance: formatDistance(event),
+      status: formatStatus(event),
+      rating: normalizeRatingValue(event.rating),
+      ratingValue: normalizeRatingValue(event.rating_value, ratingMax),
+      reviewCount: normalizeReviewCount(event.review_count),
+      ratingSource: event.rating_source ?? null,
+      ratingMax,
+      priorityScore: event.priority_score ?? null,
+      featured: Boolean(event.featured || event.is_featured),
+      editorsPick: Boolean(event.editors_pick),
+      hiddenGem: Boolean(event.hidden_gem || event.is_hidden_gem),
+      startAt: event.start_at,
+      endAt: event.end_at,
+      isOngoing: event.is_ongoing,
+      kind: event.kind,
+      tags: event.tags,
+      audiences: event.audiences,
+      moments: event.moments,
+      vibes: event.vibes,
+    };
+  });
 }
 
 function appendCityToExploreHref(href: string, city?: string | null) {

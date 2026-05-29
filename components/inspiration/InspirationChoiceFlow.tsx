@@ -4,6 +4,8 @@ import Link from "next/link";
 import * as React from "react";
 
 import { AppButton, AppEmptyState, AppFilterChip, AppInput, AppSection } from "@/components/ui/app";
+import { getCityContentByCity, type CityContentItem } from "@/lib/api/cityContent";
+import { isCityContentCity } from "@/lib/cityContentCities";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import {
   getInspirationCityLabel,
@@ -190,14 +192,16 @@ function getFilteredResults({
   selectedAudience,
   selectedMoment,
   selectedVibe,
+  cityContentItems = [],
 }: {
   selectedLocation?: LocationMode;
   selectedCity?: string;
   selectedAudience?: AudienceChoice;
   selectedMoment?: MomentChoice;
   selectedVibe?: VibeChoice;
+  cityContentItems?: CityContentItem[];
 }) {
-  const inspirationFlowResults = getInspirationFlowResults();
+  const inspirationFlowResults = getInspirationFlowResults(cityContentItems);
   const locationFiltered =
     selectedLocation === "city" && selectedCity
       ? inspirationFlowResults.filter((result) => result.citySlug === selectedCity)
@@ -403,6 +407,7 @@ export function InspirationChoiceFlow({
   const wizardRef = React.useRef<HTMLDivElement | null>(null);
   const resultsRef = React.useRef<HTMLDivElement | null>(null);
   const shouldScrollToResultsRef = React.useRef(false);
+  const [cityContentItems, setCityContentItems] = React.useState<CityContentItem[]>([]);
 
   const filteredResults = React.useMemo(
     () =>
@@ -412,9 +417,46 @@ export function InspirationChoiceFlow({
         selectedAudience,
         selectedMoment,
         selectedVibe,
+        cityContentItems,
       }),
-    [selectedAudience, selectedCity, selectedLocation, selectedMoment, selectedVibe]
+    [
+      cityContentItems,
+      selectedAudience,
+      selectedCity,
+      selectedLocation,
+      selectedMoment,
+      selectedVibe,
+    ]
   );
+
+  React.useEffect(() => {
+    const city =
+      (selectedLocation === "city" || selectedLocation === "nearby") && selectedCity
+        ? selectedCity
+        : null;
+
+    if (!isCityContentCity(city)) {
+      setCityContentItems([]);
+      return;
+    }
+
+    let isCancelled = false;
+    setCityContentItems([]);
+
+    getCityContentByCity(city)
+      .then((items) => {
+        if (isCancelled) return;
+        setCityContentItems(items);
+      })
+      .catch(() => {
+        if (isCancelled) return;
+        setCityContentItems([]);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedCity, selectedLocation]);
 
   function cancelPendingNearby() {
     nearbyRequestId.current += 1;

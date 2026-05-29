@@ -24,6 +24,10 @@ export type BackendEvent = {
   summary?: string | null;
   walk_minutes?: number | null;
   rating?: number | null;
+  rating_value?: number | string | null;
+  review_count?: number | string | null;
+  rating_source?: string | null;
+  rating_max?: number | string | null;
   image?: string | null;
   imageAlt?: string | null;
   priority_score?: number | null;
@@ -62,6 +66,10 @@ export type ExploreCard = {
   distance?: string;
   status?: string;
   rating?: number | null;
+  ratingValue?: number | null;
+  reviewCount?: number | null;
+  ratingSource?: string | null;
+  ratingMax?: number | null;
   priorityScore?: number | null;
   featured?: boolean;
   editorsPick?: boolean;
