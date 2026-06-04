@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
-import FestivalViewToggle from "@/components/FestivalViewToggle";
+import FestivalHero from "@/components/FestivalHero";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import type { BackendEvent } from "@/components/city-explore/types";
 import { festivalDetails, getFestivalDetailHref } from "../data";
@@ -62,7 +62,7 @@ export default function FestivalsMapPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
-      <div className="mx-auto max-w-[1360px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
@@ -72,28 +72,39 @@ export default function FestivalsMapPage() {
           className="mb-6"
         />
 
-        <section className="uitjes-liquid-section mb-6 rounded-[2.4rem] px-5 py-8 sm:px-8 sm:py-10 lg:px-11 lg:py-12">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-[42rem]">
-              <div className="inline-flex rounded-full border border-white/24 bg-white/14 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/90 backdrop-blur-xl">
-                Festivalkaart
+        <FestivalHero
+          eyebrow="Festivalkaart"
+          title="Vind festivals op de kaart"
+          currentView="map"
+          description={
+            <>
+              Scan Nederland op datum, locatie en match. De festivalpunten staan
+              op echte coordinaten, zodat locaties logisch bij elkaar vallen.
+            </>
+          }
+          search={
+            <div className="rounded-[1.6rem] border border-white/18 bg-white/12 px-5 py-5 text-white shadow-[0_24px_60px_rgba(3,10,14,0.18)] backdrop-blur-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72">
+                Op de kaart
+              </p>
+              <div className="mt-3 flex items-end gap-3">
+                <span className="text-[clamp(2.4rem,7vw,3.4rem)] font-semibold leading-none tracking-[-0.06em]">
+                  {festivalDetails.length}
+                </span>
+                <span className="pb-1 text-sm font-medium text-white/78">
+                  festivalpunten
+                </span>
               </div>
-              <h1 className="mt-6 max-w-[11ch] text-[clamp(3.2rem,8vw,5.7rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
-                Vind festivals op de kaart
-              </h1>
-              <p className="mt-6 max-w-[34rem] text-base leading-8 text-white/88 sm:text-lg">
-                Scan Nederland op datum, locatie en match. De kaart gebruikt nu
-                echte coordinaten, zodat de festivalpunten logisch bij elkaar staan.
+              <p className="mt-4 text-sm leading-6 text-white/76">
+                Selecteer een marker of open direct een festival vanuit de lijst.
               </p>
             </div>
-
-            <FestivalViewToggle currentView="map" />
-          </div>
-        </section>
+          }
+        />
 
         <section
           aria-labelledby="festival-map-title"
-          className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start"
+          className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start"
         >
           <div>
             <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -120,6 +131,7 @@ export default function FestivalsMapPage() {
                 events={mapEvents}
                 selectedId={selectedId}
                 setSelectedId={setSelectedId}
+                variant="festival"
               />
             </div>
           </div>
@@ -137,13 +149,13 @@ export default function FestivalsMapPage() {
                   onMouseEnter={() => setSelectedId(eventId)}
                   onFocus={() => setSelectedId(eventId)}
                   aria-label={`Bekijk ${festival.name}`}
-                  className={`group block overflow-hidden rounded-[1.5rem] border bg-white shadow-[0_18px_36px_rgba(45,37,28,0.07)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_rgba(45,37,28,0.1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5c7d2c] ${
-                    isSelected ? "border-[#5c7d2c]" : "border-[#eadfd3]"
+                  className={`group block overflow-hidden rounded-[1.5rem] border bg-white/70 shadow-[0_18px_36px_rgba(45,37,28,0.07)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/82 hover:shadow-[0_24px_48px_rgba(45,37,28,0.1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9cc84e] ${
+                    isSelected ? "border-[#e8f2d0] ring-1 ring-[#e8f2d0]" : "border-white/70"
                   }`}
                 >
                   <div className="flex gap-4 p-3">
                     <div
-                      className="h-24 w-24 shrink-0 rounded-[1.1rem] bg-[#171511] bg-cover bg-center"
+                      className="h-20 w-20 shrink-0 rounded-[1rem] bg-[#171511] bg-cover bg-center sm:h-24 sm:w-24 sm:rounded-[1.1rem]"
                       style={{
                         backgroundImage: `linear-gradient(180deg, rgba(8,8,8,0.08), rgba(8,8,8,0.36)), ${optimizeCssBackground(
                           festival.heroImage,
@@ -163,13 +175,13 @@ export default function FestivalsMapPage() {
                           {festival.matchScore}%
                         </span>
                       </div>
-                      <h3 className="mt-2 text-xl font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511]">
+                      <h3 className="mt-2 text-lg font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511] sm:text-xl">
                         {festival.name}
                       </h3>
                       <p className="mt-1 text-sm text-[#665c51]">
                         {festival.locationLabel}
                       </p>
-                      <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-[#171511] group-hover:text-[#4f7628]">
+                      <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-[#171511] group-hover:text-[#7a1f3d]">
                         Bekijk festival
                         <ArrowRightIcon />
                       </div>

@@ -6,6 +6,10 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
 import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
+import FestivalGenreFilters, {
+  matchesFestivalGenre,
+  type FestivalGenreFilter,
+} from "../FestivalGenreFilters";
 import { getFestivalDetailHref } from "../data";
 
 type CalendarTone = "lime" | "pink" | "blue" | "amber" | "violet";
@@ -14,6 +18,7 @@ type CalendarEvent = {
   label: string;
   tone: CalendarTone;
   date: string;
+  genres: string[];
   href?: string;
 };
 
@@ -46,32 +51,34 @@ const FESTIVAL_CALENDAR_EVENTS: CalendarEvent[] = [
     label: "North Sea Jazz",
     tone: "lime",
     date: "2024-07-01",
+    genres: ["Jazz"],
     href: getFestivalDetailHref("north-sea-jazz"),
   },
-  { label: "Vondelpark Openlucht", tone: "pink", date: "2024-07-03" },
-  { label: "Down The Rabbit Hole", tone: "violet", date: "2024-07-05" },
-  { label: "Gentle Giant Expo", tone: "blue", date: "2024-07-05" },
-  { label: "Awakenings Summer", tone: "pink", date: "2024-07-06" },
-  { label: "Bospop Week", tone: "pink", date: "2024-07-06" },
-  { label: "+4 more", tone: "lime", date: "2024-07-06" },
-  { label: "Awakenings Final", tone: "pink", date: "2024-07-07" },
-  { label: "Gouden Carolus Food", tone: "amber", date: "2024-07-09" },
+  { label: "Vondelpark Openlucht", tone: "pink", date: "2024-07-03", genres: [] },
+  { label: "Down The Rabbit Hole", tone: "violet", date: "2024-07-05", genres: [] },
+  { label: "Gentle Giant Expo", tone: "blue", date: "2024-07-05", genres: ["Kunst"] },
+  { label: "Awakenings Summer", tone: "pink", date: "2024-07-06", genres: ["Techno"] },
+  { label: "Bospop Week", tone: "pink", date: "2024-07-06", genres: [] },
+  { label: "+4 more", tone: "lime", date: "2024-07-06", genres: [] },
+  { label: "Awakenings Final", tone: "pink", date: "2024-07-07", genres: ["Techno"] },
+  { label: "Gouden Carolus Food", tone: "amber", date: "2024-07-09", genres: ["Culinair"] },
   {
     label: "Dekmantel Festival",
     tone: "pink",
     date: "2024-07-12",
+    genres: ["Techno"],
     href: getFestivalDetailHref("dekmantel-festival"),
   },
-  { label: "Wildeburg Day 2", tone: "pink", date: "2024-07-13" },
-  { label: "Theater aan Zee", tone: "violet", date: "2024-07-13" },
-  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-16" },
-  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-17" },
-  { label: "Zwarte Cross", tone: "pink", date: "2024-07-18" },
-  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-18" },
-  { label: "Zwarte Cross", tone: "pink", date: "2024-07-19" },
-  { label: "Welcome to the Village", tone: "pink", date: "2024-07-19" },
-  { label: "Zwarte Cross Final", tone: "pink", date: "2024-07-20" },
-  { label: "+2 more", tone: "lime", date: "2024-07-20" },
+  { label: "Wildeburg Day 2", tone: "pink", date: "2024-07-13", genres: [] },
+  { label: "Theater aan Zee", tone: "violet", date: "2024-07-13", genres: ["Kunst"] },
+  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-16", genres: [] },
+  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-17", genres: [] },
+  { label: "Zwarte Cross", tone: "pink", date: "2024-07-18", genres: [] },
+  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-18", genres: [] },
+  { label: "Zwarte Cross", tone: "pink", date: "2024-07-19", genres: [] },
+  { label: "Welcome to the Village", tone: "pink", date: "2024-07-19", genres: [] },
+  { label: "Zwarte Cross Final", tone: "pink", date: "2024-07-20", genres: [] },
+  { label: "+2 more", tone: "lime", date: "2024-07-20", genres: [] },
 ];
 
 function formatDateKey(date: Date) {
@@ -118,13 +125,13 @@ function addMonths(date: Date, amount: number) {
   return new Date(date.getFullYear(), date.getMonth() + amount, 1);
 }
 
-function buildCalendarCells(currentMonth: Date) {
+function buildCalendarCells(currentMonth: Date, events: CalendarEvent[]) {
   const eventsByDate = new Map<string, CalendarEvent[]>();
 
-  for (const event of FESTIVAL_CALENDAR_EVENTS) {
-    const events = eventsByDate.get(event.date) ?? [];
-    events.push(event);
-    eventsByDate.set(event.date, events);
+  for (const event of events) {
+    const dateEvents = eventsByDate.get(event.date) ?? [];
+    dateEvents.push(event);
+    eventsByDate.set(event.date, dateEvents);
   }
 
   return getMonthGrid(currentMonth).map<CalendarCell>((date) => {
@@ -181,20 +188,6 @@ function ArrowRightIcon() {
   );
 }
 
-function FilterChevron() {
-  return (
-    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="m4.667 6.667 3.333 3.333 3.333-3.333"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function toneClass(tone: CalendarTone) {
   if (tone === "lime") {
     return "bg-[#e8f2d0] text-[#344c18]";
@@ -237,9 +230,18 @@ function CalendarPill({ event }: { event: CalendarEvent }) {
 
 export default function FestivalsCalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(() => new Date(2024, 6, 1));
+  const [activeGenre, setActiveGenre] =
+    useState<FestivalGenreFilter>("Alle genres");
+  const filteredCalendarEvents = useMemo(
+    () =>
+      FESTIVAL_CALENDAR_EVENTS.filter((event) =>
+        matchesFestivalGenre(event.genres, activeGenre)
+      ),
+    [activeGenre]
+  );
   const calendarCells = useMemo(
-    () => buildCalendarCells(currentMonth),
-    [currentMonth]
+    () => buildCalendarCells(currentMonth, filteredCalendarEvents),
+    [currentMonth, filteredCalendarEvents]
   );
   const mobileCalendarDays = calendarCells.filter(
     (cell) => !cell.muted && (cell.events?.length ?? 0) > 0
@@ -286,31 +288,6 @@ export default function FestivalsCalendarPage() {
               </label>
             </div>
           }
-          filters={
-            <>
-              <button
-                type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl border border-white/24 bg-white/14 px-5 text-sm font-medium text-white/90 backdrop-blur-xl transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
-              >
-                Genre: All
-                <FilterChevron />
-              </button>
-              <button
-                type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl border border-white/24 bg-white/14 px-5 text-sm font-medium text-white/90 backdrop-blur-xl transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
-              >
-                City: Netherlands
-                <FilterChevron />
-              </button>
-              <button
-                type="button"
-                className="inline-flex min-h-12 items-center gap-3 rounded-2xl border border-white/24 bg-white/14 px-5 text-sm font-medium text-white/90 backdrop-blur-xl transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
-              >
-                Vibe Match
-                <span className="text-xs">=</span>
-              </button>
-            </>
-          }
           controls={
             <>
               <button
@@ -331,6 +308,12 @@ export default function FestivalsCalendarPage() {
                 <ArrowRightIcon />
               </button>
             </>
+          }
+          filters={
+            <FestivalGenreFilters
+              activeGenre={activeGenre}
+              onChange={setActiveGenre}
+            />
           }
         />
         <section className="mt-8 overflow-hidden rounded-[2.2rem] border border-white/70 bg-white/55 shadow-[0_20px_60px_rgba(66,49,31,0.08)] backdrop-blur-xl">

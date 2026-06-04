@@ -5,19 +5,15 @@ import { useDeferredValue, useMemo, useState } from "react";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
+import FestivalGenreFilters, {
+  matchesFestivalGenre,
+  type FestivalGenreFilter,
+} from "../FestivalGenreFilters";
 import {
   festivalOverviewItems,
   getFestivalDetailHref,
   type FestivalIcon,
 } from "../data";
-
-const genreFilters = [
-  "Alle genres",
-  "Techno",
-  "Jazz",
-  "Culinair",
-  "Kunst",
-] as const;
 
 type FestivalsPageProps = {
   searchParams?: {
@@ -55,7 +51,7 @@ function ArrowIcon() {
 function FestivalGlyph({ icon }: { icon: FestivalIcon }) {
   if (icon === "fork") {
     return (
-    <svg className="h-7 w-7 text-[#e8f2d0]" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <svg className="h-7 w-7" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <path
           d="M12 6v10M9 6v6M15 6v6M12 16v10M22 6v20M22 6c2.6 0 4 1.7 4 4.4 0 2.5-1.2 4.1-4 5.6"
           stroke="currentColor"
@@ -69,7 +65,7 @@ function FestivalGlyph({ icon }: { icon: FestivalIcon }) {
 
   if (icon === "crown") {
     return (
-      <svg className="h-7 w-7 text-[#e8f2d0]" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <svg className="h-7 w-7" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <path
           d="M7 23h18M9 23l2.5-10L16 17l4.5-4L23 23M11 10.5h.01M16 8.5h.01M21 10.5h.01"
           stroke="currentColor"
@@ -82,7 +78,7 @@ function FestivalGlyph({ icon }: { icon: FestivalIcon }) {
   }
 
   return (
-    <svg className="h-7 w-7 text-[#e8f2d0]" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <svg className="h-7 w-7" viewBox="0 0 32 32" fill="none" aria-hidden="true">
       <path
         d="M10 22V10M16 26V6M22 20V12"
         stroke="currentColor"
@@ -99,46 +95,27 @@ function FestivalCard({
   festival: (typeof festivalOverviewItems)[number];
 }) {
   return (
-    <article className="rounded-[1.9rem] border border-[#21332b] bg-[linear-gradient(135deg,#0d1513_0%,#17271f_56%,#24351d_100%)] px-4 py-4 text-white shadow-[0_18px_44px_rgba(17,21,17,0.2)] sm:px-5">
+    <article className="group rounded-[1.9rem] border border-white/70 bg-white/58 px-4 py-4 text-[#171511] shadow-[0_18px_44px_rgba(66,49,31,0.08)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/72 hover:shadow-[0_24px_54px_rgba(66,49,31,0.12)] sm:px-5">
       <div className="flex flex-col gap-5 md:flex-row md:items-center">
         <div className="flex min-w-0 items-start gap-4 md:flex-1">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1rem] border border-white/14 bg-white/10">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1rem] border border-[#e6dfd3] bg-[#fffaf3] text-[#7a7065] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition group-hover:border-[#ded4c7] group-hover:bg-white">
             <FestivalGlyph icon={festival.icon} />
           </div>
 
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/82">
-              {festival.dateLabel} - {festival.locationLabel}
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7e7366]">
+              {festival.dateLabel}
             </p>
-            <h2 className="mt-2 max-w-none text-[clamp(1.8rem,3vw,2.25rem)] leading-[0.98] tracking-[-0.055em] text-white">
+            <h2 className="mt-2 max-w-none text-[clamp(1.8rem,3vw,2.25rem)] leading-[0.98] tracking-[-0.055em] text-[#171511]">
               {festival.name}
             </h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {festival.genres.map((genre) => (
-                <span
-                  key={`${festival.slug}-${genre}`}
-                  className="rounded-full border border-white/18 bg-white/12 px-3 py-1 text-[11px] font-semibold text-white/92"
-                >
-                  {genre}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-white/20 pt-4 md:min-w-[10rem] md:justify-end md:gap-6 md:border-l md:border-t-0 md:pl-6 md:pt-0">
-          <div className="text-left md:text-right">
-            <div className="text-[2.3rem] font-semibold leading-none tracking-[-0.08em] text-[#e8f2d0]">
-              {festival.matchScore}%
-            </div>
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/82">
-              vibe match
-            </p>
-          </div>
-
+        <div className="flex justify-end border-t border-[#e6dfd3] pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
           <Link
             href={getFestivalDetailHref(festival.slug)}
-            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/24 text-white transition hover:bg-white/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[#ded4c7] bg-[#fffaf3] text-[#3f362f] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
             aria-label={`Open ${festival.name}`}
           >
             <ArrowIcon />
@@ -175,7 +152,7 @@ function getFestivalSearchTerms(query: string) {
 export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
   const [query, setQuery] = useState(searchParams?.query ?? "");
   const [activeGenre, setActiveGenre] =
-    useState<(typeof genreFilters)[number]>("Alle genres");
+    useState<FestivalGenreFilter>("Alle genres");
 
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
 
@@ -186,8 +163,7 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
 
     return (
       festivalOverviewItems.filter((festival) => {
-        const matchesGenre =
-          activeGenre === "Alle genres" || festival.genres.includes(activeGenre);
+        const matchesGenre = matchesFestivalGenre(festival.genres, activeGenre);
 
         const searchableFestival = [
           festival.name,
@@ -266,27 +242,10 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
             </div>
           }
           filters={
-            <>
-              {genreFilters.map((genre) => {
-                const active = activeGenre === genre;
-
-                return (
-                  <button
-                    key={genre}
-                    type="button"
-                    onClick={() => setActiveGenre(genre)}
-                    className={`min-h-11 rounded-2xl px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] sm:rounded-full ${
-                      active
-                        ? "bg-[#e8f2d0] text-[#3f5e1f]"
-                        : "bg-white/14 text-white/88 backdrop-blur-xl hover:bg-white/20"
-                    }`}
-                    aria-pressed={active}
-                  >
-                    {genre}
-                  </button>
-                );
-              })}
-            </>
+            <FestivalGenreFilters
+              activeGenre={activeGenre}
+              onChange={setActiveGenre}
+            />
           }
         />
         <section id="festival-results" className="py-8 sm:py-10">

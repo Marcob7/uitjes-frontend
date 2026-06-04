@@ -66,7 +66,84 @@ type StepChip = {
 
 const TOTAL_STEPS = 3;
 
-function getTonePalette(tone: LiquidToneKey) {
+function getTonePalette(tone: LiquidToneKey, isDarkLiquid: boolean) {
+  if (!isDarkLiquid) {
+    switch (tone) {
+      case "rose":
+        return {
+          surface: "rgba(246, 217, 210, 0.34)",
+          surfaceSelected: "rgba(246, 217, 210, 0.64)",
+          ring: "rgba(229, 183, 170, 0.52)",
+          text: "#4b241f",
+          muted: "#76594f",
+          badgeBackground: "#f6d9d2",
+          badgeText: "#4b241f",
+          iconBackground: "rgba(246, 217, 210, 0.58)",
+          iconText: "#8f4638",
+        };
+      case "violet":
+        return {
+          surface: "rgba(231, 228, 246, 0.36)",
+          surfaceSelected: "rgba(231, 228, 246, 0.68)",
+          ring: "rgba(179, 169, 219, 0.48)",
+          text: "#2f2943",
+          muted: "#655f78",
+          badgeBackground: "#e7e4f6",
+          badgeText: "#2f2943",
+          iconBackground: "rgba(231, 228, 246, 0.7)",
+          iconText: "#5b4d94",
+        };
+      case "sage":
+        return {
+          surface: "rgba(222, 237, 220, 0.42)",
+          surfaceSelected: "rgba(222, 237, 220, 0.74)",
+          ring: "rgba(155, 196, 155, 0.48)",
+          text: "#243626",
+          muted: "#5f735f",
+          badgeBackground: "#deeddc",
+          badgeText: "#243626",
+          iconBackground: "rgba(222, 237, 220, 0.74)",
+          iconText: "#436d48",
+        };
+      case "amber":
+        return {
+          surface: "rgba(247, 231, 200, 0.42)",
+          surfaceSelected: "rgba(247, 231, 200, 0.74)",
+          ring: "rgba(226, 196, 125, 0.5)",
+          text: "#4b3718",
+          muted: "#79653f",
+          badgeBackground: "#f7e7c8",
+          badgeText: "#4b3718",
+          iconBackground: "rgba(247, 231, 200, 0.74)",
+          iconText: "#8a641f",
+        };
+      case "mist":
+        return {
+          surface: "rgba(228, 235, 245, 0.42)",
+          surfaceSelected: "rgba(228, 235, 245, 0.74)",
+          ring: "rgba(170, 185, 207, 0.48)",
+          text: "#273347",
+          muted: "#5f6d80",
+          badgeBackground: "#e4ebf5",
+          badgeText: "#273347",
+          iconBackground: "rgba(228, 235, 245, 0.74)",
+          iconText: "#4b6388",
+        };
+      default:
+        return {
+          surface: "rgba(239, 229, 216, 0.42)",
+          surfaceSelected: "rgba(239, 229, 216, 0.76)",
+          ring: "rgba(211, 194, 174, 0.58)",
+          text: "#453127",
+          muted: "#75655a",
+          badgeBackground: "#efe5d8",
+          badgeText: "#453127",
+          iconBackground: "rgba(239, 229, 216, 0.74)",
+          iconText: "#765441",
+        };
+    }
+  }
+
   switch (tone) {
     case "rose":
       return {
@@ -148,6 +225,23 @@ function getLiquidOptionCardStyle(
   isSelected: boolean,
   isDarkLiquid: boolean
 ) {
+  if (!isDarkLiquid) {
+    return {
+      background: isSelected
+        ? `radial-gradient(circle at 16% 8%, ${palette.surfaceSelected} 0%, transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,244,237,0.82) 100%)`
+        : `radial-gradient(circle at 12% 0%, ${palette.surface} 0%, transparent 42%), linear-gradient(135deg, rgba(255,252,247,0.9) 0%, rgba(248,244,237,0.66) 100%)`,
+      color: palette.text,
+      border: isSelected
+        ? `1px solid ${palette.ring}`
+        : "1px solid rgba(231, 219, 205, 0.82)",
+      backdropFilter: "blur(18px) saturate(1.08)",
+      WebkitBackdropFilter: "blur(18px) saturate(1.08)",
+      boxShadow: isSelected
+        ? "0 18px 38px rgba(83,65,45,0.12), inset 0 1px 0 rgba(255,255,255,0.74)"
+        : "0 12px 28px rgba(83,65,45,0.07), inset 0 1px 0 rgba(255,255,255,0.62)",
+    };
+  }
+
   return {
     background: isSelected
       ? `radial-gradient(circle at 16% 8%, ${palette.surfaceSelected} 0%, transparent 42%), linear-gradient(135deg, rgba(232,242,208,0.20) 0%, rgba(255,255,255,0.14) 42%, rgba(255,255,255,0.08) 100%)`
@@ -711,7 +805,7 @@ function CompanionGrid({
       {COMPANION_OPTIONS.map((option) => {
         const Icon = option.icon;
         const isSelected = selected === option.id;
-        const palette = getTonePalette(option.tone);
+        const palette = getTonePalette(option.tone, isDarkLiquid);
 
         return (
           <AppChoiceButton
@@ -724,8 +818,12 @@ function CompanionGrid({
             icon={<Icon className="h-5 w-5 sm:h-6 sm:w-6" />}
             className={`relative min-h-[92px] items-start overflow-hidden rounded-[1.05rem] p-3.5 text-left duration-200 before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(232,242,208,0.14),rgba(255,255,255,0.10)_48%,transparent)] before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 sm:min-h-[164px] sm:items-start sm:rounded-[1.8rem] sm:p-5 sm:text-left [&>span:first-child]:relative [&>span:first-child]:h-11 [&>span:first-child]:w-11 [&>span:first-child]:border-[#e8f2d0]/20 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_26px_rgba(0,0,0,0.10)] [&>span:first-child]:sm:mx-0 [&>span:first-child]:sm:h-12 [&>span:first-child]:sm:w-12 [&>span:last-child]:relative [&>span:last-child]:pt-0.5 [&>span:last-child>span:first-child]:text-[1.02rem] [&>span:last-child>span:first-child]:font-semibold [&>span:last-child>span:first-child]:leading-tight [&>span:last-child>span:first-child]:tracking-[-0.025em] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:first-child]:sm:text-[1.16rem] [&>span:last-child>span:last-child]:mt-1 [&>span:last-child>span:last-child]:block [&>span:last-child>span:last-child]:text-[0.82rem] [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:leading-5 [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:mt-2 [&>span:last-child>span:last-child]:sm:text-sm ${
               isSelected
-                ? "translate-y-[-1px] ring-1 ring-[#e8f2d0]/30 [&>span:first-child]:border-[#e8f2d0]/40 [&>span:first-child]:bg-[#e8f2d0]/18 [&>span:first-child]:text-[#f1f7df]"
-                : "hover:translate-y-[-2px] hover:border-white/22 hover:bg-white/14 hover:shadow-[0_26px_58px_rgba(0,0,0,0.18)]"
+                ? isDarkLiquid
+                  ? "translate-y-[-1px] ring-1 ring-[#e8f2d0]/30 [&>span:first-child]:border-[#e8f2d0]/40 [&>span:first-child]:bg-[#e8f2d0]/18 [&>span:first-child]:text-[#f1f7df]"
+                  : "translate-y-[-1px] ring-1 ring-[#b8df71]/35"
+                : isDarkLiquid
+                  ? "hover:translate-y-[-2px] hover:border-white/22 hover:bg-white/14 hover:shadow-[0_26px_58px_rgba(0,0,0,0.18)]"
+                  : "hover:translate-y-[-2px] hover:border-[#d8c6b2] hover:bg-white"
             }`}
             style={{
               ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
@@ -763,7 +861,7 @@ function SimpleOptionGrid<T extends string>({
       {options.map((option) => {
         const Icon = option.icon;
         const isSelected = selected === option.id;
-        const palette = getTonePalette(option.tone);
+        const palette = getTonePalette(option.tone, isDarkLiquid);
 
         return (
           <AppChoiceButton
@@ -776,8 +874,12 @@ function SimpleOptionGrid<T extends string>({
             icon={<Icon className="h-5 w-5 sm:h-6 sm:w-6" />}
             className={`relative min-h-[92px] items-start overflow-hidden rounded-[1.05rem] p-3.5 text-left duration-200 before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,rgba(232,242,208,0.14),rgba(255,255,255,0.10)_48%,transparent)] before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 sm:min-h-[154px] sm:items-start sm:rounded-[1.8rem] sm:p-5 sm:text-left [&>span:first-child]:relative [&>span:first-child]:h-11 [&>span:first-child]:w-11 [&>span:first-child]:border-[#e8f2d0]/20 [&>span:first-child]:bg-[var(--choice-icon-bg)] [&>span:first-child]:text-[var(--choice-icon-text)] [&>span:first-child]:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_26px_rgba(0,0,0,0.10)] [&>span:first-child]:sm:mx-0 [&>span:first-child]:sm:h-12 [&>span:first-child]:sm:w-12 [&>span:last-child]:relative [&>span:last-child]:pt-0.5 [&>span:last-child>span:first-child]:text-[1.02rem] [&>span:last-child>span:first-child]:font-semibold [&>span:last-child>span:first-child]:leading-tight [&>span:last-child>span:first-child]:tracking-[-0.025em] [&>span:last-child>span:first-child]:text-[var(--choice-text)] [&>span:last-child>span:first-child]:sm:text-[1.12rem] [&>span:last-child>span:last-child]:mt-1 [&>span:last-child>span:last-child]:block [&>span:last-child>span:last-child]:text-[0.82rem] [&>span:last-child>span:last-child]:font-medium [&>span:last-child>span:last-child]:leading-5 [&>span:last-child>span:last-child]:text-[var(--choice-muted)] [&>span:last-child>span:last-child]:sm:mt-2 [&>span:last-child>span:last-child]:sm:text-sm ${
               isSelected
-                ? "translate-y-[-1px] ring-1 ring-[#e8f2d0]/30 [&>span:first-child]:border-[#e8f2d0]/40 [&>span:first-child]:bg-[#e8f2d0]/18 [&>span:first-child]:text-[#f1f7df]"
-                : "hover:translate-y-[-2px] hover:border-white/22 hover:bg-white/14 hover:shadow-[0_26px_58px_rgba(0,0,0,0.18)]"
+                ? isDarkLiquid
+                  ? "translate-y-[-1px] ring-1 ring-[#e8f2d0]/30 [&>span:first-child]:border-[#e8f2d0]/40 [&>span:first-child]:bg-[#e8f2d0]/18 [&>span:first-child]:text-[#f1f7df]"
+                  : "translate-y-[-1px] ring-1 ring-[#b8df71]/35"
+                : isDarkLiquid
+                  ? "hover:translate-y-[-2px] hover:border-white/22 hover:bg-white/14 hover:shadow-[0_26px_58px_rgba(0,0,0,0.18)]"
+                  : "hover:translate-y-[-2px] hover:border-[#d8c6b2] hover:bg-white"
             }`}
             style={{
               ...getLiquidOptionCardStyle(palette, isSelected, isDarkLiquid),
@@ -871,11 +973,10 @@ export default function CityExploreFormSection({
   }
 
   return (
-    <section ref={sectionRef} className="scroll-mt-6 bg-transparent">
-      <div className="mx-auto max-w-[1220px] px-4 py-6 sm:px-8 sm:py-10 lg:px-10 lg:py-14">
-        <div className="">
+    <section ref={sectionRef} className="relative scroll-mt-6 bg-transparent">
+      <div className="mx-auto max-w-[1220px] px-1 py-8 sm:px-0 sm:py-10 lg:py-14">
           <div
-            className="absolute -left-16 top-20 h-40 w-40 rounded-full blur-3xl"
+            className="pointer-events-none absolute -left-16 top-20 h-40 w-40 rounded-full blur-3xl"
             style={{
               backgroundColor: isDarkLiquid
                 ? "rgba(255,255,255,0.08)"
@@ -883,7 +984,7 @@ export default function CityExploreFormSection({
             }}
           />
           <div
-            className="absolute right-0 top-0 h-64 w-64 rounded-full blur-3xl"
+            className="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full blur-3xl"
             style={{
               backgroundColor: isDarkLiquid
                 ? "rgba(255,255,255,0.06)"
@@ -891,7 +992,7 @@ export default function CityExploreFormSection({
             }}
           />
           <div
-            className="absolute bottom-0 right-24 h-36 w-36 rounded-full blur-3xl"
+            className="pointer-events-none absolute bottom-0 right-24 h-36 w-36 rounded-full blur-3xl"
             style={{
               backgroundColor: isDarkLiquid
                 ? "rgba(183,229,107,0.12)"
@@ -973,7 +1074,7 @@ export default function CityExploreFormSection({
               isDarkLiquid={isDarkLiquid}
             />
           </div>
-        </div>
+      
       </div>
     </section>
   );

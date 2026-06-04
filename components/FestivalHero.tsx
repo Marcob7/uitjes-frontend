@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 
 import FestivalViewToggle from "@/components/FestivalViewToggle";
@@ -9,7 +11,7 @@ type FestivalHeroProps = {
   description: ReactNode;
   currentView: "list" | "calendar" | "map";
   search: ReactNode;
-  filters: ReactNode;
+  filters?: ReactNode;
   controls?: ReactNode;
 };
 
@@ -61,15 +63,14 @@ export default function FestivalHero({
 
         <div className="w-full max-w-[28rem]">
           {search}
-
-          <div className="mt-8 flex justify-end">
-            <FestivalViewToggle currentView={currentView} />
-          </div>
         </div>
       </div>
 
-      <div className="relative mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-3">{filters}</div>
+      <div className="relative mt-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <FestivalViewToggle currentView={currentView} className="w-full sm:w-auto" />
+          {filters ? <div className="flex flex-wrap gap-3">{filters}</div> : null}
+        </div>
         {controls ? (
           <div className="flex items-center gap-4 self-start text-white lg:self-end">
             {controls}

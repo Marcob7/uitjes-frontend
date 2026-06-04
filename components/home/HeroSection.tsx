@@ -23,8 +23,8 @@ export default function HeroSection() {
       spacing="sm"
       innerClassName="pt-4 pb-0 md:px-6 lg:px-8"
     >
-      <div className="relative overflow-hidden rounded-[32px] px-6 py-8 md:px-10 md:py-12 lg:px-14 lg:py-16">
-        <div className="absolute inset-0">
+      <div className="relative z-20 overflow-visible rounded-[32px] px-5 py-7 md:px-10 md:py-12 lg:px-14 lg:py-16">
+        <div className="absolute inset-0 overflow-hidden rounded-[32px]">
           <WebGLLiquid
             title=""
             subtitle=""
@@ -44,9 +44,7 @@ export default function HeroSection() {
             glowClassName="bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),radial-gradient(circle_at_76%_24%,rgba(198,223,154,0.2),transparent_24%)]"
           />
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,19,26,0.12),rgba(7,19,26,0.42))]" />
-        <div className="pointer-events-none absolute -left-10 top-8 h-40 w-40 rounded-full bg-[rgba(198,223,154,0.16)] blur-3xl" />
-        <div className="pointer-events-none absolute right-10 top-10 h-48 w-48 rounded-full bg-[rgba(122,213,217,0.14)] blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 rounded-[32px] bg-[linear-gradient(180deg,rgba(7,19,26,0.12),rgba(7,19,26,0.42))]" />
 
         <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
           <div className="inline-flex min-h-[44px] items-center rounded-full border border-white/18 bg-white/10 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/92 shadow-[0_16px_40px_rgba(0,0,0,0.16)] backdrop-blur-md">
@@ -60,14 +58,15 @@ export default function HeroSection() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-white/88 md:text-base">
-            Zoek direct op stad en bekijk meteen wat daar te doen is.
+            Begin met een stad, festival of activiteit. We brengen je direct naar
+            passende plannen.
           </p>
 
-          <div className="mt-8 w-full">
+          <div className="relative z-30 mt-8 w-full">
             <SearchBar
-              rootClassName="max-w-[46rem]"
+              rootClassName="max-w-[48rem]"
               formClassName="border border-white/20 bg-white/12 shadow-[0_24px_60px_rgba(3,10,14,0.24)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/10"
-              inputWrapperClassName="rounded-[20px] sm:rounded-full"
+              inputWrapperClassName="rounded-[20px] bg-white/8 sm:bg-transparent"
               iconClassName="text-white/68"
               inputClassName="text-white placeholder:text-white/62"
               suggestionsPanelClassName="border-white/12 bg-[#0d1920]/96 shadow-[0_24px_60px_rgba(2,8,11,0.34)] backdrop-blur-xl"
@@ -76,45 +75,40 @@ export default function HeroSection() {
             />
           </div>
 
-          <div className="mt-5 hidden flex-wrap items-center justify-center gap-3 sm:flex">
-            {featuredCities.map((city) => (
-              <AppButton
-                key={city!.value}
-                href={`/ontdek?city=${city!.value}`}
-                variant="ghost"
-                size="sm"
-                className="min-h-[44px] rounded-2xl border-white/16 bg-white/10 px-4 font-medium text-white shadow-[0_12px_30px_rgba(0,0,0,0.14)] backdrop-blur-md hover:bg-white/14 focus-visible:outline-white md:rounded-full md:px-5"
-              >
-                {city!.label}
-              </AppButton>
-            ))}
+          <div className="relative z-10 mt-5 w-full">
+            <p className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/70">
+              Populaire steden
+            </p>
+            <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0">
+              {featuredCities.map((city) => (
+                <AppButton
+                  key={city!.value}
+                  href={`/ontdek?city=${city!.value}`}
+                  variant="ghost"
+                  size="sm"
+                  className="min-h-[44px] shrink-0 rounded-2xl border-white/16 bg-white/10 px-4 font-medium text-white shadow-[0_12px_30px_rgba(0,0,0,0.14)] backdrop-blur-md hover:bg-white/14 focus-visible:outline-white md:rounded-full md:px-5"
+                >
+                  {city!.label}
+                </AppButton>
+              ))}
+            </div>
           </div>
 
           <div className="relative z-0 mt-6 flex w-full max-w-xl flex-col items-stretch gap-3 lg:mt-4 lg:max-w-none lg:flex-row lg:items-center lg:justify-center">
             <AppButton
               href="/inspiratie"
-              variant="primary"
+              variant="ghost"
               size="lg"
               fullWidth
               iconLeft={
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1e3224] text-[#f7fbeb]">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/12 text-[#f7fbeb]">
                   &#10022;
                 </span>
               }
               iconRight={<span aria-hidden="true">&rarr;</span>}
-              className="min-h-[56px] justify-between border-[#e8f2d0]/65 px-6 shadow-[0_18px_36px_rgba(12,20,12,0.18)] hover:-translate-y-0.5 focus-visible:outline-[#f7fbeb] lg:min-h-[52px] lg:w-auto lg:justify-center"
-            >
-              Help mij ontdekken wat ik kan doen
-            </AppButton>
-            <AppButton
-              href="/jaarkalender"
-              variant="ghost"
-              size="lg"
-              fullWidth
-              iconRight={<span aria-hidden="true">&rarr;</span>}
               className="min-h-[56px] justify-between gap-3 rounded-2xl border-white/18 bg-white/10 px-6 text-white shadow-[0_18px_36px_rgba(0,0,0,0.16)] backdrop-blur-md hover:-translate-y-0.5 hover:bg-white/14 focus-visible:outline-white lg:min-h-[52px] lg:w-auto lg:justify-center lg:gap-2 lg:rounded-full"
             >
-              Bekijk de jaarkalender van Nederland
+              Ik wil eerst inspiratie
             </AppButton>
           </div>
         </div>

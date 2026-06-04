@@ -129,20 +129,20 @@ export default function SearchBar({
       : undefined;
 
   return (
-    <div className={cn("relative z-40 mx-auto max-w-2xl", rootClassName)}>
+    <div className={cn("relative z-50 mx-auto max-w-2xl", rootClassName)}>
       <form
         onSubmit={handleSubmit}
         role="search"
         aria-label="Zoek een stad"
         className={cn(
-          "rounded-[24px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full",
+          "rounded-[26px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full",
           formClassName,
         )}
       >
-        <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-center">
+        <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
           <div
             className={cn(
-              "relative flex min-h-[56px] flex-1 items-center rounded-2xl bg-transparent px-4 sm:min-h-[56px] sm:rounded-full sm:px-4",
+              "flex min-h-[56px] min-w-0 flex-1 items-center rounded-[20px] bg-transparent px-4 sm:min-h-[56px] sm:rounded-full",
               inputWrapperClassName,
             )}
           >
@@ -183,44 +183,10 @@ export default function SearchBar({
               spellCheck={false}
               maxLength={80}
               className={cn(
-                "w-full bg-transparent text-base text-slate-700 outline-none placeholder:text-slate-400 sm:text-sm",
+                "min-w-0 w-full bg-transparent text-[16px] leading-6 text-slate-700 outline-none placeholder:text-slate-400 md:text-sm",
                 inputClassName,
               )}
             />
-
-            {showSuggestions && suggestions.length > 0 ? (
-              <div
-                id={suggestionsListId}
-                role="listbox"
-                aria-label="Stadsuggesties"
-                className={cn(
-                  "absolute left-0 right-0 top-[calc(100%+12px)] z-[90] max-h-[min(18rem,55vh)] overflow-y-auto rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)] sm:rounded-[24px]",
-                  suggestionsPanelClassName,
-                )}
-              >
-                <ul className="flex flex-col gap-1">
-                  {suggestions.map((city, index) => (
-                    <li key={city.slug}>
-                      <button
-                        id={`${suggestionsListId}-option-${city.slug}`}
-                        role="option"
-                        aria-selected={index === activeSuggestionIndex}
-                        type="button"
-                        onMouseEnter={() => setActiveSuggestionIndex(index)}
-                        onMouseDown={() => handleSuggestionClick(city)}
-                        className={cn(
-                          "flex w-full items-center justify-between rounded-[16px] px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-50",
-                          suggestionItemClassName,
-                        )}
-                      >
-                        <span>{city.label}</span>
-                        <span className="text-current/60">&rarr;</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
           </div>
 
           <AppButton
@@ -237,6 +203,40 @@ export default function SearchBar({
           </AppButton>
         </div>
       </form>
+
+      {showSuggestions && suggestions.length > 0 ? (
+        <div
+          id={suggestionsListId}
+          role="listbox"
+          aria-label="Stadsuggesties"
+          className={cn(
+            "absolute left-0 right-0 top-[calc(100%+10px)] z-50 max-h-[min(20rem,52vh)] overflow-y-auto rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_22px_52px_rgba(15,23,42,0.18)] sm:rounded-[24px]",
+            suggestionsPanelClassName,
+          )}
+        >
+          <ul className="flex flex-col gap-1">
+            {suggestions.map((city, index) => (
+              <li key={city.slug}>
+                <button
+                  id={`${suggestionsListId}-option-${city.slug}`}
+                  role="option"
+                  aria-selected={index === activeSuggestionIndex}
+                  type="button"
+                  onMouseEnter={() => setActiveSuggestionIndex(index)}
+                  onMouseDown={() => handleSuggestionClick(city)}
+                  className={cn(
+                    "flex w-full items-center justify-between rounded-[16px] px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-50",
+                    suggestionItemClassName,
+                  )}
+                >
+                  <span>{city.label}</span>
+                  <span className="text-current/60">&rarr;</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
+import CityExploreMapSection from "@/components/city-explore/CityExploreMapSection";
+import type { BackendEvent } from "@/components/city-explore/types";
 import FavouriteButton from "@/components/FavouriteButton";
 import { AppCard, AppSection } from "@/components/ui/app";
 import {
@@ -96,15 +98,36 @@ function CheckIcon() {
   );
 }
 
-function DetailRow({ label, value }: { label: string; value?: string | null }) {
+function CompactInfo({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value?: string | null;
+  href?: string | null;
+}) {
   if (!value) return null;
 
+  const content = href ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="font-semibold text-[#2f491a] underline decoration-[#b8cf79] underline-offset-4 transition hover:text-[#171511]"
+    >
+      {value}
+    </a>
+  ) : (
+    value
+  );
+
   return (
-    <div>
-      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#746355]">
+    <div className="border-t border-[#d9cec1]/70 py-4 first:border-t-0 first:pt-0 last:pb-0">
+      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#746355]">
         {label}
-      </div>
-      <div className="mt-1 text-sm leading-6 text-[#211a14]">{value}</div>
+      </dt>
+      <dd className="mt-1 text-sm leading-6 text-[#211a14]">{content}</dd>
     </div>
   );
 }
@@ -118,6 +141,83 @@ function getSafeExternalUrl(value?: string | null) {
   } catch {
     return null;
   }
+}
+
+function getUsableHeroImage(value?: string | null) {
+  const image = value?.trim();
+
+  if (!image || image === "/images/apeldoorn_img.jpg") {
+    return null;
+  }
+
+  return image;
+}
+
+function parseCoordinates(value?: string | null) {
+  if (!value) return null;
+
+  const [latitudeValue, longitudeValue] = value
+    .split(",")
+    .map((part) => Number(part.trim()));
+
+  if (!Number.isFinite(latitudeValue) || !Number.isFinite(longitudeValue)) {
+    return null;
+  }
+
+  return { latitude: latitudeValue, longitude: longitudeValue };
+}
+
+function formatRating(item: NonNullable<Awaited<ReturnType<typeof getExploreDetail>>>) {
+  if (typeof item.ratingValue !== "number") return null;
+
+  const max = typeof item.ratingMax === "number" ? item.ratingMax : 5;
+  const reviews =
+    typeof item.reviewCount === "number"
+      ? ` (${new Intl.NumberFormat("nl-NL").format(item.reviewCount)} reviews)`
+      : "";
+  const source = item.ratingSource ? ` via ${item.ratingSource}` : "";
+
+  return `${item.ratingValue.toFixed(1).replace(".", ",")} / ${max}${reviews}${source}`;
+}
+
+function buildMapEvent(
+  item: NonNullable<Awaited<ReturnType<typeof getExploreDetail>>>
+): BackendEvent | null {
+  const parsedCoordinates = parseCoordinates(item.practical.coordinates);
+  const latitude =
+    typeof item.latitude === "number" ? item.latitude : parsedCoordinates?.latitude;
+  const longitude =
+    typeof item.longitude === "number" ? item.longitude : parsedCoordinates?.longitude;
+
+  if (typeof latitude !== "number" || typeof longitude !== "number") {
+    return null;
+  }
+
+  return {
+    id: item.eventId ?? 0,
+    slug: item.slug,
+    title: item.title,
+    city: item.city,
+    venue: item.practical.venue || item.practical.address || null,
+    start_at: null,
+    end_at: null,
+    date_text: item.practical.openingHours || null,
+    is_ongoing: false,
+    is_free: item.practical.pricing?.toLowerCase().includes("gratis") ?? false,
+    price_min: null,
+    price_note: item.practical.pricing || null,
+    source_url: item.links?.sourceUrl || null,
+    latitude,
+    longitude,
+    summary: item.description || item.aboutText,
+    rating_value: item.ratingValue ?? null,
+    review_count: item.reviewCount ?? null,
+    rating_source: item.ratingSource ?? null,
+    rating_max: item.ratingMax ?? null,
+    category_label: item.category,
+    kind: item.kind || null,
+    tags: item.tags,
+  };
 }
 
 async function getExploreDetail(slug: string) {
@@ -154,6 +254,10 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
   const locationQuery = [item.practical.venue, item.practical.address, item.city]
     .filter(Boolean)
     .join(", ");
+  const heroImage = getUsableHeroImage(item.heroImage);
+  const ratingLabel = formatRating(item);
+  const mapEvent = buildMapEvent(item);
+  const mapEvents = mapEvent ? [mapEvent] : [];
   const ticketHref = getSafeExternalUrl(item.links?.ticketUrl);
   const reservationHref = getSafeExternalUrl(item.links?.reservationUrl);
   const sourceHref = getSafeExternalUrl(item.links?.sourceUrl);
@@ -167,7 +271,7 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
     });
   const routeHref = locationQuery ? buildMapsSearchHref(locationQuery) : null;
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_12%_0%,rgba(198,223,154,0.2),transparent_24%),radial-gradient(circle_at_86%_8%,rgba(247,231,200,0.35),transparent_26%),linear-gradient(180deg,#fbf7ef,#f8f5f3_45%,#f6f1ea)] text-[#171511]">
       <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-12">
         <div>
           <Breadcrumbs
@@ -179,120 +283,108 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
             className="mb-6"
           />
 
-          <section className="relative overflow-hidden rounded-[2.4rem] border border-white/70 bg-white/50 shadow-[0_28px_80px_rgba(66,49,31,0.16)]">
-            <div className="relative h-[430px] w-full md:h-[580px]">
-              <Image
-                src={item.heroImage}
-                alt={item.heroImageAlt || item.title}
-                fill
-                className="object-cover"
-                sizes="100vw"
-                priority
-              />
-
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,rgba(7,19,26,0.08),rgba(7,19,26,0.68))]" />
-
-              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 lg:p-10">
-                <div className="mb-4 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-[#e8f2d0]/30 bg-[#152017]/72 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#f7f4ed] backdrop-blur-xl">
+          <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_390px] lg:items-start">
+            <div className="min-w-0">
+              <AppCard
+                variant="glass"
+                padding="lg"
+                className="rounded-[2rem] border-[#d9cec1]/70 bg-white/76 text-[#211a14] shadow-[0_22px_58px_rgba(66,49,31,0.12)]"
+              >
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full border border-[#d9cec1]/80 bg-[#fbf8f3] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#4b4036]">
                     {item.category}
                   </span>
-                  <span className="rounded-full border border-[#e8f2d0]/50 bg-[#e8f2d0] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#162016]">
+                  <span className="rounded-full border border-[#bfd58d]/80 bg-[#e8f2d0] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#162016]">
                     {item.status}
                   </span>
                 </div>
 
-                <h1 className="max-w-[12ch] text-[clamp(3rem,8vw,5.8rem)] font-semibold leading-[0.9] tracking-[-0.075em] text-white">
-                  {item.title}
-                </h1>
+                <div className="mt-7 grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#746355]">
+                      {item.city}
+                    </p>
+                    <h1 className="mt-3 max-w-[13ch] text-[clamp(2.8rem,6vw,5.2rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-[#171511]">
+                      {item.title}
+                    </h1>
+                    <p className="mt-5 max-w-3xl text-base leading-7 text-[#4b4036] md:text-lg">
+                      {item.subtitle}
+                    </p>
+                  </div>
 
-                <p className="mt-4 max-w-[42rem] text-sm leading-6 text-white/88 md:text-base">
-                  {item.subtitle}
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_360px]">
-            <div>
-              <AppCard
-                variant="glass"
-                padding="lg"
-                className="grid gap-7 rounded-[2.1rem] border-[#d9cec1]/70 bg-white/78 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)] md:grid-cols-[0.9fr_1.1fr]"
-              >
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#746355]">
-                    Redactie
-                  </p>
-                  <h2 className="mt-2 text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                    Waarom dit een goede keuze is
-                  </h2>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {item.reasons.map((reason) => (
-                    <div
-                      key={reason}
-                      className="flex items-start gap-3 rounded-[1.3rem] border border-[#d9cec1]/70 bg-[#fbf8f3]/82 p-4"
-                    >
-                      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#162016]">
-                        <CheckIcon />
-                      </span>
-                      <span className="text-sm leading-6 text-[#2d241c]">{reason}</span>
+                  {heroImage ? (
+                    <div className="relative min-h-[220px] overflow-hidden rounded-[1.6rem] border border-white/70 bg-white/55 shadow-[0_18px_42px_rgba(66,49,31,0.12)] xl:min-h-[310px]">
+                      <Image
+                        src={heroImage}
+                        alt={item.heroImageAlt || item.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1280px) 100vw, 340px"
+                        priority
+                      />
                     </div>
-                  ))}
+                  ) : (
+                    <div className="rounded-[1.6rem] border border-[#d9cec1]/80 bg-[#fbf8f3]/76 p-5 text-sm leading-6 text-[#66584a]">
+                      <div className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#746355]">
+                        Geen beeld
+                      </div>
+                      <p className="mt-2">
+                        De beschikbare informatie staat hier centraal; er is geen
+                        grote fotosectie nodig om dit moment te beoordelen.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </AppCard>
 
               <AppCard
                 variant="glass"
                 padding="lg"
-                className="mt-8 rounded-[2.1rem] border-[#d9cec1]/70 bg-white/78 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+                className="mt-6 rounded-[2rem] border-[#d9cec1]/70 bg-white/80 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.1)]"
               >
-                <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
+                <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                   {item.aboutTitle}
                 </h2>
-                <p className="mt-5 max-w-3xl text-sm leading-7 text-[#3f3429] md:text-base">
+                <p className="mt-5 max-w-4xl text-base leading-8 text-[#3f3429] md:text-lg">
                   {item.aboutText}
                 </p>
 
                 {item.description ? (
-                  <p className="mt-5 max-w-3xl border-t border-[#d9cec1]/70 pt-5 text-sm leading-7 text-[#5b4c3e]">
+                  <p className="mt-6 max-w-4xl border-t border-[#d9cec1]/70 pt-6 text-sm leading-7 text-[#5b4c3e] md:text-base">
                     {item.description}
                   </p>
                 ) : null}
               </AppCard>
 
-              <div className="mt-8">
-                <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                  In beeld
-                </h2>
-
-                <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-                  {item.gallery.map((image, index) => (
-                    <div
-                      key={`${image}-${index}`}
-                      className="relative aspect-[0.88/1] overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/50 shadow-[0_14px_34px_rgba(66,49,31,0.1)]"
-                    >
-                      <Image
-                        src={image}
-                        alt={`${item.title} sfeerbeeld ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 50vw, 300px"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {item.reasons.length > 0 ? (
+                <AppCard
+                  variant="glass"
+                  padding="lg"
+                  className="mt-6 rounded-[2rem] border-[#d9cec1]/70 bg-white/72 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.1)]"
+                >
+                  <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
+                    Waarom dit past
+                  </h2>
+                  <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+                    {item.reasons.map((reason) => (
+                      <li key={reason} className="flex items-start gap-3 text-sm leading-6 text-[#2d241c]">
+                        <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#162016]">
+                          <CheckIcon />
+                        </span>
+                        <span>{reason}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </AppCard>
+              ) : null}
 
               {item.tags && item.tags.length > 0 ? (
                 <AppCard
                   variant="glass"
                   padding="lg"
-                  className="mt-8 rounded-[2.1rem] border-[#d9cec1]/70 bg-white/78 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+                  className="mt-6 rounded-[2rem] border-[#d9cec1]/70 bg-white/72 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.1)]"
                 >
-                  <h2 className="text-[clamp(1.75rem,3vw,2.4rem)] font-semibold leading-[0.96] tracking-[-0.04em] text-[#171511]">
+                  <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
                     Tags en categorie
                   </h2>
                   <div className="mt-5 flex flex-wrap gap-2">
@@ -307,50 +399,13 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
                   </div>
                 </AppCard>
               ) : null}
-
-              {item.similarPlaces.length > 0 ? (
-                <div className="mt-14">
-                  <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                    Vergelijkbare plekken
-                  </h2>
-
-                  <div className="mt-6 grid gap-6 md:grid-cols-3">
-                    {item.similarPlaces.map((place) => (
-                      <article key={place.title} className="group">
-                        <div className="relative aspect-[0.88/1] overflow-hidden rounded-[1.7rem] border border-white/70 bg-white/50 shadow-[0_18px_44px_rgba(66,49,31,0.1)]">
-                          <Image
-                            src={place.image}
-                            alt={place.title}
-                            fill
-                            className="object-cover transition duration-500 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, 400px"
-                          />
-
-                          <span className="absolute left-3 top-3 rounded-full border border-[#e8f2d0]/35 bg-[#152017]/78 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f7f4ed] backdrop-blur-xl">
-                            {place.badge}
-                          </span>
-                        </div>
-
-                        <div className="pt-4">
-                          <h3 className="text-2xl font-semibold leading-none tracking-[-0.04em] text-[#171511]">
-                            {place.title}
-                          </h3>
-                          <p className="mt-2 text-sm text-[#665d54]">
-                            {place.subtitle}
-                          </p>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
             </div>
 
-            <aside className="space-y-5 lg:sticky lg:top-28">
+            <aside className="space-y-5 lg:sticky lg:top-8">
               <AppCard
                 variant="elevated"
                 padding="md"
-                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.12)]"
               >
                 <a
                   href={reserveHref}
@@ -400,22 +455,46 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
               <AppCard
                 variant="glass"
                 padding="lg"
-                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.14)]"
+                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.12)]"
               >
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
                   Praktisch
                 </h3>
 
-                <div className="mt-5 space-y-5">
-                  <DetailRow label="Locatie" value={item.practical.venue} />
-                  <DetailRow label="Adres" value={item.practical.address} />
-                  <DetailRow label="Datum en tijd" value={item.practical.openingHours} />
-                  <DetailRow label="Type" value={item.practical.cuisine} />
-                  <DetailRow label="Prijs" value={item.practical.pricing} />
-                  <DetailRow label="Coordinaten" value={item.practical.coordinates} />
-                  <DetailRow label="Praktische info" value={item.practical.practicalInfo} />
-                </div>
+                <dl className="mt-5">
+                  <CompactInfo label="Locatie" value={item.practical.venue} />
+                  <CompactInfo label="Stad" value={item.city} />
+                  <CompactInfo label="Adres" value={item.practical.address} />
+                  <CompactInfo label="Datum en tijd" value={item.practical.openingHours} />
+                  <CompactInfo label="Prijs" value={item.practical.pricing} />
+                  <CompactInfo label="Categorie/type" value={item.practical.cuisine || item.kind} />
+                  <CompactInfo label="Reviews" value={ratingLabel} />
+                  <CompactInfo
+                    label={ticketHref ? "Tickets" : sourceHref ? "Bron" : "Website"}
+                    value={ticketHref ? "Bekijk tickets" : sourceHref ? "Open bron" : null}
+                    href={ticketHref || sourceHref}
+                  />
+                  <CompactInfo label="Praktische info" value={item.practical.practicalInfo} />
+                </dl>
               </AppCard>
+
+              {mapEvents.length > 0 ? (
+                <CityExploreMapSection
+                  cityLabel={item.city}
+                  events={mapEvents}
+                  layout="embedded"
+                />
+              ) : locationQuery ? (
+                <div className="rounded-[1.8rem] border border-[#d9cec1]/70 bg-white/66 p-5 text-sm leading-6 text-[#66584a] shadow-[0_14px_34px_rgba(66,49,31,0.08)] backdrop-blur-xl">
+                  <div className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#746355]">
+                    Kaart niet beschikbaar
+                  </div>
+                  <p className="mt-2">
+                    Er zijn nog geen bruikbare coordinaten voor deze locatie.
+                    Gebruik de routeknop voor een zoekroute.
+                  </p>
+                </div>
+              ) : null}
             </aside>
           </section>
         </div>

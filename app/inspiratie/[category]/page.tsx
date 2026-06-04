@@ -42,6 +42,49 @@ function withContext(href: string, query: string) {
   return query ? `${href}?${query}` : href;
 }
 
+const inspirationRouteConfig = {
+  "snel-ontdekken": {
+    category: "vandaag",
+    label: "Snel ontdekken",
+    description:
+      "Laagdrempelige inspiratie voor als je snel een richting wilt kiezen, zonder eerst een volledig plan te maken.",
+  },
+  "buiten-genieten": {
+    category: "buiten",
+    label: "Buiten genieten",
+    description:
+      "Ideeen met lucht, groen, water of ruimte om te dwalen. Fijn voor een wandeling, parkmoment of frisse pauze.",
+  },
+  regenproof: {
+    category: "binnen",
+    label: "Regenproof",
+    description:
+      "Binneninspiratie voor wisselvallige dagen: cultuur, makersplekken en rustige plekken waar het weer geen spelbreker is.",
+  },
+  "voor-vanavond": {
+    category: "weekend",
+    label: "Voor vanavond",
+    description:
+      "Ideeen met avondgevoel: iets eten, live muziek, samen op pad of een plan dat niet te veel voorbereiding vraagt.",
+  },
+} as const;
+
+function getRouteCategory(category: string) {
+  if (category in inspirationRouteConfig) {
+    return inspirationRouteConfig[category as keyof typeof inspirationRouteConfig];
+  }
+
+  if (isInspirationCategorySlug(category)) {
+    return {
+      category,
+      label: inspirationCategoryLabels[category],
+      description: inspirationCategoryDescriptions[category],
+    };
+  }
+
+  return undefined;
+}
+
 function getLocationContextLabel(
   categoryLabel: string,
   searchParams?: PageProps["searchParams"]
@@ -64,20 +107,25 @@ function getLocationContextLabel(
 }
 
 export function generateStaticParams() {
-  return getInspirationStaticParams();
+  return [
+    ...getInspirationStaticParams(),
+    ...Object.keys(inspirationRouteConfig).map((category) => ({ category })),
+  ];
 }
 
 export default function InspirationCategoryPage({
   params,
   searchParams,
 }: PageProps) {
-  if (!isInspirationCategorySlug(params.category)) {
+  const routeCategory = getRouteCategory(params.category);
+
+  if (!routeCategory) {
     notFound();
   }
 
-  const categoryLabel = inspirationCategoryLabels[params.category];
+  const categoryLabel = routeCategory.label;
   const results = getInspirationResultsByCategory(
-    params.category,
+    routeCategory.category,
     searchParams?.location,
     searchParams?.nearbyCity
   );
@@ -91,8 +139,8 @@ export default function InspirationCategoryPage({
   const quickChoices = results.slice(0, 4);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
-      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-14">
+    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
+      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-5 pb-8 sm:pt-7 sm:pb-10 lg:pt-8 lg:pb-14">
         <div>
           <Breadcrumbs
             items={[
@@ -103,21 +151,36 @@ export default function InspirationCategoryPage({
             className="mb-6"
           />
 
-          <div className="uitjes-liquid-section rounded-[2.4rem] px-5 py-8 sm:px-8 sm:py-10 lg:px-11 lg:py-12">
+          <div className="uitjes-liquid-section rounded-[2rem] px-5 py-7 sm:rounded-[2.4rem] sm:px-8 sm:py-10 lg:px-11 lg:py-12">
             <div className="pointer-events-none absolute -right-12 top-8 h-48 w-48 rounded-full bg-[#c6df9a]/16 blur-3xl" />
             <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
               <div className="max-w-[42rem]">
                 <div className="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/78 backdrop-blur-xl">
-                  {categoryLabel}
+                  Inspiratie
                 </div>
 
-                <h1 className="mt-6 max-w-[11ch] text-[clamp(3rem,8vw,5.4rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
+                <h1 className="mt-5 max-w-[12ch] text-[clamp(2.55rem,8vw,5rem)] font-semibold leading-[0.92] tracking-[-0.06em] text-white sm:mt-6">
                   {locationContextLabel}
                 </h1>
 
-                <p className="mt-6 max-w-[34rem] text-base leading-8 text-white/76 sm:text-lg">
-                  {inspirationCategoryDescriptions[params.category]}
+                <p className="mt-5 max-w-[34rem] text-base leading-7 text-white/76 sm:mt-6 sm:text-lg sm:leading-8">
+                  {routeCategory.description}
                 </p>
+              </div>
+
+              <div className="rounded-[1.4rem] border border-white/14 bg-white/10 p-4 text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] backdrop-blur-xl sm:p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/64">
+                  Volgende stap
+                </p>
+                <p className="mt-2 text-sm leading-6 text-white/76">
+                  Verfijn op locatie of spring direct naar de resultaten die bij deze inspiratie passen.
+                </p>
+                <a
+                  href="#resultaten"
+                  className="mt-4 inline-flex min-h-10 items-center rounded-full border border-[#e8f2d0]/70 bg-[#e8f2d0] px-4 text-sm font-semibold text-[#162016] transition hover:bg-[#f2f8df]"
+                >
+                  Bekijk resultaten
+                </a>
               </div>
             </div>
 
@@ -128,20 +191,23 @@ export default function InspirationCategoryPage({
             </div>
           </div>
 
-          <div className="mt-10 sm:mt-12">
-            <h2 className="text-[clamp(2rem,3vw,2.8rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
+          <div className="mt-9 sm:mt-12">
+            <h2 className="text-[clamp(1.85rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-[#171511]">
               Snelle keuzes
             </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#665d54] sm:text-base">
+              Een paar compacte suggesties om meteen door te klikken binnen dezelfde inspiratieflow.
+            </p>
 
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <div className="mt-5 grid grid-cols-1 gap-3 min-[460px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
               {quickChoices.map((item) => (
                 <Link
                   key={item.slug}
                   href={withContext(
-                    `/inspiratie/${params.category}/${item.slug}`,
+                    `/inspiratie/${item.category}/${item.slug}`,
                     contextQuery
                   )}
-                  className="group relative min-h-[190px] overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:rounded-[1.9rem] md:min-h-[230px]"
+                  className="group relative min-h-[174px] overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/50 shadow-[0_18px_44px_rgba(72,56,38,0.08)] backdrop-blur-xl transition hover:-translate-y-0.5 sm:rounded-[1.7rem] md:min-h-[220px]"
                 >
                   <div
                     className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-[1.04]"
@@ -172,22 +238,25 @@ export default function InspirationCategoryPage({
       </AppSection>
 
       <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16 md:pb-20">
-        <div>
-          <div className="flex items-end justify-between gap-4">
+        <div id="resultaten" className="scroll-mt-28">
+          <div className="flex flex-col gap-4 bg-[linear-gradient(90deg,rgba(242,248,231,0.54),rgba(255,250,240,0.24),transparent)] py-3 md:flex-row md:items-end md:justify-between md:gap-6">
             <div>
-              <h2 className="text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#667b36]">
+                Resultaten
+              </p>
+              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
                 {locationContextLabel}
               </h2>
-              <p className="mt-1 text-sm text-[#6d6258]">
-                Dummy resultaten gefilterd op categorie en locatiecontext.
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#665d54] sm:text-base">
+                {results.length} suggesties op basis van deze inspiratiecategorie en je locatiecontext.
               </p>
             </div>
 
             <Link
               href={withContext("/inspiratie", contextQuery)}
-              className="text-xs font-semibold text-[#171511] underline decoration-[#9cc84e] decoration-2 underline-offset-4"
+              className="inline-flex min-h-10 w-fit items-center rounded-full border border-[#d6c9b8] bg-white/78 px-4 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(72,56,38,0.08)] transition hover:bg-white"
             >
-              Bekijk alles
+              Naar keuzehulp
             </Link>
           </div>
 
@@ -197,7 +266,7 @@ export default function InspirationCategoryPage({
                 key={item.slug}
                 item={item}
                 href={withContext(
-                  `/inspiratie/${params.category}/${item.slug}`,
+                  `/inspiratie/${item.category}/${item.slug}`,
                   contextQuery
                 )}
               />

@@ -4,6 +4,9 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
+import { cityOptions as sharedCityOptions } from "@/lib/cityConfig";
+import { isCityContentCity } from "@/lib/cityContentCities";
+
 import {
   AgendaImportBanner,
   type AgendaImportEvent,
@@ -17,6 +20,12 @@ import {
 
 type FilterModalMode = "city" | "category";
 type MobileCalendarView = "month" | "week";
+
+type JaarkalenderCityOption = {
+  label: string;
+  hasCalendarItems: boolean;
+  hasBackendContent: boolean;
+};
 
 type MonthCalendarCell = {
   key: string;
@@ -238,6 +247,92 @@ function CalendarIcon() {
         strokeLinecap="round"
       />
     </svg>
+  );
+}
+
+function getMonthlySelectionItems() {
+  const selection = [
+    { dayNumber: 10, itemIndex: 0, reason: "Rustige start" },
+    { dayNumber: 17, itemIndex: 2, reason: "Middagplan" },
+    { dayNumber: 24, itemIndex: 4, reason: "Avond vooruit" },
+  ];
+
+  return selection.flatMap(({ dayNumber, itemIndex, reason }) => {
+    const day = jaarkalenderDays.find((calendarDay) => calendarDay.dayNumber === dayNumber);
+    const item = day?.calendarItems[itemIndex];
+
+    return day && item ? [{ day, item, reason }] : [];
+  });
+}
+
+function MonthlySelectionSection() {
+  const items = getMonthlySelectionItems();
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="mb-5 overflow-hidden rounded-[1.8rem] border border-white/70 bg-white/58 px-4 py-5 shadow-[0_18px_50px_rgba(66,49,31,0.06)] backdrop-blur-xl sm:mb-7 sm:rounded-[2.2rem] sm:px-6 sm:py-6 lg:px-7">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-[35rem]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8a7b6a]">
+            Deze maand gekozen
+          </p>
+          <h2 className="mt-2 text-[clamp(1.7rem,3vw,2.45rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+            Drie plannen uit de jaarkalender
+          </h2>
+        </div>
+        <p className="max-w-[27rem] text-sm leading-6 text-[#6c6257]">
+          Een kleine selectie uit bestaande kalenderitems, handig als je snel
+          wilt zien waar oktober sfeer krijgt.
+        </p>
+      </div>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-3">
+        {items.map(({ day, item, reason }) => {
+          const meta = jaarkalenderCategoryMeta[item.categorie];
+
+          return (
+            <Link
+              key={`${day.slug}-${item.title}-${item.locatie}`}
+              href={`/jaarkalender/${day.slug}`}
+              className="group rounded-[1.35rem] border border-[#eadfce] bg-[#fffaf3]/82 px-4 py-4 transition hover:-translate-y-0.5 hover:border-[#d5c4ad] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+              aria-label={`Bekijk ${item.title} op ${day.weekdayDisplay} ${day.dayNumber} ${day.monthDisplay}`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-[#8a7b6a]">
+                    {day.weekdayDisplay} {day.dayNumber} {day.monthDisplay}
+                  </p>
+                  <h3 className="mt-2 text-base font-semibold leading-5 tracking-[-0.02em] text-[#1f1a15]">
+                    {item.title}
+                  </h3>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${meta.badgeClass}`}
+                >
+                  {meta.label}
+                </span>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2 text-xs leading-5 text-[#71675d]">
+                <span>{getCalendarItemTime(item)}</span>
+                <span>{getCityFromLocation(item.locatie)}</span>
+                <span>{item.prijs}</span>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-[#efe5d8] pt-3 text-xs font-semibold text-[#4d5c2c]">
+                <span>{reason}</span>
+                <span className="transition group-hover:translate-x-0.5">
+                  Bekijk dag
+                </span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -704,7 +799,13 @@ export function JaarkalenderInteractiveCalendar() {
       day.calendarItems.map((item) => getCityFromLocation(item.locatie))
     );
 
-    return Array.from(new Set(cities)).sort((a, b) => a.localeCompare(b, "nl"));
+    const calendarCities = new Set(cities);
+
+    return sharedCityOptions.map<JaarkalenderCityOption>((city) => ({
+      label: city.label,
+      hasCalendarItems: calendarCities.has(city.label),
+      hasBackendContent: isCityContentCity(city.value),
+    }));
   }, []);
 
   const categoryOptions = Object.keys(
@@ -919,6 +1020,8 @@ export function JaarkalenderInteractiveCalendar() {
 
   return (
     <>
+      <MonthlySelectionSection />
+
       <div className="mb-4 sm:mb-6">
         <AgendaImportBanner events={visibleImportEvents} />
       </div>
@@ -1151,19 +1254,28 @@ export function JaarkalenderInteractiveCalendar() {
                   </button>
                   {cityOptions.map((city) => (
                     <button
-                      key={city}
+                      key={city.label}
                       type="button"
                       onClick={() => {
-                        setSelectedCity(city);
+                        setSelectedCity(city.label);
                         closeModal();
                       }}
-                      className={`min-h-12 rounded-full border px-5 text-left text-sm font-semibold transition ${
-                        selectedCity === city
+                      className={`flex min-h-12 items-center justify-between gap-3 rounded-full border px-5 text-left text-sm font-semibold transition ${
+                        selectedCity === city.label
                           ? "border-[#b8df71] bg-[#f3fadf] text-[#2c381d]"
                           : "border-transparent bg-white/78 text-[#4f4339] hover:bg-[#eedfd2]"
                       }`}
                     >
-                      {city}
+                      <span className="min-w-0 truncate">{city.label}</span>
+                      {city.hasBackendContent ? (
+                        <span className="shrink-0 rounded-full bg-[#d9efad] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#33421f]">
+                          Live
+                        </span>
+                      ) : city.hasCalendarItems ? null : (
+                        <span className="shrink-0 rounded-full bg-[#efe5d8] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c6b59]">
+                          Binnenkort
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>

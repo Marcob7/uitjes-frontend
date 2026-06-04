@@ -1,53 +1,12 @@
-import Link from "next/link";
-
+import { CalendarNewsletterSignupSection } from "./CalendarNewsletterSignupSection";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
 
 export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",
   description:
-    "Ontdek culturele hoogtepunten, festivals en seizoensfavorieten in de jaarkalender van Nederland.",
+    "Ontdek culturele hoogtepunten, festivals en evenementen in de jaarkalender van Nederland.",
 };
-
-function SeasonalCard({
-  title,
-  description,
-  className,
-  badge,
-  dark = false,
-}: {
-  title: string;
-  description: string;
-  className: string;
-  badge?: string;
-  dark?: boolean;
-}) {
-  return (
-    <article className={`relative overflow-hidden rounded-[2rem] p-6 ${className}`}>
-      <div className="relative z-10">
-        {badge ? (
-          <div className="mb-4 inline-flex rounded-full bg-white/10 backdrop-blur-xl px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#504538]">
-            {badge}
-          </div>
-        ) : null}
-        <h3
-          className={`max-w-[12ch] text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] ${
-            dark ? "text-[#171511]" : "text-[#171511]"
-          }`}
-        >
-          {title}
-        </h3>
-        <p
-          className={`mt-4 max-w-[28ch] text-sm leading-7 ${
-            dark ? "text-[#433a31]" : "text-[#51463b]"
-          }`}
-        >
-          {description}
-        </p>
-      </div>
-    </article>
-  );
-}
 
 export default function JaarkalenderPage() {
   return (
@@ -138,63 +97,7 @@ export default function JaarkalenderPage() {
           <JaarkalenderInteractiveCalendar />
         </section>
 
-        <section className="mt-12 pb-8">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8b7a69]">
-                Redactie
-              </p>
-              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] leading-[0.95] tracking-[-0.05em] text-[#171511]">
-                Seizoensfavorieten
-              </h2>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1.05fr_1fr]">
-            <article className="uitjes-liquid-section rounded-[2.2rem] p-7">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.45),_transparent_34%),radial-gradient(circle_at_70%_25%,_rgba(229,255,202,0.8),_transparent_32%)]" />
-              <div className="absolute -right-10 top-6 h-56 w-56 rounded-full bg-white/25 blur-2xl" />
-              <div className="relative z-10 max-w-[20rem]">
-                <div className="inline-flex rounded-full border border-white/14 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/76 backdrop-blur-xl">
-                  Collectie
-                </div>
-                <h3 className="mt-5 max-w-none text-[clamp(2.2rem,5vw,3.4rem)] leading-[0.94] tracking-[-0.06em] text-white">
-                  Herfstwandelingen door de Veluwe
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-white/76">
-                  Beleef de natuur op haar mooist met onze samengestelde routes,
-                  stops voor koffie en plekken waar het licht perfect valt.
-                </p>
-                <Link
-                  href="/inspiratie"
-                  className="uitjes-cta mt-8 inline-flex min-h-12 items-center justify-center rounded-full px-5 text-sm font-semibold transition hover:-translate-y-0.5"
-                >
-                  Bekijk gids
-                </Link>
-              </div>
-            </article>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <SeasonalCard
-                title="Jazz Nights Amsterdam"
-                description="Elke donderdagavond in de Jordaan, met intieme clubs en late sets."
-                badge="Populair"
-                className="min-h-[16rem] bg-[#dfe0ef] sm:col-span-2"
-                dark
-              />
-              <SeasonalCard
-                title="De Beste Warme Choco Spots"
-                description="Onze selectie voor koude middagen, museumdagen en rustige regenwandelingen."
-                className="min-h-[13rem] bg-[#f6e5bb]"
-              />
-              <SeasonalCard
-                title="Museum Nacht Overzicht"
-                description="Plan slim per stad en kies meteen je favorieten voor de avond."
-                className="min-h-[13rem] bg-[#c9f08f]"
-              />
-            </div>
-          </div>
-        </section>
+        <CalendarNewsletterSignupSection />
       </div>
     </main>
   );

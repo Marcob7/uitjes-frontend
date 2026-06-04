@@ -19,6 +19,12 @@ export type ExploreDetailItem = {
   subtitle: string;
   heroImage: string;
   heroImageAlt?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  ratingValue?: number | null;
+  reviewCount?: number | null;
+  ratingSource?: string | null;
+  ratingMax?: number | null;
   gallery: string[];
   reasons: string[];
   aboutTitle: string;
@@ -183,6 +189,12 @@ export function mapCityContentToExploreDetail(
     subtitle: [category, item.venue || city, dateLabel, pricing].filter(Boolean).join(" | "),
     heroImage: image,
     heroImageAlt: item.imageAlt || title,
+    latitude: item.latitude,
+    longitude: item.longitude,
+    ratingValue: item.ratingValue,
+    reviewCount: item.reviewCount,
+    ratingSource: item.ratingSource,
+    ratingMax: item.ratingMax,
     gallery: [image, "/images/apeldoorn_img.jpg", "/images/julianatoren.jpg", image],
     reasons: [
       "Geselecteerd uit de actuele city-content data",
@@ -409,6 +421,18 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
         .filter(Boolean)
         .join(" | "),
       heroImage: eventMatch.image || "/images/apeldoorn_img.jpg",
+      latitude: eventMatch.latitude,
+      longitude: eventMatch.longitude,
+      ratingValue:
+        typeof eventMatch.rating_value === "number"
+          ? eventMatch.rating_value
+          : typeof eventMatch.rating === "number"
+            ? eventMatch.rating
+            : null,
+      reviewCount:
+        typeof eventMatch.review_count === "number" ? eventMatch.review_count : null,
+      ratingSource: eventMatch.rating_source || null,
+      ratingMax: typeof eventMatch.rating_max === "number" ? eventMatch.rating_max : null,
       gallery: [
         eventMatch.image || "/images/apeldoorn_img.jpg",
         "/images/apeldoorn_img.jpg",
@@ -479,6 +503,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
         .filter(Boolean)
         .join(" | "),
       heroImage: getFallbackImage(cardMatch.image),
+      ratingValue: cardMatch.rating ?? null,
       gallery: [
         getFallbackImage(cardMatch.image),
         "/images/apeldoorn_img.jpg",

@@ -3,20 +3,20 @@ import Link from "next/link";
 const situationLinks = [
   {
     label: "Buiten genieten",
-    href: "/inspiratie/buiten",
+    href: "/inspiratie/buiten-genieten",
     featured: true,
   },
   {
     label: "Regenproof",
-    href: "/inspiratie/binnen",
+    href: "/inspiratie/regenproof",
   },
   {
     label: "Voor vanavond",
-    href: "/ontdek?when=tonight",
+    href: "/inspiratie/voor-vanavond",
   },
   {
-    label: "Dit weekend",
-    href: "/inspiratie/weekend",
+    label: "Snel ontdekken",
+    href: "/inspiratie/snel-ontdekken",
   },
 ];
 

@@ -1,74 +1,32 @@
 import Link from "next/link";
-import { getSearchRoute } from "@/lib/searchIntent";
-
-const categories = [
-  {
-    id: 1,
-    title: "Vandaag iets doen",
-    icon: "⚡",
-    href: getSearchRoute("vandaag"),
-    bg: "bg-lime-100",
-  },
-  {
-    id: 2,
-    title: "Festivals",
-    icon: "🏛️",
-    href: getSearchRoute("festival"),
-    bg: "bg-slate-100",
-  },
-  {
-    id: 3,
-    title: "Eten & Drinken",
-    icon: "🍽️",
-    href: getSearchRoute("restaurant"),
-    bg: "bg-orange-50",
-  },
-  {
-    id: 4,
-    title: "Met kinderen",
-    icon: "🧸",
-    href: getSearchRoute("kinderen"),
-    bg: "bg-yellow-50",
-  },
-];
 
 export default function CategorySection() {
   return (
-    <section className="px-4 py-12 md:px-6 lg:px-8">
-      <div className="rounded-[32px] bg-[#f5f3f1] px-5 py-8 md:px-8 md:py-10">
-        <div className="mb-8 flex items-center justify-between gap-4">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
-            Populaire Categorieën
-          </h2>
+    <section className="px-4 py-10 md:px-6 md:py-12 lg:px-8">
+      <div className="relative overflow-hidden rounded-[32px] border border-white/70 bg-[#f4f1ee]/78 px-5 py-7 shadow-[0_18px_55px_rgba(66,54,43,0.07)] backdrop-blur-xl md:px-8 md:py-10 lg:px-10">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_84%_18%,rgba(211,241,150,0.32),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.72),rgba(255,255,255,0.18)_48%,rgba(232,242,208,0.34))]" />
+
+        <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-10">
+          <div className="max-w-2xl">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#62702b]">
+              Jaarkalender
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#182026] md:text-3xl">
+              Ontdek evenementen door het hele jaar
+            </h2>
+            <p className="mt-4 text-sm leading-6 text-[#4d5961] md:max-w-xl md:text-base">
+              Van festivals en markten tot seizoensevenementen: bekijk wat er
+              de komende maanden te doen is en plan makkelijk vooruit.
+            </p>
+          </div>
 
           <Link
-            href="/ontdek"
-            className="text-sm font-semibold text-lime-700 transition hover:text-lime-800"
+            href="/jaarkalender"
+            className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full border border-[#cfeaa2] bg-[#d3f196] px-6 text-sm font-semibold text-[#36570f] shadow-[0_14px_28px_rgba(169,208,78,0.18)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#caeb88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fc54a] sm:w-auto"
           >
-            Bekijk alles
+            Bekijk de jaarkalender
+            <span aria-hidden="true">-&gt;</span>
           </Link>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href={category.href}
-              className={`group rounded-[24px] p-6 transition hover:-translate-y-1 hover:shadow-md ${category.bg}`}
-            >
-              <div className="mb-10 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-lg shadow-sm">
-                {category.icon}
-              </div>
-
-              <h3 className="text-base font-semibold text-slate-900">
-                {category.title}
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-600 opacity-0 transition group-hover:opacity-100">
-                Bekijk ideeën en tips
-              </p>
-            </Link>
-          ))}
         </div>
       </div>
     </section>

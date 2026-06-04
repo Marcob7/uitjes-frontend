@@ -11,6 +11,7 @@ type ExploreMapProps = {
   events: BackendEvent[];
   selectedId: number | null;
   setSelectedId: (id: number) => void;
+  variant?: "city" | "festival";
 };
 
 type MapPlace = BackendEvent & {
@@ -128,11 +129,18 @@ function getMarkerSvg(kind: MarkerKind) {
 function applyMarkerState(
   element: HTMLButtonElement,
   kind: MarkerKind,
-  selected: boolean
+  selected: boolean,
+  variant: "city" | "festival"
 ) {
-  element.className = selected
-    ? "flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-[#2e4a14] text-white shadow-[0_18px_32px_rgba(44,67,18,0.26)] ring-4 ring-white/40"
-    : "flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-[#5c7d2c] text-white shadow-[0_14px_28px_rgba(44,67,18,0.22)]";
+  if (variant === "festival") {
+    element.className = selected
+      ? "flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-[#171511] text-white shadow-[0_18px_32px_rgba(45,37,28,0.24)] ring-4 ring-[#e8f2d0]/70"
+      : "flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-[#7a1f3d] text-white shadow-[0_14px_28px_rgba(45,37,28,0.2)]";
+  } else {
+    element.className = selected
+      ? "flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-[#2e4a14] text-white shadow-[0_18px_32px_rgba(44,67,18,0.26)] ring-4 ring-white/40"
+      : "flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-[#5c7d2c] text-white shadow-[0_14px_28px_rgba(44,67,18,0.22)]";
+  }
   element.innerHTML = getMarkerSvg(kind);
 }
 
@@ -141,6 +149,7 @@ export default function ExploreMap({
   events,
   selectedId,
   setSelectedId,
+  variant = "city",
 }: ExploreMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -246,7 +255,7 @@ export default function ExploreMap({
       markerElement.dataset.markerKind = markerKind;
       markerElement.setAttribute("aria-label", `Toon ${place.title} op kaart`);
 
-      applyMarkerState(markerElement, markerKind, false);
+      applyMarkerState(markerElement, markerKind, false, variant);
 
       markerElement.addEventListener("click", () => {
         setSelectedId(place.id);
@@ -280,9 +289,9 @@ export default function ExploreMap({
       const markerEl = marker.getElement() as HTMLButtonElement;
       const markerKind = (markerEl.dataset.markerKind as MarkerKind) || "spot";
 
-      applyMarkerState(markerEl, markerKind, Number(id) === selectedId);
+      applyMarkerState(markerEl, markerKind, Number(id) === selectedId, variant);
     });
-  }, [selectedId, mapPlaces, mapReadyToken]);
+  }, [selectedId, mapPlaces, mapReadyToken, variant]);
 
   useEffect(() => {
     if (!selectedId && mapPlaces.length > 0) {
@@ -323,7 +332,7 @@ export default function ExploreMap({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-[2.8rem] bg-[#f2e6d6] shadow-[0_36px_70px_rgba(52,37,22,0.12)]">
+    <div className="relative overflow-hidden rounded-[2rem] bg-[#f2e6d6] shadow-[0_36px_70px_rgba(52,37,22,0.12)] sm:rounded-[2.8rem]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.58),transparent_34%),linear-gradient(135deg,rgba(244,219,183,0.92),rgba(196,214,190,0.88))]" />
 
       <div
@@ -334,28 +343,29 @@ export default function ExploreMap({
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,249,244,0.14)_0%,rgba(236,224,210,0.2)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(255,255,255,0.34),transparent_26%)]" />
 
-      <div className="pointer-events-none absolute left-4 right-4 top-4 flex flex-col gap-2 sm:left-5 sm:right-5 sm:top-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-        <div className="rounded-2xl bg-white/92 px-4 py-2 text-sm font-medium text-[#2a231f] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-black/5 backdrop-blur sm:rounded-full">
+      <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-col gap-2 sm:left-5 sm:right-5 sm:top-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <div className="w-fit rounded-2xl bg-white/92 px-4 py-2 text-sm font-medium text-[#2a231f] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-black/5 backdrop-blur sm:rounded-full">
           {cityLabel} kaart
         </div>
 
         {hasDummyLocations ? (
-          <div className="rounded-2xl bg-[#fff7e8]/94 px-4 py-2 text-xs font-medium text-[#7a5b1d] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-[#ead3a2] backdrop-blur sm:rounded-full">
+          <div className="w-fit rounded-2xl bg-[#fff7e8]/94 px-4 py-2 text-xs font-medium text-[#7a5b1d] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-[#ead3a2] backdrop-blur sm:rounded-full">
             Dummy locaties actief
           </div>
         ) : null}
       </div>
 
       {selectedPlace ? (
-        <div className="relative z-10 px-4 pb-4 pt-0 sm:absolute sm:bottom-5 sm:left-5 sm:right-5 sm:w-[320px] sm:p-0">
-          <div className="rounded-[2rem] bg-white px-6 py-6 shadow-[0_28px_60px_rgba(51,35,21,0.18)]">
-            <h3 className="text-[1.9rem] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151515]">
+        <div className="relative z-10 px-3 pb-3 pt-0 sm:absolute sm:bottom-5 sm:left-5 sm:right-5 sm:w-[320px] sm:p-0">
+          <div className="rounded-[1.5rem] bg-white/95 px-5 py-5 shadow-[0_28px_60px_rgba(51,35,21,0.18)] backdrop-blur-xl sm:rounded-[2rem] sm:px-6 sm:py-6">
+            <h3 className="text-[1.6rem] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151515] sm:text-[1.9rem]">
               Verken op de kaart
             </h3>
 
             <p className="mt-3 text-[0.96rem] leading-7 text-[#5d5148]">
-              Bekijk waar je top matches zich bevinden ten opzichte van elkaar in
-              de binnenstad.
+              {variant === "festival"
+                ? "Bekijk waar je festivalmatches zich bevinden ten opzichte van elkaar in Nederland."
+                : "Bekijk waar je top matches zich bevinden ten opzichte van elkaar in de binnenstad."}
             </p>
 
             <div className="mt-5 rounded-[1.4rem] bg-[#faf6f0] px-4 py-4 ring-1 ring-black/5">
@@ -378,9 +388,9 @@ export default function ExploreMap({
             <button
               type="button"
               onClick={focusSelectedPlace}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-[#181615] px-5 py-4 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] hover:-translate-y-0.5 sm:rounded-full"
+              className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#181615] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 hover:bg-[#2a241e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
             >
-              Kaart openen
+              {variant === "festival" ? "Centreer selectie" : "Kaart openen"}
             </button>
           </div>
         </div>
