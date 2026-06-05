@@ -5,6 +5,7 @@ import { useState, type MouseEvent } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useFavorites } from "@/components/FavouritesProvider";
+import { getCommonMessages } from "@/lib/i18n/messages";
 
 type FavouriteButtonProps = {
   eventId: number;
@@ -24,6 +25,8 @@ const compactClassName =
 
 const compactSavedClassName =
   "inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#c8dc9a]/90 bg-[#e8f2d0] px-3 text-xs font-semibold text-[#162016] shadow-[0_10px_26px_rgba(0,0,0,0.16)] backdrop-blur-md transition hover:bg-[#f1f7df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8f2d0]/80 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-10 sm:px-3.5";
+
+const copy = getCommonMessages().favorites;
 
 function HeartIcon({ filled = false }: { filled?: boolean }) {
   return (
@@ -77,8 +80,8 @@ export default function FavouriteButton({
       if (!result.ok) {
         setMessage(
           result.reason === "not_logged_in"
-            ? "Je sessie is verlopen. Log opnieuw in om te bewaren."
-            : "Bewaren lukt nu niet. Probeer het straks nog eens."
+            ? copy.sessionExpired
+            : copy.saveFailed
         );
       }
     } finally {
@@ -95,7 +98,7 @@ export default function FavouriteButton({
             <span>...</span>
           </>
         ) : (
-          "Bezig..."
+          copy.loading
         )}
       </button>
     );
@@ -107,10 +110,10 @@ export default function FavouriteButton({
         {isCompact ? (
           <>
             <HeartIcon />
-            <span>Bewaar</span>
+            <span>{copy.save}</span>
           </>
         ) : (
-          "Log in om te bewaren"
+          copy.loginToSave
         )}
       </Link>
     );
@@ -123,20 +126,20 @@ export default function FavouriteButton({
         onClick={toggleFavorite}
         disabled={busy}
         aria-pressed={saved}
-        aria-label={saved ? "Verwijder uit bewaarde uitjes" : "Bewaar dit uitje"}
+        aria-label={saved ? copy.ariaRemove : copy.ariaSave}
         className={saved ? savedButtonClassName : buttonClassName}
       >
         {isCompact ? (
           <>
             <HeartIcon filled={saved} />
-            <span>{busy ? "..." : saved ? "Bewaard" : "Bewaar"}</span>
+            <span>{busy ? "..." : saved ? copy.saved : copy.save}</span>
           </>
         ) : busy ? (
-          "Bezig..."
+          copy.loading
         ) : saved ? (
-          "Bewaard"
+          copy.saved
         ) : (
-          "Bewaar"
+          copy.save
         )}
       </button>
       {message ? (

@@ -58,6 +58,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return {
     title: `${festival.name} | Uitjes NL`,
     description: `${festival.dateLabel} in ${festival.locationLabel}.`,
+    alternates: {
+      canonical: `/festivals/${encodeURIComponent(params.events)}`,
+    },
   };
 }
 

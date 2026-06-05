@@ -6,6 +6,9 @@ export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",
   description:
     "Ontdek culturele hoogtepunten, festivals en evenementen in de jaarkalender van Nederland.",
+  alternates: {
+    canonical: "/jaarkalender",
+  },
 };
 
 export default function JaarkalenderPage() {

@@ -7,58 +7,304 @@
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1290ms
- ○ Compiling / ...
- ✓ Compiled / in 553ms (646 modules)
- GET / 200 in 683ms
- GET / 200 in 73ms
- ✓ Compiled /login in 227ms (656 modules)
- GET /login 200 in 320ms
- ✓ Compiled /bewaard in 106ms (663 modules)
- GET /bewaard 200 in 180ms
+ ✓ Ready in 1203ms
  ○ Compiling /ontdek ...
- ✓ Compiled /ontdek in 1095ms (915 modules)
- GET /ontdek 200 in 1328ms
- GET /ontdek?city=harderwijk 200 in 95ms
- GET /ontdek?city=lelystad 200 in 137ms
- GET /ontdek?city=amersfoort 200 in 43ms
- ✓ Compiled /ontdek/[slug] in 485ms (939 modules)
- GET /ontdek/de-zondagse-fietstocht 200 in 709ms
- ✓ Compiled /zoeken in 105ms (951 modules)
- GET /zoeken?query=museum 200 in 301ms
- ✓ Compiled /inspiratie in 204ms (963 modules)
- GET /inspiratie 200 in 370ms
- ✓ Compiled /festivals/lijst in 166ms (979 modules)
- GET /festivals/lijst 200 in 323ms
- ✓ Compiled /festivals/kalender in 207ms (707 modules)
- GET /festivals/kalender 200 in 311ms
- ✓ Compiled /festivals/nieuwsbrief-preview in 98ms (714 modules)
- GET /festivals/nieuwsbrief-preview 200 in 169ms
- ✓ Compiled /jaarkalender/nieuwsbrief-preview in 104ms (718 modules)
- GET /jaarkalender/nieuwsbrief-preview 200 in 157ms
- GET /festivals/kalender 200 in 88ms
- GET /inspiratie 200 in 162ms
- GET /bewaard 200 in 74ms
- GET /ontdek/de-zondagse-fietstocht 200 in 181ms
- ⨯ ./components/city-explore/ExploreCardItem.tsx
-Error: 
-  [31mx[0m Unexpected token `article`. Expected jsx identifier
-     ,-[[36;1;4mC:\Users\Marco\EventsPlanner\frontend\components\city-explore\ExploreCardItem.tsx[0m:106:1]
- [2m106[0m |       : null;
- [2m107[0m | 
- [2m108[0m |   return (
- [2m109[0m |     <article
-     : [31;1m     ^^^^^^^[0m
- [2m110[0m |       onMouseEnter={onSelect}
- [2m111[0m |       className={`group relative flex items-start gap-3 rounded-[1.05rem] border px-3 py-3 backdrop-blur-xl transition duration-200 sm:gap-5 sm:rounded-[2rem] sm:p-5 ${
- [2m112[0m |         isSelected
-     `----
+ ✓ Compiled /ontdek in 793ms (895 modules)
+ GET /ontdek?city=harderwijk 200 in 1138ms
+ GET /ontdek?city=lelystad 200 in 106ms
+ GET /ontdek?city=amersfoort 200 in 96ms
+ GET /ontdek?city=nijmegen 200 in 548ms
+ ✓ Compiled /ontdek/[slug] in 328ms (935 modules)
+ GET /ontdek/dagelijkse-stadswandeling?city=harderwijk 200 in 575ms
+ GET /ontdek/boulevard-op-stelten-2026?city=harderwijk 200 in 84ms
+ ✓ Compiled /events/[id] in 178ms (943 modules)
+ GET /events/164 200 in 370ms
+[Error: GET /api/events/152/ failed: 404 {"detail":"Not found"}]
+ GET /events/152 200 in 34ms
+ ✓ Compiled /inspiratie in 257ms (959 modules)
+ GET /inspiratie?location=harderwijk&category=weekend 200 in 449ms
+ GET /inspiratie?location=lelystad&category=weekend 200 in 89ms
+ GET /inspiratie?location=amersfoort&category=weekend 200 in 58ms
+ GET /inspiratie?location=nijmegen&category=weekend 200 in 66ms
+ ✓ Compiled /festivals/kalender in 390ms (625 modules)
+ GET /festivals/kalender 200 in 509ms
+ ✓ Compiled /festivals/lijst in 244ms (981 modules)
+ GET /festivals/lijst 200 in 480ms
+ ✓ Compiled /jaarkalender in 174ms (646 modules)
+ GET /jaarkalender 200 in 309ms
+ GET /ontdek/dagelijkse-stadswandeling?city=harderwijk 200 in 264ms
+ GET /ontdek/boulevard-op-stelten-2026?city=harderwijk 200 in 72ms
+ GET /events/164 200 in 210ms
+[Error: GET /api/events/152/ failed: 404 {"detail":"Not found"}]
+ GET /events/152 200 in 44ms
+ ✓ Compiled in 1056ms (349 modules)
+ ✓ Compiled in 557ms (349 modules)
+ ✓ Compiled in 202ms (349 modules)
+ ✓ Compiled in 182ms (349 modules)
+ ✓ Compiled in 190ms (349 modules)
+ ✓ Compiled in 509ms (349 modules)
+ ✓ Compiled in 518ms (349 modules)
+ ✓ Compiled in 221ms (349 modules)
+ ✓ Compiled in 235ms (349 modules)
+ ✓ Compiled in 137ms (349 modules)
+ ✓ Compiled / in 311ms (690 modules)
+ GET / 200 in 432ms
+ ✓ Compiled in 251ms (352 modules)
+ ✓ Compiled / in 74ms (352 modules)
+ ⨯ TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:33:42)
+    at JSON.parse (<anonymous>)
+digest: "4097774139"
+TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:33:42)
+    at require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:40:20064)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108376
+    at ea (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108583)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:110813
+    at Object._fromJSON (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:111370)
+    at JSON.parse (<anonymous>)
+    at ec (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:109078)
+    at eo (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108123)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115291
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115308
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115341
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115358
+    at t (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115581)
+ ⨯ TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:33:42)
+    at require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:40:20064)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108376
+    at ea (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108583)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:110813
+    at Object._fromJSON (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:111370)
+    at JSON.parse (<anonymous>)
+    at ec (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:109078)
+    at eo (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108123)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115291
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115308
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115341
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115358
+    at t (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115581) {
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 713ms (916 modules)
+ GET / 500 in 984ms
+ ✓ Compiled in 240ms (930 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/jaarkalender/page' in C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/jaarkalender/page' in 'C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/jaarkalender/page (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+ ✓ Compiled in 245ms (537 modules)
+ ✓ Compiled in 291ms (571 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\2.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\2.pack.gz'
+ ✓ Compiled in 553ms (585 modules)
+ ✓ Compiled in 168ms (537 modules)
+ ✓ Compiled in 564ms (537 modules)
+ ✓ Compiled in 514ms (537 modules)
+ ✓ Compiled in 173ms (537 modules)
+ ✓ Compiled in 199ms (537 modules)
+ ✓ Compiled in 198ms (537 modules)
+ ✓ Compiled in 219ms (537 modules)
+ ✓ Compiled in 197ms (537 modules)
+ ✓ Compiled in 211ms (537 modules)
+ ✓ Compiled in 161ms (537 modules)
+ ✓ Compiled in 207ms (537 modules)
+ ✓ Compiled in 172ms (537 modules)
+ ✓ Compiled in 194ms (537 modules)
+ ✓ Compiled in 553ms (537 modules)
+ ✓ Compiled in 200ms (537 modules)
+ ✓ Compiled in 218ms (537 modules)
+ ✓ Compiled in 210ms (537 modules)
+ ✓ Compiled in 186ms (537 modules)
+ ✓ Compiled in 218ms (537 modules)
+ ✓ Compiled in 197ms (537 modules)
+ ✓ Compiled in 215ms (537 modules)
+ ✓ Compiled in 378ms (537 modules)
+ ✓ Compiled in 206ms (537 modules)
+ ✓ Compiled in 275ms (537 modules)
+ ✓ Compiled in 191ms (537 modules)
+ ✓ Compiled in 337ms (537 modules)
+ ✓ Compiled / in 86ms (391 modules)
+ ⨯ TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:33:42)
+    at JSON.parse (<anonymous>)
+digest: "4097774139"
+TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:33:42)
+    at require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:40:20064)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108376
+    at ea (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108583)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:110813
+    at Object._fromJSON (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:111370)
+    at JSON.parse (<anonymous>)
+    at ec (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:109078)
+    at eo (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108123)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115291
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115308
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115341
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115358
+    at t (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115581)
+ ⨯ TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:33:42)
+    at require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:40:20064)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108376
+    at ea (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108583)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:110813
+    at Object._fromJSON (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:111370)
+    at JSON.parse (<anonymous>)
+    at ec (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:109078)
+    at eo (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:108123)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115291
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115308
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115341
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115358
+    at t (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:115581) {
+  page: '/'
+}
+ ✓ Compiled /_error in 95ms (916 modules)
+ ⨯ Error: Cannot find module './682.js'
+Require stack:
+- C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+- C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_document.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1421:15)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)
+    at Module._load (node:internal/modules/cjs/loader:1227:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at __webpack_require__.f.require (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:198:28)
+    at C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:162:22)
+    at C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_document.js:1:335
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_document.js:1:376)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:72:65
+    at async Promise.all (index 0)
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:71:33)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\.next\\server\\pages\\_document.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+ GET / 500 in 1204ms
+ ✓ Compiled in 305ms (537 modules)
+ ✓ Compiled in 238ms (537 modules)
+ ⨯ ./components/festivals/WeeklyPulseSignupSection.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\festivals\WeeklyPulseSignupSection.tsx
 
 Caused by:
-    Syntax Error
+    The system cannot find the file specified. (os error 2)
 
 Import trace for requested module:
-./components/city-explore/ExploreCardItem.tsx
-./components/city-explore/CityExploreResultsSection.tsx
-./components/city-explore/page.tsx
- ✓ Compiled in 232ms (350 modules)
+./components/festivals/WeeklyPulseSignupSection.tsx
+./app/festivals/kalender/page.tsx
+ ⨯ ./components/festivals/WeeklyPulseSignupSection.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\festivals\WeeklyPulseSignupSection.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/festivals/WeeklyPulseSignupSection.tsx
+./app/festivals/kalender/page.tsx
+ ✓ Compiled in 234ms (537 modules)
+ ✓ Compiled in 193ms (537 modules)
+ ✓ Compiled in 230ms (537 modules)
+ ✓ Compiled in 245ms (537 modules)
+ ✓ Compiled in 231ms (537 modules)
+ ✓ Compiled in 328ms (541 modules)
+ ✓ Compiled in 801ms (575 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\5.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\5.pack.gz'
+ ✓ Compiled in 314ms (541 modules)
+ ✓ Compiled in 265ms (541 modules)
+ ✓ Compiled /bewaard in 383ms (875 modules)
+ GET /bewaard 200 in 493ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/clsx' in C:\Users\Marco\EventsPlanner\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\clsx.js', but to 'Error: Can't resolve './vendor-chunks/clsx' in 'C:\Users\Marco\EventsPlanner\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/clsx (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\clsx.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/tailwind-merge' in C:\Users\Marco\EventsPlanner\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\tailwind-merge.js', but to 'Error: Can't resolve './vendor-chunks/tailwind-merge' in 'C:\Users\Marco\EventsPlanner\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/tailwind-merge (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\tailwind-merge.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/@swc' in C:\Users\Marco\EventsPlanner\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\@swc.js', but to 'Error: Can't resolve './vendor-chunks/@swc' in 'C:\Users\Marco\EventsPlanner\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/@swc (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\@swc.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\app\jaarkalender\page.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js

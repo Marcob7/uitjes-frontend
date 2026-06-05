@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const footerLinks = [
@@ -5,6 +6,7 @@ const footerLinks = [
   { name: "Jaarkalender", href: "/jaarkalender" },
   { name: "Festivals", href: "/festivals/kalender" },
   { name: "Inspiratie", href: "/inspiratie" },
+  { name: "FAQ", href: "/faq" },
   { name: "Bewaard", href: "/saved" },
 ];
 
@@ -52,9 +54,14 @@ export default function FooterSection() {
                 className="inline-flex items-center gap-3 text-2xl font-semibold tracking-tight"
                 aria-label="Uitjes home"
               >
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-[#34ad78]">
-                  <span className="h-3 w-3 rounded-full bg-[#fbfaf7]" />
-                </span>
+                <Image
+                  src="/images/uitjesplatform_logo_transparent.svg"
+                  alt=""
+                  aria-hidden="true"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 shrink-0 object-contain"
+                />
                 <span>Uitjes</span>
               </Link>
 

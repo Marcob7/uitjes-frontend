@@ -61,11 +61,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const item = await getExploreDetail(params.slug);
 
     if (!item) {
-      const fallbackTitle = getFallbackExploreTitle(params.slug);
-
       return {
-        title: `${fallbackTitle} | Uitjes`,
-        description: "Bekijk dit uitje en ontdek meer activiteiten in Nederland.",
+        title: "Uitje niet gevonden | Uitjes",
+        description:
+          "Dit uitje is niet beschikbaar. Ontdek andere activiteiten en plekken in Nederland.",
       };
     }
 
@@ -75,11 +74,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: `${title} in ${city} | Uitjes`,
       description: getMetadataDescription(item),
+      alternates: {
+        canonical: `/ontdek/${encodeURIComponent(params.slug)}`,
+      },
     };
   } catch {
     return {
       title: `${getFallbackExploreTitle(params.slug)} | Uitjes`,
       description: "Bekijk dit uitje en ontdek meer activiteiten in Nederland.",
+      alternates: {
+        canonical: `/ontdek/${encodeURIComponent(params.slug)}`,
+      },
     };
   }
 }
@@ -141,6 +146,29 @@ function getSafeExternalUrl(value?: string | null) {
   } catch {
     return null;
   }
+}
+
+function hasFreePricingLabel(value?: string | null) {
+  return value?.toLowerCase().includes("gratis") ?? false;
+}
+
+function getPrimaryCtaLabel({
+  hasTicket,
+  hasReservation,
+  hasSource,
+  isFree,
+  fallbackLabel,
+}: {
+  hasTicket: boolean;
+  hasReservation: boolean;
+  hasSource: boolean;
+  isFree: boolean;
+  fallbackLabel: string;
+}) {
+  if (hasTicket) return "Bekijk tickets";
+  if (hasReservation) return "Reserveer";
+  if (hasSource) return isFree ? "Meer informatie" : "Bekijk officiele website";
+  return fallbackLabel;
 }
 
 function getUsableHeroImage(value?: string | null) {
@@ -261,14 +289,23 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
   const ticketHref = getSafeExternalUrl(item.links?.ticketUrl);
   const reservationHref = getSafeExternalUrl(item.links?.reservationUrl);
   const sourceHref = getSafeExternalUrl(item.links?.sourceUrl);
+  const isFree = hasFreePricingLabel(item.practical.pricing);
   const reserveHref =
     ticketHref ||
     reservationHref ||
+    sourceHref ||
     buildActionSearchHref({
       title: item.title,
       location: locationQuery,
       actionLabel: item.actions.reserveLabel,
     });
+  const primaryCtaLabel = getPrimaryCtaLabel({
+    hasTicket: Boolean(ticketHref),
+    hasReservation: Boolean(reservationHref),
+    hasSource: Boolean(sourceHref),
+    isFree,
+    fallbackLabel: item.actions.reserveLabel,
+  });
   const routeHref = locationQuery ? buildMapsSearchHref(locationQuery) : null;
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_12%_0%,rgba(198,223,154,0.2),transparent_24%),radial-gradient(circle_at_86%_8%,rgba(247,231,200,0.35),transparent_26%),linear-gradient(180deg,#fbf7ef,#f8f5f3_45%,#f6f1ea)] text-[#171511]">
@@ -413,11 +450,7 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
                   rel="noreferrer"
                   className="uitjes-cta mb-3 inline-flex min-h-14 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition hover:-translate-y-0.5"
                 >
-                  {ticketHref
-                    ? "Bekijk tickets"
-                    : reservationHref
-                      ? "Reserveer"
-                      : item.actions.reserveLabel}
+                  {primaryCtaLabel}
                 </a>
 
                 <div className={`grid gap-3 ${routeHref ? "sm:grid-cols-2" : "grid-cols-1"}`}>
@@ -440,7 +473,7 @@ export default async function ExploreDetailPage({ params, searchParams }: PagePr
                   )}
                 </div>
 
-                {sourceHref ? (
+                {sourceHref && reserveHref !== sourceHref ? (
                   <a
                     href={sourceHref}
                     target="_blank"

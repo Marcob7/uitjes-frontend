@@ -1,5 +1,19 @@
 import { redirect } from "next/navigation";
 
-export default function FestivalsIndexPage() {
+type FestivalsIndexPageProps = {
+  searchParams?: {
+    query?: string;
+  };
+};
+
+export default function FestivalsIndexPage({
+  searchParams,
+}: FestivalsIndexPageProps) {
+  const query = searchParams?.query?.trim();
+
+  if (query) {
+    redirect(`/festivals/lijst?query=${encodeURIComponent(query)}`);
+  }
+
   redirect("/festivals/kalender");
 }

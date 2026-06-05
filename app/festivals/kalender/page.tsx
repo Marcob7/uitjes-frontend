@@ -268,12 +268,14 @@ export default function FestivalsCalendarPage() {
           currentView="calendar"
           description={
             <>
-              Discover every cultural beat across the country. From underground
-              techno in Amsterdam to jazz by the sea.
+          Ontdek de culturele vibe van heel Nederland. Van rauwe underground techno in Amsterdam tot relaxte jazz aan zee.
             </>
           }
           search={
-            <div className="rounded-[1.6rem] border border-white/18 bg-white/12 p-2 shadow-[0_24px_60px_rgba(3,10,14,0.18)] backdrop-blur-xl sm:rounded-full">
+            <form
+              action="/festivals/lijst"
+              className="rounded-[1.6rem] border border-white/18 bg-white/12 p-2 shadow-[0_24px_60px_rgba(3,10,14,0.18)] backdrop-blur-xl sm:rounded-full"
+            >
               <label
                 htmlFor="calendar-search"
                 className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-white/86 sm:rounded-full"
@@ -281,12 +283,15 @@ export default function FestivalsCalendarPage() {
                 <SearchIcon />
                 <input
                   id="calendar-search"
+                  name="query"
                   type="text"
-                  placeholder="Search festivals..."
+                  placeholder="Zoek naar festivals..."
+                  enterKeyHint="search"
+                  inputMode="search"
                   className="h-full flex-1 bg-transparent text-base text-white outline-none placeholder:text-white/76 focus-visible:ring-2 focus-visible:ring-[#e8f2d0] sm:text-sm"
                 />
               </label>
-            </div>
+            </form>
           }
           controls={
             <>

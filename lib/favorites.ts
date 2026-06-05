@@ -10,6 +10,8 @@ export type FavoriteItem = {
   category: string | null;
   summary: string | null;
   image_url: string | null;
+  is_publicly_available?: boolean;
+  availability_reason?: string | null;
   created_at: string;
 };
 

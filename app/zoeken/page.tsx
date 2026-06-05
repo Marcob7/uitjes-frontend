@@ -19,11 +19,17 @@ export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
     return {
       title: `Zoeken naar ${query} | Uitjes`,
       description: `Bekijk zoekresultaten voor ${query}.`,
+      alternates: {
+        canonical: "/zoeken",
+      },
     };
   }
 
   return {
     title: "Zoeken | Uitjes",
+    alternates: {
+      canonical: "/zoeken",
+    },
   };
 }
 

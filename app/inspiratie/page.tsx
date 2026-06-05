@@ -4,6 +4,9 @@ export const metadata = {
   title: "Inspiratie voor je volgende uitje | Uitjes",
   description:
     "Beantwoord een paar keuzes en ontdek ideeën voor je volgende uitje.",
+  alternates: {
+    canonical: "/inspiratie",
+  },
 };
 
 type PageProps = {

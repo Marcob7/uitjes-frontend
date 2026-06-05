@@ -1,0 +1,12 @@
+{
+  "favorites": {
+    "save": "Bewaar",
+    "saved": "Bewaard",
+    "loading": "Bezig...",
+    "loginToSave": "Log in om te bewaren",
+    "ariaSave": "Bewaar dit uitje",
+    "ariaRemove": "Verwijder uit bewaarde uitjes",
+    "sessionExpired": "Je sessie is verlopen. Log opnieuw in om te bewaren.",
+    "saveFailed": "Bewaren lukt nu niet. Probeer het straks nog eens."
+  }
+}

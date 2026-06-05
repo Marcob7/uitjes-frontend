@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,7 +13,7 @@ const navItems = [
   { href: "/jaarkalender", label: "Jaarkalender" },
   { href: "/event-details", label: "Uitgelichte Events" },
   { href: "/festivals/kalender", label: "Festivals" },
-  { href: "/feedback", label: "Feedback" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 function isActivePath(pathname: string, href: string) {
@@ -29,6 +30,7 @@ export default function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const displayName = user?.first_name || user?.username || user?.email || "Account";
   const savedActive = isActivePath(pathname, "/bewaard");
+  const accountActive = isActivePath(pathname, "/account");
 
   function handleLogout() {
     logout();
@@ -52,9 +54,14 @@ export default function SiteHeader() {
               className="group inline-flex items-center gap-3 rounded-full pr-2 text-neutral-950 outline-none transition duration-200 hover:text-neutral-700 focus-visible:ring-2 focus-visible:ring-lime-500/70"
               aria-label="Ga naar home"
             >
-              <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-white/65 bg-[radial-gradient(circle_at_30%_20%,#ffffff,rgba(232,242,208,0.86)_42%,rgba(163,230,53,0.34))] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_10px_28px_rgba(68,92,38,0.18)]">
-                <span className="h-3.5 w-3.5 rounded-full bg-neutral-950 shadow-[10px_4px_0_rgba(22,101,52,0.42),-7px_8px_0_rgba(15,118,110,0.34)]" />
-              </span>
+              <Image
+                src="/images/uitjesplatform_logo_transparent.svg"
+                alt=""
+                aria-hidden="true"
+                width={75}
+                height={75}
+                className="h-10 w-10 shrink-0 object-contain"
+              />
               <span className="text-lg font-semibold tracking-tight">Uitjes NL</span>
             </Link>
 
@@ -102,9 +109,17 @@ export default function SiteHeader() {
                 </span>
               ) : isAuthenticated ? (
                 <div className="flex items-center gap-2 rounded-full border border-white/46 bg-white/34 p-1 pl-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-                  <span className="max-w-36 truncate text-[13px] font-semibold text-neutral-800">
+                  <Link
+                    href="/account"
+                    aria-current={accountActive ? "page" : undefined}
+                    className={`max-w-36 truncate rounded-full px-1 text-[13px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 ${
+                      accountActive
+                        ? "text-neutral-950 underline decoration-neutral-950/35 underline-offset-4"
+                        : "text-neutral-800 hover:text-neutral-950"
+                    }`}
+                  >
                     {displayName}
-                  </span>
+                  </Link>
                   <button
                     type="button"
                     onClick={handleLogout}
@@ -209,9 +224,17 @@ export default function SiteHeader() {
                     </div>
                   ) : isAuthenticated ? (
                     <div className="grid gap-2 rounded-2xl border border-white/52 bg-white/34 p-3">
-                      <div className="min-w-0 text-center text-[14px] font-semibold text-neutral-800">
+                      <Link
+                        href="/account"
+                        aria-current={accountActive ? "page" : undefined}
+                        className={`min-w-0 rounded-xl px-3 py-2 text-center text-[14px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 ${
+                          accountActive
+                            ? "bg-neutral-950 text-white"
+                            : "text-neutral-800 hover:bg-white/48"
+                        }`}
+                      >
                         Ingelogd als <span className="break-words">{displayName}</span>
-                      </div>
+                      </Link>
                       <button
                         type="button"
                         onClick={handleLogout}

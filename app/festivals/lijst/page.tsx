@@ -5,6 +5,9 @@ export const runtime = "edge";
 export const metadata = {
   title: "Festivals ontdekken | Uitjes",
   description: "Bekijk festivals en festivaluitjes in Nederland.",
+  alternates: {
+    canonical: "/festivals/lijst",
+  },
 };
 
 type FestivalsPageProps = {

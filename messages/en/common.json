@@ -1,0 +1,12 @@
+{
+  "favorites": {
+    "save": "Save",
+    "saved": "Saved",
+    "loading": "Loading...",
+    "loginToSave": "Log in to save",
+    "ariaSave": "Save this outing",
+    "ariaRemove": "Remove from saved outings",
+    "sessionExpired": "Your session has expired. Log in again to save.",
+    "saveFailed": "Saving is not available right now. Try again later."
+  }
+}

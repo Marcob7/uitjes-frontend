@@ -41,12 +41,18 @@ export function generateMetadata({ searchParams }: OntdekPageProps): Metadata {
     return {
       title: `Wat te doen in ${cityLabel} | Uitjes en activiteiten`,
       description: `Ontdek uitjes, activiteiten, evenementen en restaurants in ${cityLabel}.`,
+      alternates: {
+        canonical: `/ontdek?city=${encodeURIComponent(city)}`,
+      },
     };
   }
 
   return {
     title: "Ontdek uitjes in Nederland",
     description: "Zoek leuke activiteiten, evenementen en restaurants per stad.",
+    alternates: {
+      canonical: "/ontdek",
+    },
   };
 }
 

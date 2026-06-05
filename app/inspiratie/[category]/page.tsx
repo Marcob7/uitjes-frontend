@@ -113,6 +113,27 @@ export function generateStaticParams() {
   ];
 }
 
+export function generateMetadata({ params }: PageProps) {
+  const routeCategory = getRouteCategory(params.category);
+
+  if (!routeCategory) {
+    return {
+      title: "Inspiratie | Uitjes",
+      alternates: {
+        canonical: `/inspiratie/${encodeURIComponent(params.category)}`,
+      },
+    };
+  }
+
+  return {
+    title: `${routeCategory.label} | Uitjes`,
+    description: routeCategory.description,
+    alternates: {
+      canonical: `/inspiratie/${encodeURIComponent(params.category)}`,
+    },
+  };
+}
+
 export default function InspirationCategoryPage({
   params,
   searchParams,
