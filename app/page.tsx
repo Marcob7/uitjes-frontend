@@ -1,4 +1,5 @@
 import HeroSection from "@/components/home/HeroSection";
+import VideoSection from "@/components/home/VideoSection";
 import NewMomentSection from "@/components/home/NewMomentSection";
 import QuickSituationSection from "@/components/home/QuickSituationSection";
 import CategorySection from "@/components/home/CategorySection";
@@ -17,6 +18,7 @@ export const metadata = {
 export default function Page() {
   return (
     <main className="min-h-screen bg-[#f8f5f3]">
+      <VideoSection />
       <HeroSection />
       <NewMomentSection />
       <QuickSituationSection />

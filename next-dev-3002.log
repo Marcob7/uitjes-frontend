@@ -1,0 +1,31 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3002
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3002
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1474ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1216ms (664 modules)
+ GET / 200 in 1396ms
+ ✓ Compiled /favicon.ico in 91ms (386 modules)
+ GET /favicon.ico 200 in 136ms
+ ✓ Compiled in 460ms (696 modules)
+ GET / 200 in 93ms
+ ✓ Compiled /_not-found in 139ms (685 modules)
+ GET / 200 in 120ms
+ ✓ Compiled in 430ms (664 modules)
+ GET / 200 in 92ms
+ ✓ Compiled in 347ms (664 modules)
+ ✓ Compiled /_not-found in 126ms (653 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/c9f0875bd3dc2310.webpack.hot-update.json 404 in 226ms
+ GET / 200 in 71ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz'
+ GET / 200 in 65ms
+ ✓ Compiled in 364ms (667 modules)
+ GET / 200 in 85ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\3.pack.gz'
