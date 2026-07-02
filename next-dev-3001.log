@@ -7,31 +7,26 @@
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1495ms
+ ✓ Ready in 1468ms
  ○ Compiling / ...
- ✓ Compiled / in 1828ms (664 modules)
- GET / 200 in 2012ms
- ✓ Compiled /favicon.ico in 397ms (386 modules)
- GET /favicon.ico 200 in 446ms
- GET / 200 in 122ms
- GET /favicon.ico 200 in 8ms
- ✓ Compiled in 381ms (696 modules)
- ✓ Compiled in 454ms (664 modules)
- GET / 200 in 90ms
- ✓ Compiled /_not-found in 124ms (653 modules)
- GET /_next/static/css/app/layout.css?v=1782412464800 404 in 212ms
- GET /_next/static/chunks/webpack.js?v=1782412464800 404 in 216ms
- GET /_next/static/chunks/main-app.js?v=1782412464800 404 in 210ms
- GET /_next/static/chunks/app-pages-internals.js 404 in 209ms
- GET /_next/static/chunks/app/page.js 404 in 208ms
- GET /_next/static/chunks/app/layout.js 404 in 209ms
- ✓ Compiled in 341ms (667 modules)
- ✓ Compiled in 412ms (664 modules)
- ✓ Compiled in 320ms (664 modules)
- ✓ Compiled in 316ms (664 modules)
- ✓ Compiled in 341ms (664 modules)
- ✓ Compiled in 619ms (664 modules)
- ✓ Compiled in 769ms (664 modules)
- ✓ Compiled in 379ms (664 modules)
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\1.pack.gz'
- ✓ Compiled in 903ms (664 modules)
+ ✓ Compiled / in 1322ms (664 modules)
+ GET / 200 in 1659ms
+ ✓ Compiled in 421ms (664 modules)
+ GET / 200 in 99ms
+ ✓ Compiled /_not-found in 175ms (653 modules)
+ GET /_next/static/css/app/layout.css?v=1782817484883 404 in 276ms
+ GET /_next/static/chunks/webpack.js?v=1782817484883 404 in 280ms
+ GET /_next/static/chunks/main-app.js?v=1782817484883 404 in 227ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 226ms
+ GET /_next/static/chunks/app/layout.js 404 in 226ms
+ GET /_next/static/chunks/app/page.js 404 in 227ms
+ ✓ Compiled /favicon.ico in 82ms (387 modules)
+ GET /favicon.ico 200 in 125ms
+ ✓ Compiled in 465ms (664 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\3.pack.gz'
+ ✓ Compiled in 679ms (664 modules)
+ ✓ Compiled in 593ms (664 modules)
+ ✓ Compiled in 324ms (664 modules)
+ ✓ Compiled in 214ms (310 modules)
+ ✓ Compiled in 1175ms (664 modules)
+ ✓ Compiled in 904ms (664 modules)

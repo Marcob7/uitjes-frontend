@@ -16,6 +16,10 @@ const navItems = [
   { href: "/faq", label: "FAQ" },
 ];
 
+type SiteHeaderProps = {
+  variant?: "default" | "homeGlass";
+};
+
 function isActivePath(pathname: string, href: string) {
   if (href === "/") {
     return pathname === href;
@@ -24,10 +28,11 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function SiteHeader() {
+export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
   const pathname = usePathname();
   const { isAuthenticated, logout, status, user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const homeGlass = variant === "homeGlass";
   const displayName = user?.first_name || user?.username || user?.email || "Account";
   const savedActive = isActivePath(pathname, "/bewaard");
   const accountActive = isActivePath(pathname, "/account");
@@ -42,12 +47,19 @@ export default function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 px-3 py-3 sm:px-5">
+    <header
+      className={`z-50 px-3 py-3 sm:px-5 ${
+        homeGlass ? "fixed inset-x-0 top-0" : "sticky top-0"
+      }`}
+    >
       <div className="mx-auto w-full max-w-7xl">
-        <div className="relative overflow-hidden rounded-[28px] border border-white/45 bg-[linear-gradient(135deg,rgba(255,255,255,0.74),rgba(255,255,255,0.43)_48%,rgba(226,244,237,0.52))] shadow-[0_22px_70px_rgba(24,37,30,0.14)] ring-1 ring-black/[0.03] backdrop-blur-2xl">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_12%,rgba(255,255,255,0.88),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(190,242,100,0.26),transparent_30%),linear-gradient(90deg,rgba(255,255,255,0.15),rgba(255,255,255,0))]" />
-          <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-white/80" />
-
+        <div
+          className={`site-header-shell ${
+            homeGlass
+              ? "site-header-shell--home-glass"
+              : "site-header-shell--default"
+          }`}
+        >
           <div className="relative flex min-h-16 items-center justify-between gap-4 px-4 py-3 sm:px-5 lg:px-6">
             <Link
               href="/"
@@ -62,7 +74,7 @@ export default function SiteHeader() {
                 height={75}
                 className="h-10 w-10 shrink-0 object-contain"
               />
-              <span className="text-lg font-semibold tracking-tight">Uitjes NL</span>
+              <span className="text-lg font-semibold tracking-tight">HI NEDERLAND</span>
             </Link>
 
             <nav aria-label="Hoofdnavigatie" className="hidden min-w-0 flex-1 justify-center lg:flex">
