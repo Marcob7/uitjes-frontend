@@ -126,3 +126,11 @@
  GET /favicon.ico 200 in 156ms
  GET /favicon.ico 200 in 62ms
 <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz'
+ ✓ Compiled in 649ms (1056 modules)
+ ✓ Compiled in 571ms (1104 modules)
+ GET /inspiratie 200 in 93ms
+ GET /inspiratie 200 in 75ms
+ GET /inspiratie 200 in 89ms
+ GET /inspiratie 200 in 53ms
+ ✓ Compiled /favicon.ico in 49ms (97 modules)
+ GET /favicon.ico 200 in 107ms

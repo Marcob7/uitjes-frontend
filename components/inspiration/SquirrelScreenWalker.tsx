@@ -1,26 +1,22 @@
-const SQUIRREL_VIDEO_SRC = "/images/squirrel-screen-walker.mp4";
+const SQUIRREL_GIF_SRC = "/animations/squirrel-running.gif";
 
 export function SquirrelScreenWalker() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none relative hidden h-16 overflow-visible sm:block md:h-20"
+      className="pointer-events-none relative block h-12 overflow-visible sm:h-16 md:h-20"
     >
-      <div className="absolute left-1/2 top-0 h-full w-screen -translate-x-1/2 overflow-hidden">
+      <div className="absolute left-1/2 top-0 z-0 h-full w-screen -translate-x-1/2 overflow-hidden">
         {/*
           Tuning notes:
-          - width controls the squirrel size; keep object-contain so he stays fully visible.
+          - height controls the squirrel size; width stays auto so the running pose is not squeezed.
           - bottom controls the walking lane position.
-          - animation duration is defined in globals.css on .squirrel-screen-walker.
+          - animation duration is defined in globals.css on .squirrel-runner.
         */}
-        <video
-          className="squirrel-screen-walker absolute bottom-1 left-0 h-14 w-14 object-contain opacity-95 mix-blend-multiply md:h-16 md:w-16 lg:h-20 lg:w-20"
-          src={SQUIRREL_VIDEO_SRC}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
+        <img
+          className="squirrel-runner absolute bottom-1 left-0 h-9 w-auto select-none object-contain opacity-95 sm:h-12 md:h-14 lg:h-16"
+          src={SQUIRREL_GIF_SRC}
+          alt=""
         />
       </div>
     </div>

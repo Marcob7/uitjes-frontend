@@ -172,27 +172,25 @@ button:disabled {
   }
 }
 
-.squirrel-screen-walker {
-  animation: squirrelScreenWalk 24s linear infinite;
-  transform: translate3d(-8rem, 0, 0);
+.squirrel-runner {
+  animation: squirrel-walk 18s linear infinite;
+  transform: translate3d(-160px, 0, 0);
   will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .squirrel-screen-walker {
+  .squirrel-runner {
     display: none;
   }
 }
 
-@keyframes squirrelScreenWalk {
-  0%,
-  6% {
-    transform: translate3d(-8rem, 0, 0);
+@keyframes squirrel-walk {
+  0% {
+    transform: translate3d(-160px, 0, 0);
   }
 
-  88%,
   100% {
-    transform: translate3d(calc(100vw + 8rem), 0, 0);
+    transform: translate3d(calc(100vw + 160px), 0, 0);
   }
 }
 
