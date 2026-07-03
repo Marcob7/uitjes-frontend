@@ -94,7 +94,7 @@ export default function NewHomeSection({
         />
         <Link
           href="/inspiratie"
-          className="mx-auto mt-3 flex h-[52px] w-[min(400px,calc(100vw-2rem))] items-center justify-center rounded-full border-[4px] border-white bg-[#1464ff] px-6 text-center text-[17px] font-extrabold text-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-transform duration-150 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1464ff] active:scale-95"
+          className="mx-auto mt-3 flex h-[52px] w-[min(400px,calc(100vw-2rem))] items-center justify-center rounded-full border-[4px] border-white bg-[#00652c] px-6 text-center text-[17px] font-extrabold text-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-transform duration-150 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00652c] active:scale-95"
         >
           Ik wil inspiratie
         </Link>

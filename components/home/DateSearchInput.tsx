@@ -37,7 +37,7 @@ export default function DateSearchInput({
             type="button"
             onClick={onSearch}
             aria-label="Search"
-            className="mr-[4px] flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full bg-[#1464ff] text-white transition-transform duration-150 hover:scale-[1.03] active:scale-95"
+            className="mr-[4px] flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full bg-[#00652c] text-white transition-transform duration-150 hover:scale-[1.03] active:scale-95"
           >
             <svg
               aria-hidden="true"

@@ -62,7 +62,9 @@ export default function FooterSection() {
                   height={32}
                   className="h-8 w-8 shrink-0 object-contain"
                 />
-                <span>Hi NEDERLAND</span>
+                <span className="site-brand-wordmark text-2xl">
+                  HI NEDERLAND
+                </span>
               </Link>
 
               <p className="mt-20 max-w-sm text-sm leading-6 text-[#173024]/65 sm:mt-24">

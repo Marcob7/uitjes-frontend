@@ -18,6 +18,7 @@ import {
 import { getInspirationFlowResults } from "@/lib/inspiration/cityContentMapper";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import { cn } from "@/lib/utils";
+import { SquirrelScreenWalker } from "./SquirrelScreenWalker";
 
 type LocationMode = "nearby" | "city" | "surprise";
 type AudienceChoice = "solo" | "date" | "gezin" | "vrienden";
@@ -611,29 +612,29 @@ export function InspirationChoiceFlow({
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
-      <AppSection maxWidth="default" spacing="sm" innerClassName="pt-7 pb-8 lg:pt-10 lg:pb-12">
-        <div className="mx-auto grid max-w-[980px] gap-7">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <AppSection maxWidth="default" spacing="sm" innerClassName="pt-28 pb-7 sm:pt-[7.5rem] lg:pt-32 lg:pb-10">
+        <div className="mx-auto grid max-w-[1080px] gap-9">
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-[42rem]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#667b36]">
-                Inspiratie kiezen
-              </p>
-              <h1 className="mt-2 text-[clamp(2rem,4.4vw,3.15rem)] font-semibold leading-[0.96] tracking-[-0.045em] text-[#171511]">
+            
+              <h1 className="mt-6 max-w-[42rem] text-[clamp(2.65rem,6vw,4.7rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511]">
                 Waar wil je inspiratie voor?
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-[#665d54] sm:text-base">
-                Kies stap voor stap wat past. Na de vierde keuze tonen we je suggesties.
+                Kies stap voor stap wat past. Ontdek unieke plekjes en activiteiten op basis van jouw persoonlijke voorkeuren. Na de vierde keuze tonen we je suggesties.
               </p>
             </div>
             <AppButton
               variant="ghost"
               size="sm"
               onClick={resetFilters}
-              className="self-start border-[#d6c9b8] bg-[#fffaf0]/82 text-[#4b3a28] shadow-none hover:border-[#c9b693] hover:bg-white sm:mt-1"
+              className="self-start border-transparent bg-transparent text-[#2f4f34] shadow-none hover:border-[#d6c9b8] hover:bg-white/70 sm:mt-1"
             >
               Wis keuzes
             </AppButton>
           </div>
+
+          <SquirrelScreenWalker />
 
           <div
             ref={wizardRef}
@@ -651,34 +652,76 @@ export function InspirationChoiceFlow({
                 <WizardPanel
                   tone={1}
                   step="Stap 1 van 4"
-                  title="Waar?"
-                  description="Kies eerst je locatiecontext."
+                  title="Waar gaan we heen?"
+                  description="Kies eerst je locatiecontext zodat we de meest relevante plekken voor je kunnen vinden."
                 >
-                  <div className="grid gap-3 min-[420px]:grid-cols-3">
-                    <AppFilterChip
-                      active={selectedLocation === "nearby"}
+                  <div className="grid gap-4 min-[560px]:grid-cols-3">
+                    <button
+                      type="button"
+                      aria-pressed={selectedLocation === "nearby"}
                       onClick={() => handleLocationSelect("nearby")}
                       disabled={isResolvingLocation}
-                      className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
+                      className={cn(
+                        "group grid min-h-[168px] content-center justify-items-center rounded-[1.25rem] border bg-white px-5 py-6 text-center shadow-[0_18px_36px_rgba(35,48,38,0.06)] transition active:translate-y-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#007a3d] disabled:cursor-wait disabled:opacity-70 motion-safe:hover:-translate-y-0.5",
+                        selectedLocation === "nearby"
+                          ? "border-[#007a3d] text-[#004c29]"
+                          : "border-[#ece8df] text-[#171511] hover:border-[#b8df71]"
+                      )}
                     >
-                      {isResolvingLocation
-                        ? "Locatie ophalen..."
-                        : "In de buurt van mij"}
-                    </AppFilterChip>
-                    <AppFilterChip
-                      active={selectedLocation === "city" || isPickingCity}
+                      <span className="grid h-16 w-16 place-items-center rounded-full bg-[#e9f4ec] text-[#007a3d] transition group-hover:scale-105">
+                        <LocationArrowIcon />
+                      </span>
+                      <span className="mt-6 text-lg font-semibold leading-tight">
+                        {isResolvingLocation
+                          ? "Locatie ophalen..."
+                          : "In de buurt van mij"}
+                      </span>
+                      <span className="mt-2 text-xs font-medium leading-5 text-[#665d54]">
+                        Gebruik je huidige locatie
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={selectedLocation === "city" || isPickingCity}
                       onClick={() => handleLocationSelect("city")}
-                      className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
+                      className={cn(
+                        "group grid min-h-[168px] content-center justify-items-center rounded-[1.25rem] border bg-white px-5 py-6 text-center shadow-[0_18px_36px_rgba(35,48,38,0.06)] transition active:translate-y-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#007a3d] motion-safe:hover:-translate-y-0.5",
+                        selectedLocation === "city" || isPickingCity
+                          ? "border-[#007a3d] text-[#004c29]"
+                          : "border-[#ece8df] text-[#171511] hover:border-[#b8df71]"
+                      )}
                     >
-                      Kies een stad
-                    </AppFilterChip>
-                    <AppFilterChip
-                      active={selectedLocation === "surprise"}
+                      <span className="grid h-16 w-16 place-items-center rounded-full bg-[#e9f4ec] text-[#007a3d] transition group-hover:scale-105">
+                        <CityIcon />
+                      </span>
+                      <span className="mt-6 text-lg font-semibold leading-tight">
+                        Kies een stad
+                      </span>
+                      <span className="mt-2 text-xs font-medium leading-5 text-[#665d54]">
+                        Zoek specifiek in Nederland
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={selectedLocation === "surprise"}
                       onClick={() => handleLocationSelect("surprise")}
-                      className="min-h-12 justify-center border-[#d7cfbf] bg-[#fffaf0]/82 px-3 text-center text-[#4b3a28] hover:border-[#c9b693] hover:bg-white"
+                      className={cn(
+                        "group grid min-h-[168px] content-center justify-items-center rounded-[1.25rem] border bg-white px-5 py-6 text-center shadow-[0_18px_36px_rgba(35,48,38,0.06)] transition active:translate-y-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#007a3d] motion-safe:hover:-translate-y-0.5",
+                        selectedLocation === "surprise"
+                          ? "border-[#007a3d] text-[#004c29]"
+                          : "border-[#ece8df] text-[#171511] hover:border-[#b8df71]"
+                      )}
                     >
-                      Maakt niet uit
-                    </AppFilterChip>
+                      <span className="grid h-16 w-16 place-items-center rounded-full bg-[#e9f4ec] text-[#007a3d] transition group-hover:scale-105">
+                        <CompassIcon />
+                      </span>
+                      <span className="mt-6 text-lg font-semibold leading-tight">
+                        Maakt niet uit
+                      </span>
+                      <span className="mt-2 text-xs font-medium leading-5 text-[#665d54]">
+                        Ik sta open voor alles
+                      </span>
+                    </button>
                   </div>
 
                   {isResolvingLocation ? (
@@ -703,7 +746,7 @@ export function InspirationChoiceFlow({
                   ) : null}
 
                   {isPickingCity ? (
-                    <div className="grid max-w-[36rem] gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                    <div className="mx-auto grid w-full max-w-[40rem] gap-3 rounded-[1.25rem] bg-white/72 p-4 shadow-[inset_0_0_0_1px_rgba(214,201,184,0.42)] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
                       <AppInput
                         label="Stad"
                         name="inspiration-local-city"
@@ -885,22 +928,22 @@ function WizardPanel({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[1.1rem] px-1 py-4 transition motion-safe:animate-[wizardIn_220ms_ease-out] sm:px-4 sm:py-5",
+        "overflow-hidden rounded-[1.35rem] px-5 py-12 text-center transition motion-safe:animate-[wizardIn_220ms_ease-out] sm:px-8 sm:py-14 lg:px-14 lg:py-16",
         toneClasses.panel
       )}
     >
-      <div className="mb-4 max-w-[38rem]">
+      <div className="mx-auto mb-9 max-w-[40rem]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#667b36]">
           {step}
         </p>
-        <h2 className="mt-1 text-[clamp(1.55rem,4vw,2.2rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#171511]">
+        <h2 className="mt-3 text-[clamp(2rem,4vw,3.1rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511]">
           {title}
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#665d54]">
+        <p className="mx-auto mt-3 max-w-[30rem] text-sm leading-6 text-[#665d54]">
           {description}
         </p>
       </div>
-      <div className="grid min-w-0 content-start gap-3">{children}</div>
+      <div className="grid min-w-0 content-start gap-6">{children}</div>
     </section>
   );
 }
@@ -915,13 +958,16 @@ function WizardProgress({
   onStepSelect: (step: WizardStep) => void;
 }) {
   return (
-    <div className="grid gap-3">
-      <div className="grid grid-cols-2 gap-2 min-[560px]:grid-cols-4">
+    <div className="grid gap-4">
+      <div className="grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-4">
         {([1, 2, 3, 4] as WizardStep[]).map((step) => {
           const isActive = currentStep === step;
           const isComplete = Boolean(summaries[step - 1]);
           const canOpen = isComplete || step <= currentStep;
           const toneClasses = getStepColorClasses(step);
+          const status = isActive
+            ? "Huidige stap"
+            : summaries[step - 1] ?? "Nog te kiezen";
 
           return (
             <button
@@ -930,20 +976,35 @@ function WizardProgress({
               disabled={!canOpen}
               onClick={() => onStepSelect(step)}
               className={cn(
-                "min-h-12 rounded-[1rem] px-3 py-2 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-55",
+                "grid min-h-[126px] grid-cols-[1fr_auto] content-between rounded-[1.35rem] border px-7 py-6 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
                 isActive
-                  ? toneClasses.active
+                  ? "border-[#007a3d] bg-white text-[#00542f] shadow-[0_18px_42px_rgba(36,78,46,0.08)]"
                   : isComplete
-                    ? "border border-[#cfe2a6] bg-[#f5f9e9]/86 text-[#405028] hover:bg-white"
-                    : "border border-transparent bg-[#f7f1eb]/62 text-[#8b7a69]",
+                    ? "border-[#d5e5b6] bg-white/78 text-[#405028] hover:bg-white"
+                    : "border-[#ede9e1] bg-white/34 text-[#8b8d87]",
                 toneClasses.focus
               )}
             >
-              <span className="block text-[10px] font-semibold uppercase tracking-[0.14em]">
-                {step}/4
+              <span>
+                <span className="block text-[12px] font-semibold uppercase tracking-[0.18em]">
+                  0{step}
+                </span>
+                <span className="mt-6 block text-sm font-semibold text-[#171511]">
+                  {getStepLabel(step)}
+                </span>
+                <span className="mt-1 block text-xs font-medium text-[#9a9e99]">
+                  {status}
+                </span>
               </span>
-              <span className="mt-0.5 block truncate text-sm font-semibold">
-                {getStepLabel(step)}
+              <span
+                className={cn(
+                  "mt-0.5 grid h-7 w-7 place-items-center rounded-full",
+                  isActive || isComplete
+                    ? "bg-[#007a3d] text-white"
+                    : "text-[#9a9e99]"
+                )}
+              >
+                <StepIcon step={step} />
               </span>
             </button>
           );
@@ -982,7 +1043,7 @@ function ChoiceGrid<T extends string>({
   const toneClasses = getStepColorClasses(tone);
 
   return (
-    <div className="grid gap-3 min-[420px]:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 min-[520px]:grid-cols-2 lg:grid-cols-4">
       {options.map((option) => {
         const isSelected = selected === option.value;
 
@@ -993,15 +1054,20 @@ function ChoiceGrid<T extends string>({
             aria-pressed={isSelected}
             onClick={() => onSelect(isSelected ? undefined : option.value)}
             className={cn(
-              "grid min-h-[76px] w-full content-center rounded-[1.12rem] border px-4 py-3 text-left transition active:translate-y-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:hover:-translate-y-0.5",
+              "group grid min-h-[168px] w-full content-center justify-items-center rounded-[1.25rem] border bg-white px-5 py-6 text-center shadow-[0_18px_36px_rgba(35,48,38,0.06)] transition active:translate-y-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:hover:-translate-y-0.5",
               isSelected
-                ? toneClasses.option
-                : "border-[#e7dbcd] bg-[linear-gradient(180deg,rgba(255,252,247,0.92),rgba(250,245,238,0.76))] text-[#3f362f] hover:border-[#d8c6b2] hover:bg-white",
+                ? "border-[#007a3d] text-[#004c29]"
+                : "border-[#ece8df] text-[#171511] hover:border-[#b8df71]",
               toneClasses.focus
             )}
           >
-            <span className="text-sm font-semibold leading-tight">{option.label}</span>
-            <span className="mt-1 text-xs font-medium leading-4 text-[#786d63]">
+            <span className="grid h-16 w-16 place-items-center rounded-full bg-[#e9f4ec] text-[#007a3d] transition group-hover:scale-105">
+              <ChoiceIcon tone={tone} value={option.value} />
+            </span>
+            <span className="mt-6 text-lg font-semibold leading-tight">
+              {option.label}
+            </span>
+            <span className="mt-2 text-xs font-medium leading-5 text-[#665d54]">
               {option.helper}
             </span>
           </button>
@@ -1009,6 +1075,31 @@ function ChoiceGrid<T extends string>({
       })}
     </div>
   );
+}
+
+function StepIcon({ step }: { step: WizardStep }) {
+  if (step === 1) return <PinIcon />;
+  if (step === 2) return <PeopleIcon />;
+  if (step === 3) return <ClockIcon />;
+  return <SmileIcon />;
+}
+
+function ChoiceIcon({ tone, value }: { tone: WizardStep; value: string }) {
+  if (tone === 2) {
+    if (value === "solo") return <PersonIcon />;
+    if (value === "date") return <HeartIcon />;
+    return <PeopleIcon />;
+  }
+  if (tone === 3) {
+    if (value === "nu") return <BoltIcon />;
+    if (value === "vanavond") return <MoonIcon />;
+    if (value === "weekend") return <CalendarIcon />;
+    return <ClockIcon />;
+  }
+  if (value === "cultureel") return <MuseumIcon />;
+  if (value === "actief") return <LocationArrowIcon />;
+  if (value === "eten-drinken") return <CupIcon />;
+  return <SmileIcon />;
 }
 
 function ActiveSummary({
@@ -1118,6 +1209,241 @@ function PinIcon() {
     >
       <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" />
       <circle cx="12" cy="10" r="2.5" />
+    </svg>
+  );
+}
+
+function LocationArrowIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m5 12 14-7-7 14-2-7-5-0Z" />
+    </svg>
+  );
+}
+
+function CityIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 21V9l5-3v15" />
+      <path d="M9 21V3l8 4v14" />
+      <path d="M17 21v-8l3 2v6" />
+      <path d="M7 11h.01M7 15h.01M12 9h.01M12 13h.01M12 17h.01" />
+    </svg>
+  );
+}
+
+function CompassIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <path d="m15.5 8.5-2 5-5 2 2-5 5-2Z" />
+    </svg>
+  );
+}
+
+function PeopleIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M16 19v-1.5a3.5 3.5 0 0 0-7 0V19" />
+      <circle cx="12.5" cy="8" r="3" />
+      <path d="M5 18v-1a3 3 0 0 1 3-3" />
+      <path d="M19 18v-1a3 3 0 0 0-3-3" />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v4l3 2" />
+    </svg>
+  );
+}
+
+function SmileIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <path d="M8.5 10h.01M15.5 10h.01" />
+      <path d="M8.5 14.5a4.8 4.8 0 0 0 7 0" />
+    </svg>
+  );
+}
+
+function PersonIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="8" r="3" />
+      <path d="M6.5 19a5.5 5.5 0 0 1 11 0" />
+    </svg>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" />
+    </svg>
+  );
+}
+
+function BoltIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M13 2 5 14h6l-1 8 8-12h-6l1-8Z" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 15.5A8 8 0 0 1 8.5 4 7 7 0 1 0 20 15.5Z" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="4" y="5" width="16" height="15" rx="2" />
+      <path d="M8 3v4M16 3v4M4 10h16" />
+    </svg>
+  );
+}
+
+function MuseumIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m4 10 8-5 8 5" />
+      <path d="M5 10h14M7 10v8M12 10v8M17 10v8M5 18h14" />
+    </svg>
+  );
+}
+
+function CupIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-7 w-7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M6 4h10v7a5 5 0 0 1-10 0V4Z" />
+      <path d="M16 7h1.5a2.5 2.5 0 0 1 0 5H16M8 20h6" />
     </svg>
   );
 }

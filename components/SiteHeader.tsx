@@ -48,9 +48,7 @@ export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
 
   return (
     <header
-      className={`z-50 px-3 py-3 sm:px-5 ${
-        homeGlass ? "fixed inset-x-0 top-0" : "sticky top-0"
-      }`}
+      className="fixed inset-x-0 top-0 z-50 px-3 py-3 sm:px-5"
     >
       <div className="mx-auto w-full max-w-7xl">
         <div
@@ -74,7 +72,9 @@ export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
                 height={75}
                 className="h-10 w-10 shrink-0 object-contain"
               />
-              <span className="text-lg font-semibold tracking-tight">HI NEDERLAND</span>
+              <span className="site-brand-wordmark text-[18px] sm:text-[20px]">
+                HI NEDERLAND
+              </span>
             </Link>
 
             <nav aria-label="Hoofdnavigatie" className="hidden min-w-0 flex-1 justify-center lg:flex">

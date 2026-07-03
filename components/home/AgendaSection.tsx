@@ -1,42 +1,113 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
-export default function AgendaSection() {
+type AgendaSectionProps = {
+  imageSrc?: string;
+  title?: string;
+  buttonText?: string;
+  className?: string;
+};
+
+const existingAgendaImage =
+  "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&fm=webp&w=1600&q=60";
+
+export default function AgendaSection({
+  imageSrc = existingAgendaImage,
+  title = "Evenementen Kalender",
+  buttonText = "Bekijk agenda",
+  className = "",
+}: AgendaSectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [contentTravel, setContentTravel] = useState(136);
+
+  useEffect(() => {
+    const updateContentTravel = () => {
+      const maxTravel = window.innerWidth < 640 ? 104 : 238;
+      setContentTravel(
+        Math.min(Math.max(window.innerHeight * 0.27, 80), maxTravel),
+      );
+    };
+
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const scrollDistance = Math.max(rect.height - window.innerHeight, 1);
+      const currentProgress = Math.min(
+        Math.max(-rect.top / scrollDistance, 0),
+        1,
+      );
+
+      setProgress(currentProgress);
+    };
+
+    updateContentTravel();
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateContentTravel);
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateContentTravel);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  const contentY = lerp(-contentTravel, contentTravel, progress);
+
   return (
-    <section className="clubbi-scene relative isolate overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <div className="clubbi-background" aria-hidden="true">
-        <div className="clubbi-blob clubbi-blob-1" />
-        <div className="clubbi-blob clubbi-blob-2" />
-        <div className="clubbi-blob clubbi-blob-3" />
-        <div className="clubbi-blob clubbi-blob-4" />
-        <div className="clubbi-blob clubbi-blob-5" />
-        <div className="clubbi-blob clubbi-blob-6" />
-        <div className="clubbi-blob clubbi-blob-7" />
-      </div>
-
-      <div className="relative z-10 mx-auto w-full max-w-[61.5rem]">
-        <div className="group relative min-h-[22rem] overflow-hidden rounded-[28px] shadow-[0_28px_80px_rgba(13,34,45,0.22)] sm:min-h-[28rem] sm:rounded-[34px] lg:min-h-[32rem]">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-[1.025]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(7, 7, 7, 0.06), rgba(7, 7, 7, 0.24)), url("https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&fm=webp&w=920&q=58")',
-            }}
+    <section
+      ref={sectionRef}
+      className={`relative h-[155vh] bg-white ${className}`}
+      data-testid="animated-agenda-card"
+    >
+      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden px-5">
+        <article
+          className="relative aspect-[1.48/1] w-full max-w-[1000px] overflow-hidden rounded-[34px] shadow-[0_26px_90px_rgba(0,0,0,0.18)]"
+        >
+          <img
+            src={imageSrc}
+            alt={title}
+            draggable={false}
+            className="h-full w-full object-cover"
           />
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-            <h2 className="text-[clamp(2.25rem,5.2vw,3.25rem)] font-black uppercase leading-[0.9] tracking-[0] text-white drop-shadow-[0_4px_22px_rgba(0,0,0,0.34)]">
-              Events calendar
+          <div className="absolute inset-0 bg-black/25" />
+
+          <div
+            className="absolute inset-0 flex w-full flex-col items-center justify-center px-6 text-center will-change-transform"
+            style={{
+              transform: `translate3d(0, ${contentY}px, 0)`,
+            }}
+          >
+            <h2
+              aria-label={title}
+              className="mx-auto max-w-[calc(100%-2rem)] whitespace-nowrap text-center text-[16px] font-black uppercase leading-[0.95] tracking-[0] text-white drop-shadow-[0_5px_20px_rgba(0,0,0,0.35)] sm:text-[22px] md:text-[31px] lg:text-[40px]"
+              style={{
+                transform: "translate3d(clamp(-42px, -3.5vw, -18px), 0, 0)",
+              }}
+            >
+              Evenementen&nbsp;Kalender
             </h2>
+
             <Link
               href="/jaarkalender"
-              className="mt-5 inline-flex min-h-[42px] items-center justify-center rounded-full bg-[#1464ff] px-6 text-sm font-bold text-white shadow-[0_12px_28px_rgba(20,100,255,0.34)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#0757ef] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="mt-6 inline-flex min-h-[46px] items-center justify-center rounded-full bg-blue-600 px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_14px_32px_rgba(37,99,235,0.38)] transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:px-8 md:py-4"
             >
-              Read More
+              {buttonText}
             </Link>
           </div>
-        </div>
+        </article>
       </div>
     </section>
   );
+}
+
+function lerp(start: number, end: number, amount: number) {
+  return start + (end - start) * amount;
 }

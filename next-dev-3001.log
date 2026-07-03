@@ -7,26 +7,122 @@
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1468ms
- ○ Compiling / ...
- ✓ Compiled / in 1322ms (664 modules)
- GET / 200 in 1659ms
- ✓ Compiled in 421ms (664 modules)
- GET / 200 in 99ms
- ✓ Compiled /_not-found in 175ms (653 modules)
- GET /_next/static/css/app/layout.css?v=1782817484883 404 in 276ms
- GET /_next/static/chunks/webpack.js?v=1782817484883 404 in 280ms
- GET /_next/static/chunks/main-app.js?v=1782817484883 404 in 227ms
- GET /_next/static/chunks/app-pages-internals.js 404 in 226ms
- GET /_next/static/chunks/app/layout.js 404 in 226ms
- GET /_next/static/chunks/app/page.js 404 in 227ms
- ✓ Compiled /favicon.ico in 82ms (387 modules)
- GET /favicon.ico 200 in 125ms
- ✓ Compiled in 465ms (664 modules)
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\3.pack.gz'
- ✓ Compiled in 679ms (664 modules)
- ✓ Compiled in 593ms (664 modules)
- ✓ Compiled in 324ms (664 modules)
- ✓ Compiled in 214ms (310 modules)
- ✓ Compiled in 1175ms (664 modules)
- ✓ Compiled in 904ms (664 modules)
+ ✓ Ready in 1356ms
+ ○ Compiling /inspiratie ...
+ ✓ Compiled /inspiratie in 933ms (855 modules)
+ GET /inspiratie 200 in 1180ms
+ ✓ Compiled in 1014ms (869 modules)
+ ✓ Compiled in 413ms (311 modules)
+ GET /inspiratie 200 in 65ms
+ ✓ Compiled /favicon.ico in 148ms (57 modules)
+ GET /favicon.ico 200 in 201ms
+ GET /inspiratie 200 in 216ms
+ GET /inspiratie 200 in 66ms
+ ✓ Compiled in 449ms (869 modules)
+ ✓ Compiled in 480ms (869 modules)
+ ✓ Compiled in 267ms (869 modules)
+ ✓ Compiled in 283ms (869 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\1.pack.gz'
+ ✓ Compiled in 297ms (311 modules)
+ ✓ Compiled in 339ms (311 modules)
+ ✓ Compiled in 381ms (871 modules)
+ ✓ Compiled in 516ms (871 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\7.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\7.pack.gz'
+ GET /inspiratie 200 in 110ms
+ ✓ Compiled in 527ms (871 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 541ms (570 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/f2eabe2f1b9594ef.webpack.hot-update.json 404 in 758ms
+ GET /inspiratie 200 in 75ms
+ ✓ Compiled /favicon.ico in 36ms (303 modules)
+ GET /favicon.ico 200 in 74ms
+ GET /inspiratie 200 in 106ms
+ GET /favicon.ico 200 in 6ms
+ GET /inspiratie 200 in 63ms
+ GET /inspiratie 200 in 57ms
+ GET /inspiratie 200 in 56ms
+ ✓ Compiled in 675ms (871 modules)
+ ✓ Compiled /_not-found in 307ms (570 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 599ms (797 modules)
+ GET /_next/static/webpack/15b89ce24e54e4e5.webpack.hot-update.json 404 in 978ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /inspiratie 200 in 112ms
+ ✓ Compiled /favicon.ico in 42ms (344 modules)
+ GET /favicon.ico 200 in 83ms
+ GET /inspiratie 200 in 213ms
+ ✓ Compiled in 740ms (1056 modules)
+ GET /inspiratie 200 in 101ms
+ ✓ Compiled in 365ms (1056 modules)
+ ⨯ SyntaxError: C:\Users\Marco\EventsPlanner\frontend\.next\server\middleware-manifest.json: Unexpected end of JSON input
+    at parse (<anonymous>)
+    at Object..json (node:internal/modules/cjs/loader:1905:39)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at DevServer.getMiddlewareManifest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:938:26)
+    at DevServer.getEdgeFunctionsPages (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:954:31)
+    at NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:238:49)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ ✓ Compiled /_error in 82ms (533 modules)
+ GET /inspiratie 200 in 202ms
+ GET /inspiratie 200 in 96ms
+ ✓ Compiled in 228ms (498 modules)
+ ✓ Compiled in 305ms (498 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\6.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\6.pack.gz'
+ ✓ Compiled /_not-found in 228ms (797 modules)
+ GET /__debug-squirrel 404 in 361ms
+ ✓ Compiled in 200ms (498 modules)
+ ✓ Compiled in 361ms (795 modules)
+ GET /__debug-squirrel 404 in 73ms
+ GET /inspiratie 200 in 108ms
+ ✓ Compiled in 662ms (1058 modules)
+ ✓ Compiled /_error in 149ms (797 modules)
+ GET /_next/static/webpack/05c69c09c2918162.webpack.hot-update.json 404 in 175ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /inspiratie 200 in 179ms
+ ✓ Compiled /favicon.ico in 102ms (344 modules)
+ GET /favicon.ico 200 in 144ms
+ GET /inspiratie 200 in 137ms
+ ✓ Compiled in 360ms (1059 modules)
+ ✓ Compiled in 722ms (1388 modules)
+ ⨯ Error [SyntaxError]: Invalid or unexpected token
+    at <unknown> (file://C:\Users\Marco\EventsPlanner\frontend\.next\server\app\inspiratie\page.js:2698)
+    at new Script (node:vm:117:7)
+    at createScript (node:vm:269:10)
+    at runInContext (node:vm:300:10)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:398:38)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+ GET /inspiratie 200 in 77ms
+ GET /inspiratie 200 in 63ms
+ ✓ Compiled in 870ms (1056 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 793ms (1369 modules)
+ ✓ Compiled (1355 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/8ff6696534559eb0.webpack.hot-update.json 404 in 1093ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /inspiratie 200 in 116ms
+ GET /_next/static/webpack/8ff6696534559eb0.webpack.hot-update.json 404 in 120ms
+ GET /inspiratie 200 in 22ms
+ ✓ Compiled /favicon.ico in 116ms (827 modules)
+ GET /favicon.ico 200 in 156ms
+ GET /favicon.ico 200 in 62ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz'
