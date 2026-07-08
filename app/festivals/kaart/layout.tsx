@@ -1,8 +1,8 @@
 export const metadata = {
-  title: "Festivalkaart Nederland | Uitjes",
-  description: "Bekijk festivals in Nederland op de kaart.",
+  title: "Festival kalender Nederland | Uitjes",
+  description: "Bekijk festivals in Nederland op een kalender.",
   alternates: {
-    canonical: "/festivals/kaart",
+    canonical: "/festivals/kalender",
   },
 };
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { AppButton, AppSearchInput } from "@/components/ui/app";
 import { cityOptions } from "@/lib/cityConfig";
-import { getSearchRoute } from "@/lib/searchIntent";
+import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
 
 type EmptyStateSearchActionsProps = {
   initialQuery?: string;
@@ -20,20 +20,26 @@ export default function EmptyStateSearchActions({
   const [query, setQuery] = useState(initialQuery);
 
   const citySuggestions = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const normalizedQuery = normalizeSearchQuery(query).toLocaleLowerCase("nl-NL");
 
     if (!normalizedQuery) {
       return [];
     }
 
     return cityOptions
-      .filter((city) => city.label.toLowerCase().includes(normalizedQuery))
+      .filter((city) =>
+        normalizeSearchQuery(city.label).toLocaleLowerCase("nl-NL").includes(normalizedQuery)
+      )
       .slice(0, 3)
       .map((city) => ({ label: city.label, value: city.label }));
   }, [query]);
 
   function submitSearch(nextQuery: string) {
-    router.push(getSearchRoute(nextQuery));
+    const route = getSearchRoute(nextQuery);
+
+    if (route) {
+      router.push(route);
+    }
   }
 
   return (

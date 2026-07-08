@@ -290,6 +290,12 @@ function getStepLabel(step: WizardStep) {
   return ["Locatie", "Gezelschap", "Moment", "Sfeer"][step - 1];
 }
 
+function getStepTitle(step: WizardStep) {
+  return ["Waar gaan we heen?", "Met wie?", "Wanneer?", "Waar heb je zin in?"][
+    step - 1
+  ];
+}
+
 function getStepPrompt(step: WizardStep) {
   switch (step) {
     case 2:
@@ -641,11 +647,25 @@ export function InspirationChoiceFlow({
             tabIndex={-1}
             className="grid gap-4 focus:outline-none"
           >
-            <WizardProgress
-              currentStep={currentStep}
-              summaries={[locationSummary, audienceSummary, momentSummary, vibeSummary]}
-              onStepSelect={setCurrentStep}
-            />
+            <div className="md:hidden">
+              <MobileStepProgress
+                currentStep={currentStep}
+                title={getStepTitle(currentStep)}
+                onPrevious={
+                  currentStep > 1
+                    ? () => setCurrentStep((currentStep - 1) as WizardStep)
+                    : undefined
+                }
+              />
+            </div>
+
+            <div className="hidden md:block">
+              <WizardProgress
+                currentStep={currentStep}
+                summaries={[locationSummary, audienceSummary, momentSummary, vibeSummary]}
+                onStepSelect={setCurrentStep}
+              />
+            </div>
 
             <div>
               {currentStep === 1 ? (
@@ -928,11 +948,11 @@ function WizardPanel({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[1.35rem] px-5 py-12 text-center transition motion-safe:animate-[wizardIn_220ms_ease-out] sm:px-8 sm:py-14 lg:px-14 lg:py-16",
+        "overflow-hidden rounded-[1.1rem] px-3 py-4 text-center transition motion-safe:animate-[wizardIn_220ms_ease-out] md:rounded-[1.35rem] md:px-8 md:py-14 lg:px-14 lg:py-16",
         toneClasses.panel
       )}
     >
-      <div className="mx-auto mb-9 max-w-[40rem]">
+      <div className="mx-auto mb-9 hidden max-w-[40rem] md:block">
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#667b36]">
           {step}
         </p>
@@ -945,6 +965,58 @@ function WizardPanel({
       </div>
       <div className="grid min-w-0 content-start gap-6">{children}</div>
     </section>
+  );
+}
+
+function MobileStepProgress({
+  currentStep,
+  title,
+  onPrevious,
+}: {
+  currentStep: WizardStep;
+  title: string;
+  onPrevious?: () => void;
+}) {
+  const totalSteps = 4;
+  const progress = (currentStep / totalSteps) * 100;
+
+  return (
+    <div className="rounded-[1.1rem] border border-[#e2d8c8] bg-white/72 px-4 py-3 text-[#171511] shadow-[0_14px_34px_rgba(49,58,41,0.08)] backdrop-blur-md">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#667b36]">
+            Stap {currentStep} van {totalSteps}
+          </p>
+          <h2 className="mt-1 text-xl font-semibold leading-tight text-[#171511]">
+            {title}
+          </h2>
+        </div>
+
+        {onPrevious ? (
+          <button
+            type="button"
+            onClick={onPrevious}
+            className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-[#d6c9b8] bg-white/82 px-4 text-sm font-semibold text-[#405028] shadow-[0_8px_18px_rgba(49,58,41,0.06)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+          >
+            Vorige
+          </button>
+        ) : null}
+      </div>
+
+      <div
+        role="progressbar"
+        aria-label={`Stap ${currentStep} van ${totalSteps}`}
+        aria-valuemin={1}
+        aria-valuemax={totalSteps}
+        aria-valuenow={currentStep}
+        className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#e9dfcf]"
+      >
+        <div
+          className="h-full rounded-full bg-[#007a3d] transition-[width] duration-300 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 }
 

@@ -6,6 +6,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
 import FestivalGenreFilters, {
+  DEFAULT_FESTIVAL_GENRE,
   matchesFestivalGenre,
   type FestivalGenreFilter,
 } from "../FestivalGenreFilters";
@@ -152,7 +153,7 @@ function getFestivalSearchTerms(query: string) {
 export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
   const [query, setQuery] = useState(searchParams?.query ?? "");
   const [activeGenre, setActiveGenre] =
-    useState<FestivalGenreFilter>("Alle genres");
+    useState<FestivalGenreFilter>(DEFAULT_FESTIVAL_GENRE);
 
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
 
@@ -206,7 +207,6 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
         <FestivalHero
           eyebrow="Festivalzoeker"
           title="Vind je match"
-          currentView="list"
           description={
             <>
               Een minimalistische gids naar festivals die resoneren met jouw
@@ -280,7 +280,7 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
                 <button
                   type="button"
                   onClick={() => {
-                    setActiveGenre("Alle genres");
+                    setActiveGenre(DEFAULT_FESTIVAL_GENRE);
                     setQuery("");
                   }}
                   className="inline-flex min-h-10 items-center justify-center rounded-2xl border border-[#d7cfbf] bg-white px-4 text-xs font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] sm:rounded-full"
@@ -294,10 +294,10 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
                   Open festivalkalender
                 </Link>
                 <Link
-                  href="/festivals/kaart"
+                  href="/festivals/kalender"
                   className="inline-flex min-h-10 items-center justify-center rounded-2xl border border-[#d7cfbf] bg-white px-4 text-xs font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] sm:rounded-full"
                 >
-                  Bekijk festivalkaart
+                  Open festivalkalender
                 </Link>
               </div>
             </div>

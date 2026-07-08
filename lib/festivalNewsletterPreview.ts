@@ -120,7 +120,7 @@ function getHref(festival: FestivalNewsletterSource) {
   if (direct) return direct;
 
   const slug = cleanText(festival.slug);
-  return slug ? `/festivals/${slug}` : "/festivals/lijst";
+  return slug ? `/festivals/${slug}` : "/festivals/kalender";
 }
 
 function buildPlainText(preview: Omit<FestivalNewsletterPreview, "plainText">) {

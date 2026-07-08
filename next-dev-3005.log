@@ -7,9 +7,84 @@
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1562ms
+ ✓ Ready in 2.3s
  ○ Compiling / ...
- ✓ Compiled / in 1356ms (650 modules)
- GET / 200 in 1562ms
- ✓ Compiled /favicon.ico in 122ms (386 modules)
- GET /favicon.ico 200 in 166ms
+ ✓ Compiled / in 1347ms (604 modules)
+ GET / 200 in 1550ms
+ GET / 200 in 64ms
+ ✓ Compiled /favicon.ico in 173ms (345 modules)
+ GET /favicon.ico 200 in 232ms
+ GET / 200 in 124ms
+ GET /favicon.ico 200 in 8ms
+ GET / 200 in 72ms
+ GET /favicon.ico 200 in 6ms
+ GET / 200 in 51ms
+ GET /favicon.ico 200 in 8ms
+ GET / 200 in 44ms
+ GET /favicon.ico 200 in 11ms
+ GET / 200 in 63ms
+ GET /favicon.ico 200 in 8ms
+ GET / 200 in 33ms
+ GET /favicon.ico 200 in 6ms
+ ✓ Compiled in 531ms (604 modules)
+ GET / 200 in 119ms
+ GET / 200 in 81ms
+ ✓ Compiled /favicon.ico in 40ms (345 modules)
+ GET /favicon.ico 200 in 81ms
+ GET / 200 in 97ms
+ GET /favicon.ico 200 in 9ms
+ GET / 200 in 83ms
+ GET /favicon.ico 200 in 9ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\11.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\11.pack.gz'
+ ✓ Compiled in 702ms (604 modules)
+ GET / 200 in 97ms
+ GET / 200 in 48ms
+ ✓ Compiled /favicon.ico in 38ms (345 modules)
+ GET /favicon.ico 200 in 85ms
+ GET / 200 in 82ms
+ GET /favicon.ico 200 in 6ms
+ GET / 200 in 54ms
+ GET /favicon.ico 200 in 9ms
+ ✓ Compiled in 277ms (604 modules)
+ GET / 200 in 112ms
+ ✓ Compiled /favicon.ico in 39ms (345 modules)
+ GET /favicon.ico 200 in 89ms
+ GET / 200 in 112ms
+ GET /favicon.ico 200 in 5ms
+ ✓ Compiled in 289ms (636 modules)
+ GET / 200 in 67ms
+ GET /favicon.ico 200 in 8ms
+ GET / 200 in 65ms
+ GET /favicon.ico 200 in 6ms
+ ✓ Compiled in 410ms (604 modules)
+ ✓ Compiled in 284ms (604 modules)
+ ✓ Compiled in 291ms (604 modules)
+ ✓ Compiled in 204ms (291 modules)
+ ✓ Compiled in 181ms (291 modules)
+ ✓ Compiled in 342ms (291 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz'
+ ✓ Compiled in 282ms (291 modules)
+ ✓ Compiled in 602ms (604 modules)
+ ✓ Compiled in 629ms (604 modules)
+ ✓ Compiled in 527ms (604 modules)
+ ✓ Compiled in 538ms (604 modules)
+ ✓ Compiled in 240ms (291 modules)
+ ✓ Compiled in 188ms (291 modules)
+ ✓ Compiled in 150ms (291 modules)
+ ✓ Compiled in 215ms (291 modules)
+ ✓ Compiled in 158ms (291 modules)
+ ✓ Compiled in 156ms (291 modules)
+ ✓ Compiled in 144ms (291 modules)
+ ✓ Compiled in 161ms (291 modules)
+ ✓ Compiled in 134ms (291 modules)
+ ✓ Compiled in 297ms (604 modules)
+ ✓ Compiled in 144ms (291 modules)
+ ✓ Compiled in 154ms (291 modules)
+ ✓ Compiled in 156ms (291 modules)
+ ✓ Compiled in 225ms (291 modules)
+ ✓ Compiled in 276ms (291 modules)
+ ✓ Compiled in 208ms (291 modules)
+ ✓ Compiled in 189ms (291 modules)
+ ✓ Compiled in 225ms (291 modules)
+ ✓ Compiled in 277ms (291 modules)
+ ✓ Compiled in 261ms (291 modules)

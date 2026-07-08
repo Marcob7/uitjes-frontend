@@ -4,18 +4,22 @@ const quickLinks = [
   {
     label: "Buiten genieten",
     href: "/inspiratie/buiten-genieten",
+    description: "Frisse lucht, groen en ruimte voor een plan dat meteen lichter voelt.",
   },
   {
     label: "Regenproof",
     href: "/inspiratie/regenproof",
+    description: "Binnenideeen wanneer het weer niet meewerkt, maar jij wel weg wilt.",
   },
   {
     label: "Voor vanavond",
     href: "/inspiratie/voor-vanavond",
+    description: "Avondplannen die weinig voorbereiding vragen en toch bijzonder voelen.",
   },
   {
-    label: "Snel ontdekken",
-    href: "/inspiratie/snel-ontdekken",
+    label: "Keuzehulp openen",
+    href: "/inspiratie",
+    description: "Laat je stap voor stap naar een passend uitje begeleiden.",
   },
 ];
 
@@ -59,17 +63,41 @@ export default function NewMomentSection() {
 
         <div className="mt-24 w-full text-center sm:mt-24">
           <p className="text-[0.67rem] font-medium uppercase tracking-[0.48em] text-[#b5b5c5]">
-            Snel ontdekken
+            Kies wat nu past
           </p>
 
-          <div className="mx-auto mt-8 grid w-full max-w-[42rem] grid-cols-2 gap-x-7 gap-y-5 text-center sm:grid-cols-4 sm:gap-x-10">
+          <div className="mx-auto mt-8 grid w-full max-w-[44rem] grid-cols-1 gap-3 text-left sm:grid-cols-2">
             {quickLinks.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="inline-flex min-h-8 items-center justify-center text-[0.78rem] font-medium tracking-[0] text-[#090f27] transition duration-200 hover:-translate-y-0.5 hover:text-[#767a96] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d9d5e7]"
+                className="group flex min-h-[112px] w-full items-center justify-between gap-4 rounded-[1.35rem] border border-[#ded9eb] bg-white/72 px-5 py-4 text-left text-[#12182d] shadow-[0_14px_32px_rgba(67,58,96,0.07)] backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-[#c8c0dc] hover:bg-white/88 hover:shadow-[0_18px_38px_rgba(67,58,96,0.11)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12182d] focus-visible:ring-offset-4 focus-visible:ring-offset-[#f8f6fd] active:translate-y-0 active:scale-[0.99]"
               >
-                {item.label}
+                <span className="min-w-0">
+                  <span className="block text-[0.95rem] font-semibold tracking-[0] text-[#090f27]">
+                    {item.label}
+                  </span>
+                  <span className="mt-2 block text-sm leading-5 text-[#777b94]">
+                    {item.description}
+                  </span>
+                </span>
+
+                <span
+                  aria-hidden="true"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e5e1ef] bg-[#f7f4ff] text-[#505772] transition duration-200 group-hover:translate-x-0.5 group-hover:border-[#d3cce5] group-hover:bg-[#efebfb]"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.2"
+                  >
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </span>
               </Link>
             ))}
           </div>

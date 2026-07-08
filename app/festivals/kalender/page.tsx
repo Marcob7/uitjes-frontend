@@ -2,11 +2,14 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
 import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
 import FestivalGenreFilters, {
+  DEFAULT_FESTIVAL_GENRE,
+  FESTIVAL_GENRES,
   matchesFestivalGenre,
   type FestivalGenreFilter,
 } from "../FestivalGenreFilters";
@@ -228,10 +231,26 @@ function CalendarPill({ event }: { event: CalendarEvent }) {
   return <span className={classes}>{event.label}</span>;
 }
 
+function getFestivalGenreFromSearchParams(
+  searchParams: URLSearchParams
+): FestivalGenreFilter {
+  const genreParam = searchParams.get("genre")?.toLowerCase();
+  const selectedGenre = FESTIVAL_GENRES.find(
+    (genre) => genre.value === genreParam
+  );
+
+  return selectedGenre?.value ?? DEFAULT_FESTIVAL_GENRE;
+}
+
 export default function FestivalsCalendarPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [currentMonth, setCurrentMonth] = useState(() => new Date(2024, 6, 1));
-  const [activeGenre, setActiveGenre] =
-    useState<FestivalGenreFilter>("Alle genres");
+  const activeGenre = useMemo(
+    () => getFestivalGenreFromSearchParams(new URLSearchParams(searchParams)),
+    [searchParams]
+  );
   const filteredCalendarEvents = useMemo(
     () =>
       FESTIVAL_CALENDAR_EVENTS.filter((event) =>
@@ -249,6 +268,24 @@ export default function FestivalsCalendarPage() {
   const monthTitle = `${
     MONTH_NAMES[currentMonth.getMonth()]
   } ${currentMonth.getFullYear()}`;
+  const preservedSearchFields = Array.from(searchParams.entries()).filter(
+    ([key]) => key !== "query"
+  );
+
+  function setActiveGenre(nextGenre: FestivalGenreFilter) {
+    const params = new URLSearchParams(searchParams);
+
+    if (nextGenre === DEFAULT_FESTIVAL_GENRE) {
+      params.delete("genre");
+    } else {
+      params.set("genre", nextGenre);
+    }
+
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
+  }
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
@@ -265,7 +302,6 @@ export default function FestivalsCalendarPage() {
         <FestivalHero
           eyebrow="Festivalagenda"
           title="Festival kalender Nederland"
-          currentView="calendar"
           description={
             <>
           Ontdek de culturele vibe van heel Nederland. Van rauwe underground techno in Amsterdam tot relaxte jazz aan zee.
@@ -273,9 +309,17 @@ export default function FestivalsCalendarPage() {
           }
           search={
             <form
-              action="/festivals/lijst"
+              action="/festivals/kalender"
               className="rounded-[1.6rem] border border-white/18 bg-white/12 p-2 shadow-[0_24px_60px_rgba(3,10,14,0.18)] backdrop-blur-xl sm:rounded-full"
             >
+              {preservedSearchFields.map(([key, value], index) => (
+                <input
+                  key={`${key}-${value}-${index}`}
+                  type="hidden"
+                  name={key}
+                  value={value}
+                />
+              ))}
               <label
                 htmlFor="calendar-search"
                 className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-white/86 sm:rounded-full"
@@ -285,6 +329,7 @@ export default function FestivalsCalendarPage() {
                   id="calendar-search"
                   name="query"
                   type="text"
+                  defaultValue={searchParams.get("query") ?? ""}
                   placeholder="Zoek naar festivals..."
                   enterKeyHint="search"
                   inputMode="search"

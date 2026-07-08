@@ -4,7 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppButton } from "@/components/ui/app";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
-import { getSearchRoute } from "@/lib/searchIntent";
+import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
 import { cn } from "@/lib/utils";
 
 type SearchBarProps = {
@@ -51,24 +51,25 @@ export default function SearchBar({
 
   // Deze lijst toont steden die matchen met wat de gebruiker intypt.
   const suggestions = useMemo((): CityOption[] => {
-    const trimmed = query.trim().toLowerCase();
+    const normalizedQuery = normalizeSearchQuery(query).toLocaleLowerCase("nl-NL");
 
-    if (!trimmed) return cityOptionsList;
+    if (!normalizedQuery) return cityOptionsList;
 
     return cityOptionsList.filter((city) =>
-      city.label.toLowerCase().includes(trimmed),
+      normalizeSearchQuery(city.label).toLocaleLowerCase("nl-NL").includes(normalizedQuery),
     );
   }, [query]);
 
   // Deze functie behoudt de bestaande stadssuggestie-flow.
   function goToCity(cityValue: string): void {
-    const trimmedValue = cityValue.trim();
+    const trimmedValue = normalizeSearchQuery(cityValue);
 
     if (!trimmedValue) return;
 
     const matchedCity = cityOptionsList.find(
       (city) =>
-        city.label.toLowerCase() === trimmedValue.toLowerCase() ||
+        normalizeSearchQuery(city.label).toLocaleLowerCase("nl-NL") ===
+          trimmedValue.toLocaleLowerCase("nl-NL") ||
         city.slug === normalizeCitySlug(trimmedValue),
     );
 
@@ -83,7 +84,11 @@ export default function SearchBar({
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    router.push(getSearchRoute(query));
+    const route = getSearchRoute(query);
+
+    if (route) {
+      router.push(route);
+    }
   }
 
   function handleSuggestionClick(city: CityOption): void {

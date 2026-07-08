@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { getSearchRoute } from "@/lib/searchIntent";
+import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
 import DateSearchInput from "./DateSearchInput";
 
 type NewHomeSectionProps = {
@@ -29,6 +29,8 @@ export default function NewHomeSection({
   const [wordIndex, setWordIndex] = useState(0);
   const [visibleLetters, setVisibleLetters] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const currentWord = words[wordIndex] ?? "";
   const shownText = currentWord.slice(0, visibleLetters);
@@ -62,12 +64,32 @@ export default function NewHomeSection({
   }, [wordIndex, words.length]);
 
   function handleSearch(): void {
-    router.push(getSearchRoute(searchQuery));
+    const normalizedQuery = normalizeSearchQuery(searchQuery);
+
+    if (!normalizedQuery) {
+      setSearchError("Vul eerst een stad, activiteit of festival in.");
+      return;
+    }
+
+    const route = getSearchRoute(normalizedQuery);
+
+    if (!route) {
+      setSearchError(
+        `We konden geen resultaten vinden voor "${normalizedQuery}". Controleer de spelling of probeer een andere stad, activiteit of festival.`
+      );
+      return;
+    }
+
+    setSearchError(null);
+    setSearchQuery(normalizedQuery);
+    startTransition(() => {
+      router.push(route);
+    });
   }
 
   return (
     <section
-      className={`clubbi-scene relative isolate min-h-[86svh] overflow-hidden sm:min-h-[90svh] lg:min-h-[94svh] ${className}`}
+      className={`clubbi-scene relative isolate min-h-screen min-h-[100dvh] w-full overflow-hidden ${className}`}
     >
       <div className="clubbi-background" aria-hidden="true">
         <div className="clubbi-blob clubbi-blob-1" />
@@ -89,8 +111,13 @@ export default function NewHomeSection({
       <div className="clubbi-search-layer">
         <DateSearchInput
           value={searchQuery}
-          onChange={setSearchQuery}
+          onChange={(value) => {
+            setSearchQuery(value);
+            setSearchError(null);
+          }}
           onSearch={handleSearch}
+          errorMessage={searchError}
+          isSearching={isPending}
         />
         <Link
           href="/inspiratie"

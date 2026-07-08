@@ -1,21 +1,16 @@
-import FestivalsListClient from "./FestivalsListClient";
-
 export const runtime = "edge";
 
-export const metadata = {
-  title: "Festivals ontdekken | Uitjes",
-  description: "Bekijk festivals en festivaluitjes in Nederland.",
-  alternates: {
-    canonical: "/festivals/lijst",
-  },
-};
+import {
+  redirectToFestivalCalendar,
+  type FestivalRedirectSearchParams,
+} from "../redirectToFestivalCalendar";
 
 type FestivalsPageProps = {
-  searchParams?: {
-    query?: string;
-  };
+  searchParams?: FestivalRedirectSearchParams;
 };
 
-export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
-  return <FestivalsListClient searchParams={searchParams} />;
+export default function FestivalsPage({
+  searchParams = {},
+}: FestivalsPageProps) {
+  redirectToFestivalCalendar(searchParams);
 }

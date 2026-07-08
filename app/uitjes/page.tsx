@@ -142,7 +142,7 @@ export default function UitjesPage({ searchParams }: UitjesPageProps) {
           <AppButton href="/inspiratie" variant="dark">
             Bekijk inspiratie
           </AppButton>
-          <AppButton href="/festivals/lijst" variant="dark">
+          <AppButton href="/festivals/kalender" variant="dark">
             Bekijk festivals
           </AppButton>
           {Object.entries(inspirationCategoryLabels).slice(0, 4).map(([slug, label]) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
 
 import ExploreCardItem from "./ExploreCardItem";
@@ -59,7 +59,7 @@ function FilterIcon({ className }: { className?: string }) {
   );
 }
 
-function ChevronDownIcon({ className }: { className?: string }) {
+function CloseIcon({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
@@ -71,7 +71,8 @@ function ChevronDownIcon({ className }: { className?: string }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="m6 9 6 6 6-6" />
+      <path d="M6 6l12 12" />
+      <path d="M18 6 6 18" />
     </svg>
   );
 }
@@ -248,6 +249,11 @@ export default function CityExploreResultsSection({
     count: INITIAL_VISIBLE_RESULTS,
     resultSetKey: "",
   });
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [draftResultFilters, setDraftResultFilters] =
+    useState<ResultFilterKey[]>(resultFilters);
+  const filterButtonRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const activeFilters = buildActiveFilters(
     cityLabel,
     plannerSelections,
@@ -269,6 +275,8 @@ export default function CityExploreResultsSection({
   const hasResultFilters = resultFilters.length > 0;
   const hasPlannerFilters = completedStepCount > 0;
   const hasActiveFilters = hasResultFilters || hasPlannerFilters;
+  const filterModalId = "explore-filter-modal";
+  const filterTitleId = "explore-filter-title";
   const resultsLabel =
     filteredCards.length === 1
       ? "1 match"
@@ -287,6 +295,26 @@ export default function CityExploreResultsSection({
     });
   }, [resultSetKey]);
 
+  useEffect(() => {
+    if (!isFilterModalOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isFilterModalOpen]);
+
+  useEffect(() => {
+    if (!isFilterModalOpen) {
+      setDraftResultFilters(resultFilters);
+    }
+  }, [isFilterModalOpen, resultFilters]);
+
   function handleShowMoreResults() {
     setVisibleState((current) => {
       const currentCount =
@@ -299,6 +327,53 @@ export default function CityExploreResultsSection({
         resultSetKey,
       };
     });
+  }
+
+  function openFilters() {
+    setDraftResultFilters(resultFilters);
+    setIsFilterModalOpen(true);
+  }
+
+  function closeFilters() {
+    setIsFilterModalOpen(false);
+    window.setTimeout(() => {
+      filterButtonRef.current?.focus();
+    }, 0);
+  }
+
+  function handleDraftFilterToggle(filter: ResultFilterKey) {
+    setDraftResultFilters((current) =>
+      current.includes(filter)
+        ? current.filter((item) => item !== filter)
+        : [...current, filter]
+    );
+  }
+
+  function applyFilters() {
+    draftResultFilters.forEach((filter) => {
+      if (!resultFilters.includes(filter)) {
+        onToggleResultFilter(filter);
+      }
+    });
+
+    resultFilters.forEach((filter) => {
+      if (!draftResultFilters.includes(filter)) {
+        onToggleResultFilter(filter);
+      }
+    });
+
+    closeFilters();
+  }
+
+  function clearFilters() {
+    setDraftResultFilters([]);
+    onClearResultFilters();
+  }
+
+  function handleFilterModalKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      closeFilters();
+    }
   }
 
   return (
@@ -357,46 +432,132 @@ export default function CityExploreResultsSection({
             </p>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 md:mt-0">
+          <div className="mt-8 flex items-center md:mt-0">
             <button
+              ref={filterButtonRef}
               type="button"
-              onClick={onClearResultFilters}
-              disabled={!hasResultFilters}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium shadow-[0_10px_24px_rgba(83,65,45,0.07)] backdrop-blur-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] ${
+              onClick={openFilters}
+              aria-expanded={isFilterModalOpen}
+              aria-controls={filterModalId}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold shadow-[0_10px_24px_rgba(83,65,45,0.07)] backdrop-blur-md transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] ${
                 hasResultFilters
                   ? "border-[#cfe2a6] bg-[#f5f9e9]/86 text-[#405028] hover:-translate-y-0.5 hover:bg-white"
-                  : "cursor-default border-[#dfd4c6] bg-white/58 text-[#796d62]"
+                  : "border-[#dfd4c6] bg-white/68 text-[#4b3a28] hover:bg-white"
               }`}
             >
               <FilterIcon className="h-4 w-4" />
-              <span>{hasResultFilters ? "Reset filters" : "Filter"}</span>
+              <span>Filters</span>
+              {hasResultFilters ? (
+                <span className="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#405028] px-1.5 text-xs font-bold text-white">
+                  {resultFilters.length}
+                </span>
+              ) : null}
             </button>
-            {RESULT_FILTER_OPTIONS.map((filter) => {
-              const active = resultFilters.includes(filter.id);
-
-              return (
-                <button
-                  key={filter.id}
-                  type="button"
-                  onClick={() => onToggleResultFilter(filter.id)}
-                  aria-pressed={active}
-                  title={filter.description}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium shadow-[0_10px_24px_rgba(83,65,45,0.07)] backdrop-blur-md transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] ${
-                    active
-                      ? "border-[#b8df71] bg-[#e8f6cf] text-[#344125]"
-                      : "border-[#dfd4c6] bg-white/58 text-[#4b3a28] hover:bg-white"
-                  }`}
-                >
-                  <span>{filter.label}</span>
-                </button>
-              );
-            })}
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#dfd4c6] bg-white/46 px-4 py-2.5 text-sm font-medium text-[#796d62] shadow-[0_10px_24px_rgba(83,65,45,0.06)] backdrop-blur-md">
-              <span>Sorteren op match</span>
-              <ChevronDownIcon className="h-4 w-4" />
-            </div>
           </div>
         </div>
+
+        {isFilterModalOpen ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onKeyDown={handleFilterModalKeyDown}
+          >
+            <button
+              type="button"
+              aria-label="Filtervenster sluiten"
+              className="absolute inset-0 bg-black/40"
+              onClick={closeFilters}
+            />
+
+            <div
+              id={filterModalId}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={filterTitleId}
+              className="relative z-10 w-full max-w-md overflow-y-auto rounded-3xl border border-[#dfd4c6] bg-[#fffaf2] p-5 text-[#171511] shadow-xl sm:p-6"
+              style={{ maxHeight: "calc(100dvh - 2rem)" }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3
+                    id={filterTitleId}
+                    className="text-2xl font-semibold leading-none tracking-[-0.03em] text-[#171511]"
+                  >
+                    Filters
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-[#665d54]">
+                    Verfijn de resultaten voor {cityLabel}.
+                  </p>
+                </div>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={closeFilters}
+                  aria-label="Filtervenster sluiten"
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#dfd4c6] bg-white/72 text-[#4b3a28] shadow-[0_10px_22px_rgba(83,65,45,0.08)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449]"
+                >
+                  <CloseIcon className="h-5 w-5" />
+                </button>
+              </div>
+
+              <fieldset className="mt-6 space-y-3">
+                <legend className="text-sm font-semibold text-[#4b3a28]">
+                  Filteropties
+                </legend>
+                {RESULT_FILTER_OPTIONS.map((filter) => {
+                  const checked = draftResultFilters.includes(filter.id);
+
+                  return (
+                    <label
+                      key={filter.id}
+                      className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 text-left shadow-[0_10px_22px_rgba(83,65,45,0.05)] transition ${
+                        checked
+                          ? "border-[#b8df71] bg-[#e8f6cf] text-[#344125]"
+                          : "border-[#dfd4c6] bg-white/68 text-[#4b3a28] hover:bg-white"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => handleDraftFilterToggle(filter.id)}
+                        className="mt-1 h-4 w-4 rounded border-[#b8aa98] accent-[#405028] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449]"
+                      />
+                      <span className="min-w-0">
+                        <span className="flex items-center gap-2 text-sm font-semibold">
+                          <span>{filter.label}</span>
+                          {checked ? (
+                            <span className="rounded-full bg-[#405028] px-2 py-0.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white">
+                              Actief
+                            </span>
+                          ) : null}
+                        </span>
+                        <span className="mt-1 block text-xs leading-5 text-[#665d54]">
+                          {filter.description}
+                        </span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </fieldset>
+
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#d6c9b8] bg-white/68 px-5 py-2.5 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
+                >
+                  Wissen
+                </button>
+                <button
+                  type="button"
+                  onClick={applyFilters}
+                  className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#cfe2a6] bg-[#e8f2d0] px-5 py-2.5 text-sm font-semibold text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
+                >
+                  Toepassen
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {displayedCards.map((card, index) => (

@@ -54,16 +54,16 @@ const activityTerms = [
   "koffie",
 ];
 
+export function normalizeSearchQuery(query: string | null | undefined): string {
+  return (query ?? "").trim().replace(/\s+/g, " ");
+}
+
 function normalizeQuery(query: string) {
   return normalizeCitySlug(query).replace(/-/g, " ");
 }
 
-function normalizeRouteQuery(query: string | null | undefined) {
-  return (query ?? "").trim().replace(/\s+/g, " ");
-}
-
 export function detectSearchIntent(query: string | null | undefined): SearchIntent {
-  const routeQuery = normalizeRouteQuery(query);
+  const routeQuery = normalizeSearchQuery(query);
   const normalized = normalizeQuery(routeQuery);
 
   if (!normalized) return "onbekend";
@@ -88,13 +88,13 @@ export function detectSearchIntent(query: string | null | undefined): SearchInte
 }
 
 export function getSearchRoute(query: string | null | undefined) {
-  const trimmedQuery = normalizeRouteQuery(query);
+  const trimmedQuery = normalizeSearchQuery(query);
   const intent = detectSearchIntent(trimmedQuery);
   const encodedQuery = encodeURIComponent(trimmedQuery);
 
-  if (!trimmedQuery) return "/ontdek";
+  if (!trimmedQuery) return null;
 
-  if (intent === "festival") return `/festivals/lijst?query=${encodedQuery}`;
+  if (intent === "festival") return `/festivals/kalender?query=${encodedQuery}`;
   if (intent === "zoeken") return `/zoeken?query=${encodedQuery}`;
   if (intent === "stad") {
     return `/ontdek?city=${encodeURIComponent(normalizeCitySlug(trimmedQuery))}`;

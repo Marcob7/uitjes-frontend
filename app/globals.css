@@ -175,7 +175,16 @@ button:disabled {
 .squirrel-runner {
   animation: squirrel-walk 18s linear infinite;
   transform: translate3d(-160px, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
   will-change: transform;
+}
+
+.squirrel-runner img {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -566,7 +575,7 @@ button:disabled {
   .clubbi-search-layer {
     position: absolute;
     left: 50%;
-    bottom: clamp(2rem, 7vh, 5.5rem);
+    bottom: max(clamp(2rem, 7vh, 5.5rem), env(safe-area-inset-bottom));
     z-index: 10;
     width: 100%;
     padding-inline: 1rem;
@@ -736,6 +745,6 @@ button:disabled {
   }
 
   .clubbi-search-layer {
-    bottom: clamp(1.5rem, 5vh, 3rem);
+    bottom: max(clamp(1.5rem, 5vh, 3rem), env(safe-area-inset-bottom));
   }
 }

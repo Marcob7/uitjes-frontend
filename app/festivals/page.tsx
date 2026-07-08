@@ -1,21 +1,16 @@
 export const runtime = "edge";
 
-import { redirect } from "next/navigation";
+import {
+  redirectToFestivalCalendar,
+  type FestivalRedirectSearchParams,
+} from "./redirectToFestivalCalendar";
 
 type FestivalsIndexPageProps = {
-  searchParams?: {
-    query?: string;
-  };
+  searchParams?: FestivalRedirectSearchParams;
 };
 
 export default function FestivalsIndexPage({
-  searchParams,
+  searchParams = {},
 }: FestivalsIndexPageProps) {
-  const query = searchParams?.query?.trim();
-
-  if (query) {
-    redirect(`/festivals/lijst?query=${encodeURIComponent(query)}`);
-  }
-
-  redirect("/festivals/kalender");
+  redirectToFestivalCalendar(searchParams);
 }
