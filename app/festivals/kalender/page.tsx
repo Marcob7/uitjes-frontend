@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -242,7 +242,7 @@ function getFestivalGenreFromSearchParams(
   return selectedGenre?.value ?? DEFAULT_FESTIVAL_GENRE;
 }
 
-export default function FestivalsCalendarPage() {
+function FestivalsCalendarContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -447,5 +447,17 @@ export default function FestivalsCalendarPage() {
         <WeeklyPulseSignupSection className="mt-8" />
       </div>
     </main>
+  );
+}
+
+export default function FestivalsCalendarPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#f8f5f3] text-[#171511]" />
+      }
+    >
+      <FestivalsCalendarContent />
+    </Suspense>
   );
 }

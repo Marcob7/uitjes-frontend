@@ -20,12 +20,15 @@
     "tailwindcss": "^4.2.0"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "1.13.15",
+    "@cloudflare/workers-types": "4.20250712.0",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.35",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "4.26.0"
   }
 }

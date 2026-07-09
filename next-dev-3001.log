@@ -7652,3 +7652,731 @@ City content API fallback gebruikt:  [TypeError: fetch failed] {
     at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
     at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
  GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 8ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 8ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 10ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 10ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 5ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 14ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 8ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 8ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 9ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 10ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 12ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 8ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 11ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 5ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 7ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 6ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ GET /ontdek?city=amsterdam 500 in 10ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js'
+    at readFileSync (node:fs:440:20)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:396:50)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ ✓ Compiled in 564ms (1521 modules)
+ GET /ontdek?city=amsterdam 500 in 360ms
+ GET /ontdek?city=amsterdam 200 in 200ms
+ GET /ontdek?city=amsterdam 200 in 40ms
+ ✓ Compiled /_not-found in 134ms (896 modules)
+ GET /_next/static/css/app/ontdek/page.css?v=1783521243485 404 in 194ms
+ GET /_next/static/chunks/app/ontdek/error.js 404 in 12ms
+ ✓ Compiled /favicon.ico in 165ms (403 modules)
+ GET /favicon.ico 200 in 204ms
+ GET /ontdek 200 in 195ms
+ GET /ontdek 200 in 44ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=nijmegen 200 in 62ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=harderwijk 200 in 83ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=lelystad 200 in 68ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=amersfoort 200 in 65ms
+ GET /ontdek?city=apeldoorn 200 in 65ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=nijmegen 200 in 83ms
+ GET /_next/static/css/app/ontdek/page.css?v=1783521346779 404 in 51ms
+ GET /_next/static/chunks/app/ontdek/error.js 404 in 12ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=nijmegen 200 in 70ms
+ GET /_next/static/css/app/ontdek/page.css?v=1783521460736 404 in 15ms
+ GET /_next/static/chunks/app/ontdek/error.js 404 in 16ms
+ GET /favicon.ico 200 in 6ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=nijmegen 200 in 73ms
+ GET /_next/static/css/app/ontdek/page.css?v=1783521526305 404 in 15ms
+ GET /_next/static/chunks/app/ontdek/error.js 404 in 13ms
