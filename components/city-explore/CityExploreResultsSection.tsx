@@ -377,16 +377,12 @@ export default function CityExploreResultsSection({
   }
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative mt-2 scroll-mt-6 overflow-hidden bg-transparent sm:mt-4"
-    >
-      <div className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-[rgba(236,227,214,0.72)] blur-3xl" />
-      <div className="pointer-events-none absolute right-0 top-10 h-80 w-80 rounded-full bg-[rgba(221,238,194,0.58)] blur-3xl" />
-      <div className="pointer-events-none absolute bottom-10 left-1/3 h-64 w-64 rounded-full bg-[rgba(247,231,200,0.46)] blur-3xl" />
+    <section ref={sectionRef} className="relative mt-8 scroll-mt-6 overflow-hidden bg-[linear-gradient(135deg,#eff7e8_0%,#f7fbf1_56%,#e8f2c9_100%)] sm:mt-10">
+      <div className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-[#dcefb8]/50 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 top-10 h-80 w-80 rounded-full bg-[#e8f6d2]/70 blur-3xl" />
 
-      <div className="relative mx-auto max-w-[1240px] px-4 pb-12 pt-6 sm:px-6 sm:pb-14 sm:pt-8 lg:px-8 lg:pb-16 lg:pt-10">
-        <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="relative mx-auto max-w-[1240px] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 lg:pb-20">
+        <div className="mb-5 flex flex-wrap items-center gap-2.5">
           {activeFilters.map((filter) => {
             const Icon = filter.icon;
             const editStep = filter.editStep;
@@ -417,18 +413,18 @@ export default function CityExploreResultsSection({
           })}
         </div>
 
-        <div className="flex flex-col gap-5 border-b border-[#ded2c4]/70 pb-7 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-5 border-b border-[#d5e1bd] pb-7 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="inline-flex rounded-full border border-[#cfe2a6] bg-[#f5f9e9]/86 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#405028] shadow-[0_10px_24px_rgba(109,144,51,0.09)] backdrop-blur-md">
+            <div className="inline-flex rounded-full bg-[#087a3d] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_rgba(32,109,55,0.14)]">
               {resultsLabel}
             </div>
             <h3 className="mt-4 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#171511]">
-              Resultaten voor {cityLabel}
+              Vind jouw rust in {cityLabel}
             </h3>
             <p className="mt-3 max-w-[36rem] text-sm leading-6 text-[#665d54] sm:text-base">
               {completedStepCount === 0
-                ? `Kies hierboven wat past en verfijn de selectie voor ${cityLabel} stap voor stap.`
-                : `${filteredCards.length} locaties op basis van jullie moment, sfeer en stad.`}
+                ? `Ontdek zorgvuldig geselecteerde uitjes die je weer in contact brengen met jezelf en de wereld om je heen.`
+                : `${filteredCards.length} suggesties afgestemd op jullie moment, sfeer en stad.`}
             </p>
           </div>
 
@@ -559,12 +555,11 @@ export default function CityExploreResultsSection({
           </div>
         ) : null}
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          {displayedCards.map((card, index) => (
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          {displayedCards.map((card) => (
             <ExploreCardItem
               key={card.id}
               card={card}
-              index={index}
               isSelected={selectedId === card.id}
               onSelect={() => onSelectCard(card.id)}
             />
@@ -593,7 +588,7 @@ export default function CityExploreResultsSection({
         ) : null}
 
         {hasNoResults ? (
-          <div className="mt-8 rounded-[2rem] border border-[#dfd4c6] bg-white/64 p-6 text-[#171511] shadow-[0_18px_42px_rgba(83,65,45,0.08)] backdrop-blur-xl sm:p-8">
+          <div className="mt-8 rounded-[2rem] border border-[#d5e1bd] bg-white/78 p-6 text-[#171511] shadow-[0_18px_42px_rgba(75,92,52,0.08)] backdrop-blur-xl sm:p-8">
             <div className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#667b36]">
               Geen directe matches
             </div>

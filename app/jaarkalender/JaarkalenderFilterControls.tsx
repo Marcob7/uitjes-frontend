@@ -82,6 +82,11 @@ const MONTH_SHORT_NAMES = [
 
 const JAARKALENDER_DATA_YEAR = 2024;
 const JAARKALENDER_DATA_MONTH = 9;
+const DEFAULT_CALENDAR_MONTH = new Date(
+  JAARKALENDER_DATA_YEAR,
+  JAARKALENDER_DATA_MONTH,
+  1
+);
 
 const WEEKDAY_SHORT_LABELS = ["ma", "di", "wo", "do", "vr", "za", "zo"];
 
@@ -165,6 +170,21 @@ function addMonths(date: Date, amount: number) {
   return new Date(date.getFullYear(), date.getMonth() + amount, 1);
 }
 
+function getMonthInputValue(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function getMonthFromUrl(value: string | null) {
+  if (!value || !/^\d{4}-\d{2}$/.test(value)) {
+    return DEFAULT_CALENDAR_MONTH;
+  }
+
+  const [year, month] = value.split("-").map(Number);
+  return year && month >= 1 && month <= 12
+    ? new Date(year, month - 1, 1)
+    : DEFAULT_CALENDAR_MONTH;
+}
+
 function hasJaarkalenderDataForMonth(date: Date) {
   return (
     date.getFullYear() === JAARKALENDER_DATA_YEAR &&
@@ -246,6 +266,23 @@ function CalendarIcon() {
         strokeWidth="1.5"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <circle cx="8.75" cy="8.75" r="4.75" stroke="currentColor" strokeWidth="1.7" />
+      <path d="m12.25 12.25 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -712,17 +749,100 @@ export function JaarkalenderInteractiveCalendar() {
   const [modalMode, setModalMode] = useState<FilterModalMode>("city");
   const [today, setToday] = useState(() => new Date());
   const [mobileView, setMobileView] = useState<MobileCalendarView>("month");
-  const [currentMonth, setCurrentMonth] = useState(
-    () => new Date(JAARKALENDER_DATA_YEAR, JAARKALENDER_DATA_MONTH, 1)
+  const [currentMonth, setCurrentMonth] = useState(() =>
+    getMonthFromUrl(
+      typeof window === "undefined"
+        ? null
+        : new URLSearchParams(window.location.search).get("date")
+    )
   );
   const [selectedWeekDate, setSelectedWeekDate] = useState(
     () => new Date(JAARKALENDER_DATA_YEAR, JAARKALENDER_DATA_MONTH, 1)
   );
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(() =>
+    typeof window === "undefined"
+      ? null
+      : new URLSearchParams(window.location.search).get("city")
+  );
   const [selectedCategory, setSelectedCategory] =
-    useState<JaarkalenderCategoryKey | null>(null);
+    useState<JaarkalenderCategoryKey | null>(() => {
+      if (typeof window === "undefined") return null;
+
+      const category = new URLSearchParams(window.location.search).get("category");
+      return category && category in jaarkalenderCategoryMeta
+        ? (category as JaarkalenderCategoryKey)
+        : null;
+    });
   const modalRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
+
+  const syncFilterParams = (
+    city: string | null,
+    category: JaarkalenderCategoryKey | null,
+    month: Date
+  ) => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    const isDefaultMonth = getMonthInputValue(month) === getMonthInputValue(DEFAULT_CALENDAR_MONTH);
+
+    if (city) url.searchParams.set("city", city);
+    else url.searchParams.delete("city");
+
+    if (category) url.searchParams.set("category", category);
+    else url.searchParams.delete("category");
+
+    if (isDefaultMonth) url.searchParams.delete("date");
+    else url.searchParams.set("date", getMonthInputValue(month));
+
+    window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+
+  const setMonthFilter = (month: Date) => {
+    setCurrentMonth(month);
+    syncFilterParams(selectedCity, selectedCategory, month);
+  };
+
+  const setCityFilter = (city: string | null) => {
+    setSelectedCity(city);
+    syncFilterParams(city, selectedCategory, currentMonth);
+  };
+
+  const setCategoryFilter = (category: JaarkalenderCategoryKey | null) => {
+    setSelectedCategory(category);
+    syncFilterParams(selectedCity, category, currentMonth);
+  };
+
+  const clearFilters = () => {
+    setSelectedCity(null);
+    setSelectedCategory(null);
+    setCurrentMonth(DEFAULT_CALENDAR_MONTH);
+    syncFilterParams(null, null, DEFAULT_CALENDAR_MONTH);
+  };
+
+  const hasActiveFilters =
+    selectedCity !== null ||
+    selectedCategory !== null ||
+    getMonthInputValue(currentMonth) !== getMonthInputValue(DEFAULT_CALENDAR_MONTH);
+
+  useEffect(() => {
+    const syncStateFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get("category");
+
+      setSelectedCity(params.get("city"));
+      setSelectedCategory(
+        category && category in jaarkalenderCategoryMeta
+          ? (category as JaarkalenderCategoryKey)
+          : null
+      );
+      setCurrentMonth(getMonthFromUrl(params.get("date")));
+    };
+
+    window.addEventListener("popstate", syncStateFromUrl);
+    return () => window.removeEventListener("popstate", syncStateFromUrl);
+  }, []);
 
   const cityOptions = useMemo(() => {
     const cities = jaarkalenderDays.flatMap((day) =>
@@ -867,7 +987,7 @@ export function JaarkalenderInteractiveCalendar() {
   const goToToday = () => {
     const nextToday = new Date();
     setToday(nextToday);
-    setCurrentMonth(new Date(nextToday.getFullYear(), nextToday.getMonth(), 1));
+    setMonthFilter(new Date(nextToday.getFullYear(), nextToday.getMonth(), 1));
   };
 
   useEffect(() => {
@@ -950,13 +1070,94 @@ export function JaarkalenderInteractiveCalendar() {
 
   return (
     <>
-   
+      <form
+        className="grid gap-1 rounded-2xl border border-[#e0e9e5] bg-white p-2 shadow-[0_16px_42px_rgba(20,54,40,0.08)] sm:grid-cols-2 sm:gap-0 sm:p-3 lg:grid-cols-[1fr_1fr_1fr_auto]"
+        onSubmit={(event) => {
+          event.preventDefault();
+          document
+            .getElementById("jaarkalender-overzicht")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }}
+      >
+        <button
+          type="button"
+          onClick={(event) => openModal("city", event.currentTarget)}
+          className="group flex min-h-16 min-w-0 items-center gap-3 rounded-xl px-3 text-left transition hover:bg-[#f5faf7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#008247] sm:border-r sm:border-[#e6eeea] sm:px-4"
+        >
+          <span className="text-[#008247]"><PinIcon /></span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#587068]">Locatie</span>
+            <span className="mt-0.5 block truncate text-sm font-medium text-[#26352f]">{selectedCity ?? "Heel Nederland"}</span>
+          </span>
+          <span className="text-[#789087] group-hover:text-[#00733d]"><ChevronDownIcon /></span>
+        </button>
 
-      <div className="mb-4 sm:mb-6">
+        <button
+          type="button"
+          onClick={(event) => openModal("category", event.currentTarget)}
+          className="group flex min-h-16 min-w-0 items-center gap-3 rounded-xl px-3 text-left transition hover:bg-[#f5faf7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#008247] sm:px-4 lg:border-r lg:border-[#e6eeea]"
+        >
+          <span className="text-[#008247]"><FilterIcon /></span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#587068]">Categorie</span>
+            <span className="mt-0.5 block truncate text-sm font-medium text-[#26352f]">
+              {selectedCategory ? jaarkalenderCategoryMeta[selectedCategory].label : "Alle evenementen"}
+            </span>
+          </span>
+          <span className="text-[#789087] group-hover:text-[#00733d]"><ChevronDownIcon /></span>
+        </button>
+
+        <label
+          className="group flex min-h-16 min-w-0 cursor-pointer items-center gap-3 rounded-xl px-3 transition hover:bg-[#f5faf7] focus-within:outline focus-within:outline-2 focus-within:outline-offset-[-2px] focus-within:outline-[#008247] sm:border-r sm:border-[#e6eeea] sm:px-4 lg:border-r-0"
+          onClick={() => {
+            const input = dateInputRef.current;
+            input?.focus();
+            input?.showPicker?.();
+          }}
+        >
+          <span className="text-[#008247]"><CalendarIcon /></span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#587068]">Datum</span>
+            <input
+              ref={dateInputRef}
+              type="month"
+              aria-label="Kies een maand"
+              value={getMonthInputValue(currentMonth)}
+              onChange={(event) => {
+                const [year, month] = event.target.value.split("-").map(Number);
+                if (year && month) setMonthFilter(new Date(year, month - 1, 1));
+              }}
+              className="mt-0.5 block w-full min-w-0 bg-transparent text-sm font-medium text-[#26352f] outline-none"
+            />
+          </span>
+        </label>
+
+        <button
+          type="submit"
+          aria-label="Zoeken in de jaarkalender"
+          className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-[#00733d] text-white transition hover:bg-[#005f33] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247] sm:mt-2 sm:w-12 lg:mt-0"
+        >
+          <SearchIcon />
+        </button>
+      </form>
+
+      {hasActiveFilters ? (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#cbd8d4] bg-white px-4 text-sm font-semibold text-[#00733d] transition hover:border-[#8ebba4] hover:bg-[#f6fbf8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247] active:bg-[#eaf5ee]"
+          >
+            Wis filters
+          </button>
+        </div>
+      ) : null}
+
+      <div className="mb-4 mt-6 sm:mb-6 sm:mt-8">
         <AgendaImportBanner events={visibleImportEvents} />
       </div>
 
-      <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:items-end xl:justify-between">
+      <div id="jaarkalender-overzicht" className="flex flex-col gap-4 scroll-mt-6 sm:gap-6 sm:scroll-mt-8">
         <div>
           <div className="flex items-center gap-3 text-[#171511]">
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#edf7d8] text-[#405028] sm:h-10 sm:w-10">
@@ -975,43 +1176,24 @@ export function JaarkalenderInteractiveCalendar() {
           <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5 sm:gap-3">
             <MonthNavButton
               label="Vorige maand"
-              onClick={() => setCurrentMonth((month) => addMonths(month, -1))}
+              onClick={() => setMonthFilter(addMonths(currentMonth, -1))}
             />
             <MonthNavButton
               label="Volgende maand"
-              onClick={() => setCurrentMonth((month) => addMonths(month, 1))}
+              onClick={() => setMonthFilter(addMonths(currentMonth, 1))}
             />
             <button
               type="button"
               onClick={goToToday}
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#d9efad] px-4 text-sm font-semibold text-[#2a331d] transition hover:bg-[#cee797] sm:min-h-11 sm:px-5"
+              className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#b8d9c8] bg-[#edf7f0] px-5 text-sm font-semibold text-[#00733d] transition hover:-translate-y-0.5 hover:border-[#8ebba4] hover:bg-[#e0f0e6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247] active:translate-y-0 active:bg-[#d5eadc]"
             >
               Vandaag
             </button>
           </div>
         </div>
-
-        <div className="xl:max-w-[34rem]">
-          <div className="flex flex-wrap gap-3">
-            <ControlButton
-              icon={<PinIcon />}
-              onClick={(event) => openModal("city", event.currentTarget)}
-            >
-              {selectedCity ?? "Heel Nederland"}
-            </ControlButton>
-            <ControlButton
-              icon={<FilterIcon />}
-              onClick={(event) => openModal("category", event.currentTarget)}
-            >
-              {selectedCategory
-                ? jaarkalenderCategoryMeta[selectedCategory].label
-                : "Alle categorieen"}
-            </ControlButton>
-          </div>
-        </div>
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-[1.4rem] border border-[#e6dfd3] bg-white/72 shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8 sm:rounded-[2.2rem]">
+      <div className="mt-5 overflow-hidden rounded-xl border border-[#e6dfd3] bg-white/72 shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8">
         <div className="hidden md:block">
           <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fffaf3]">
             {["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"].map((day) => (
@@ -1171,7 +1353,7 @@ export function JaarkalenderInteractiveCalendar() {
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedCity(null);
+                      setCityFilter(null);
                       closeModal();
                     }}
                     className={`min-h-12 rounded-full border px-5 text-left text-sm font-semibold transition ${
@@ -1187,7 +1369,7 @@ export function JaarkalenderInteractiveCalendar() {
                       key={city.label}
                       type="button"
                       onClick={() => {
-                        setSelectedCity(city.label);
+                        setCityFilter(city.label);
                         closeModal();
                       }}
                       className={`flex min-h-12 items-center justify-between gap-3 rounded-full border px-5 text-left text-sm font-semibold transition ${
@@ -1214,7 +1396,7 @@ export function JaarkalenderInteractiveCalendar() {
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedCategory(null);
+                      setCategoryFilter(null);
                       closeModal();
                     }}
                     className={`min-h-12 rounded-full border px-5 text-left text-sm font-semibold transition ${
@@ -1233,7 +1415,7 @@ export function JaarkalenderInteractiveCalendar() {
                         key={category}
                         type="button"
                         onClick={() => {
-                          setSelectedCategory(category);
+                          setCategoryFilter(category);
                           closeModal();
                         }}
                         className={`min-h-12 rounded-full border px-5 text-left text-sm font-semibold transition ${

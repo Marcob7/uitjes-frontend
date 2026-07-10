@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
 import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
+import { normalizeSearchQuery } from "@/lib/searchIntent";
 import FestivalGenreFilters, {
   DEFAULT_FESTIVAL_GENRE,
   FESTIVAL_GENRES,
@@ -163,6 +165,19 @@ function SearchIcon() {
   );
 }
 
+function XIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="m4.25 4.25 7.5 7.5M11.75 4.25l-7.5 7.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function ArrowLeftIcon() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -242,21 +257,61 @@ function getFestivalGenreFromSearchParams(
   return selectedGenre?.value ?? DEFAULT_FESTIVAL_GENRE;
 }
 
+function getFestivalSearchTerms(query: string) {
+  return normalizeSearchQuery(query)
+    .toLowerCase()
+    .replace(/muziekfestival/g, "")
+    .replace(/food festival/g, "food")
+    .replace(/festivals?/g, "")
+    .split(" ")
+    .map((term) => term.trim())
+    .filter(Boolean);
+}
+
+function matchesFestivalSearch(event: CalendarEvent, query: string) {
+  const searchTerms = getFestivalSearchTerms(query);
+
+  if (searchTerms.length === 0) return true;
+
+  const searchableEvent = [event.label, ...event.genres].join(" ").toLowerCase();
+
+  return searchTerms.some((term) => searchableEvent.includes(term));
+}
+
+function serializeFestivalSearchParams(params: URLSearchParams) {
+  return Array.from(params.entries())
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join("&");
+}
+
 function FestivalsCalendarContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const searchParamString = searchParams.toString();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchErrorId = "festival-search-error";
   const [currentMonth, setCurrentMonth] = useState(() => new Date(2024, 6, 1));
+  const [searchValue, setSearchValue] = useState(
+    () => searchParams.get("query") ?? ""
+  );
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const activeQuery = normalizeSearchQuery(
+    new URLSearchParams(searchParamString).get("query")
+  );
   const activeGenre = useMemo(
-    () => getFestivalGenreFromSearchParams(new URLSearchParams(searchParams)),
-    [searchParams]
+    () => getFestivalGenreFromSearchParams(new URLSearchParams(searchParamString)),
+    [searchParamString]
   );
   const filteredCalendarEvents = useMemo(
     () =>
       FESTIVAL_CALENDAR_EVENTS.filter((event) =>
         matchesFestivalGenre(event.genres, activeGenre)
+      ).filter((event) =>
+        matchesFestivalSearch(event, activeQuery)
       ),
-    [activeGenre]
+    [activeGenre, activeQuery]
   );
   const calendarCells = useMemo(
     () => buildCalendarCells(currentMonth, filteredCalendarEvents),
@@ -268,9 +323,47 @@ function FestivalsCalendarContent() {
   const monthTitle = `${
     MONTH_NAMES[currentMonth.getMonth()]
   } ${currentMonth.getFullYear()}`;
-  const preservedSearchFields = Array.from(searchParams.entries()).filter(
-    ([key]) => key !== "query"
-  );
+
+  useEffect(() => {
+    setSearchValue(new URLSearchParams(searchParamString).get("query") ?? "");
+    setSearchError(null);
+  }, [searchParamString]);
+
+  function pushFestivalSearchParams(params: URLSearchParams) {
+    const queryString = serializeFestivalSearchParams(params);
+
+    startTransition(() => {
+      router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+        scroll: false,
+      });
+    });
+  }
+
+  function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const normalizedQuery = normalizeSearchQuery(searchValue);
+
+    if (!normalizedQuery) {
+      setSearchError("Vul eerst een festival, genre of zoekterm in.");
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams);
+    params.set("query", normalizedQuery);
+    setSearchError(null);
+    setSearchValue(normalizedQuery);
+    pushFestivalSearchParams(params);
+  }
+
+  function clearSearchQuery() {
+    const params = new URLSearchParams(searchParams);
+    params.delete("query");
+    setSearchError(null);
+    setSearchValue("");
+    pushFestivalSearchParams(params);
+    window.setTimeout(() => searchInputRef.current?.focus(), 0);
+  }
 
   function setActiveGenre(nextGenre: FestivalGenreFilter) {
     const params = new URLSearchParams(searchParams);
@@ -281,14 +374,11 @@ function FestivalsCalendarContent() {
       params.set("genre", nextGenre);
     }
 
-    const queryString = params.toString();
-    router.push(queryString ? `${pathname}?${queryString}` : pathname, {
-      scroll: false,
-    });
+    pushFestivalSearchParams(params);
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+    <main className="festival-calendar-page min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <Breadcrumbs
           items={[
@@ -308,35 +398,77 @@ function FestivalsCalendarContent() {
             </>
           }
           search={
-            <form
-              action="/festivals/kalender"
-              className="rounded-[1.6rem] border border-white/18 bg-white/12 p-2 shadow-[0_24px_60px_rgba(3,10,14,0.18)] backdrop-blur-xl sm:rounded-full"
-            >
-              {preservedSearchFields.map(([key, value], index) => (
-                <input
-                  key={`${key}-${value}-${index}`}
-                  type="hidden"
-                  name={key}
-                  value={value}
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-start">
+              <div className="min-w-0 flex-1 sm:w-[32rem]">
+                <form
+                  action="/festivals/kalender"
+                  role="search"
+                  onSubmit={handleSearchSubmit}
+                  className="min-w-0"
+                >
+                  <label htmlFor="festival-search" className="sr-only">
+                    Zoek naar festivals
+                  </label>
+                  <div className="flex min-h-11 items-center gap-2 rounded-full border border-white/34 bg-white/14 px-3 text-white shadow-[0_18px_46px_rgba(3,10,14,0.16)] backdrop-blur-xl">
+                    <SearchIcon />
+                    <input
+                      ref={searchInputRef}
+                      id="festival-search"
+                      name="query"
+                      type="search"
+                      value={searchValue}
+                      onChange={(event) => {
+                        setSearchValue(event.target.value);
+                        setSearchError(null);
+                      }}
+                      placeholder="Zoek naar festivals..."
+                      aria-invalid={Boolean(searchError)}
+                      aria-describedby={searchError ? searchErrorId : undefined}
+                      enterKeyHint="search"
+                      inputMode="search"
+                      autoComplete="off"
+                      spellCheck={false}
+                      className="min-h-11 min-w-0 flex-1 bg-transparent text-base font-medium text-white outline-none placeholder:text-white/82 sm:text-sm"
+                    />
+                    {searchValue ? (
+                      <button
+                        type="button"
+                        onClick={clearSearchQuery}
+                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white/88 transition hover:bg-white/14 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
+                        aria-label={`Zoekopdracht ${searchValue} wissen`}
+                      >
+                        <XIcon />
+                      </button>
+                    ) : null}
+                    <button
+                      type="submit"
+                      disabled={isPending}
+                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#324d17] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] disabled:cursor-not-allowed disabled:opacity-70"
+                      aria-label="Festivals zoeken"
+                    >
+                      <SearchIcon />
+                    </button>
+                  </div>
+                </form>
+                {searchError ? (
+                  <p
+                    id={searchErrorId}
+                    role="status"
+                    aria-live="polite"
+                    className="mt-2 rounded-2xl bg-white/92 px-4 py-2 text-sm font-semibold leading-5 text-[#231f1a] shadow-sm"
+                  >
+                    {searchError}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="shrink-0 sm:pt-0">
+                <FestivalGenreFilters
+                  activeGenre={activeGenre}
+                  onChange={setActiveGenre}
                 />
-              ))}
-              <label
-                htmlFor="calendar-search"
-                className="flex min-h-12 items-center gap-3 rounded-[1.1rem] px-4 text-white/86 sm:rounded-full"
-              >
-                <SearchIcon />
-                <input
-                  id="calendar-search"
-                  name="query"
-                  type="text"
-                  defaultValue={searchParams.get("query") ?? ""}
-                  placeholder="Zoek naar festivals..."
-                  enterKeyHint="search"
-                  inputMode="search"
-                  className="h-full flex-1 bg-transparent text-base text-white outline-none placeholder:text-white/76 focus-visible:ring-2 focus-visible:ring-[#e8f2d0] sm:text-sm"
-                />
-              </label>
-            </form>
+              </div>
+            </div>
           }
           controls={
             <>
@@ -358,12 +490,6 @@ function FestivalsCalendarContent() {
                 <ArrowRightIcon />
               </button>
             </>
-          }
-          filters={
-            <FestivalGenreFilters
-              activeGenre={activeGenre}
-              onChange={setActiveGenre}
-            />
           }
         />
         <section className="mt-8 overflow-hidden rounded-[2.2rem] border border-white/70 bg-white/55 shadow-[0_20px_60px_rgba(66,49,31,0.08)] backdrop-blur-xl">
@@ -412,7 +538,18 @@ function FestivalsCalendarContent() {
               ))
             ) : (
               <div className="border-t border-[#e6dfd3] px-4 py-6 text-sm text-[#66594e] first:border-t-0">
-                Geen festivals gevonden voor {monthTitle.toLowerCase()}.
+                {activeQuery
+                  ? `Geen festivals gevonden voor "${activeQuery}".`
+                  : `Geen festivals gevonden voor ${monthTitle.toLowerCase()}.`}
+                {activeQuery ? (
+                  <button
+                    type="button"
+                    onClick={clearSearchQuery}
+                    className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-[#d7cfbf] bg-white px-4 text-sm font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+                  >
+                    Zoekterm wissen
+                  </button>
+                ) : null}
               </div>
             )}
           </div>
@@ -439,7 +576,18 @@ function FestivalsCalendarContent() {
 
           {mobileCalendarDays.length === 0 ? (
             <div className="hidden border-t border-[#e6dfd3] bg-[#fffaf3] px-5 py-6 text-sm text-[#66594e] sm:block sm:px-8">
-              Geen festivals gevonden voor {monthTitle.toLowerCase()}.
+              {activeQuery
+                ? `Geen festivals gevonden voor "${activeQuery}".`
+                : `Geen festivals gevonden voor ${monthTitle.toLowerCase()}.`}
+              {activeQuery ? (
+                <button
+                  type="button"
+                  onClick={clearSearchQuery}
+                  className="ml-0 mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-[#d7cfbf] bg-white px-4 text-sm font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:ml-3 sm:mt-0"
+                >
+                  Zoekterm wissen
+                </button>
+              ) : null}
             </div>
           ) : null}
         </section>

@@ -2,7 +2,7 @@ import NewHomeSection from "@/components/home/NewHomeSection";
 import NewMomentSection from "@/components/home/NewMomentSection";
 import AgendaSection from "@/components/home/AgendaSection";
 
-import HomeTestimonialsSection from "@/components/home/HomeTestimonialsSection";
+
 import HomeCitiesShowcaseSection from "@/components/home/HomeCitiesShowcaseSection";
 
 export const metadata = {
@@ -22,7 +22,7 @@ export default function Page() {
       <NewMomentSection />
       <AgendaSection />
 
-      <HomeTestimonialsSection />
+  
       <HomeCitiesShowcaseSection />
     </main>
   );

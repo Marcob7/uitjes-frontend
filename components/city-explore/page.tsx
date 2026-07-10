@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import CityExploreFormSection from "./CityExploreFormSection";
 import CityExploreHeroSection from "./CityExploreHeroSection";
-import CityExploreMapSection from "./CityExploreMapSection";
 import CityExploreResultsSection from "./CityExploreResultsSection";
 import type {
   CityExploreViewProps,
@@ -18,13 +17,10 @@ import {
   buildExploreCards,
   filterCardsByPlannerProgress,
   filterCardsByResultFilters,
-  filterEventsByPlannerProgress,
-  filterEventsByResultFilters,
   getCityEditorialContent,
   getEventsWithFallback,
   isLiquidPaletteDark,
   getSafeCityTheme,
-  sortEventsByStartDate,
 } from "./utils";
 
 const DEFAULT_PLANNER_SELECTIONS: PlannerSelections = {
@@ -77,25 +73,9 @@ export default function CityExplorePage({
     );
   }, [cards, completedStepCount, plannerSelections]);
 
-  const plannerFilteredEvents = useMemo(() => {
-    return filterEventsByPlannerProgress(
-      displayEvents,
-      plannerSelections,
-      completedStepCount
-    );
-  }, [completedStepCount, displayEvents, plannerSelections]);
-
   const filteredCards = useMemo(() => {
     return filterCardsByResultFilters(plannerFilteredCards, resultFilters);
   }, [plannerFilteredCards, resultFilters]);
-
-  const filteredEvents = useMemo(() => {
-    return filterEventsByResultFilters(plannerFilteredEvents, resultFilters);
-  }, [plannerFilteredEvents, resultFilters]);
-
-  const eventsForMap = useMemo(() => {
-    return sortEventsByStartDate(filteredEvents);
-  }, [filteredEvents]);
 
   function scrollToSection(target: HTMLElement | null, block: ScrollLogicalPosition) {
     if (!target) {
@@ -185,20 +165,13 @@ export default function CityExplorePage({
   }
 
   useEffect(() => {
-    const firstAvailableId = eventsForMap[0]?.id ?? filteredCards[0]?.id ?? null;
-
-    setSelectedId((current) => {
-      if (current && filteredCards.some((card) => card.id === current)) {
-        return current;
-      }
-
-      if (current && eventsForMap.some((event) => event.id === current)) {
-        return current;
-      }
-
-      return firstAvailableId;
-    });
-  }, [eventsForMap, filteredCards]);
+    const firstAvailableId = filteredCards[0]?.id ?? null;
+    setSelectedId((current) =>
+      current && filteredCards.some((card) => card.id === current)
+        ? current
+        : firstAvailableId
+    );
+  }, [filteredCards]);
 
   return (
     <main
@@ -246,13 +219,7 @@ export default function CityExplorePage({
         onClearResultFilters={handleClearResultFilters}
         onClearAllFilters={handleClearAllFilters}
       />
-
-      <CityExploreMapSection
-        cityLabel={cityLabel}
-        events={eventsForMap}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-      />
+      {/* The map remains available in CityExploreMapSection for future placement; it is intentionally not rendered on /ontdek. */}
     </main>
   );
 }

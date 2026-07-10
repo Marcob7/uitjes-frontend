@@ -22,7 +22,7 @@ export default function FestivalHero({
   controls,
 }: FestivalHeroProps) {
   return (
-    <section className="relative overflow-hidden rounded-[2.4rem] px-5 py-8 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:px-8 sm:py-10 lg:px-11 lg:py-12">
+    <section className="relative overflow-hidden rounded-[2.4rem] px-5 pb-40 pt-8 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:px-8 sm:pb-32 sm:pt-10 lg:px-11 lg:pb-36 lg:pt-12">
       <div className="absolute inset-0">
         <WebGLLiquid
           title=""
@@ -40,7 +40,7 @@ export default function FestivalHero({
           className="h-full w-full !min-h-0"
           style={{ minHeight: "100%", height: "100%", backgroundColor: "#170b14" }}
           overlayClassName="bg-gradient-to-br from-[#170b14]/94 via-[#2d0f1f]/82 to-[#5f1831]/72"
-          glowClassName="bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),radial-gradient(circle_at_76%_24%,rgba(255,184,77,0.22),transparent_24%)]"
+          glowClassName="bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.14),transparent_28%),radial-gradient(circle_at_76%_24%,rgba(255,184,77,0.22),transparent_24%),linear-gradient(to_top,rgba(9,5,8,0.62),transparent_34%)]"
         />
       </div>
       <div className="pointer-events-none absolute inset-0 rounded-[2.4rem] border border-white/14" />
@@ -57,10 +57,6 @@ export default function FestivalHero({
             {description}
           </p>
         </div>
-
-        <div className="w-full max-w-[28rem]">
-          {search}
-        </div>
       </div>
 
       <div className="relative mt-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -72,6 +68,10 @@ export default function FestivalHero({
             {controls}
           </div>
         ) : null}
+      </div>
+
+      <div className="absolute inset-x-4 bottom-4 z-20 sm:inset-x-auto sm:bottom-6 sm:left-6 lg:bottom-8 lg:left-8">
+        {search}
       </div>
     </section>
   );

@@ -618,12 +618,12 @@ export function InspirationChoiceFlow({
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
-      <AppSection maxWidth="default" spacing="sm" innerClassName="pt-28 pb-7 sm:pt-[7.5rem] lg:pt-32 lg:pb-10">
-        <div className="mx-auto grid max-w-[1080px] gap-9">
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <AppSection maxWidth="default" spacing="sm" innerClassName="pt-28 pb-7 sm:pt-[7.5rem] lg:pt-28 lg:pb-10">
+        <div className="mx-auto grid max-w-[1080px] gap-9 md:gap-4">
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between md:mt-0">
             <div className="max-w-[42rem]">
             
-              <h1 className="mt-6 max-w-[42rem] text-[clamp(2.65rem,6vw,4.7rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511]">
+              <h1 className="mt-6 max-w-[42rem] text-[clamp(2.65rem,6vw,4.7rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511] md:mt-1 md:text-[clamp(2.8rem,4.5vw,3.75rem)]">
                 Waar wil je inspiratie voor?
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-[#665d54] sm:text-base">
@@ -645,7 +645,7 @@ export function InspirationChoiceFlow({
           <div
             ref={wizardRef}
             tabIndex={-1}
-            className="grid gap-4 focus:outline-none"
+            className="grid gap-4 focus:outline-none md:gap-3"
           >
             <div className="md:hidden">
               <MobileStepProgress
@@ -948,22 +948,22 @@ function WizardPanel({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[1.1rem] px-3 py-4 text-center transition motion-safe:animate-[wizardIn_220ms_ease-out] md:rounded-[1.35rem] md:px-8 md:py-14 lg:px-14 lg:py-16",
+        "overflow-hidden rounded-[1.1rem] px-3 py-4 text-center transition motion-safe:animate-[wizardIn_220ms_ease-out] md:rounded-[1.35rem] md:px-6 md:py-6 lg:px-10",
         toneClasses.panel
       )}
     >
-      <div className="mx-auto mb-9 hidden max-w-[40rem] md:block">
+      <div className="mx-auto mb-9 hidden max-w-[40rem] md:mb-4 md:block">
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#667b36]">
           {step}
         </p>
-        <h2 className="mt-3 text-[clamp(2rem,4vw,3.1rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511]">
+        <h2 className="mt-2 text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511]">
           {title}
         </h2>
         <p className="mx-auto mt-3 max-w-[30rem] text-sm leading-6 text-[#665d54]">
           {description}
         </p>
       </div>
-      <div className="grid min-w-0 content-start gap-6">{children}</div>
+      <div className="grid min-w-0 content-start gap-6 md:gap-4">{children}</div>
     </section>
   );
 }
@@ -1030,8 +1030,8 @@ function WizardProgress({
   onStepSelect: (step: WizardStep) => void;
 }) {
   return (
-    <div className="grid gap-4">
-      <div className="grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:gap-3">
+      <div className="grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 md:gap-2.5 lg:grid-cols-4 lg:gap-3">
         {([1, 2, 3, 4] as WizardStep[]).map((step) => {
           const isActive = currentStep === step;
           const isComplete = Boolean(summaries[step - 1]);
@@ -1048,7 +1048,7 @@ function WizardProgress({
               disabled={!canOpen}
               onClick={() => onStepSelect(step)}
               className={cn(
-                "grid min-h-[126px] grid-cols-[1fr_auto] content-between rounded-[1.35rem] border px-7 py-6 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
+                "grid min-h-[126px] grid-cols-[1fr_auto] content-between rounded-[1.35rem] border px-7 py-6 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 md:min-h-[88px] md:rounded-[1.15rem] md:px-5 md:py-3 lg:min-h-[84px]",
                 isActive
                   ? "border-[#007a3d] bg-white text-[#00542f] shadow-[0_18px_42px_rgba(36,78,46,0.08)]"
                   : isComplete
@@ -1061,7 +1061,7 @@ function WizardProgress({
                 <span className="block text-[12px] font-semibold uppercase tracking-[0.18em]">
                   0{step}
                 </span>
-                <span className="mt-6 block text-sm font-semibold text-[#171511]">
+                <span className="mt-6 block text-sm font-semibold text-[#171511] md:mt-2">
                   {getStepLabel(step)}
                 </span>
                 <span className="mt-1 block text-xs font-medium text-[#9a9e99]">
@@ -1070,7 +1070,7 @@ function WizardProgress({
               </span>
               <span
                 className={cn(
-                  "mt-0.5 grid h-7 w-7 place-items-center rounded-full",
+                  "mt-0.5 grid h-7 w-7 place-items-center rounded-full md:h-6 md:w-6",
                   isActive || isComplete
                     ? "bg-[#007a3d] text-white"
                     : "text-[#9a9e99]"

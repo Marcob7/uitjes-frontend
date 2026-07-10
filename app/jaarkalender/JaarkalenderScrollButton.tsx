@@ -20,7 +20,13 @@ function ArrowIcon() {
   );
 }
 
-export function JaarkalenderScrollButton({ targetId }: { targetId: string }) {
+export function JaarkalenderScrollButton({
+  targetId,
+  label = "Bekijk kalender",
+}: {
+  targetId: string;
+  label?: string;
+}) {
   const scrollToCalendar = () => {
     document.getElementById(targetId)?.scrollIntoView({
       behavior: "smooth",
@@ -33,9 +39,9 @@ export function JaarkalenderScrollButton({ targetId }: { targetId: string }) {
       type="button"
       aria-controls={targetId}
       onClick={scrollToCalendar}
-      className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#e8f2d0] px-7 text-sm font-semibold text-[#1c1b15] shadow-[0_14px_36px_rgba(155,192,72,0.24)] transition hover:-translate-y-0.5 hover:bg-[#bde86d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d9efad]"
+      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#00733d] px-7 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(0,95,51,0.18)] transition hover:-translate-y-0.5 hover:bg-[#005f33] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247]"
     >
-      Bekijk kalender
+      {label}
       <ArrowIcon />
     </button>
   );

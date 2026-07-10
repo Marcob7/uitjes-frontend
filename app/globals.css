@@ -383,6 +383,20 @@ button:disabled {
     background: rgba(255, 255, 255, 0.2);
   }
 
+  .festival-calendar-page #festival-search::-webkit-search-cancel-button,
+  .festival-calendar-page #festival-search::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+
+  .festival-calendar-page #festival-search::-ms-clear,
+  .festival-calendar-page #festival-search::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   .clubbi-scene {
     isolation: isolate;
     background: #fff;

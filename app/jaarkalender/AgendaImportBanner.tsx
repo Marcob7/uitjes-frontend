@@ -309,7 +309,7 @@ export function AgendaImportBanner({
 
   return (
     <>
-      <section className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-[#dbe8c8] bg-[linear-gradient(135deg,#dcefd2,#d1e8cb_48%,#cae3c9)] p-4 shadow-[0_18px_48px_rgba(89,111,54,0.08)] sm:p-5">
+      <section className="rounded-xl border border-white/14 bg-white/10 backdrop-blur-xl border border-[#dbe8c8] bg-[linear-gradient(135deg,#dcefd2,#d1e8cb_48%,#cae3c9)] p-4 shadow-[0_18px_48px_rgba(89,111,54,0.08)] sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-[#547037] shadow-[0_12px_24px_rgba(73,96,40,0.12)]">
