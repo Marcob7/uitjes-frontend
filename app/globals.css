@@ -22,6 +22,25 @@
   --tracking-display: -0.055em;
   --tracking-heading: -0.04em;
   --tracking-subheading: -0.028em;
+  --inspiration-bg: #f7f5ec;
+  --inspiration-sky: #f3f7e9;
+  --inspiration-land-light: #e7eed6;
+  --inspiration-land-mid: #c7d9ad;
+  --inspiration-land-deep: #8eaa70;
+  --inspiration-path: #efe1bd;
+  --inspiration-accent: #149457;
+  --inspiration-warm: #f1c778;
+  --inspiration-ink: #274c34;
+  --inspiration-map-bg: #f8f7f1;
+  --inspiration-map-green-light: #e7efe0;
+  --inspiration-map-green: #b8cea7;
+  --inspiration-map-green-deep: #6e9569;
+  --inspiration-map-sand: #eee2c8;
+  --inspiration-map-yellow: #f2d79c;
+  --inspiration-map-water: #dcebe4;
+  --inspiration-map-route: #7d9c78;
+  --inspiration-map-accent: #138a50;
+  --inspiration-map-ink: #35533d;
 }
 
 @theme inline {
@@ -200,6 +219,69 @@ button:disabled {
 
   100% {
     transform: translate3d(calc(100vw + 160px), 0, 0);
+  }
+}
+
+.inspiration-valley__sky {
+  background:
+    radial-gradient(circle at 78% 22%, rgba(245, 217, 147, 0.28), transparent 20%),
+    linear-gradient(180deg, #f8f7ef 0%, #f4f6e9 48%, #edf3df 100%);
+}
+
+.inspiration-valley__wash {
+  background: linear-gradient(
+    90deg,
+    rgba(248, 247, 239, 0.98) 0%,
+    rgba(248, 247, 239, 0.92) 40%,
+    rgba(248, 247, 239, 0.45) 67%,
+    transparent 78%
+  );
+}
+
+.inspiration-valley__cloud--one {
+  animation: inspiration-valley-cloud-one 48s ease-in-out infinite alternate;
+}
+
+.inspiration-valley__cloud--two {
+  animation: inspiration-valley-cloud-two 44s ease-in-out infinite alternate;
+}
+
+.inspiration-valley__birds {
+  animation: inspiration-valley-birds 900ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both;
+}
+
+@keyframes inspiration-valley-cloud-one {
+  from { transform: translate3d(-4px, 0, 0); }
+  to { transform: translate3d(6px, 0, 0); }
+}
+
+@keyframes inspiration-valley-cloud-two {
+  from { transform: translate3d(8px, 0, 0); }
+  to { transform: translate3d(-12px, 0, 0); }
+}
+
+@keyframes inspiration-valley-birds {
+  from { opacity: 0; transform: translate3d(-8px, 5px, 0); }
+  to { opacity: .55; transform: translate3d(0, 0, 0); }
+}
+
+@media (max-width: 639px) {
+  .inspiration-valley__cloud--two,
+  .inspiration-valley__birds,
+  .inspiration-valley__grass {
+    display: none;
+  }
+
+  .inspiration-valley__wash {
+    background: linear-gradient(180deg, rgba(248, 247, 241, 1) 0%, rgba(248, 247, 241, 0.94) 55%, rgba(248, 247, 241, 0.4) 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inspiration-valley__cloud--one,
+  .inspiration-valley__cloud--two,
+  .inspiration-valley__birds {
+    animation: none;
   }
 }
 

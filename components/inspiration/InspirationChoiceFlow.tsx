@@ -18,6 +18,7 @@ import {
 import { getInspirationFlowResults } from "@/lib/inspiration/cityContentMapper";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import { cn } from "@/lib/utils";
+import { InspirationValleyScenery } from "./InspirationValleyScenery";
 import { SquirrelScreenWalker } from "./SquirrelScreenWalker";
 
 type LocationMode = "nearby" | "city" | "surprise";
@@ -617,9 +618,12 @@ export function InspirationChoiceFlow({
   }, [shouldShowResults, selectedVibe]);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
-      <AppSection maxWidth="default" spacing="sm" innerClassName="pt-28 pb-7 sm:pt-[7.5rem] lg:pt-28 lg:pb-10">
-        <div className="mx-auto grid max-w-[1080px] gap-9 md:gap-4">
+    <main className="mt-14 min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
+      <section className="relative isolate overflow-hidden">
+        <InspirationValleyScenery />
+        <div className="relative z-10">
+          <AppSection maxWidth="default" spacing="sm" horizontalPadding={false} innerClassName="pt-28 pb-7 sm:pt-[7.5rem] lg:pt-28 lg:pb-10">
+            <div className="mx-auto grid max-w-[1240px] gap-9 md:gap-4">
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between md:mt-0">
             <div className="max-w-[42rem]">
             
@@ -848,8 +852,10 @@ export function InspirationChoiceFlow({
               ) : null}
             </div>
           </div>
+            </div>
+          </AppSection>
         </div>
-      </AppSection>
+      </section>
 
       <AppSection maxWidth="default" spacing="md" innerClassName="pt-1 pb-16 md:pb-20">
         <div ref={resultsRef} className="mx-auto max-w-[1080px] scroll-mt-28">

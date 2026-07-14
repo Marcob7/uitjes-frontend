@@ -1,92 +1,12 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
-import DateSearchInput from "./DateSearchInput";
-
 type NewHomeSectionProps = {
   className?: string;
-  words?: string[];
 };
-
-const DEFAULT_WORDS = [
-  "HI AMSTERDAM",
-  "HI APELDOORN",
-  "HI HAARLEM",
-  "HI DEN HAAG",
-  "HI ZWOLLE",
-];
 
 export default function NewHomeSection({
   className = "",
-  words = DEFAULT_WORDS,
 }: NewHomeSectionProps) {
-  const router = useRouter();
-
-  const [wordIndex, setWordIndex] = useState(0);
-  const [visibleLetters, setVisibleLetters] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchError, setSearchError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-
-  const currentWord = words[wordIndex] ?? "";
-  const shownText = currentWord.slice(0, visibleLetters);
-
-  useEffect(() => {
-    if (words.length === 0 || currentWord.length === 0) {
-      return;
-    }
-
-    let timeout: ReturnType<typeof setTimeout>;
-
-    if (visibleLetters < currentWord.length) {
-      timeout = setTimeout(() => {
-        setVisibleLetters((prev) => prev + 1);
-      }, 85);
-    } else {
-      timeout = setTimeout(() => {
-        setVisibleLetters(1);
-        setWordIndex((prev) => (prev + 1) % words.length);
-      }, 950);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [currentWord, visibleLetters, words]);
-
-  useEffect(() => {
-    if (wordIndex >= words.length) {
-      setWordIndex(0);
-      setVisibleLetters(1);
-    }
-  }, [wordIndex, words.length]);
-
-  function handleSearch(): void {
-    const normalizedQuery = normalizeSearchQuery(searchQuery);
-
-    if (!normalizedQuery) {
-      setSearchError("Vul eerst een stad, activiteit of festival in.");
-      return;
-    }
-
-    const route = getSearchRoute(normalizedQuery);
-
-    if (!route) {
-      setSearchError(
-        `We konden geen resultaten vinden voor "${normalizedQuery}". Controleer de spelling of probeer een andere stad, activiteit of festival.`
-      );
-      return;
-    }
-
-    setSearchError(null);
-    setSearchQuery(normalizedQuery);
-    startTransition(() => {
-      router.push(route);
-    });
-  }
-
   return (
     <section
       className={`clubbi-scene relative isolate min-h-screen min-h-[100dvh] w-full overflow-hidden ${className}`}
@@ -102,29 +22,7 @@ export default function NewHomeSection({
       </div>
 
       <div className="clubbi-text-layer">
-        <h1 className="clubbi-animated-word" aria-hidden="true">
-          {shownText}
-        </h1>
         <p className="clubbi-animated-subtitle">Vind je volgende geluksmoment</p>
-      </div>
-
-      <div className="clubbi-search-layer">
-        <DateSearchInput
-          value={searchQuery}
-          onChange={(value) => {
-            setSearchQuery(value);
-            setSearchError(null);
-          }}
-          onSearch={handleSearch}
-          errorMessage={searchError}
-          isSearching={isPending}
-        />
-        <Link
-          href="/inspiratie"
-          className="mx-auto mt-3 flex h-[52px] w-[min(400px,calc(100vw-2rem))] items-center justify-center rounded-full border-[4px] border-white bg-[#00652c] px-6 text-center text-[17px] font-extrabold text-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-transform duration-150 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00652c] active:scale-95"
-        >
-          Ik wil inspiratie
-        </Link>
       </div>
     </section>
   );

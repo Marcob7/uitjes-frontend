@@ -13,6 +13,7 @@ export type AppSectionProps = {
   maxWidth?: AppSectionMaxWidth;
   spacing?: AppSectionSpacing;
   background?: AppSectionBackground;
+  horizontalPadding?: boolean;
   id?: string;
 };
 
@@ -43,13 +44,15 @@ export function AppSection({
   maxWidth = "default",
   spacing = "md",
   background = "transparent",
+  horizontalPadding = true,
   id,
 }: AppSectionProps) {
   return (
     <section id={id} className={cn(backgroundClasses[background], className)}>
       <div
         className={cn(
-          "mx-auto px-4 sm:px-6 lg:px-8",
+          "mx-auto",
+          horizontalPadding && "px-4 sm:px-6 lg:px-8",
           maxWidthClasses[maxWidth],
           spacingClasses[spacing],
           innerClassName

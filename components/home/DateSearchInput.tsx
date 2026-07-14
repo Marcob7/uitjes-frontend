@@ -5,6 +5,8 @@ type DateSearchInputProps = {
   placeholder?: string;
   errorMessage?: string | null;
   isSearching?: boolean;
+  variant?: "default" | "ink";
+  align?: "center" | "start";
 };
 
 export default function DateSearchInput({
@@ -14,16 +16,14 @@ export default function DateSearchInput({
   placeholder = "Zoek op stad, festival of activiteit",
   errorMessage,
   isSearching = false,
+  variant = "default",
+  align = "center",
 }: DateSearchInputProps) {
-  return (
-    <div className="flex w-full justify-center">
-      <div className="flex w-full flex-col items-center">
-        <div className="mb-2 rounded-full bg-white/55 px-4 py-1 shadow-sm backdrop-blur-sm">
-          <span className="text-[18px] font-extrabold uppercase leading-none tracking-[-0.02em] text-[#202020]">
-       VIND DINGEN OM TE DOEN
-          </span>
-        </div>
+  const isInk = variant === "ink";
 
+  return (
+    <div className={`flex w-full ${align === "start" ? "justify-start" : "justify-center"}`}>
+      <div className={`flex w-full flex-col ${align === "start" ? "items-start" : "items-center"}`}>
         <div className="flex h-[56px] w-[min(400px,calc(100vw-2rem))] items-center rounded-full border-[4px] border-white bg-[#dedede] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
           <input
             type="search"
@@ -50,7 +50,7 @@ export default function DateSearchInput({
             onClick={onSearch}
             aria-label="Search"
             disabled={isSearching}
-            className="mr-[4px] flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full bg-[#00652c] text-white transition-transform duration-150 hover:scale-[1.03] active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
+            className={`mr-[4px] flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full text-white transition-transform duration-150 hover:scale-[1.03] active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 ${isInk ? "bg-[#18343A]" : "bg-[#00652c]"}`}
           >
             <svg
               aria-hidden="true"

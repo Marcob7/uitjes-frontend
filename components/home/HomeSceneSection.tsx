@@ -8,6 +8,7 @@ import {
   useTransform,
 } from "motion/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   CSSProperties,
   PointerEvent as ReactPointerEvent,
@@ -19,17 +20,11 @@ import {
   useRef,
   useState,
 } from "react";
+import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
+import DateSearchInput from "./DateSearchInput";
 
 type HomeSceneSectionProps = {
-  eyebrow?: string;
-  title?: string;
   description?: string;
-  primaryCtaLabel?: string;
-  secondaryCtaLabel?: string;
-  primaryCtaHref?: string;
-  secondaryCtaHref?: string;
-  onPrimaryCta?: () => void;
-  onSecondaryCta?: () => void;
   playKey?: string | number;
   className?: string;
 };
@@ -56,6 +51,7 @@ const PHASES: SceneTheme[] = [
 
 const STAR_POSITIONS = [[8, 14], [16, 23], [27, 12], [39, 27], [51, 10], [60, 20], [71, 12], [83, 25], [92, 14], [13, 39], [31, 36], [47, 43], [67, 36], [79, 47], [89, 39]] as const;
 const BIRDS = [{ left: "61%", top: "30%", scale: 0.75, delay: 0 }, { left: "68%", top: "24%", scale: 0.55, delay: 0.18 }, { left: "73%", top: "34%", scale: 0.65, delay: 0.36 }] as const;
+const HOME_WORDS = ["HI AMSTERDAM", "HI APELDOORN", "HI HAARLEM", "HI DEN HAAG", "HI ZWOLLE"];
 const cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(" ");
 
 function Bird({ className = "" }: { className?: string }) {
@@ -67,14 +63,19 @@ function Cloud({ className = "", opacity = 1 }: { className?: string; opacity?: 
 }
 
 export default function HomeSceneSection({
-  eyebrow = "Vind iets om naar uit te kijken", title = "Ontdek jouw volgende leuke uitje", description = "Van verborgen lokale plekken tot festivals, restaurants en spontane plannen. Ontdek activiteiten die passen bij jouw stemming, locatie en moment.", primaryCtaLabel = "Ontdek uitjes", secondaryCtaLabel = "Bekijk inspiratie", primaryCtaHref, secondaryCtaHref, onPrimaryCta, onSecondaryCta, playKey, className,
+  description = "Van verborgen lokale plekken tot festivals, restaurants en spontane plannen. Ontdek activiteiten die passen bij jouw stemming, locatie en moment.", playKey, className,
 }: HomeSceneSectionProps) {
+  const router = useRouter();
   const rootRef = useRef<HTMLElement | null>(null);
   const visualRef = useRef<HTMLDivElement | null>(null);
   const titleId = useId();
   const prefersReducedMotion = useReducedMotion();
   const [phase, setPhase] = useState<ScenePhase>(0);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [wordIndex, setWordIndex] = useState(0);
+  const [visibleLetters, setVisibleLetters] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchError, setSearchError] = useState<string | null>(null);
   const dimensionsRef = useRef({ width: 0, height: 0 });
   const scrub = useMotionValue(0);
   const celestialX = useMotionValue(0);
@@ -85,6 +86,8 @@ export default function HomeSceneSection({
   const sunOpacity = useTransform(scrub, [0, 0.62, 0.86], [1, 1, 0]);
   const horizonGlowOpacity = useTransform(scrub, [0, 0.5, 1], [0.72, 0.5, 0.12]);
   const currentTheme = PHASES[phase];
+  const currentWord = HOME_WORDS[wordIndex] ?? "";
+  const shownWord = currentWord.slice(0, visibleLetters);
 
   const updateCelestialPosition = useCallback((progress: number, width = dimensionsRef.current.width, height = dimensionsRef.current.height) => {
     if (!width || !height) return;
@@ -123,6 +126,34 @@ export default function HomeSceneSection({
 
   useEffect(() => { setSceneProgress(0); }, [playKey, setSceneProgress]);
   useEffect(() => { updateCelestialPosition(scrub.get()); }, [dimensions, scrub, updateCelestialPosition]);
+  useEffect(() => {
+    if (!currentWord) return;
+    const timeout = setTimeout(() => {
+      if (visibleLetters < currentWord.length) {
+        setVisibleLetters((previous) => previous + 1);
+      } else {
+        setVisibleLetters(1);
+        setWordIndex((previous) => (previous + 1) % HOME_WORDS.length);
+      }
+    }, visibleLetters < currentWord.length ? 85 : 950);
+    return () => clearTimeout(timeout);
+  }, [currentWord, visibleLetters]);
+
+  const handleSearch = () => {
+    const normalizedQuery = normalizeSearchQuery(searchQuery);
+    if (!normalizedQuery) {
+      setSearchError("Vul eerst een stad, activiteit of festival in.");
+      return;
+    }
+    const route = getSearchRoute(normalizedQuery);
+    if (!route) {
+      setSearchError(`We konden geen resultaten vinden voor "${normalizedQuery}". Controleer de spelling of probeer een andere stad, activiteit of festival.`);
+      return;
+    }
+    setSearchError(null);
+    setSearchQuery(normalizedQuery);
+    router.push(route);
+  };
   const gradient = useMemo(() => `linear-gradient(180deg, ${currentTheme.skyFrom} 0%, ${currentTheme.skyVia} 52%, ${currentTheme.skyTo} 100%)`, [currentTheme]);
 
   const handlePointerScrub = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -139,7 +170,7 @@ export default function HomeSceneSection({
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) handlePointerScrub(event); };
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); setSceneProgress(scrub.get() < 0.33 ? 0 : scrub.get() < 0.67 ? 1 : 2); };
 
-  return <section ref={rootRef} className={cx("relative isolate min-h-[700px] w-full overflow-hidden bg-[#f3cbb8] lg:min-h-[720px] xl:min-h-[780px]", className)} style={{ color: currentTheme.ink, "--sc-ink": currentTheme.ink, "--sc-muted-ink": currentTheme.mutedInk, "--sc-accent": currentTheme.accent } as CSSProperties} aria-labelledby={titleId}>
+  return <section ref={rootRef} className={cx("relative isolate h-screen h-[100dvh] w-full overflow-hidden bg-[#f3cbb8]", className)} style={{ color: currentTheme.ink, "--sc-ink": currentTheme.ink, "--sc-muted-ink": currentTheme.mutedInk, "--sc-accent": currentTheme.accent } as CSSProperties} aria-labelledby={titleId}>
     <motion.div aria-hidden="true" className="absolute inset-0 -z-30 transition-colors duration-700" animate={{ background: gradient }} transition={{ duration: prefersReducedMotion ? 0 : 0.9, ease: "easeInOut" }} />
     <motion.div aria-hidden="true" className="absolute inset-0 -z-20" style={{ opacity: nightOpacity, background: "linear-gradient(180deg, rgba(8,17,35,0.78) 0%, rgba(18,31,54,0.52) 52%, rgba(9,16,27,0.3) 100%)" }} />
     <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ opacity: starOpacity }}>{STAR_POSITIONS.map(([left, top], index) => <motion.span key={`${left}-${top}`} className="absolute h-1 w-1 rounded-full bg-white/90 shadow-[0_0_8px_rgba(255,255,255,0.85)]" style={{ left: `${left}%`, top: `${top}%` }} animate={prefersReducedMotion ? undefined : { opacity: [0.35, 1, 0.35], scale: [0.8, 1.25, 0.8] }} transition={{ duration: 2.2 + (index % 4) * 0.45, repeat: Infinity, delay: (index % 5) * 0.28, ease: "easeInOut" }} />)}</motion.div>
@@ -153,13 +184,13 @@ export default function HomeSceneSection({
     <motion.div aria-hidden="true" className="pointer-events-none absolute -z-10 -translate-x-1/2 -translate-y-1/2" style={{ x: celestialX, y: celestialY, opacity: sunOpacity }}><div className="h-20 w-20 rounded-full bg-[#ffe7a8] shadow-[0_0_50px_18px_rgba(255,224,144,0.48)] sm:h-28 sm:w-28 lg:h-36 lg:w-36" /></motion.div>
     <motion.div aria-hidden="true" className="pointer-events-none absolute -z-10 -translate-x-1/2 -translate-y-1/2" style={{ x: celestialX, y: celestialY, opacity: moonOpacity }}><div className="relative h-16 w-16 rounded-full bg-[#f6f1df] shadow-[0_0_34px_12px_rgba(228,236,255,0.3)] sm:h-24 sm:w-24 lg:h-28 lg:w-28"><span className="absolute left-[24%] top-[24%] h-[14%] w-[14%] rounded-full bg-slate-300/30" /><span className="absolute bottom-[24%] right-[18%] h-[18%] w-[18%] rounded-full bg-slate-300/25" /><span className="absolute bottom-[15%] left-[30%] h-[10%] w-[10%] rounded-full bg-slate-300/30" /></div></motion.div>
     <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 z-0 w-full bg-gradient-to-r from-white/34 via-white/10 to-transparent lg:w-[66%]" />
-    <div className="relative z-20 mx-auto flex min-h-[700px] w-full max-w-[1440px] flex-col px-5 pb-32 pt-20 sm:px-8 sm:pt-24 md:px-10 lg:min-h-[720px] lg:flex-row lg:items-center lg:px-14 lg:pb-36 lg:pt-16 xl:min-h-[780px] xl:px-20"><div className="w-full max-w-[660px] lg:w-[46%]">
-      <motion.p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] sm:text-sm" style={{ color: currentTheme.mutedInk }} animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 12 }} transition={{ duration: prefersReducedMotion ? 0 : 0.55 }}>{eyebrow}</motion.p>
-      <motion.h2 id={titleId} className="max-w-[720px] text-[clamp(2.75rem,7.5vw,5.75rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-balance" animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} transition={{ duration: prefersReducedMotion ? 0 : 0.65, delay: prefersReducedMotion ? 0 : 0.05 }}>{title}</motion.h2>
+    <div className="relative z-20 mx-auto flex h-full w-full max-w-[1440px] flex-col px-5 pb-32 pt-20 sm:px-8 sm:pt-24 md:px-10 lg:flex-row lg:items-center lg:px-14 lg:pb-36 lg:pt-16 xl:px-20"><div className="w-full max-w-[660px] lg:w-[46%]">
+
+      <motion.h1 id={titleId} className="clubbi-animated-word text-left" style={{ color: currentTheme.ink }} animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} transition={{ duration: prefersReducedMotion ? 0 : 0.65, delay: prefersReducedMotion ? 0 : 0.05 }}>{shownWord}</motion.h1>
       <motion.p className="mt-7 max-w-[620px] text-[clamp(1rem,1.5vw,1.2rem)] leading-7 sm:leading-8" style={{ color: currentTheme.mutedInk }} animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} transition={{ duration: prefersReducedMotion ? 0 : 0.65, delay: prefersReducedMotion ? 0 : 0.12 }}>{description}</motion.p>
-      <motion.div className="mt-8 flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap" animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 16 }} transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.18 }}>
-        {primaryCtaHref ? <Link href={primaryCtaHref} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--sc-ink)] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:translate-y-0">{primaryCtaLabel}</Link> : <button type="button" onClick={onPrimaryCta} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--sc-ink)] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:translate-y-0">{primaryCtaLabel}</button>}
-        {secondaryCtaHref ? <Link href={secondaryCtaHref} className="inline-flex min-h-12 items-center justify-center rounded-full border border-current/25 bg-white/20 px-6 py-3 text-sm font-semibold backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:translate-y-0">{secondaryCtaLabel}</Link> : <button type="button" onClick={onSecondaryCta} className="inline-flex min-h-12 items-center justify-center rounded-full border border-current/25 bg-white/20 px-6 py-3 text-sm font-semibold backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:translate-y-0">{secondaryCtaLabel}</button>}
+      <motion.div className="mt-8 flex w-full max-w-[400px] flex-col items-start gap-3" animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 16 }} transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.18 }}>
+        <DateSearchInput value={searchQuery} onChange={(value) => { setSearchQuery(value); setSearchError(null); }} onSearch={handleSearch} errorMessage={searchError} variant="ink" align="start" />
+        <Link href="/inspiratie" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#18343A] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:translate-y-0">Ik wil inspiratie</Link>
       </motion.div>
     </div></div>
     <div ref={visualRef} aria-hidden="true" className="absolute inset-y-0 right-0 z-10 hidden w-[56%] cursor-ew-resize touch-pan-y lg:block" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerCancel={handlePointerUp} />

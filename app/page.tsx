@@ -20,13 +20,7 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-[#f8f5f3]">
       <HomeSceneSection
-        eyebrow="Vind iets om naar uit te kijken"
-        title="Ontdek jouw volgende leuke uitje"
         description="Van verborgen lokale plekken tot festivals, restaurants en spontane plannen. Ontdek activiteiten die passen bij jouw stemming, locatie en moment."
-        primaryCtaLabel="Ontdek uitjes"
-        secondaryCtaLabel="Bekijk inspiratie"
-        primaryCtaHref="/ontdek"
-        secondaryCtaHref="/inspiratie"
       />
       <NewHomeSection />
 

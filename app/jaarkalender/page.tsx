@@ -15,8 +15,8 @@ export const metadata = {
 
 export default function JaarkalenderPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
-      <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511] mt-10">
+      <div className="relative mx-auto max-w-[1280px] py-6 lg:py-10">
         <section className="px-1 pb-2 pt-6 sm:px-2 sm:pt-10 lg:pt-12">
           <div className="max-w-[56rem]">
           

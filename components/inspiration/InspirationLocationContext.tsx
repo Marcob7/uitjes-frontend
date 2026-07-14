@@ -198,7 +198,7 @@ export function InspirationLocationContext({
         className
       )}
     >
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mt-8">
         <div>
           <p
             className={cn(

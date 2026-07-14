@@ -144,3 +144,222 @@ Import trace for requested module:
 ./app/page.tsx
  ✓ Compiled in 309ms (1697 modules)
  ✓ Compiled in 186ms (940 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+ ⨯ ./components/home/PlansFallenThroughSection.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4mC:\Users\Marco\EventsPlanner\frontend\components\home\PlansFallenThroughSection.tsx[0m:16:1]
+ [2m16[0m |   const entrance = reduceMotion ? { duration: 0 } : { duration: 0.78, ease: reveal };
+ [2m17[0m | 
+ [2m18[0m |   return (
+ [2m19[0m |     <section className="relative isolate overflow-hidden bg-[#e9f0e8] px-5 py-[clamp(5.5rem,11vw,9rem)] text-[#183328] sm:px-8 lg:px-12">
+    : [31;1m     ^^^^^^^[0m
+ [2m20[0m |       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+ [2m21[0m |         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#f8f3e8]/75 to-transparent" />
+ [2m22[0m |         <div className="absolute -left-32 top-16 h-[29rem] w-[29rem] rounded-full bg-[#c7dfcd]/50 blur-3xl" />
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/home/PlansFallenThroughSection.tsx
+./app/page.tsx
+ ✓ Compiled in 322ms (1697 modules)
+ ⨯ ./components/home/PlansFallenThroughSection.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\home\PlansFallenThroughSection.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/home/PlansFallenThroughSection.tsx
+./app/page.tsx
+ ✓ Compiled in 237ms (939 modules)
+ ✓ Compiled in 453ms (1697 modules)
+ ✓ Compiled in 487ms (940 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz'
+ ✓ Compiled in 1201ms (1697 modules)
+ ✓ Compiled in 186ms (940 modules)
+ ✓ Compiled in 282ms (940 modules)
+ ✓ Compiled in 217ms (940 modules)
+ ✓ Compiled in 208ms (940 modules)
+ ✓ Compiled in 183ms (940 modules)
+ ✓ Compiled in 191ms (940 modules)
+ ✓ Compiled in 239ms (940 modules)
+ ✓ Compiled in 399ms (1697 modules)
+ ✓ Compiled in 451ms (1697 modules)
+ ✓ Compiled in 276ms (1697 modules)
+ ✓ Compiled in 378ms (1697 modules)
+ ✓ Compiled in 303ms (1697 modules)
+ ✓ Compiled in 250ms (1697 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\2.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\2.pack.gz'
+ ✓ Compiled in 644ms (1697 modules)
+ ✓ Compiled in 411ms (1697 modules)
+ ✓ Compiled in 288ms (1697 modules)
+ ✓ Compiled in 396ms (1697 modules)
+ ✓ Compiled in 366ms (1697 modules)
+ ✓ Compiled in 341ms (1697 modules)
+ ✓ Compiled in 486ms (1697 modules)
+ ✓ Compiled in 424ms (1697 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 418ms (1693 modules)
+ ✓ Compiled in 336ms (1693 modules)
+ ✓ Compiled in 362ms (1693 modules)
+ GET / 200 in 232ms
+ GET / 200 in 29ms
+ GET / 200 in 23ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz'
+ GET / 200 in 23ms
+ GET / 200 in 19ms
+ GET / 200 in 22ms
+ GET / 200 in 20ms
+ GET / 200 in 19ms
+ ✓ Compiled /favicon.ico in 218ms (786 modules)
+ GET /favicon.ico 200 in 271ms
+ ✓ Compiled in 338ms (1725 modules)
+ ✓ Compiled in 255ms (1693 modules)
+ ✓ Compiled in 297ms (1693 modules)
+ ✓ Compiled in 399ms (1697 modules)
+ ✓ Compiled in 270ms (940 modules)
+ ✓ Compiled in 254ms (940 modules)
+ ✓ Compiled in 272ms (941 modules)
+ ✓ Compiled in 666ms (1698 modules)
+ ✓ Compiled in 345ms (941 modules)
+ ✓ Compiled in 530ms (1698 modules)
+ ✓ Compiled /inspiratie in 428ms (1488 modules)
+ GET /inspiratie 200 in 686ms
+ GET /inspiratie 200 in 61ms
+ GET /inspiratie 200 in 20ms
+ GET /inspiratie 200 in 18ms
+ GET /inspiratie 200 in 19ms
+ GET /inspiratie 200 in 18ms
+ GET /inspiratie 200 in 17ms
+ ✓ Compiled /favicon.ico in 179ms (1716 modules)
+ GET /favicon.ico 200 in 225ms
+ GET /inspiratie 200 in 111ms
+ GET /favicon.ico 200 in 10ms
+ ✓ Compiled in 702ms (1488 modules)
+ GET /inspiratie 200 in 97ms
+ ✓ Compiled /_not-found in 279ms (1719 modules)
+ ✓ Compiled in 563ms (1490 modules)
+ GET /inspiratie 200 in 100ms
+ ⨯ ./components/inspiration/InspirationScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ⨯ ./components/inspiration/InspirationScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ⨯ ./components/inspiration/InspirationScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ✓ Compiled in 452ms (1502 modules)
+ ✓ Compiled in 982ms (2259 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\2.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\2.pack.gz'
+ GET /inspiratie 200 in 207ms
+ GET /inspiratie 200 in 22ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\server-development\1.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz'
+ ✓ Compiled in 431ms (1502 modules)
+ GET /inspiratie 200 in 101ms
+ GET /inspiratie 200 in 88ms
+ GET /inspiratie 200 in 20ms
+ GET /inspiratie 200 in 16ms
+ GET /inspiratie 200 in 20ms
+ GET /inspiratie 200 in 19ms
+ GET /inspiratie 200 in 15ms
+ ⨯ ./components/inspiration/InspirationMapScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationMapScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationMapScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ⨯ ./components/inspiration/InspirationMapScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationMapScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationMapScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ⨯ ./components/inspiration/InspirationMapScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationMapScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationMapScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ⨯ ./components/inspiration/InspirationMapScenery.tsx
+Error: Failed to read source code from C:\Users\Marco\EventsPlanner\frontend\components\inspiration\InspirationMapScenery.tsx
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Import trace for requested module:
+./components/inspiration/InspirationMapScenery.tsx
+./components/inspiration/InspirationChoiceFlow.tsx
+ ✓ Compiled in 320ms (1502 modules)
+ ✓ Compiled in 672ms (2245 modules)
+ ✓ Compiled in 504ms (1502 modules)
+ GET /inspiratie 200 in 221ms
+ GET /inspiratie 200 in 23ms
+ GET /inspiratie 200 in 83ms
+ GET /inspiratie 200 in 18ms
+ GET /inspiratie 200 in 18ms
+ GET /inspiratie 200 in 16ms
+ GET /inspiratie 200 in 16ms
+ GET /inspiratie 200 in 15ms
+ ✓ Compiled in 368ms (1502 modules)
+ ✓ Compiled in 724ms (2245 modules)
+ GET /inspiratie 200 in 219ms
+ GET /inspiratie 200 in 20ms
+ GET /inspiratie 200 in 83ms
+ ✓ Compiled in 576ms (1502 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz'
