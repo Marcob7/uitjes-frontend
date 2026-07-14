@@ -19,9 +19,7 @@ export default function JaarkalenderPage() {
       <div className="relative mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <section className="px-1 pb-2 pt-6 sm:px-2 sm:pt-10 lg:pt-12">
           <div className="max-w-[56rem]">
-            <span className="inline-flex rounded-full border border-[#b9d9ca] bg-[#e2f3e9] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.13em] text-[#00733d]">
-              Agenda 2024
-            </span>
+          
             <h1 className="mt-4 text-[clamp(2.7rem,5.3vw,5rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#121c27]">
               De Jaarkalender van
               <span className="block text-[#008247]">Nederland</span>
