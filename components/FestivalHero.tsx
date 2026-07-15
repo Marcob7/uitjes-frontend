@@ -14,7 +14,6 @@ type FestivalHeroProps = {
 };
 
 export default function FestivalHero({
-  eyebrow,
   title,
   description,
   search,
@@ -22,7 +21,7 @@ export default function FestivalHero({
   controls,
 }: FestivalHeroProps) {
   return (
-    <section className="relative overflow-hidden rounded-[2.4rem] px-5 pb-40 pt-8 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:px-8 sm:pb-32 sm:pt-10 lg:px-11 lg:pb-36 lg:pt-12">
+    <section className="mt-10 relative overflow-hidden rounded-[2.4rem] px-5 pb-40 pt-8 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:px-8 sm:pb-32 sm:pt-10 lg:px-11 lg:pb-36 lg:pt-12">
       <div className="absolute inset-0">
         <WebGLLiquid
           title=""
@@ -47,9 +46,7 @@ export default function FestivalHero({
 
       <div className="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-[42rem]">
-          <div className="inline-flex rounded-full border border-white/24 bg-white/14 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/90 backdrop-blur-xl">
-            {eyebrow}
-          </div>
+        
           <h1 className="mt-6 max-w-[11ch] text-[clamp(3.2rem,8vw,5.7rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">
             {title}
           </h1>

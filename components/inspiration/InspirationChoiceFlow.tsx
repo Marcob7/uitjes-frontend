@@ -618,16 +618,16 @@ export function InspirationChoiceFlow({
   }, [shouldShowResults, selectedVibe]);
 
   return (
-    <main className="mt-14 min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
+    <main className="mt-14 min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
       <section className="relative isolate overflow-hidden">
         <InspirationValleyScenery />
         <div className="relative z-10">
-          <AppSection maxWidth="default" spacing="sm" horizontalPadding={false} innerClassName="pt-28 pb-7 sm:pt-[7.5rem] lg:pt-28 lg:pb-10">
-            <div className="mx-auto grid max-w-[1240px] gap-9 md:gap-4">
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between md:mt-0">
+          <AppSection maxWidth="default" spacing="sm" horizontalPadding={false} innerClassName="px-4 pt-20 pb-7 min-[520px]:px-6 sm:pt-24 md:px-0 md:pt-[7.5rem] lg:pt-28 lg:pb-10">
+            <div className="mx-auto grid max-w-[1240px] gap-7 md:gap-4">
+          <div className="mt-0 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-[42rem]">
             
-              <h1 className="mt-6 max-w-[42rem] text-[clamp(2.65rem,6vw,4.7rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#171511] md:mt-1 md:text-[clamp(2.8rem,4.5vw,3.75rem)]">
+              <h1 className="mt-2 max-w-[42rem] text-[clamp(2.2rem,10.8vw,2.65rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#171511] md:mt-1 md:text-[clamp(2.8rem,4.5vw,3.75rem)] md:leading-[0.95]">
                 Waar wil je inspiratie voor?
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-[#665d54] sm:text-base">

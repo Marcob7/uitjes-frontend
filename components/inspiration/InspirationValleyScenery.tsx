@@ -10,7 +10,7 @@ export function InspirationValleyScenery() {
       <div className="inspiration-valley__cloud inspiration-valley__cloud--two absolute right-[7%] top-60 hidden h-4 w-20 rounded-full bg-white/26 blur-[1px] md:block" />
 
       <svg
-        className="absolute bottom-[-2rem] left-1/2 h-auto min-h-[31rem] w-[min(1500px,135vw)] max-w-none -translate-x-1/2 sm:min-h-[38rem] md:bottom-[-1rem] md:left-[56%] md:min-h-[44rem] md:w-[min(1850px,122vw)]"
+        className="inspiration-valley__landscape absolute left-1/2 top-[16rem] h-auto min-h-[25rem] w-[175vw] max-w-none -translate-x-1/2 min-[520px]:top-[17rem] min-[520px]:min-h-[28rem] min-[520px]:w-[155vw] md:bottom-[-1rem] md:left-auto md:right-0 md:top-auto md:min-h-[44rem] md:w-[max(1850px,122vw)] md:translate-x-0"
         viewBox="0 0 1600 900"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

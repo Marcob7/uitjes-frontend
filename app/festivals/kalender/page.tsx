@@ -8,6 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
 import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
+import FestivalPageScenery from "@/components/festivals/FestivalPageScenery";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 import FestivalGenreFilters, {
   DEFAULT_FESTIVAL_GENRE,
@@ -378,7 +379,9 @@ function FestivalsCalendarContent() {
   }
 
   return (
-    <main className="festival-calendar-page min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+    <main className="festival-calendar-page relative min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
+      <FestivalPageScenery />
+      <div className="relative z-10">
       <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <Breadcrumbs
           items={[
@@ -593,6 +596,7 @@ function FestivalsCalendarContent() {
         </section>
 
         <WeeklyPulseSignupSection className="mt-8" />
+      </div>
       </div>
     </main>
   );

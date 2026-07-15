@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ExploreBackgroundScene } from "@/components/discover/ExploreBackgroundScene";
+
 import CityExploreFormSection from "./CityExploreFormSection";
 import CityExploreHeroSection from "./CityExploreHeroSection";
 import CityExploreResultsSection from "./CityExploreResultsSection";
@@ -175,10 +177,11 @@ export default function CityExplorePage({
 
   return (
     <main
-      className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_14%_4%,rgba(198,223,154,0.18),transparent_25%),radial-gradient(circle_at_86%_10%,rgba(247,231,200,0.32),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_44%,#f6f1ea)] px-4 pt-4 text-[#171717] md:px-6 lg:px-8"
+      className="relative isolate pt-18 min-h-screen overflow-hidden bg-[#f8f5f3] px-4 pt-4 text-[#171717] md:px-6 lg:px-8"
       style={{ backgroundColor: "#f8f5f3" }}
     >
-      <div className="mx-auto max-w-[1240px] py-4 sm:py-6 lg:py-8">
+      <ExploreBackgroundScene />
+      <div className="relative z-10 mx-auto max-w-[1240px] py-4 sm:py-6 lg:py-8">
         <CityExploreHeroSection
           cityLabel={cityLabel}
           intro={editorialContent.intro}
@@ -205,20 +208,22 @@ export default function CityExplorePage({
         />
       </div>
 
-      <CityExploreResultsSection
-        cityLabel={cityLabel}
-        filteredCards={filteredCards}
-        selectedId={selectedId}
-        onSelectCard={setSelectedId}
-        sectionRef={resultsRef}
-        plannerSelections={plannerSelections}
-        completedStepCount={completedStepCount}
-        onEditSelection={showPlannerStep}
-        resultFilters={resultFilters}
-        onToggleResultFilter={handleToggleResultFilter}
-        onClearResultFilters={handleClearResultFilters}
-        onClearAllFilters={handleClearAllFilters}
-      />
+      <div className="relative z-10">
+        <CityExploreResultsSection
+          cityLabel={cityLabel}
+          filteredCards={filteredCards}
+          selectedId={selectedId}
+          onSelectCard={setSelectedId}
+          sectionRef={resultsRef}
+          plannerSelections={plannerSelections}
+          completedStepCount={completedStepCount}
+          onEditSelection={showPlannerStep}
+          resultFilters={resultFilters}
+          onToggleResultFilter={handleToggleResultFilter}
+          onClearResultFilters={handleClearResultFilters}
+          onClearAllFilters={handleClearAllFilters}
+        />
+      </div>
       {/* The map remains available in CityExploreMapSection for future placement; it is intentionally not rendered on /ontdek. */}
     </main>
   );

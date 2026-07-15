@@ -61,7 +61,7 @@ export default function Breadcrumbs({
           </Link>
         ) : null}
 
-        <ol className="flex min-w-0 flex-wrap items-center gap-2">
+        <ol className="mt-8 flex min-w-0 flex-wrap items-center gap-2">
           {items.map((item, index) => {
             const isCurrent = index === items.length - 1 || !item.href;
 

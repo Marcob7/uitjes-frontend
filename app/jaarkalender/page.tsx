@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CalendarNewsletterSignupSection } from "./CalendarNewsletterSignupSection";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
+import { YearCalendarSunlightBackground } from "./YearCalendarSunlightBackground";
 
 export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",
@@ -15,9 +16,11 @@ export const metadata = {
 
 export default function JaarkalenderPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511] mt-10">
-      <div className="relative mx-auto max-w-[1280px] py-6 lg:py-10">
-        <section className="px-1 pb-2 pt-6 sm:px-2 sm:pt-10 lg:pt-12">
+    <main className="min-h-screen overflow-x-clip bg-[#f8f5f3] text-[#171511] mt-10">
+      <section className="relative isolate min-h-[30rem] overflow-hidden sm:min-h-[34rem] lg:min-h-[38rem]">
+        <YearCalendarSunlightBackground />
+        <div className="relative z-10 mx-auto max-w-[1280px] py-6 lg:py-10">
+          <div className="px-1 pb-2 pt-6 sm:px-2 sm:pt-10 lg:pt-12">
           <div className="max-w-[56rem]">
           
             <h1 className="mt-4 text-[clamp(2.7rem,5.3vw,5rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#121c27]">
@@ -42,8 +45,11 @@ export default function JaarkalenderPage() {
               </Link>
             </div>
           </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
+      <div className="relative mx-auto max-w-[1280px] px-1 pb-6 sm:px-2 lg:pb-10">
         <section id="jaarkalender-kalender" className="mt-8 scroll-mt-6 sm:mt-12 sm:scroll-mt-8">
           <JaarkalenderInteractiveCalendar />
         </section>
