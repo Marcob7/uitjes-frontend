@@ -1,66 +1,250 @@
+"use client";
+
 import Link from "next/link";
+import {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+import { motion, useReducedMotion } from "motion/react";
 
 type ShowcaseCity = {
   name: string;
   slug: string;
-  accent: string;
-  mark: string;
+  logo: string;
+  logoClassName: string;
+  preserveSourceColors?: boolean;
 };
 
 const showcaseCities: ShowcaseCity[] = [
-  { name: "Apeldoorn", slug: "apeldoorn", accent: "#e67e22", mark: "AP" },
-  { name: "Den Haag", slug: "den-haag", accent: "#70a800", mark: "DH" },
-  { name: "Zwolle", slug: "zwolle", accent: "#1d4ed8", mark: "ZW" },
-  { name: "Groningen", slug: "groningen", accent: "#d72638", mark: "GR" },
-  { name: "Utrecht", slug: "utrecht", accent: "#cc0000", mark: "UT" },
-  { name: "Nijmegen", slug: "nijmegen", accent: "#9e1b32", mark: "NM" },
+  {
+    name: "Apeldoorn",
+    slug: "apeldoorn",
+    logo: "/municipalities/apeldoorn.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Deventer",
+    slug: "deventer",
+    logo: "/municipalities/deventer.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Amsterdam",
+    slug: "amsterdam",
+    logo: "/municipalities/amsterdam.svg",
+    logoClassName: "h-[5.4rem] w-[4.7rem]",
+    preserveSourceColors: true,
+  },
+  {
+    name: "Leeuwarden",
+    slug: "leeuwarden",
+    logo: "/municipalities/leeuwarden.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Rotterdam",
+    slug: "rotterdam",
+    logo: "/municipalities/rotterdam.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Eindhoven",
+    slug: "eindhoven",
+    logo: "/municipalities/eindhoven.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Enschede",
+    slug: "enschede",
+    logo: "/municipalities/enschede.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Delft",
+    slug: "delft",
+    logo: "/municipalities/delft.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
+  {
+    name: "Breda",
+    slug: "breda",
+    logo: "/municipalities/breda.svg",
+    logoClassName: "h-[5.4rem] w-[10.5rem]",
+  },
 ];
 
-export default function HomeCitiesShowcaseSection() {
+const carouselTransition = {
+  duration: 0.7,
+  ease: [0.16, 1, 0.3, 1] as const,
+};
+
+function MunicipalityLogo({ city }: { city: ShowcaseCity }) {
+  if (city.preserveSourceColors) {
+    return (
+      <span
+        aria-hidden="true"
+        className={`block bg-contain bg-center bg-no-repeat transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035] ${city.logoClassName}`}
+        style={{ backgroundImage: `url(${city.logo})` }}
+      />
+    );
+  }
+
+  const maskStyle = {
+    WebkitMaskImage: `url(${city.logo})`,
+    maskImage: `url(${city.logo})`,
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+  } as CSSProperties;
+
   return (
-    <section className="relative overflow-hidden px-4 pb-16 pt-8 md:px-6 md:pb-20 md:pt-12 lg:px-8">
-      <div className="pointer-events-none absolute inset-x-0 top-10 mx-auto h-[360px] max-w-6xl rounded-full bg-[radial-gradient(circle_at_72%_38%,rgba(211,241,150,0.24),transparent_34%),radial-gradient(circle_at_42%_52%,rgba(255,255,255,0.72),transparent_42%),linear-gradient(90deg,rgba(238,243,240,0),rgba(238,243,240,0.62),rgba(238,243,240,0))] blur-2xl" />
+    <span
+      aria-hidden="true"
+      className={`block bg-[#6a2a2a] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035] ${city.logoClassName}`}
+      style={maskStyle}
+    />
+  );
+}
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 py-6 md:py-10 lg:grid-cols-[minmax(280px,0.78fr)_minmax(520px,1.22fr)] lg:items-center lg:gap-16 xl:gap-20">
-        <div className="max-w-md lg:pl-6">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#637042]">
-            Steden ontdekken
-          </p>
+export default function HomeCitiesShowcaseSection() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
-          <h2 className="mt-4 max-w-xl text-3xl font-semibold leading-[1.04] tracking-normal text-[#17231d] sm:text-4xl lg:text-[2.65rem]">
-            Ontdek steden door heel Nederland
+  const scrollCarousel = useCallback(
+    (direction: "previous" | "next") => {
+      const carousel = carouselRef.current;
+      if (!carousel) return;
+
+      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+      const firstCard = carousel.querySelector<HTMLElement>("[data-city-card]");
+      const gap = Number.parseFloat(getComputedStyle(carousel).gap) || 0;
+      const step = (firstCard?.offsetWidth || carousel.clientWidth * 0.8) + gap;
+      const behavior = reduceMotion ? "auto" : "smooth";
+      const nearStart = carousel.scrollLeft <= 2;
+      const nearEnd = carousel.scrollLeft >= maxScroll - 2;
+
+      if (direction === "previous" && nearStart) {
+        carousel.scrollTo({ left: maxScroll, behavior });
+        return;
+      }
+
+      if (direction === "next" && nearEnd) {
+        carousel.scrollTo({ left: 0, behavior });
+        return;
+      }
+
+      carousel.scrollBy({
+        left: direction === "next" ? step : -step,
+        behavior,
+      });
+    },
+    [reduceMotion]
+  );
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const stopHorizontalWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      if (event.shiftKey) {
+        event.preventDefault();
+        carousel.scrollLeft += event.deltaY;
+      }
+    };
+
+    carousel.addEventListener("wheel", stopHorizontalWheel, { passive: false });
+    return () => carousel.removeEventListener("wheel", stopHorizontalWheel);
+  }, []);
+
+  return (
+    <section
+      aria-labelledby="cities-showcase-title"
+      className="overflow-hidden bg-[#fff] py-[clamp(4rem,7vw,7.5rem)] text-[#6a2a2a]"
+    >
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.18 }}
+        transition={reduceMotion ? { duration: 0 } : carouselTransition}
+        className="mx-auto w-full max-w-[1132px] px-4"
+      >
+        <div className="mb-14 lg:mb-16">
+          <h2 id="cities-showcase-title" className="sr-only">
+            Steden en gemeenten ontdekken
           </h2>
-
-          <p className="mt-5 text-sm leading-6 text-[#4e5d55] sm:text-base">
-            Van lokale evenementen tot verborgen parels: UitjesNL groeit stap
-            voor stap mee met steden en gemeenten in Nederland.
+          <p className="text-[0.8rem] font-semibold tracking-[-0.018em] text-[#6a2a2a] sm:text-sm">
+            Ontdek uitjes in steden door heel Nederland:
           </p>
         </div>
 
-        <div className="mx-auto grid w-full max-w-[660px] grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:max-w-none">
-          {showcaseCities.map((city) => (
-            <Link
-              key={city.slug}
-              href={`/ontdek?city=${city.slug}`}
-              className="group flex aspect-[1.74/1] min-h-[90px] items-center justify-center rounded-[18px] border border-white/70 bg-white/58 px-4 text-center shadow-[0_12px_32px_rgba(50,65,58,0.055)] backdrop-blur-xl transition duration-200 hover:-translate-y-0.5 hover:bg-white/78 hover:shadow-[0_16px_36px_rgba(50,65,58,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fc54a] sm:min-h-[104px] lg:min-h-[112px]"
-              aria-label={`Ontdek uitjes in ${city.name}`}
+        <div className="relative left-1/2 w-screen -translate-x-1/2">
+          <div className="relative ml-[max(1rem,calc((100vw-1100px)/2))]">
+            <span
+              aria-hidden="true"
+              className="absolute -top-8 left-10 z-10 h-12 w-px bg-[#6a2a2a]/75"
+            />
+
+            <div
+              ref={carouselRef}
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-[26px]"
+              aria-label="Steden en gemeenten"
             >
-              <span className="flex items-center gap-2.5">
-                <span
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[10px] font-bold tracking-normal text-white shadow-[0_8px_16px_rgba(23,35,29,0.1)] transition duration-200 group-hover:scale-105"
-                  style={{ backgroundColor: city.accent }}
-                  aria-hidden="true"
+              {showcaseCities.map((city, index) => (
+                <motion.div
+                  key={city.slug}
+                  initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.12 }}
+                  transition={{
+                    ...carouselTransition,
+                    delay: reduceMotion ? 0 : Math.min(index * 0.055, 0.32),
+                  }}
+                  data-city-card
+                  className="flex-none snap-start basis-[84vw] sm:basis-[65vw] lg:basis-[460px]"
                 >
-                  {city.mark}
-                </span>
-                <span className="text-base font-semibold tracking-normal text-[#17231d] sm:text-lg">
-                  {city.name}
-                </span>
-              </span>
-            </Link>
-          ))}
+                  <Link
+                    href={`/ontdek?city=${city.slug}`}
+                    aria-label={`Ontdek uitjes in ${city.name}`}
+                    className="group flex aspect-[3/2] w-full items-center justify-center rounded-[0.65rem] bg-[#f8f3f0] px-6 transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-[#f6f0ed] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.99]"
+                  >
+                    <MunicipalityLogo city={city} />
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+
+        <div className="mt-7 flex justify-end gap-[1.1rem] sm:mt-8">
+          <button
+            type="button"
+            onClick={() => scrollCarousel("previous")}
+            className="inline-flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-[0.6rem] border border-[#ece8e5] bg-white text-[#5a4c47] transition-[transform,background-color,border-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-[#6a2a2a] hover:text-[#6a2a2a] hover:shadow-[0_8px_18px_rgba(100,48,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.96]"
+            aria-label="Toon vorige steden"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+              <path d="m14.5 6.5-5.25 5.5 5.25 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => scrollCarousel("next")}
+            className="inline-flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-[0.6rem] border border-[#ece8e5] bg-white text-[#5a4c47] transition-[transform,background-color,border-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-[#6a2a2a] hover:text-[#6a2a2a] hover:shadow-[0_8px_18px_rgba(100,48,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.96]"
+            aria-label="Toon volgende steden"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+              <path d="m9.5 6.5 5.25 5.5-5.25 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </motion.div>
     </section>
   );
 }

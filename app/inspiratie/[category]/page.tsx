@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { InspirationLocationContext } from "@/components/inspiration/InspirationLocationContext";
 import { AppSection } from "@/components/ui/app";
 import {
   getInspirationCityLabel,
@@ -14,346 +12,81 @@ import {
   isInspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
-import { optimizeCssBackground } from "@/lib/remoteImage";
 
-type PageProps = {
-  params: {
-    category: string;
-  };
-  searchParams?: {
-    location?: string;
-    nearbyCity?: string;
-  };
-};
+type PageProps = { params: { category: string }; searchParams?: { location?: string; nearbyCity?: string } };
 
 export const dynamicParams = false;
 export const runtime = "edge";
 
-function buildContextQuery(searchParams?: PageProps["searchParams"]) {
-  const params = new URLSearchParams();
-
-  if (searchParams?.location) params.set("location", searchParams.location);
-  if (searchParams?.nearbyCity) params.set("nearbyCity", searchParams.nearbyCity);
-
-  return params.toString();
-}
-
-function withContext(href: string, query: string) {
-  return query ? `${href}?${query}` : href;
-}
-
 const inspirationRouteConfig = {
-  "snel-ontdekken": {
-    category: "vandaag",
-    label: "Snel ontdekken",
-    description:
-      "Laagdrempelige inspiratie voor als je snel een richting wilt kiezen, zonder eerst een volledig plan te maken.",
-  },
-  "buiten-genieten": {
-    category: "buiten",
-    label: "Buiten genieten",
-    description:
-      "Ideeen met lucht, groen, water of ruimte om te dwalen. Fijn voor een wandeling, parkmoment of frisse pauze.",
-  },
-  regenproof: {
-    category: "binnen",
-    label: "Regenproof",
-    description:
-      "Binneninspiratie voor wisselvallige dagen: cultuur, makersplekken en rustige plekken waar het weer geen spelbreker is.",
-  },
-  "voor-vanavond": {
-    category: "weekend",
-    label: "Voor vanavond",
-    description:
-      "Ideeen met avondgevoel: iets eten, live muziek, samen op pad of een plan dat niet te veel voorbereiding vraagt.",
-  },
+  "snel-ontdekken": { category: "vandaag", label: "Snel ontdekken", description: "Laagdrempelige inspiratie voor als je snel een richting wilt kiezen, zonder eerst een volledig plan te maken." },
+  "buiten-genieten": { category: "buiten", label: "Buiten genieten", description: "Ideeen met lucht, groen, water of ruimte om te dwalen. Fijn voor een wandeling, parkmoment of frisse pauze." },
+  regenproof: { category: "binnen", label: "Regenproof", description: "Binneninspiratie voor wisselvallige dagen: cultuur, makersplekken en rustige plekken waar het weer geen spelbreker is." },
+  "voor-vanavond": { category: "weekend", label: "Voor vanavond", description: "Ideeen met avondgevoel: iets eten, live muziek, samen op pad of een plan dat niet te veel voorbereiding vraagt." },
 } as const;
 
 function getRouteCategory(category: string) {
-  if (category in inspirationRouteConfig) {
-    return inspirationRouteConfig[category as keyof typeof inspirationRouteConfig];
-  }
-
-  if (isInspirationCategorySlug(category)) {
-    return {
-      category,
-      label: inspirationCategoryLabels[category],
-      description: inspirationCategoryDescriptions[category],
-    };
-  }
-
+  if (category in inspirationRouteConfig) return inspirationRouteConfig[category as keyof typeof inspirationRouteConfig];
+  if (isInspirationCategorySlug(category)) return { category, label: inspirationCategoryLabels[category], description: inspirationCategoryDescriptions[category] };
   return undefined;
 }
 
-function getLocationContextLabel(
-  categoryLabel: string,
-  searchParams?: PageProps["searchParams"]
-) {
-  const mode = getInspirationLocationMode(searchParams?.location);
-  const cityLabel = getInspirationCityLabel(
-    searchParams?.location,
-    searchParams?.nearbyCity
-  );
-
-  if (mode === "city" && cityLabel) {
-    return `${categoryLabel} in ${cityLabel}`;
-  }
-
-  if (mode === "nearby" && cityLabel) {
-    return `${categoryLabel} ${cityLabel}`;
-  }
-
-  return `${categoryLabel} door meerdere steden`;
+function buildContextQuery(searchParams?: PageProps["searchParams"]) {
+  const params = new URLSearchParams();
+  if (searchParams?.location) params.set("location", searchParams.location);
+  if (searchParams?.nearbyCity) params.set("nearbyCity", searchParams.nearbyCity);
+  return params.toString();
 }
+function withContext(href: string, query: string) { return query ? `${href}?${query}` : href; }
 
 export function generateStaticParams() {
-  return [
-    ...getInspirationStaticParams(),
-    ...Object.keys(inspirationRouteConfig).map((category) => ({ category })),
-  ];
+  return [...getInspirationStaticParams(), ...Object.keys(inspirationRouteConfig).map((category) => ({ category }))];
 }
-
 export function generateMetadata({ params }: PageProps) {
   const routeCategory = getRouteCategory(params.category);
-
-  if (!routeCategory) {
-    return {
-      title: "Inspiratie | Uitjes",
-      alternates: {
-        canonical: `/inspiratie/${encodeURIComponent(params.category)}`,
-      },
-    };
-  }
-
-  return {
-    title: `${routeCategory.label} | Uitjes`,
-    description: routeCategory.description,
-    alternates: {
-      canonical: `/inspiratie/${encodeURIComponent(params.category)}`,
-    },
-  };
+  return routeCategory
+    ? { title: `${routeCategory.label} | Uitjes`, description: routeCategory.description, alternates: { canonical: `/inspiratie/${encodeURIComponent(params.category)}` } }
+    : { title: "Inspiratie | Uitjes", alternates: { canonical: `/inspiratie/${encodeURIComponent(params.category)}` } };
 }
 
-export default function InspirationCategoryPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default function InspirationCategoryPage({ params, searchParams }: PageProps) {
   const routeCategory = getRouteCategory(params.category);
+  if (!routeCategory) notFound();
+  const results = getInspirationResultsByCategory(routeCategory.category, searchParams?.location, searchParams?.nearbyCity);
+  if (!results.length) notFound();
+  const query = buildContextQuery(searchParams);
+  const locationMode = getInspirationLocationMode(searchParams?.location);
+  const cityLabel = getInspirationCityLabel(searchParams?.location, searchParams?.nearbyCity);
+  const context = locationMode === "surprise" || !cityLabel ? routeCategory.label : `${routeCategory.label} ${cityLabel}`;
 
-  if (!routeCategory) {
-    notFound();
-  }
+  return <main className="min-h-screen bg-[#F6F5F0] text-[#29342F]">
+    <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-5 pb-16 sm:pt-8 sm:pb-24">
+      <Breadcrumbs items={[{ label: "Inspiratie", href: "/inspiratie" }, { label: routeCategory.label }]} className="mb-9" />
+      <header className="max-w-3xl border-b border-[#DCE1DC] pb-9 sm:pb-12">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#1D5A46]">Inspiratie</p>
+        <h1 className="mt-3 text-[clamp(2.5rem,6vw,4.75rem)] font-semibold leading-[0.94] tracking-[-0.06em]">{context}</h1>
+        <p className="mt-5 max-w-2xl text-base leading-7 text-[#65736C] sm:text-lg">{routeCategory.description}</p>
+        <p className="mt-5 text-sm font-medium text-[#1D5A46]">{results.length} {results.length === 1 ? "activiteit" : "activiteiten"}</p>
+      </header>
 
-  const categoryLabel = routeCategory.label;
-  const results = getInspirationResultsByCategory(
-    routeCategory.category,
-    searchParams?.location,
-    searchParams?.nearbyCity
-  );
+      <section className="pt-8 sm:pt-10" aria-labelledby="resultaten-heading">
+        <div className="mb-5 flex items-end justify-between gap-5"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#65736C]">Overzicht</p><h2 id="resultaten-heading" className="mt-2 text-2xl font-semibold tracking-[-0.04em]">Kies een activiteit</h2></div><Link href={withContext("/inspiratie", query)} className="min-h-11 shrink-0 rounded-full border border-[#DCE1DC] bg-white px-4 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Keuzehulp</Link></div>
+        <div className="divide-y divide-[#DCE1DC] border-y border-[#DCE1DC]">{results.map((item) => <ResultRow key={item.slug} item={item} href={withContext(`/inspiratie/${item.category}/${item.slug}`, query)} />)}</div>
+      </section>
 
-  if (results.length === 0) {
-    notFound();
-  }
-
-  const contextQuery = buildContextQuery(searchParams);
-  const locationContextLabel = getLocationContextLabel(categoryLabel, searchParams);
-  const quickChoices = results.slice(0, 4);
-
-  return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_6%,rgba(198,223,154,0.2),transparent_26%),radial-gradient(circle_at_84%_10%,rgba(247,231,200,0.34),transparent_24%),linear-gradient(180deg,#fbf7ef,#f8f5f3_46%,#f6f1ea)] text-[#171511]">
-      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-5 pb-8 sm:pt-7 sm:pb-10 lg:pt-8 lg:pb-14">
-        <div>
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Inspiratie", href: "/inspiratie" },
-              { label: categoryLabel },
-            ]}
-            className="mb-6"
-          />
-
-          <div className="uitjes-liquid-section rounded-[2rem] px-5 py-7 sm:rounded-[2.4rem] sm:px-8 sm:py-10 lg:px-11 lg:py-12">
-            <div className="pointer-events-none absolute -right-12 top-8 h-48 w-48 rounded-full bg-[#c6df9a]/16 blur-3xl" />
-            <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
-              <div className="max-w-[42rem]">
-                <div className="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/78 backdrop-blur-xl">
-                  Inspiratie
-                </div>
-
-                <h1 className="mt-5 max-w-[12ch] text-[clamp(2.55rem,8vw,5rem)] font-semibold leading-[0.92] tracking-[-0.06em] text-white sm:mt-6">
-                  {locationContextLabel}
-                </h1>
-
-                <p className="mt-5 max-w-[34rem] text-base leading-7 text-white/76 sm:mt-6 sm:text-lg sm:leading-8">
-                  {routeCategory.description}
-                </p>
-              </div>
-
-              <div className="rounded-[1.4rem] border border-white/14 bg-white/10 p-4 text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] backdrop-blur-xl sm:p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/64">
-                  Volgende stap
-                </p>
-                <p className="mt-2 text-sm leading-6 text-white/76">
-                  Verfijn op locatie of spring direct naar de resultaten die bij deze inspiratie passen.
-                </p>
-                <a
-                  href="#resultaten"
-                  className="mt-4 inline-flex min-h-10 items-center rounded-full border border-[#e8f2d0]/70 bg-[#e8f2d0] px-4 text-sm font-semibold text-[#162016] transition hover:bg-[#f2f8df]"
-                >
-                  Bekijk resultaten
-                </a>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <Suspense fallback={null}>
-                <InspirationLocationContext compact />
-              </Suspense>
-            </div>
-          </div>
-
-          <div className="mt-9 sm:mt-12">
-            <h2 className="text-[clamp(1.85rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-[#171511]">
-              Snelle keuzes
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#665d54] sm:text-base">
-              Een paar compacte suggesties om meteen door te klikken binnen dezelfde inspiratieflow.
-            </p>
-
-            <div className="mt-5 grid grid-cols-1 gap-3 min-[460px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-              {quickChoices.map((item) => (
-                <Link
-                  key={item.slug}
-                  href={withContext(
-                    `/inspiratie/${item.category}/${item.slug}`,
-                    contextQuery
-                  )}
-                  className="group relative min-h-[174px] overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/50 shadow-[0_18px_44px_rgba(72,56,38,0.08)] backdrop-blur-xl transition hover:-translate-y-0.5 sm:rounded-[1.7rem] md:min-h-[220px]"
-                >
-                  <div
-                    className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-[1.04]"
-                    style={{
-                      backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.10)), ${optimizeCssBackground(
-                        item.image,
-                        {
-                          width: 760,
-                          quality: 58,
-                        }
-                      )}`,
-                    }}
-                  />
-
-                  <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-5">
-                    <span className="mb-3 inline-flex w-fit rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#203115]">
-                      {item.city}
-                    </span>
-                    <span className="text-lg font-bold tracking-[-0.03em] text-white md:text-xl">
-                      {item.title}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </AppSection>
-
-      <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16 md:pb-20">
-        <div id="resultaten" className="scroll-mt-28">
-          <div className="flex flex-col gap-4 bg-[linear-gradient(90deg,rgba(242,248,231,0.54),rgba(255,250,240,0.24),transparent)] py-3 md:flex-row md:items-end md:justify-between md:gap-6">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#667b36]">
-                Resultaten
-              </p>
-              <h2 className="mt-2 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                {locationContextLabel}
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#665d54] sm:text-base">
-                {results.length} suggesties op basis van deze inspiratiecategorie en je locatiecontext.
-              </p>
-            </div>
-
-            <Link
-              href={withContext("/inspiratie", contextQuery)}
-              className="inline-flex min-h-10 w-fit items-center rounded-full border border-[#d6c9b8] bg-white/78 px-4 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(72,56,38,0.08)] transition hover:bg-white"
-            >
-              Naar keuzehulp
-            </Link>
-          </div>
-
-          <div className="mt-8 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
-            {results.map((item) => (
-              <ResultCard
-                key={item.slug}
-                item={item}
-                href={withContext(
-                  `/inspiratie/${item.category}/${item.slug}`,
-                  contextQuery
-                )}
-              />
-            ))}
-          </div>
-        </div>
-      </AppSection>
-    </main>
-  );
+    
+    </AppSection>
+  </main>;
 }
 
-function ResultCard({ item, href }: { item: InspirationResult; href: string }) {
-  return (
-    <Link href={href} className="group block">
-      <div className="relative overflow-hidden rounded-[1.7rem] border border-white/14 bg-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
-        <div
-          className="aspect-[0.9/1] w-full bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
-          style={{
-            backgroundImage: optimizeCssBackground(item.image, {
-              width: 840,
-              quality: 58,
-            }),
-          }}
-        />
-
-        <span className="absolute left-4 top-4 inline-flex rounded-full bg-[#c4e78f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#203115]">
-          {item.city}
-        </span>
-      </div>
-
-      <div className="pt-4">
-        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#7b6f64]">
-          {item.categoryLabel} - {item.price}
-        </p>
-
-        <h3 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-[-0.04em] text-[#171511]">
-          {item.title}
-        </h3>
-
-        <p className="mt-3 text-sm leading-6 text-[#665d54]">
-          {item.description}
-        </p>
-
-        <div className="mt-4 flex items-center gap-2 text-sm font-medium text-[#405028]">
-          <PinIcon />
-          <span>{item.location}</span>
-        </div>
-      </div>
-    </Link>
-  );
+function ResultRow({ item, href }: { item: InspirationResult; href: string }) {
+  return <Link href={href} className="group grid min-h-28 grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-5 transition sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(7rem,auto)_2.75rem] sm:gap-x-5 sm:px-3 sm:hover:bg-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC]">
+    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DDEBE2] text-[#1D5A46]" aria-hidden="true"><ActivityIcon type={item.type} /></div>
+    <div className="min-w-0"><p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#1D5A46]">{item.type}</p><h3 className="mt-1 text-lg font-semibold tracking-[-0.025em] text-[#29342F] sm:text-xl">{item.title}</h3><p className="mt-1 truncate text-sm text-[#65736C]">{[item.location, item.openingHours, `★ ${item.rating}`].filter(Boolean).join(" · ")}</p></div>
+    <div className="col-start-2 text-sm font-semibold text-[#1D5A46] sm:col-start-auto sm:text-right"><span className="sm:hidden">{item.price}</span><span className="hidden sm:inline">{item.price}</span></div>
+    <span className="col-start-3 row-span-2 row-start-1 flex h-11 w-11 items-center justify-center rounded-full bg-[#1D5A46] text-white transition group-hover:bg-[#355E7A]" aria-hidden="true"><ArrowRightIcon /></span>
+  </Link>;
 }
-
-function PinIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" />
-      <circle cx="12" cy="10" r="2.5" />
-    </svg>
-  );
-}
+function InfoBlock({ title, text }: { title: string; text: string }) { return <div><h2 className="text-sm font-semibold text-[#1D5A46]">{title}</h2><p className="mt-2 max-w-sm text-sm leading-6 text-[#65736C]">{text}</p></div>; }
+function ActivityIcon({ type }: { type: string }) { const isWalk = /wand|route|park/i.test(type); return isWalk ? <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg> : <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 19.5h16M6 19.5V8l6-4 6 4v11.5M9 19.5v-5h6v5M9 10h.01M15 10h.01"/></svg>; }
+function ArrowRightIcon() { return <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>; }

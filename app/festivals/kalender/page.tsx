@@ -5,7 +5,6 @@ import { Suspense, useEffect, useMemo, useRef, useState, useTransition } from "r
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import Breadcrumbs from "@/components/Breadcrumbs";
 import FestivalHero from "@/components/FestivalHero";
 import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
 import FestivalPageScenery from "@/components/festivals/FestivalPageScenery";
@@ -382,16 +381,7 @@ function FestivalsCalendarContent() {
     <main className="festival-calendar-page relative min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <FestivalPageScenery />
       <div className="relative z-10">
-      <div className="mx-auto max-w-[1240px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        <Breadcrumbs
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Festivals", href: "/festivals" },
-            { label: "Kalender" },
-          ]}
-          className="mb-6"
-        />
-
+      <div className="mx-auto w-full max-w-7xl py-8 lg:py-10 mt-18">
         <FestivalHero
           eyebrow="Festivalagenda"
           title="Festival kalender Nederland"

@@ -6,6 +6,7 @@ const footerLinks = [
   { name: "Jaarkalender", href: "/jaarkalender" },
   { name: "Festivals", href: "/festivals/kalender" },
   { name: "Inspiratie", href: "/inspiratie" },
+  { name: "Nieuws & inspiratie", href: "/nieuws" },
   { name: "FAQ", href: "/faq" },
   { name: "Bewaard", href: "/saved" },
 ];

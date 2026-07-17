@@ -355,9 +355,7 @@ export function AgendaImportBanner({
           >
             <div className="flex items-start justify-between gap-4 border-b border-[#eadfce] px-5 py-5 sm:px-7 sm:py-6">
               <div className="min-w-0">
-                <div className="inline-flex rounded-full bg-[#e7f1d8] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#5d6f42]">
-                  Agenda import
-                </div>
+         
                 <h3
                   id="agenda-import-title"
                   className="mt-3 text-[clamp(1.55rem,7vw,2.5rem)] font-semibold leading-[1] tracking-[-0.05em] text-[#171511]"

@@ -1164,9 +1164,7 @@ export function JaarkalenderInteractiveCalendar() {
               <CalendarIcon />
             </span>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7b6a] sm:text-sm sm:tracking-[0.22em]">
-                Overzicht
-              </p>
+          
               <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
                 {monthTitle}
               </h2>

@@ -119,12 +119,10 @@ export default function SavedFavoritesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-[#171717] sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-[#171717] sm:px-6 lg:px-8 mt-28">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#7a6d60]">
-            Jouw lijst
-          </p>
+        
           <h1 className="mt-2 text-[clamp(2.2rem,6vw,3.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#171511]">
             Bewaarde uitjes
           </h1>
