@@ -164,3 +164,4 @@ Import trace for requested module:
  GET /_next/static/webpack/170a9c8250efed87.webpack.hot-update.json 404 in 20ms
  GET /nieuws/de-magie-van-de-vroege-ochtend 404 in 77ms
  GET /favicon.ico 200 in 7ms
+ ✓ Compiled in 375ms (1652 modules)

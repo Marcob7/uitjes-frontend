@@ -13,6 +13,8 @@ import {
   getNewsArticles,
 } from "@/lib/newsArticles";
 
+export const runtime = "edge";
+
 export const metadata: Metadata = {
   title: "Nieuws & inspiratie | Uitjes",
   description:
