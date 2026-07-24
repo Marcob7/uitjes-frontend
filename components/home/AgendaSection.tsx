@@ -92,6 +92,7 @@ export default function AgendaSection({
               <h2
                 aria-label={title}
                 className="mx-auto max-w-[min(100%,22rem)] text-center text-[clamp(2.65rem,13vw,4.5rem)] font-black uppercase leading-[0.9] tracking-[0] text-white drop-shadow-[0_5px_20px_rgba(0,0,0,0.35)] sm:max-w-none sm:whitespace-nowrap sm:text-[22px] md:text-[31px] lg:text-[40px]"
+                style={{ fontFamily: "var(--font-body)" }}
               >
                 <span className="sm:hidden">Evenementen Kalender</span>
                 <span className="hidden sm:inline">Evenementen&nbsp;Kalender</span>

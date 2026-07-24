@@ -32,7 +32,7 @@ export default function PlansFallenThroughSection({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ ...transition, delay: reduceMotion ? 0 : 0.08 }}
-            className="mt-6 font-serif text-[clamp(2.7rem,5.7vw,5.15rem)] font-medium leading-[0.95] tracking-[-0.055em] text-[#183328]"
+            className="mt-6 text-[clamp(2.7rem,5.7vw,5.15rem)] font-medium leading-[0.95] tracking-[-0.055em] text-[#183328]"
           >
             Zijn je plannen in duigen gevallen?
           </motion.h2>

@@ -71,20 +71,7 @@ export default function CityExploreHeroSection({
 
       <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-10">
         <div className="max-w-[43rem]">
-          <div
-            className="inline-flex min-h-10 items-center rounded-full border px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] shadow-[0_16px_40px_rgba(0,0,0,0.16)] backdrop-blur-md sm:min-h-[44px] sm:py-2 sm:text-[0.72rem]"
-            style={{
-              borderColor: isDarkLiquid
-                ? "rgba(255,255,255,0.18)"
-                : "rgba(255,255,255,0.34)",
-              backgroundColor: isDarkLiquid
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(255,255,255,0.18)",
-              color: "rgba(255,255,255,0.92)",
-            }}
-          >
-            {isGenericLanding ? "Stadsgids" : buildCityBadge(cityLabel)}
-          </div>
+      
 
           <h1 className="mt-5 max-w-[11ch] text-[clamp(2.6rem,7vw,5.4rem)] font-semibold leading-[0.9] tracking-[-0.065em] text-white sm:mt-6">
             {title}

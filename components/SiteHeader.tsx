@@ -48,7 +48,7 @@ export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 px-3 py-3 sm:px-5"
+      className="site-header fixed inset-x-0 top-0 z-50 px-3 py-3 sm:px-5"
     >
       <div className="mx-auto w-full max-w-7xl">
         <div
@@ -56,7 +56,7 @@ export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
             homeGlass
               ? "site-header-shell--home-glass"
               : "site-header-shell--default"
-          }`}
+          } ${mobileMenuOpen ? "site-header-shell--menu-open" : ""}`}
         >
           <div className="relative flex min-h-16 items-center justify-between gap-4 px-4 py-3 sm:px-5 lg:px-6">
             <Link
@@ -156,7 +156,7 @@ export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/55 bg-white/36 text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_10px_26px_rgba(24,37,30,0.12)] backdrop-blur-xl transition duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 lg:hidden"
+              className="site-header-mobile-toggle inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/55 bg-white/36 text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_10px_26px_rgba(24,37,30,0.12)] backdrop-blur-xl transition duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 lg:hidden"
             >
               <span className="sr-only">
                 {mobileMenuOpen ? "Sluit menu" : "Open menu"}
@@ -183,7 +183,7 @@ export default function SiteHeader({ variant = "default" }: SiteHeaderProps) {
           </div>
 
           {mobileMenuOpen && (
-            <div id="mobile-menu" className="relative border-t border-white/45 lg:hidden">
+            <div id="mobile-menu" className="site-header-mobile-menu relative border-t border-white/45 lg:hidden">
               <nav
                 aria-label="Mobiele hoofdnavigatie"
                 className="px-3 pb-4 pt-3 sm:px-4"

@@ -117,7 +117,7 @@ const faqJsonLd = {
 
 export default function FaqPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7f5f3] text-[#151515]">
+    <main className="min-h-screen overflow-hidden bg-[#f7f5f3] text-[#151515] mt-18">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
