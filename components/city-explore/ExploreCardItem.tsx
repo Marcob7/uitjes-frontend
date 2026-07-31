@@ -10,6 +10,7 @@ type ExploreCardItemProps = {
   card: ExploreCard;
   isSelected: boolean;
   onSelect: () => void;
+  variant?: "default" | "flow";
 };
 
 type ActivityIconName =
@@ -106,41 +107,86 @@ function getHighlightLabel(card: ExploreCard) {
   return null;
 }
 
-export default function ExploreCardItem({ card, isSelected, onSelect }: ExploreCardItemProps) {
+export default function ExploreCardItem({
+  card,
+  isSelected,
+  onSelect,
+  variant = "default",
+}: ExploreCardItemProps) {
   const rating = formatRating(card);
   const highlight = getHighlightLabel(card);
   const eventId = typeof card.eventId === "number" && card.eventId > 0 ? card.eventId : null;
   const activityIcon = getExploreActivityIcon(card);
+  const metadata = [
+    card.location,
+    card.time && card.time !== "Tijd volgt" ? card.time : null,
+    rating ? `★ ${rating.label}` : null,
+  ].filter(Boolean);
+
+  const isFlowVariant = variant === "flow";
 
   return (
-    <article onMouseEnter={onSelect} className={`group relative flex min-w-0 flex-col rounded-[1.45rem] border p-4 transition duration-200 sm:p-5 ${isSelected ? "border-[#a8ca62] bg-[#fbfff4] shadow-[0_18px_38px_rgba(109,144,51,0.18)]" : "border-white/80 bg-white/76 shadow-[0_14px_32px_rgba(75,92,52,0.08)] hover:-translate-y-1 hover:border-[#d1e6aa] hover:bg-white hover:shadow-[0_20px_42px_rgba(75,92,52,0.12)]"}`}>
-      <Link href={card.href} onFocus={onSelect} onClick={onSelect} className="absolute inset-0 z-0 rounded-[1.45rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5f923e]" aria-label={`Bekijk ${card.title}`} />
-
-      <div className="pointer-events-none relative z-10 flex items-start justify-between gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#e6f3c9] text-[#2f7046] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+    <article
+      onMouseEnter={onSelect}
+      className={`group relative ${
+        isFlowVariant
+          ? "overflow-hidden rounded-[1.25rem] border border-[#DCE1DC] bg-white/82 shadow-[0_12px_26px_rgba(41,52,47,0.05)]"
+          : `border-b border-[#DCE1DC] last:border-b-0 ${
+              isSelected ? "bg-white/72" : "bg-transparent"
+            }`
+      }`}
+    >
+      <Link
+        href={card.href}
+        onFocus={onSelect}
+        onClick={onSelect}
+        aria-label={`Bekijk ${card.title}`}
+        className={`grid min-h-30 grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-center gap-x-3 gap-y-2 py-5 pr-14 transition sm:min-h-28 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)_2.75rem] sm:gap-x-5 sm:pr-16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC] ${
+          isFlowVariant
+            ? "px-4 hover:bg-[#F7FAF6] sm:px-5"
+            : "sm:px-3 sm:hover:bg-white/70"
+        }`}
+      >
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DDEBE2] text-[#1D5A46]" aria-hidden="true">
           <ActivityIcon name={activityIcon} />
+        </span>
+        <span className="min-w-0">
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="text-xs font-semibold tracking-[0.13em] text-[#1D5A46]">
+              {card.label}
+            </span>
+            {highlight ? (
+              <span className="rounded-full bg-[#DDEBE2] px-2 py-0.5 text-[0.65rem] font-semibold text-[#1D5A46]">
+                {highlight}
+              </span>
+            ) : null}
+          </span>
+          <span className="mt-1 block truncate text-lg font-semibold tracking-[-0.025em] text-[#29342F] sm:text-xl">
+            {card.title}
+          </span>
+          {metadata.length ? (
+            <span
+              title={rating?.title}
+              className="mt-1 block truncate text-sm text-[#65736C]"
+            >
+              {metadata.join(" · ")}
+            </span>
+          ) : null}
+        </span>
+        {card.price ? (
+          <span className="col-start-2 text-sm font-semibold text-[#1D5A46] sm:col-start-auto sm:text-right">
+            {card.price}
+          </span>
+        ) : null}
+        <span className="col-start-3 row-span-2 row-start-1 flex h-11 w-11 items-center justify-center rounded-full bg-[#1D5A46] text-white transition group-hover:bg-[#355E7A]" aria-hidden="true">
+          <ArrowIcon />
+        </span>
+      </Link>
+      {eventId ? (
+        <div className="absolute right-14 top-5 z-10 sm:right-[4.75rem]">
+          <FavouriteButton eventId={eventId} variant="compact" />
         </div>
-        <div className="flex min-w-0 items-center gap-2">
-          {rating ? <span title={rating.title} className="inline-flex items-center gap-1 rounded-full border border-[#edf0df] bg-white/84 px-2.5 py-1 text-xs font-semibold text-[#5d654f]"><StarIcon />{rating.label}</span> : null}
-          {eventId ? <div className="pointer-events-auto relative z-20"><FavouriteButton eventId={eventId} variant="compact" /></div> : null}
-        </div>
-      </div>
-
-      <div className="pointer-events-none relative z-10 mt-4 min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[0.64rem] font-bold uppercase tracking-[0.14em] text-[#4d914f]">{card.label}</span>
-          {highlight ? <span className="rounded-full bg-[#eff7d8] px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-[0.1em] text-[#586d29]">{highlight}</span> : null}
-        </div>
-        <h3 className="mt-2 text-[1.12rem] font-semibold leading-[1.08] tracking-[-0.035em] text-[#273229] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">{card.title}</h3>
-        <p className="mt-2 min-h-[3rem] text-sm leading-5 text-[#687164] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]">{card.description || "Een zorgvuldig geselecteerd moment in de stad."}</p>
-      </div>
-
-      <div className="pointer-events-none relative z-10 mt-4 grid grid-cols-2 gap-x-3 gap-y-2 border-t border-[#ebeee4] pt-3 text-xs text-[#737c70]">
-        <span className="flex min-w-0 items-center gap-1.5 truncate"><PinIcon />{card.location}</span>
-        <span className="flex min-w-0 items-center gap-1.5 truncate"><ClockIcon />{card.time}</span>
-        <span className="font-medium text-[#586751]">{card.price || "Prijs volgt"}</span>
-        <span className="flex items-center justify-end gap-1 font-semibold text-[#4d914f]">Bekijk details <ArrowIcon /></span>
-      </div>
+      ) : null}
     </article>
   );
 }

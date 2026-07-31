@@ -4,15 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ExploreBackgroundScene } from "@/components/discover/ExploreBackgroundScene";
 
-import CityExploreFormSection from "./CityExploreFormSection";
+import DiscoverFlow from "./DiscoverFlow";
 import CityExploreHeroSection from "./CityExploreHeroSection";
 import CityExploreResultsSection from "./CityExploreResultsSection";
 import type {
   CityExploreViewProps,
-  PlannerCompanion,
-  PlannerMoment,
   PlannerSelections,
-  PlannerVibe,
   ResultFilterKey,
 } from "./types";
 import {
@@ -31,6 +28,8 @@ const DEFAULT_PLANNER_SELECTIONS: PlannerSelections = {
   vibe: "eten-drinken",
 };
 
+const PLANNER_STEP_COUNT = 3;
+
 export default function CityExplorePage({
   city,
   events,
@@ -40,11 +39,11 @@ export default function CityExplorePage({
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [completedStepCount, setCompletedStepCount] = useState(0);
+  const [isFlowOpen, setIsFlowOpen] = useState(true);
   const [plannerSelections, setPlannerSelections] = useState<PlannerSelections>(
     DEFAULT_PLANNER_SELECTIONS
   );
   const [resultFilters, setResultFilters] = useState<ResultFilterKey[]>([]);
-  const plannerRef = useRef<HTMLElement | null>(null);
   const resultsRef = useRef<HTMLElement | null>(null);
 
   const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
@@ -79,6 +78,16 @@ export default function CityExplorePage({
     return filterCardsByResultFilters(plannerFilteredCards, resultFilters);
   }, [plannerFilteredCards, resultFilters]);
 
+  const previewCards = useMemo(() => {
+    const fullyMatchedCards = filterCardsByPlannerProgress(
+      cards,
+      plannerSelections,
+      PLANNER_STEP_COUNT
+    );
+
+    return filterCardsByResultFilters(fullyMatchedCards, resultFilters);
+  }, [cards, plannerSelections, resultFilters]);
+
   function scrollToSection(target: HTMLElement | null, block: ScrollLogicalPosition) {
     if (!target) {
       return;
@@ -96,56 +105,31 @@ export default function CityExplorePage({
 
   function showResults() {
     scrollToSection(resultsRef.current, "start");
-  }
 
-  function showPlannerStep(step: number) {
-    setCurrentStep(step);
     window.setTimeout(() => {
-      scrollToSection(plannerRef.current, "start");
-    }, 60);
+      resultsRef.current
+        ?.querySelector<HTMLElement>("#explore-results-heading")
+        ?.focus({ preventScroll: true });
+    }, 0);
   }
 
-  function handleCompanionSelect(value: PlannerCompanion) {
-    setPlannerSelections((current) => ({
-      ...current,
-      companion: value,
-    }));
-    setCompletedStepCount((current) => Math.max(current, 1));
-    setCurrentStep(2);
-  }
-
-  function handleMomentSelect(value: PlannerMoment) {
-    setPlannerSelections((current) => ({
-      ...current,
-      moment: value,
-    }));
-    setCompletedStepCount((current) => Math.max(current, 2));
-    setCurrentStep(3);
-  }
-
-  function handleVibeSelect(value: PlannerVibe) {
-    setPlannerSelections((current) => ({
-      ...current,
-      vibe: value,
-    }));
-    setCompletedStepCount((current) => Math.max(current, 3));
-    setCurrentStep(3);
-    window.setTimeout(() => {
-      showResults();
-    }, 120);
-  }
-
-  function handlePreviousStep() {
-    setCurrentStep((current) => Math.max(1, current - 1));
-  }
-
-  function handleGoToStep(step: number) {
+  function openPlannerAtStep(step = 1) {
     setCurrentStep(step);
+    setIsFlowOpen(true);
   }
 
-  function handleClearStep(step: number) {
-    setCurrentStep(step);
-    setCompletedStepCount(step - 1);
+  function handlePlannerSelectionChange(
+    key: keyof PlannerSelections,
+    value: PlannerSelections[keyof PlannerSelections]
+  ) {
+    setPlannerSelections((current) => ({ ...current, [key]: value }));
+  }
+
+  function handleFlowComplete() {
+    setCompletedStepCount(PLANNER_STEP_COUNT);
+    setCurrentStep(PLANNER_STEP_COUNT);
+    setIsFlowOpen(false);
+    window.setTimeout(showResults, 0);
   }
 
   function handleToggleResultFilter(filter: ResultFilterKey) {
@@ -162,8 +146,7 @@ export default function CityExplorePage({
 
   function handleClearAllFilters() {
     setResultFilters([]);
-    setCompletedStepCount(0);
-    setCurrentStep(1);
+    openPlannerAtStep(1);
   }
 
   useEffect(() => {
@@ -191,21 +174,6 @@ export default function CityExplorePage({
           isDarkLiquid={isDarkLiquid}
         />
 
-        <CityExploreFormSection
-          cityLabel={cityLabel}
-          isDarkLiquid={false}
-          plannerSelections={plannerSelections}
-          currentStep={currentStep}
-          completedStepCount={completedStepCount}
-          onCompanionSelect={handleCompanionSelect}
-          onMomentSelect={handleMomentSelect}
-          onVibeSelect={handleVibeSelect}
-          onPreviousStep={handlePreviousStep}
-          onGoToStep={handleGoToStep}
-          onClearStep={handleClearStep}
-          onShowResults={showResults}
-          sectionRef={plannerRef}
-        />
       </div>
 
       <div className="relative z-10">
@@ -217,13 +185,24 @@ export default function CityExplorePage({
           sectionRef={resultsRef}
           plannerSelections={plannerSelections}
           completedStepCount={completedStepCount}
-          onEditSelection={showPlannerStep}
+          onEditSelection={openPlannerAtStep}
           resultFilters={resultFilters}
           onToggleResultFilter={handleToggleResultFilter}
           onClearResultFilters={handleClearResultFilters}
           onClearAllFilters={handleClearAllFilters}
         />
       </div>
+      {isFlowOpen ? (
+        <DiscoverFlow
+          cityLabel={cityLabel}
+          selections={plannerSelections}
+          currentStep={currentStep}
+          onStepChange={setCurrentStep}
+          onSelectionChange={handlePlannerSelectionChange}
+          previewCards={previewCards}
+          onComplete={handleFlowComplete}
+        />
+      ) : null}
       {/* The map remains available in CityExploreMapSection for future placement; it is intentionally not rendered on /ontdek. */}
     </main>
   );

@@ -209,6 +209,12 @@ button:disabled {
   -webkit-backface-visibility: hidden;
 }
 
+@media (max-height: 600px) {
+  .inspiration-flow-scenery__squirrel {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .squirrel-runner {
     display: none;

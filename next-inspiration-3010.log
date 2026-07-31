@@ -1,0 +1,247 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3010
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3010
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1010ms
+ ○ Compiling /inspiratie ...
+ ✓ Compiled /inspiratie in 2.3s (859 modules)
+ GET /inspiratie?city=nijmegen 200 in 2604ms
+ ✓ Compiled in 172ms (549 modules)
+ ✓ Compiled in 55ms (291 modules)
+ ⚠ Cross origin request detected from 127.0.0.1 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ✓ Compiled /api/city-content in 389ms (671 modules)
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 444ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 442ms
+ GET /favicon.ico 200 in 510ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /inspiratie?city=apeldoorn 200 in 211ms
+ ○ Compiling /ontdek ...
+ ✓ Compiled /ontdek in 1368ms (1694 modules)
+ GET /ontdek?city=apeldoorn 200 in 1605ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /inspiratie?city=apeldoorn 200 in 99ms
+ GET /inspiratie?city=apeldoorn 200 in 47ms
+ GET /favicon.ico 200 in 11ms
+ GET /inspiratie 200 in 34ms
+ ✓ Compiled /api/city-content in 111ms (1046 modules)
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 268ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 6ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 740ms (1708 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz'
+ ✓ Compiled in 750ms (723 modules)
+ ✓ Compiled in 1210ms (1714 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /inspiratie?city=apeldoorn 200 in 222ms
+ GET /inspiratie?city=nijmegen 200 in 74ms
+ ✓ Compiled /api/city-content in 112ms (1049 modules)
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 174ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 176ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 728ms (1775 modules)
+ ✓ Compiled in 360ms (1775 modules)
+ ⨯ Error [SyntaxError]: Invalid or unexpected token
+    at <unknown> (file://C:\Users\Marco\EventsPlanner\frontend\.next\server\app\inspiratie\page.js:200)
+    at new Script (node:vm:117:7)
+    at createScript (node:vm:269:10)
+    at runInContext (node:vm:300:10)
+    at evaluateInContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\context.js:398:38)
+    at getRuntimeContext (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:72:9)
+    at async runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:78:21)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 783ms (947 modules)
+ ✓ Compiled in 27ms (49 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /inspiratie?city=nijmegen 200 in 114ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 42ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 41ms
+ GET /inspiratie?city=nijmegen 200 in 46ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 5ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 502 in 7ms
+ ✓ Compiled /favicon.ico in 16ms (98 modules)
+ GET /favicon.ico 200 in 49ms
+ ✓ Compiled in 440ms (1961 modules)
+ ✓ Compiled in 722ms (1961 modules)
+ ✓ Compiled /_not-found in 255ms (1245 modules)
+ GET /inspiratie?city=nijmegen 200 in 89ms
+ ⨯ ReferenceError: self is not defined
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\app\api\city-content\route.js:9:1)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:84
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36)
+    at async DevServer.findPageComponents (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  page: '/api/city-content'
+}
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 500 in 34ms
+ ⨯ ReferenceError: self is not defined
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\app\api\city-content\route.js:9:1)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:84
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36)
+    at async DevServer.findPageComponents (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  page: '/api/city-content'
+}
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 500 in 45ms
+ GET /inspiratie?city=nijmegen 200 in 27ms
+ ⨯ ReferenceError: self is not defined
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\app\api\city-content\route.js:9:1)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:84
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36)
+    at async DevServer.findPageComponents (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  page: '/api/city-content'
+}
+ ⨯ ReferenceError: self is not defined
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\app\api\city-content\route.js:9:1)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:84
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36)
+    at async DevServer.findPageComponents (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  page: '/api/city-content'
+}
+ GET /favicon.ico 200 in 29ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 500 in 32ms
+ GET /api/city-content?city=nijmegen&limit=100&offset=0 500 in 31ms
+City content API fallback gebruikt:  [TypeError: fetch failed] {
+  cause:  [Error: connect ECONNREFUSED 127.0.0.1:8000] {
+  errno: -4078,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 8000
+}
+}
+ GET /ontdek?city=nijmegen 200 in 219ms
+ GET /inspiratie?city=apeldoorn 200 in 45ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/@swc' in C:\Users\Marco\EventsPlanner\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\@swc.js', but to 'Error: Can't resolve './vendor-chunks/@swc' in 'C:\Users\Marco\EventsPlanner\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/@swc (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\@swc.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_app.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_app.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/next' in C:\Users\Marco\EventsPlanner\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\next.js', but to 'Error: Can't resolve './vendor-chunks/next' in 'C:\Users\Marco\EventsPlanner\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/next (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\vendor-chunks\next.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_app.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\.next\server\pages\_app.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz'

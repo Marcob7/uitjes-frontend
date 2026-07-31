@@ -248,8 +248,8 @@ export function formatTimeRange(startAt: string | null, endAt: string | null) {
 }
 
 function formatPrice(event: BackendEvent) {
-  if (event.price_note) {
-    return event.price_note;
+  if (event.price_note?.trim()) {
+    return event.price_note.trim();
   }
 
   if (event.is_free || event.price_min === 0) {
@@ -257,10 +257,10 @@ function formatPrice(event: BackendEvent) {
   }
 
   if (typeof event.price_min === "number") {
-    return `EUR ${event.price_min.toFixed(2).replace(".", ",")}`;
+    return `€ ${event.price_min.toFixed(2).replace(".", ",")}`;
   }
 
-  return "Prijs volgt";
+  return undefined;
 }
 
 function formatDistance(event: BackendEvent) {

@@ -377,11 +377,8 @@ export default function CityExploreResultsSection({
   }
 
   return (
-    <section ref={sectionRef} className="relative mt-8 scroll-mt-6 overflow-hidden bg-[linear-gradient(135deg,#eff7e8_0%,#f7fbf1_56%,#e8f2c9_100%)] sm:mt-10">
-      <div className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-[#dcefb8]/50 blur-3xl" />
-      <div className="pointer-events-none absolute right-0 top-10 h-80 w-80 rounded-full bg-[#e8f6d2]/70 blur-3xl" />
-
-      <div className="relative mx-auto max-w-[1240px] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 lg:pb-20">
+    <section ref={sectionRef} className="relative mt-8 scroll-mt-6 bg-[#F6F5F0] sm:mt-10">
+      <div className="mx-auto max-w-[1120px] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 lg:pb-20">
         <div className="mb-5 flex flex-wrap items-center gap-2.5">
           {activeFilters.map((filter) => {
             const Icon = filter.icon;
@@ -413,38 +410,49 @@ export default function CityExploreResultsSection({
           })}
         </div>
 
-        <div className="flex flex-col gap-5 border-b border-[#d5e1bd] pb-7 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-5 border-b border-[#DCE1DC] pb-7 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="inline-flex rounded-full bg-[#087a3d] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_rgba(32,109,55,0.14)]">
+            <div className="text-xs font-semibold tracking-[0.13em] text-[#1D5A46]">
               {resultsLabel}
             </div>
-            <h3 className="mt-4 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#171511]">
-              Vind jouw rust in {cityLabel}
-            </h3>
-            <p className="mt-3 max-w-[36rem] text-sm leading-6 text-[#665d54] sm:text-base">
+            <h2
+              id="explore-results-heading"
+              tabIndex={-1}
+              className="mt-3 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]"
+            >
+              Jouw selectie voor {cityLabel}
+            </h2>
+            <p className="mt-3 max-w-[36rem] text-sm leading-6 text-[#65736C] sm:text-base">
               {completedStepCount === 0
-                ? `Ontdek zorgvuldig geselecteerde uitjes die je weer in contact brengen met jezelf en de wereld om je heen.`
+                ? `Kies eerst wat bij je plan past, dan zetten we de beste suggesties klaar.`
                 : `${filteredCards.length} suggesties afgestemd op jullie moment, sfeer en stad.`}
             </p>
           </div>
 
-          <div className="mt-8 flex items-center md:mt-0">
+          <div className="mt-8 flex flex-wrap items-center gap-3 md:mt-0">
+            <button
+              type="button"
+              onClick={() => onEditSelection(1)}
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#DCE1DC] bg-white px-5 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
+            >
+              Keuzes aanpassen
+            </button>
             <button
               ref={filterButtonRef}
               type="button"
               onClick={openFilters}
               aria-expanded={isFilterModalOpen}
               aria-controls={filterModalId}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold shadow-[0_10px_24px_rgba(83,65,45,0.07)] backdrop-blur-md transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] ${
+              className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] ${
                 hasResultFilters
-                  ? "border-[#cfe2a6] bg-[#f5f9e9]/86 text-[#405028] hover:-translate-y-0.5 hover:bg-white"
-                  : "border-[#dfd4c6] bg-white/68 text-[#4b3a28] hover:bg-white"
+                  ? "border-[#9DBAAE] bg-[#DDEBE2] text-[#1D5A46] hover:bg-[#EAF2EC]"
+                  : "border-[#DCE1DC] bg-white text-[#355E7A] hover:border-[#355E7A]"
               }`}
             >
               <FilterIcon className="h-4 w-4" />
               <span>Filters</span>
               {hasResultFilters ? (
-                <span className="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#405028] px-1.5 text-xs font-bold text-white">
+                <span className="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#1D5A46] px-1.5 text-xs font-bold text-white">
                   {resultFilters.length}
                 </span>
               ) : null}
@@ -555,7 +563,7 @@ export default function CityExploreResultsSection({
           </div>
         ) : null}
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        <div className="mt-8 border-y border-[#DCE1DC]">
           {displayedCards.map((card) => (
             <ExploreCardItem
               key={card.id}
