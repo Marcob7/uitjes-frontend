@@ -32,7 +32,6 @@ type FlowOption = {
 type QuestionFlowStep = FullscreenChoiceFlowStep & {
   type: "question";
   id: PlannerSelectionKey;
-  eyebrow: string;
   title: string;
   description: string;
   options: FlowOption[];
@@ -55,7 +54,6 @@ const FLOW_STEPS: FlowStep[] = [
   {
     type: "question",
     id: "companion",
-    eyebrow: "Jouw gezelschap",
     title: "Met wie ga je op pad?",
     description: "We stemmen de suggesties af op het gezelschap waarmee je de stad in trekt.",
     options: [
@@ -68,7 +66,6 @@ const FLOW_STEPS: FlowStep[] = [
   {
     type: "question",
     id: "moment",
-    eyebrow: "Jouw moment",
     title: "Wanneer wil je iets doen?",
     description: "Zoeken we iets voor nu, later vandaag of een moment om naar uit te kijken?",
     options: [
@@ -81,7 +78,6 @@ const FLOW_STEPS: FlowStep[] = [
   {
     type: "question",
     id: "vibe",
-    eyebrow: "Jouw sfeer",
     title: "Waar heb je zin in?",
     description: "Kies de richting die vandaag het beste voelt. Daarna zetten we je selectie klaar.",
     options: [
@@ -149,7 +145,7 @@ export default function DiscoverFlow({
             )}
           </FullscreenChoiceResults>
         ) : step.type === "question" ? (
-          <FullscreenChoiceQuestion eyebrow={step.eyebrow} contextLabel={`In ${cityLabel}`} title={step.title} description={step.description}>
+          <FullscreenChoiceQuestion contextLabel={`In ${cityLabel}`} title={step.title} description={step.description}>
             <FullscreenChoiceGrid
               title={step.title}
               selectedValue={selections[step.id]}

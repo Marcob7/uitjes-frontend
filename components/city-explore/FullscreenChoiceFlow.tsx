@@ -252,13 +252,11 @@ export function FullscreenChoiceFlow({
 const FlowHeadingIdsContext = React.createContext<{ labelId: string; descriptionId: string } | null>(null);
 
 export function FullscreenChoiceQuestion({
-  eyebrow,
   contextLabel,
   title,
   description,
   children,
 }: {
-  eyebrow: string;
   contextLabel?: string;
   title: string;
   description: string;
@@ -270,13 +268,12 @@ export function FullscreenChoiceQuestion({
     <div className="w-full">
       <div className="grid gap-10 lg:grid-cols-[minmax(16rem,0.82fr)_minmax(0,1.45fr)] lg:items-end lg:gap-16">
         <div className="max-w-xl lg:pb-4">
-          <p className="text-xs font-semibold tracking-[0.12em] text-[#1D5A46]">{eyebrow}</p>
           {contextLabel ? <p className="mt-5 text-sm font-medium text-[#65736C]">{contextLabel}</p> : null}
           <h1
             id={ids?.labelId}
             data-flow-heading
             tabIndex={-1}
-            className="mt-3 max-w-[11ch] text-[clamp(2.7rem,6.4vw,5.75rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]"
+            className={`${contextLabel ? "mt-3" : ""} max-w-[11ch] text-[clamp(2.7rem,6.4vw,5.75rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]`}
           >
             {title}
           </h1>
@@ -342,12 +339,10 @@ export function FullscreenChoiceGrid({
 }
 
 export function FullscreenChoiceResults({
-  eyebrow = "Jouw selectie",
   title = "Dit past bij jouw keuzes",
   description,
   children,
 }: {
-  eyebrow?: string;
   title?: string;
   description: string;
   children: ReactNode;
@@ -357,8 +352,7 @@ export function FullscreenChoiceResults({
   return (
     <section className="mx-auto w-full max-w-[72rem] motion-safe:animate-[wizardIn_240ms_cubic-bezier(0.16,1,0.3,1)_both]">
       <div className="max-w-2xl">
-        <p className="text-xs font-semibold tracking-[0.12em] text-[#1D5A46]">{eyebrow}</p>
-        <h1 id={ids?.labelId} data-flow-heading tabIndex={-1} className="mt-3 max-w-[14ch] text-[clamp(2.7rem,6vw,5.25rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]">
+        <h1 id={ids?.labelId} data-flow-heading tabIndex={-1} className="max-w-[14ch] text-[clamp(2.7rem,6vw,5.25rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]">
           {title}
         </h1>
         <p id={ids?.descriptionId} className="mt-4 text-base leading-7 text-[#65736C] sm:text-lg">{description}</p>

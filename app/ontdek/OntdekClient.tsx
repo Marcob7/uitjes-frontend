@@ -148,10 +148,7 @@ export default function OntdekClient() {
             <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/10 backdrop-blur-xl p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
-                    Account
-                  </p>
-                  <h2 className="font-heading mt-2 text-2xl text-white">
+                  <h2 className="font-heading text-2xl text-white">
                     Jouw ontdekruimte
                   </h2>
                 </div>
@@ -166,10 +163,7 @@ export default function OntdekClient() {
             </div>
 
             <div className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[1.75rem] border border-white/14 bg-white/10 p-5 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
-                Samenvatting
-              </p>
-              <h2 className="font-heading mt-2 text-2xl text-white">
+              <h2 className="font-heading text-2xl text-white">
                 {cityLabel} op {whenLabel.toLowerCase()}
               </h2>
               <p className="mt-3 text-sm leading-6 text-white/70">
@@ -196,10 +190,7 @@ export default function OntdekClient() {
             <section className="overflow-hidden rounded-[2.25rem] border border-white/70 bg-white/10 backdrop-blur-xl p-6 shadow-[0_28px_90px_rgba(60,43,24,0.08)] backdrop-blur sm:p-8 lg:p-10">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl">
-                  <span className="inline-flex rounded-full border border-white/18 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
-                    Ontdek
-                  </span>
-                  <h1 className="font-heading mt-4 text-4xl leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl">
+                  <h1 className="font-heading text-4xl leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl">
                     Verken actuele events met rustiger filters en een duidelijkere flow.
                   </h1>
                   <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
@@ -339,10 +330,7 @@ export default function OntdekClient() {
             <section className="border border-white/14 bg-white/10 backdrop-blur-xl rounded-[2.25rem] border border-white/14 bg-white/10 backdrop-blur-xl p-6 shadow-[0_18px_50px_rgba(70,52,24,0.06)] sm:p-8">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="max-w-2xl">
-                  <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
-                    Resultaten
-                  </span>
-                  <h2 className="font-heading mt-3 text-3xl text-white sm:text-4xl">
+                  <h2 className="font-heading text-3xl text-white sm:text-4xl">
                     Events in {cityLabel}
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-white/70 sm:text-base">

@@ -88,7 +88,8 @@ const NEUTRAL_THEME: SceneTheme = {
 
 const STAR_POSITIONS = [[8, 14], [16, 23], [27, 12], [39, 27], [51, 10], [60, 20], [71, 12], [83, 25], [92, 14], [13, 39], [31, 36], [47, 43], [67, 36], [79, 47], [89, 39]] as const;
 const BIRDS = [{ left: "61%", top: "30%", scale: 0.75, delay: 0 }, { left: "68%", top: "24%", scale: 0.55, delay: 0.18 }, { left: "73%", top: "34%", scale: 0.65, delay: 0.36 }] as const;
-const HOME_CITIES = ["Amsterdam", "Apeldoorn", "Haarlem", "Den Haag", "Zwolle"];
+const ACTIVITY_WORDS = ["Party", "Festival", "Game", "Dance", "Adventure", "Weekend"] as const;
+const STATIC_ACTIVITY_WORD = ACTIVITY_WORDS[0];
 const cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(" ");
 
 function Bird({ className = "" }: { className?: string }) {
@@ -101,26 +102,38 @@ function Cloud({ className = "", opacity = 1 }: { className?: string; opacity?: 
 
 const HomeWordmark = memo(function HomeWordmark({ titleId, prefersReducedMotion, isEvening }: { titleId: string; prefersReducedMotion: boolean | null; isEvening: boolean }) {
   const [wordIndex, setWordIndex] = useState(0);
-  const [visibleLetters, setVisibleLetters] = useState(1);
-  const currentCity = HOME_CITIES[wordIndex] ?? "";
-  const shownCity = currentCity.slice(0, visibleLetters);
+  const [visibleLetters, setVisibleLetters] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const currentWord = ACTIVITY_WORDS[wordIndex] ?? STATIC_ACTIVITY_WORD;
+  const shownWord = currentWord.slice(0, visibleLetters);
 
   useEffect(() => {
-    if (!currentCity) return;
-    const timeout = setTimeout(() => {
-      if (visibleLetters < currentCity.length) {
-        setVisibleLetters((previous) => previous + 1);
-      } else {
-        setVisibleLetters(1);
-        setWordIndex((previous) => (previous + 1) % HOME_CITIES.length);
-      }
-    }, visibleLetters < currentCity.length ? 50 : 800);
-    return () => clearTimeout(timeout);
-  }, [currentCity, visibleLetters]);
+    if (prefersReducedMotion) {
+      setWordIndex(0);
+      setVisibleLetters(STATIC_ACTIVITY_WORD.length);
+      setIsDeleting(false);
+      return;
+    }
 
-  return <motion.h1 id={titleId} aria-label={`Let's get this party in ${currentCity} started.`} className="clubbi-animated-word m-0 text-center text-[51.993px] lg:text-[clamp(2rem,6.4vw,6.25rem)]" style={{ width: "100%", maxWidth: "none", color: isEvening ? "#fff" : "#185650", fontFamily: "var(--font-heading)", fontWeight: 500, lineHeight: 0.94, letterSpacing: "-0.055em", textTransform: "none", whiteSpace: "normal", textShadow: isEvening ? "0 2px 18px rgba(8,17,35,0.34)" : "0 1px 0 rgba(255,255,255,0.24), 0 8px 24px rgba(255,255,255,0.16)" }} animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} transition={{ duration: prefersReducedMotion ? 0 : 0.65, delay: prefersReducedMotion ? 0 : 0.05 }}>
-    <span className="block">Let's get this party in</span>
-    <span className="block"><span>{shownCity}</span> started.</span>
+    const timeout = setTimeout(() => {
+      if (!isDeleting && visibleLetters < currentWord.length) {
+        setVisibleLetters((previous) => previous + 1);
+      } else if (!isDeleting) {
+        setIsDeleting(true);
+      } else if (visibleLetters > 0) {
+        setVisibleLetters((previous) => previous - 1);
+      } else {
+        setWordIndex((previous) => (previous + 1) % ACTIVITY_WORDS.length);
+        setIsDeleting(false);
+      }
+    }, !isDeleting && visibleLetters < currentWord.length ? 80 : isDeleting && visibleLetters > 0 ? 55 : isDeleting ? 280 : 1200);
+
+    return () => clearTimeout(timeout);
+  }, [currentWord, isDeleting, prefersReducedMotion, visibleLetters]);
+
+  return <motion.h1 id={titleId} aria-label={`Let's get this ${STATIC_ACTIVITY_WORD} started.`} className="clubbi-animated-word m-0 text-center text-[51.993px] lg:text-[clamp(2rem,6.4vw,6.25rem)]" style={{ width: "100%", maxWidth: "none", color: isEvening ? "#fff" : "#185650", fontFamily: "var(--font-heading)", fontWeight: 500, lineHeight: 0.94, letterSpacing: "-0.055em", textTransform: "none", whiteSpace: "normal", overflowWrap: "anywhere", textShadow: isEvening ? "0 2px 18px rgba(8,17,35,0.34)" : "0 1px 0 rgba(255,255,255,0.24), 0 8px 24px rgba(255,255,255,0.16)" }} animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} transition={{ duration: prefersReducedMotion ? 0 : 0.65, delay: prefersReducedMotion ? 0 : 0.05 }}>
+    <span aria-hidden="true" className="block">Let's get this</span>
+    <span aria-hidden="true" className="block whitespace-nowrap"><span>{shownWord}</span> started.</span>
   </motion.h1>;
 });
 

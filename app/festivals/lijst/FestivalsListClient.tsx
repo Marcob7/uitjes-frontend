@@ -205,7 +205,6 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
         />
 
         <FestivalHero
-          eyebrow="Festivalzoeker"
           title="Vind je match"
           description={
             <>

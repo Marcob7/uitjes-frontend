@@ -141,9 +141,6 @@ export default function FaqPage() {
         </div>
 
         <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-[#52702f]">
-            Veelgestelde vragen
-          </p>
           <h1 className="mx-auto max-w-[12ch] text-[clamp(3rem,8vw,5.7rem)] font-bold leading-[0.94] tracking-[-0.055em] text-[#171717]">
             Hoe kunnen we je{" "}
             <span className="block font-semibold italic text-[#3f6f25]">

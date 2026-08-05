@@ -60,10 +60,7 @@ export default function NewsOverviewPage({ searchParams }: NewsOverviewPageProps
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Nieuws & inspiratie" }]} className="mb-8" />
 
         <header className="max-w-2xl">
-          <p className="inline-flex rounded-full bg-[#E8F2D0] px-3 py-1.5 text-[0.64rem] font-bold uppercase tracking-[0.17em] text-[#405526]">
-            Verhalen & updates
-          </p>
-          <h1 className="mt-4 max-w-none text-[clamp(2.55rem,5vw,4.35rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F]">
+          <h1 className="max-w-none text-[clamp(2.55rem,5vw,4.35rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F]">
             Nieuws & inspiratie
           </h1>
           <p className="mt-4 max-w-xl text-base leading-7 text-[#65736C] sm:text-lg sm:leading-8">
@@ -80,8 +77,7 @@ export default function NewsOverviewPage({ searchParams }: NewsOverviewPageProps
         <section className="mt-10 sm:mt-12" aria-labelledby="news-overview-heading">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
-              <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#1D5A46]">Alle verhalen</p>
-              <h2 id="news-overview-heading" className="mt-2 text-[clamp(1.8rem,3.4vw,2.65rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#29342F]">
+              <h2 id="news-overview-heading" className="text-[clamp(1.8rem,3.4vw,2.65rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#29342F]">
                 {activeCategory ? activeCategory : "Voor onderweg, om de hoek en daartussenin"}
               </h2>
             </div>

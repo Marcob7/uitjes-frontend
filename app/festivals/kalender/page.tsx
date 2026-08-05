@@ -383,7 +383,6 @@ function FestivalsCalendarContent() {
       <div className="relative z-10">
       <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10 mt-18">
         <FestivalHero
-          eyebrow="Festivalagenda"
           title="Festival kalender Nederland"
           description={
             <>

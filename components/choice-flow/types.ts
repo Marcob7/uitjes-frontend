@@ -14,7 +14,6 @@ export type ChoiceFlowOptionConfig = {
 
 export type ChoiceFlowStepConfig = {
   id: string;
-  eyebrow?: string;
   title: string;
   description?: string;
   options: ChoiceFlowOptionConfig[];

@@ -7,7 +7,6 @@ type TrustedTeamItem = {
 };
 
 type TrustedTeamsSectionProps = {
-  eyebrow?: string;
   items?: TrustedTeamItem[];
 };
 
@@ -20,18 +19,11 @@ const defaultItems: TrustedTeamItem[] = [
 ];
 
 export default function TrustedTeamsSection({
-  eyebrow = "Trusted by world-class teams at:",
   items = defaultItems,
 }: TrustedTeamsSectionProps) {
   return (
     <section className="w-full bg-[#f4f4f3] py-12 sm:py-16">
       <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-10">
-        <div className="mb-8 sm:mb-10">
-          <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#7a3428]">
-            {eyebrow}
-          </p>
-        </div>
-
         <div className="overflow-hidden">
           <div className="flex gap-6">
             {items.map((item) => (

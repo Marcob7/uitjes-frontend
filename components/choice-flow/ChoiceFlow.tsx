@@ -105,7 +105,7 @@ export function ChoiceFlow({
           currentStepIndex={isComplete ? steps.length - 1 : currentStepIndex}
           totalSteps={steps.length}
           completedSteps={completedSteps}
-          labels={steps.map((step) => step.eyebrow ?? step.title)}
+          labels={steps.map((step) => step.title)}
         />
 
         <ChoiceFlowSummary
@@ -125,7 +125,6 @@ export function ChoiceFlow({
           </div>
         ) : (
           <ChoiceFlowStep
-            eyebrow={currentStep.eyebrow}
             title={currentStep.title}
             description={currentStep.description}
             options={currentStep.options}

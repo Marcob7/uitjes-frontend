@@ -47,11 +47,7 @@ export default function HeroSection() {
         <div className="pointer-events-none absolute inset-0 rounded-[32px] bg-[linear-gradient(180deg,rgba(7,19,26,0.12),rgba(7,19,26,0.42))]" />
 
         <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
-          <div className="inline-flex min-h-[44px] items-center rounded-full border border-white/18 bg-white/10 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/92 shadow-[0_16px_40px_rgba(0,0,0,0.16)] backdrop-blur-md">
-            Ontdek Nederland op gevoel
-          </div>
-
-          <h1 className="mx-auto mt-6 max-w-[12ch] text-center text-4xl font-bold leading-[1.03] tracking-[-0.045em] text-white md:text-5xl lg:text-6xl">
+          <h1 className="mx-auto max-w-[12ch] text-center text-4xl font-bold leading-[1.03] tracking-[-0.045em] text-white md:text-5xl lg:text-6xl">
             Vind je volgende
             <br />
             geluksmoment.

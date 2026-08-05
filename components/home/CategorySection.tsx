@@ -8,10 +8,7 @@ export default function CategorySection() {
 
         <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-10">
           <div className="max-w-2xl">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#62702b]">
-              Jaarkalender
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#182026] md:text-3xl">
+            <h2 className="text-2xl font-semibold tracking-tight text-[#182026] md:text-3xl">
               Ontdek evenementen door het hele jaar
             </h2>
             <p className="mt-4 text-sm leading-6 text-[#4d5961] md:max-w-xl md:text-base">

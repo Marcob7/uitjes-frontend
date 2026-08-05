@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { WebGLLiquid } from "@/components/ui/webgl-liquid";
 
 type FestivalHeroProps = {
-  eyebrow: string;
   title: string;
   description: ReactNode;
   search: ReactNode;

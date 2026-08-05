@@ -59,18 +59,8 @@ export default function HeroSection({
       <div className="relative">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.95fr)] lg:items-center">
           <div className="max-w-[36rem]">
-            <div
-              className="inline-flex rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em]"
-              style={{
-                backgroundColor: "rgba(184, 234, 114, 0.22)",
-                color: "#43602a",
-              }}
-            >
-              {editorialContent.editionTag}
-            </div>
-
             <h1
-              className="mt-5 max-w-[10ch] text-[clamp(3rem,6vw,5.25rem)] font-semibold leading-[0.92] tracking-[-0.07em]"
+              className="max-w-[10ch] text-[clamp(3rem,6vw,5.25rem)] font-semibold leading-[0.92] tracking-[-0.07em]"
               style={{ color: cityTheme.colors.heading || "#111111" }}
             >
               {editorialContent.titleIntro}{" "}

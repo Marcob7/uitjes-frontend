@@ -63,14 +63,13 @@ export default function InspirationCategoryPage({ params, searchParams }: PagePr
     <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-5 pb-16 sm:pt-8 sm:pb-24">
       <Breadcrumbs items={[{ label: "Inspiratie", href: "/inspiratie" }, { label: routeCategory.label }]} className="mb-9" />
       <header className="max-w-3xl border-b border-[#DCE1DC] pb-9 sm:pb-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#1D5A46]">Inspiratie</p>
-        <h1 className="mt-3 text-[clamp(2.5rem,6vw,4.75rem)] font-semibold leading-[0.94] tracking-[-0.06em]">{context}</h1>
+        <h1 className="text-[clamp(2.5rem,6vw,4.75rem)] font-semibold leading-[0.94] tracking-[-0.06em]">{context}</h1>
         <p className="mt-5 max-w-2xl text-base leading-7 text-[#65736C] sm:text-lg">{routeCategory.description}</p>
         <p className="mt-5 text-sm font-medium text-[#1D5A46]">{results.length} {results.length === 1 ? "activiteit" : "activiteiten"}</p>
       </header>
 
       <section className="pt-8 sm:pt-10" aria-labelledby="resultaten-heading">
-        <div className="mb-5 flex items-end justify-between gap-5"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#65736C]">Overzicht</p><h2 id="resultaten-heading" className="mt-2 text-2xl font-semibold tracking-[-0.04em]">Kies een activiteit</h2></div><Link href={withContext("/inspiratie", query)} className="min-h-11 shrink-0 rounded-full border border-[#DCE1DC] bg-white px-4 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Keuzehulp</Link></div>
+        <div className="mb-5 flex items-end justify-between gap-5"><div><h2 id="resultaten-heading" className="text-2xl font-semibold tracking-[-0.04em]">Kies een activiteit</h2></div><Link href={withContext("/inspiratie", query)} className="min-h-11 shrink-0 rounded-full border border-[#DCE1DC] bg-white px-4 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Keuzehulp</Link></div>
         <div className="divide-y divide-[#DCE1DC] border-y border-[#DCE1DC]">{results.map((item) => <ResultRow key={item.slug} item={item} href={withContext(`/inspiratie/${item.category}/${item.slug}`, query)} />)}</div>
       </section>
 

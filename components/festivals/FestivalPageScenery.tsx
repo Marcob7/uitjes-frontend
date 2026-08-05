@@ -5,10 +5,33 @@ export default function FestivalPageScenery() {
       className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[620px] overflow-hidden sm:h-[700px] lg:h-[820px]"
     >
       <svg
+        viewBox="0 0 360 64"
+        preserveAspectRatio="xMidYMid meet"
+        focusable="false"
+        className="absolute inset-x-0 top-[5.25rem] h-14 w-full sm:hidden"
+      >
+        <path
+          d="M-10 12Q80 54 180 47t190-35"
+          fill="none"
+          stroke="#7a4a58"
+          strokeOpacity="0.38"
+          strokeWidth="2"
+        />
+        <g fillOpacity="0.9">
+          <circle cx="27" cy="27" r="5" fill="#d99b6c" />
+          <circle cx="73" cy="41" r="5" fill="#c46f78" />
+          <circle cx="119" cy="47" r="5" fill="#f1c38f" />
+          <circle cx="165" cy="44" r="5" fill="#d99b6c" />
+          <circle cx="211" cy="38" r="5" fill="#c46f78" />
+          <circle cx="257" cy="27" r="5" fill="#f1c38f" />
+          <circle cx="303" cy="13" r="5" fill="#d99b6c" />
+        </g>
+      </svg>
+      <svg
         viewBox="0 0 1600 900"
         preserveAspectRatio="xMidYMin slice"
         focusable="false"
-        className="h-full w-full"
+        className="hidden h-full w-full sm:block"
       >
         <defs>
           <linearGradient id="festivalSky" x1="0" y1="0" x2="0" y2="1">

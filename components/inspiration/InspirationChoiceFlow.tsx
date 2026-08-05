@@ -50,7 +50,6 @@ type CityOption = { label: string; value: string };
 type CityFlowStep = FullscreenChoiceFlowStep & {
   type: "custom";
   id: "city";
-  eyebrow: string;
   title: string;
   description: string;
 };
@@ -58,7 +57,6 @@ type CityFlowStep = FullscreenChoiceFlowStep & {
 type QuestionFlowStep = FullscreenChoiceFlowStep & {
   type: "question";
   id: InspirationSelectionKey;
-  eyebrow: string;
   title: string;
   description: string;
   options: Array<ChoiceOption<AudienceChoice | MomentChoice | VibeChoice>>;
@@ -107,14 +105,12 @@ const inspirationFlowSteps: InspirationFlowStep[] = [
   {
     type: "custom",
     id: "city",
-    eyebrow: "Jouw stad",
     title: "Kies een stad",
     description: "We gebruiken je stad voor elke volgende keuze en voor de resultaten die je straks ziet.",
   },
   {
     type: "question",
     id: "audience",
-    eyebrow: "Jouw gezelschap",
     title: "Met wie ga je op pad?",
     description: "Stem de suggesties af op het gezelschap waarmee je eropuit gaat.",
     options: audienceOptions,
@@ -122,7 +118,6 @@ const inspirationFlowSteps: InspirationFlowStep[] = [
   {
     type: "question",
     id: "moment",
-    eyebrow: "Jouw moment",
     title: "Wanneer wil je iets doen?",
     description: "Kies het moment dat past bij je plan in de stad.",
     options: momentOptions,
@@ -130,7 +125,6 @@ const inspirationFlowSteps: InspirationFlowStep[] = [
   {
     type: "question",
     id: "vibe",
-    eyebrow: "Jouw sfeer",
     title: "Waar heb je zin in?",
     description: "Kies de richting die vandaag het beste voelt. Daarna zetten we je selectie klaar.",
     options: vibeOptions,
@@ -396,8 +390,7 @@ export function InspirationChoiceFlow({
       <section aria-hidden={isFlowOpen} className={isFlowOpen ? "invisible" : "mx-auto max-w-[72rem]"}>
         <div className="flex flex-col justify-between gap-5 border-b border-[#DCE1DC] pb-7 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-semibold tracking-[0.12em] text-[#1D5A46]">Inspiratie</p>
-            <h1 ref={resultsHeadingRef} id="inspiration-results-heading" tabIndex={-1} className="mt-3 text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.92] tracking-[-0.06em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]">
+            <h1 ref={resultsHeadingRef} id="inspiration-results-heading" tabIndex={-1} className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.92] tracking-[-0.06em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]">
               Dit past bij jouw keuzes
             </h1>
             <p className="mt-4 text-base leading-7 text-[#65736C] sm:text-lg">
@@ -465,7 +458,7 @@ export function InspirationChoiceFlow({
 
             if (step.id === "city") {
               return (
-                <FullscreenChoiceQuestion eyebrow={step.eyebrow} title={step.title} description={step.description}>
+                <FullscreenChoiceQuestion title={step.title} description={step.description}>
                   <div className="w-full max-w-2xl rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5">
                     <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een ondersteunde stad</label>
                     <div className="mt-2 flex flex-col gap-3 sm:flex-row">
@@ -494,7 +487,7 @@ export function InspirationChoiceFlow({
 
             if (step.type === "question") {
               const selectedValue = step.id === "audience" ? selectedAudience : step.id === "moment" ? selectedMoment : selectedVibe;
-              return <FullscreenChoiceQuestion eyebrow={step.eyebrow} contextLabel={selectedCityLabel ? `In ${selectedCityLabel}` : undefined} title={step.title} description={step.description}><FullscreenChoiceGrid title={step.title} selectedValue={selectedValue} onChoose={chooseQuestion} options={step.options.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))} /></FullscreenChoiceQuestion>;
+              return <FullscreenChoiceQuestion contextLabel={selectedCityLabel ? `In ${selectedCityLabel}` : undefined} title={step.title} description={step.description}><FullscreenChoiceGrid title={step.title} selectedValue={selectedValue} onChoose={chooseQuestion} options={step.options.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))} /></FullscreenChoiceQuestion>;
             }
 
             return null;

@@ -56,13 +56,14 @@ export default function PlansFallenThroughSection({
               unoptimized
               alt=""
               aria-hidden="true"
-              className="pointer-events-none absolute bottom-64 right-[-1rem] z-10 block w-80 max-w-none select-none sm:left-[calc(100%-4rem)] sm:right-auto sm:w-[32rem]"
+              className="pointer-events-none absolute bottom-64 right-[-1rem] z-10 hidden w-80 max-w-none select-none md:block md:left-[calc(100%-4rem)] md:right-auto md:w-[32rem]"
             />
             <motion.div
               initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ ...transition, delay: reduceMotion ? 0 : 0.24 }}
+              className="relative z-20"
             >
               <Link
                 href={href}

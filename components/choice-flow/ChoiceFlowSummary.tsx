@@ -40,7 +40,6 @@ export function ChoiceFlowSummary({
             onClick={onEditStep ? () => onEditStep(step.id) : undefined}
             className="max-w-full border-[#d7e7b6] bg-[#d9f0a8] text-[#44602a]"
           >
-            {step.eyebrow ? `${step.eyebrow}: ` : ""}
             {getAnswerLabel(step, answer)}
           </AppFilterChip>
         );
