@@ -48,6 +48,7 @@ type DiscoverFlowProps = {
   onSelectionChange: (key: PlannerSelectionKey, value: PlannerSelectionValue) => void;
   previewCards: ExploreCard[];
   onComplete: () => void;
+  onViewAllResults: () => void;
 };
 
 const FLOW_STEPS: FlowStep[] = [
@@ -99,6 +100,7 @@ export default function DiscoverFlow({
   onSelectionChange,
   previewCards,
   onComplete,
+  onViewAllResults,
 }: DiscoverFlowProps) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const totalSteps = FLOW_STEPS.length;
@@ -123,6 +125,7 @@ export default function DiscoverFlow({
       onStepChange={onStepChange}
       onComplete={onComplete}
       onEditChoices={() => onStepChange(1)}
+      secondaryAction={{ label: "Bekijk alle resultaten", onClick: onViewAllResults }}
       exitHref="/"
       exitLabel="Terug naar start"
     >
@@ -145,7 +148,7 @@ export default function DiscoverFlow({
             )}
           </FullscreenChoiceResults>
         ) : step.type === "question" ? (
-          <FullscreenChoiceQuestion contextLabel={`In ${cityLabel}`} title={step.title} description={step.description}>
+          <FullscreenChoiceQuestion title={step.title} description={`Je hebt gekozen voor ${cityLabel}`}>
             <FullscreenChoiceGrid
               title={step.title}
               selectedValue={selections[step.id]}

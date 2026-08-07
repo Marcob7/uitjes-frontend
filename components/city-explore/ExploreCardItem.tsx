@@ -130,7 +130,7 @@ export default function ExploreCardItem({
       onMouseEnter={onSelect}
       className={`group relative ${
         isFlowVariant
-          ? "overflow-hidden rounded-[1.25rem] border border-[#DCE1DC] bg-white/82 shadow-[0_12px_26px_rgba(41,52,47,0.05)]"
+          ? "overflow-hidden rounded-[1.5rem] border border-[#DCE1DC] bg-white/82 shadow-[0_14px_30px_rgba(41,52,47,0.06)]"
           : `border-b border-[#DCE1DC] last:border-b-0 ${
               isSelected ? "bg-white/72" : "bg-transparent"
             }`
@@ -143,7 +143,7 @@ export default function ExploreCardItem({
         aria-label={`Bekijk ${card.title}`}
         className={`grid min-h-30 grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-center gap-x-3 gap-y-2 py-5 pr-14 transition sm:min-h-28 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)_2.75rem] sm:gap-x-5 sm:pr-16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC] ${
           isFlowVariant
-            ? "px-4 hover:bg-[#F7FAF6] sm:px-5"
+          ? "min-h-36 px-5 py-6 hover:bg-[#F7FAF6] sm:px-6"
             : "sm:px-3 sm:hover:bg-white/70"
         }`}
       >

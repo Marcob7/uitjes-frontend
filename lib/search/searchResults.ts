@@ -22,6 +22,10 @@ export type GeneralSearchResult = {
   score: number;
 };
 
+export type GeneralSearchResultState =
+  | { status: "success"; results: GeneralSearchResult[] }
+  | { status: "error" };
+
 const queryAliases: Record<string, string[]> = {
   museum: ["musea", "cultuur", "expositie", "bibliotheek"],
   musea: ["museum", "cultuur", "expositie"],
@@ -230,18 +234,34 @@ function uniqueResults(results: GeneralSearchResult[]) {
   });
 }
 
-export async function getGeneralSearchResults(query: string) {
+export async function getGeneralSearchResults(
+  query: string
+): Promise<GeneralSearchResultState> {
   const terms = getSearchTerms(query);
-  if (terms.length === 0) return [];
+  if (terms.length === 0) return { status: "success", results: [] };
 
   const dummyMatches = inspirationResults
     .map((result) => mapInspirationResult(result, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
 
-  const cityContent = await searchCityContent(query);
+  let cityContent: CityContentItem[];
+
+  try {
+    cityContent = await searchCityContent(query, { throwOnError: true });
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("Search city-content request failed:", error);
+    }
+
+    return { status: "error" };
+  }
+
   const cityContentMatches = cityContent
     .map((item) => mapCityContentResult(item, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
 
-  return uniqueResults([...cityContentMatches, ...dummyMatches]).sort(sortResults);
+  return {
+    status: "success",
+    results: uniqueResults([...cityContentMatches, ...dummyMatches]).sort(sortResults),
+  };
 }

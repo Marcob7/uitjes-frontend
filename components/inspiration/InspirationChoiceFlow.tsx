@@ -18,7 +18,6 @@ import { CITY_CONTENT_CITY_SLUGS, isCityContentCity } from "@/lib/cityContentCit
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import {
   featuredInspirationCities,
-  isInspirationCategorySlug,
   type InspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
@@ -31,7 +30,6 @@ type VibeChoice = "cultureel" | "actief" | "eten-drinken" | "relaxed";
 type InspirationSelectionKey = "audience" | "moment" | "vibe";
 
 type InspirationChoiceFlowProps = {
-  initialCategory?: string;
   initialCity?: string;
   /** Legacy query support; city is now canonicalized to ?city=. */
   initialLocation?: string;
@@ -106,7 +104,7 @@ const inspirationFlowSteps: InspirationFlowStep[] = [
     type: "custom",
     id: "city",
     title: "Kies een stad",
-    description: "We gebruiken je stad voor elke volgende keuze en voor de resultaten die je straks ziet.",
+    description: "Nog geen idee wat je wilt doen? Laat ons je helpen met onze expertise.",
   },
   {
     type: "question",
@@ -139,25 +137,6 @@ function findSupportedCity(input?: string | null) {
   return supportedInspirationCities.find(
     (city) => city.value === normalized || normalizeCitySlug(city.label) === normalized
   );
-}
-
-function getCategoryDefaults(category?: string): {
-  audience?: AudienceChoice;
-  moment?: MomentChoice;
-  vibe?: VibeChoice;
-} {
-  if (!category || !isInspirationCategorySlug(category)) return {};
-
-  switch (category) {
-    case "met-kinderen": return { audience: "gezin" };
-    case "romantisch": return { audience: "date" };
-    case "vandaag": return { moment: "nu" };
-    case "weekend": return { moment: "weekend" };
-    case "eten-drinken": return { vibe: "eten-drinken" };
-    case "buiten": return { vibe: "actief" };
-    case "binnen": return { vibe: "cultureel" };
-    case "gratis": return { vibe: "relaxed" };
-  }
 }
 
 function hasCategory(result: InspirationResult, category: InspirationCategorySlug) {
@@ -236,7 +215,6 @@ function toExploreCard(result: InspirationResult, index: number): ExploreCard {
 }
 
 export function InspirationChoiceFlow({
-  initialCategory,
   initialCity,
   initialLocation,
   initialNearbyCity,
@@ -247,15 +225,17 @@ export function InspirationChoiceFlow({
   const resultsHeadingRef = useRef<HTMLHeadingElement | null>(null);
   const hasObservedUrlState = useRef(false);
   const pendingCityUrl = useRef<string | null>(null);
-  const defaults = useMemo(() => getCategoryDefaults(initialCategory), [initialCategory]);
   const legacyCity = initialLocation === "nearby" ? initialNearbyCity : initialLocation;
   const initialSelectedCity = findSupportedCity(initialCity ?? legacyCity);
   const [selectedCity, setSelectedCity] = useState<string | undefined>(initialSelectedCity?.value);
   const [cityInput, setCityInput] = useState(initialSelectedCity?.label ?? "");
   const [cityError, setCityError] = useState<string | null>(null);
-  const [selectedAudience, setSelectedAudience] = useState<AudienceChoice | undefined>(defaults.audience);
-  const [selectedMoment, setSelectedMoment] = useState<MomentChoice | undefined>(defaults.moment);
-  const [selectedVibe, setSelectedVibe] = useState<VibeChoice | undefined>(defaults.vibe);
+  // A new flow starts with no substantive answers. A city from the URL is the
+  // sole persisted initial selection; answers remain in state for editing and
+  // back navigation within this mounted flow.
+  const [selectedAudience, setSelectedAudience] = useState<AudienceChoice | undefined>();
+  const [selectedMoment, setSelectedMoment] = useState<MomentChoice | undefined>();
+  const [selectedVibe, setSelectedVibe] = useState<VibeChoice | undefined>();
   const [currentStep, setCurrentStep] = useState(1);
   const [isFlowOpen, setIsFlowOpen] = useState(true);
   const [cityContentItems, setCityContentItems] = useState<CityContentItem[]>([]);
@@ -423,6 +403,7 @@ export function InspirationChoiceFlow({
           onStepChange={setCurrentStep}
           onComplete={finishFlow}
           onEditChoices={() => setCurrentStep(1)}
+          secondaryAction={selectedCity ? { label: "Bekijk alle resultaten", onClick: finishFlow } : undefined}
           exitHref="/"
           exitLabel="Terug naar start"
           decorativeLayer={({ isResultsStep }) => (

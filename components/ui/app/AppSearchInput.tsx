@@ -23,6 +23,12 @@ export type AppSearchInputProps = {
   className?: string;
   inputClassName?: string;
   autoFocus?: boolean;
+  inputId?: string;
+  errorMessage?: string | null;
+  statusMessage?: string | null;
+  isSubmitting?: boolean;
+  onClear?: () => void;
+  inputRef?: React.Ref<HTMLInputElement>;
 };
 
 export function AppSearchInput({
@@ -37,8 +43,15 @@ export function AppSearchInput({
   className,
   inputClassName,
   autoFocus,
+  inputId = "app-search-input",
+  errorMessage,
+  statusMessage,
+  isSubmitting = false,
+  onClear,
+  inputRef,
 }: AppSearchInputProps) {
   const hasSuggestions = suggestions.length > 0;
+  const feedbackId = `${inputId}-feedback`;
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,27 +72,40 @@ export function AppSearchInput({
           <span className="mr-3 text-lg text-[#756b61]" aria-hidden="true">
             &#8981;
           </span>
-          <label htmlFor="app-search-input" className="sr-only">
+          <label htmlFor={inputId} className="sr-only">
             Zoeken
           </label>
           <input
-            id="app-search-input"
+            id={inputId}
+            ref={inputRef}
             value={value}
             onChange={(event) => onChange(event.target.value)}
             placeholder={placeholder}
             autoComplete="off"
             autoFocus={autoFocus}
             type="search"
+            aria-invalid={Boolean(errorMessage)}
+            aria-describedby={errorMessage || statusMessage ? feedbackId : undefined}
             className={cn(
-              "w-full bg-transparent text-base text-[#211d19] outline-none placeholder:text-[#9b9288] sm:text-sm",
+              "min-h-11 w-full bg-transparent text-base text-[#211d19] outline-none placeholder:text-[#9b9288] [&::-webkit-search-cancel-button]:appearance-none sm:text-sm",
               inputClassName
             )}
           />
+          {value ? (
+            <button
+              type="button"
+              onClick={() => onClear?.() ?? onChange("")}
+              className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg text-[#756b61] transition hover:bg-[#f7f3ef] hover:text-[#211d19] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005fcc]"
+              aria-label="Zoekopdracht wissen"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          ) : null}
         </div>
 
         {showSubmitButton ? (
-          <AppButton type="submit" variant="primary" size="md" className="md:min-w-[6.5rem]">
-            {submitLabel}
+          <AppButton type="submit" variant="primary" size="md" disabled={isSubmitting} className="md:min-w-[6.5rem]">
+            {isSubmitting ? "Zoeken…" : submitLabel}
           </AppButton>
         ) : null}
       </div>
@@ -103,6 +129,20 @@ export function AppSearchInput({
             ))}
           </ul>
         </div>
+      ) : null}
+
+      {errorMessage || statusMessage ? (
+        <p
+          id={feedbackId}
+          role={errorMessage ? "alert" : "status"}
+          aria-live={errorMessage ? undefined : "polite"}
+          className={cn(
+            "px-3 pb-1 pt-2 text-sm leading-5",
+            errorMessage ? "text-[#9b3c2e]" : "text-[#665d54]"
+          )}
+        >
+          {errorMessage ?? statusMessage}
+        </p>
       ) : null}
     </form>
   );

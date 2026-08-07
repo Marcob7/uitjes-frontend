@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
 
 import ExploreCardItem from "./ExploreCardItem";
+import CityExploreMapSection from "./CityExploreMapSection";
 import type {
   ExploreCard,
   PlannerCompanion,
@@ -250,6 +251,7 @@ export default function CityExploreResultsSection({
     resultSetKey: "",
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isMobileMapOpen, setIsMobileMapOpen] = useState(false);
   const [draftResultFilters, setDraftResultFilters] =
     useState<ResultFilterKey[]>(resultFilters);
   const filterButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -279,8 +281,11 @@ export default function CityExploreResultsSection({
   const filterTitleId = "explore-filter-title";
   const resultsLabel =
     filteredCards.length === 1
-      ? "1 match"
-      : `${filteredCards.length} matches`;
+      ? "1 resultaat"
+      : `${filteredCards.length} resultaten`;
+  const selectionLabels = activeFilters
+    .filter((filter) => filter.id !== "city")
+    .map((filter) => filter.label);
 
   useEffect(() => {
     setVisibleState((current) => {
@@ -308,6 +313,17 @@ export default function CityExploreResultsSection({
       document.body.style.overflow = previousOverflow;
     };
   }, [isFilterModalOpen]);
+
+  useEffect(() => {
+    if (!isMobileMapOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileMapOpen]);
 
   useEffect(() => {
     if (!isFilterModalOpen) {
@@ -377,59 +393,24 @@ export default function CityExploreResultsSection({
   }
 
   return (
-    <section ref={sectionRef} className="relative mt-8 scroll-mt-6 bg-[#F6F5F0] sm:mt-10">
-      <div className="mx-auto max-w-[1120px] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 lg:pb-20">
-        <div className="mb-5 flex flex-wrap items-center gap-2.5">
-          {activeFilters.map((filter) => {
-            const Icon = filter.icon;
-            const editStep = filter.editStep;
-
-            if (editStep) {
-              return (
-                <button
-                  key={filter.id}
-                  type="button"
-                  onClick={() => onEditSelection(editStep)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition hover:-translate-y-0.5 hover:bg-white/82 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] ${filter.tone}`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{filter.label}</span>
-                </button>
-              );
-            }
-
-            return (
-              <div
-                key={filter.id}
-                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium ${filter.tone}`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{filter.label}</span>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="flex flex-col gap-5 border-b border-[#DCE1DC] pb-7 md:flex-row md:items-end md:justify-between">
+    <section ref={sectionRef} className="relative mt-3 scroll-mt-32 bg-[#F6F5F0] sm:mt-4 lg:scroll-mt-48">
+      <div className="mx-auto max-w-[1800px] px-4 pb-20 pt-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="flex flex-col gap-4 border-b border-[#DCE1DC] pb-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="text-xs font-semibold tracking-[0.13em] text-[#1D5A46]">
-              {resultsLabel}
-            </div>
-            <h2
+            <h1
               id="explore-results-heading"
               tabIndex={-1}
-              className="mt-3 text-[clamp(2rem,3vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]"
+              className="text-[clamp(2.25rem,3.2vw,3.5rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]"
             >
-              Jouw selectie voor {cityLabel}
-            </h2>
-            <p className="mt-3 max-w-[36rem] text-sm leading-6 text-[#65736C] sm:text-base">
-              {completedStepCount === 0
-                ? `Kies eerst wat bij je plan past, dan zetten we de beste suggesties klaar.`
-                : `${filteredCards.length} suggesties afgestemd op jullie moment, sfeer en stad.`}
+              Uitjes in {cityLabel}
+            </h1>
+            <p className="mt-2 text-sm font-medium text-[#65736C] sm:text-base">
+              {resultsLabel}
+              {selectionLabels.length ? ` · ${selectionLabels.join(" · ")}` : ""}
             </p>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 md:mt-0">
+          <div className="flex flex-wrap items-center gap-3 md:justify-end">
             <button
               type="button"
               onClick={() => onEditSelection(1)}
@@ -459,6 +440,14 @@ export default function CityExploreResultsSection({
             </button>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setIsMobileMapOpen(true)}
+          className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#9DBAAE] bg-[#DDEBE2] px-5 py-2.5 text-sm font-semibold text-[#1D5A46] lg:hidden"
+        >
+          <PinIcon className="h-4 w-4" /> Kaart bekijken
+        </button>
 
         {isFilterModalOpen ? (
           <div
@@ -563,16 +552,19 @@ export default function CityExploreResultsSection({
           </div>
         ) : null}
 
-        <div className="mt-8 border-y border-[#DCE1DC]">
-          {displayedCards.map((card) => (
-            <ExploreCardItem
-              key={card.id}
-              card={card}
-              isSelected={selectedId === card.id}
-              onSelect={() => onSelectCard(card.id)}
-            />
-          ))}
-        </div>
+        <div className="mt-5 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(470px,0.82fr)] lg:items-start lg:gap-8 xl:gap-10">
+          <div>
+            <div className="grid gap-5 border-y border-[#DCE1DC] py-5 sm:grid-cols-2">
+              {displayedCards.map((card) => (
+                <ExploreCardItem
+                  key={card.id}
+                  card={card}
+                  isSelected={selectedId === card.id}
+                  onSelect={() => onSelectCard(card.id)}
+                  variant="flow"
+                />
+              ))}
+            </div>
 
         {hasExpandableResults && !hasNoResults ? (
           <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -626,6 +618,33 @@ export default function CityExploreResultsSection({
               >
                 Kies een andere stad
               </a>
+            </div>
+          </div>
+        ) : null}
+          </div>
+
+          <aside className="hidden lg:block">
+            <div className="sticky top-40 h-[min(760px,calc(100dvh-10rem))] min-h-[560px]">
+              <CityExploreMapSection
+                cityLabel={cityLabel}
+                events={filteredCards}
+                selectedId={selectedId}
+                setSelectedId={onSelectCard}
+                layout="embedded"
+                fullHeight
+              />
+            </div>
+          </aside>
+        </div>
+
+        {isMobileMapOpen ? (
+          <div className="fixed inset-0 z-50 bg-[#F6F5F0] p-3 lg:hidden" role="dialog" aria-modal="true" aria-label={`Kaart van ${cityLabel}`}>
+            <div className="mb-3 flex items-center justify-between px-1">
+              <h2 className="text-lg font-semibold text-[#29342F]">{cityLabel} op de kaart</h2>
+              <button type="button" onClick={() => setIsMobileMapOpen(false)} className="inline-flex min-h-11 items-center rounded-full border border-[#DCE1DC] bg-white px-4 text-sm font-semibold text-[#355E7A]">Lijst bekijken</button>
+            </div>
+            <div className="h-[calc(100dvh-5.25rem)]">
+              <CityExploreMapSection cityLabel={cityLabel} events={filteredCards} selectedId={selectedId} setSelectedId={(id) => { onSelectCard(id); }} layout="embedded" fullHeight />
             </div>
           </div>
         ) : null}

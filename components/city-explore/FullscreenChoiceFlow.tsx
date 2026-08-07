@@ -24,6 +24,10 @@ type FullscreenChoiceFlowProps = {
   onStepChange: (step: number) => void;
   onComplete: () => void;
   onEditChoices?: () => void;
+  secondaryAction?: {
+    label: string;
+    onClick: () => void;
+  };
   exitHref: string;
   exitLabel: string;
   decorativeLayer?: (context: {
@@ -50,6 +54,7 @@ export function FullscreenChoiceFlow({
   onStepChange,
   onComplete,
   onEditChoices,
+  secondaryAction,
   exitHref,
   exitLabel,
   decorativeLayer,
@@ -230,17 +235,30 @@ export function FullscreenChoiceFlow({
                 Bekijk alle resultaten
               </button>
             </div>
-          ) : safeStep > 1 ? (
-            <button
-              type="button"
-              onClick={() => onStepChange(safeStep - 1)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
-            >
-              <ArrowLeftIcon className="h-4 w-4" />
-              Vorige
-            </button>
           ) : (
-            <p className="hidden text-sm text-[#65736C] sm:block">Kies een kaart om verder te gaan.</p>
+            <div className={`flex w-full flex-col gap-3 ${safeStep > 1 ? "sm:flex-row sm:items-center sm:justify-between" : "sm:items-end"}`}>
+              {safeStep > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => onStepChange(safeStep - 1)}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:w-auto"
+                >
+                  <ArrowLeftIcon className="h-4 w-4" />
+                  Vorige
+                </button>
+              ) : null}
+              {secondaryAction ? (
+                <button
+                  type="button"
+                  onClick={secondaryAction.onClick}
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:w-auto"
+                >
+                  {secondaryAction.label}
+                </button>
+              ) : safeStep === 1 ? (
+                <p className="hidden text-sm text-[#65736C] sm:block">Kies een kaart om verder te gaan.</p>
+              ) : null}
+            </div>
           )}
         </footer>
       </div>

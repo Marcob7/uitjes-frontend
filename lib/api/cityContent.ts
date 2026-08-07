@@ -113,6 +113,7 @@ type CityContentApiResponse = {
 
 type CityContentFetchOptions = {
   fallback?: CityContentItem[];
+  throwOnError?: boolean;
 };
 
 const DEFAULT_LIMIT = 100;
@@ -356,6 +357,7 @@ export async function getCityContent(
     return (payload.results ?? []).map(normalizeCityContentItem);
   } catch (error) {
     logCityContentError(error);
+    if (options.throwOnError) throw error;
     return options.fallback ?? [];
   }
 }
@@ -381,6 +383,7 @@ async function getAllCityContent(
     }
   } catch (error) {
     logCityContentError(error);
+    if (options.throwOnError) throw error;
     return options.fallback ?? [];
   }
 }

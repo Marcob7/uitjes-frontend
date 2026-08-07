@@ -440,6 +440,8 @@ export function buildExploreCards(
       audiences: event.audiences,
       moments: event.moments,
       vibes: event.vibes,
+      latitude: event.latitude ?? null,
+      longitude: event.longitude ?? null,
     };
   });
 }
@@ -747,17 +749,21 @@ function matchesPlannerSelections(
   item: PlannerFilterItem,
   selections: PlannerSelections
 ) {
-  const matchesCompanion =
+  const matchesCompanion = !selections.companion || (
     item.audiences?.length
       ? item.audiences.includes(selections.companion)
-      : inferAudienceMatch(item, selections.companion);
-  const matchesMoment =
+      : inferAudienceMatch(item, selections.companion)
+  );
+  const matchesMoment = !selections.moment || (
     item.moments?.length
       ? item.moments.includes(selections.moment)
-      : inferMomentMatch(item, selections.moment);
-  const matchesVibe = item.vibes?.length
-    ? item.vibes.includes(selections.vibe)
-    : inferVibeMatch(item, selections.vibe);
+      : inferMomentMatch(item, selections.moment)
+  );
+  const matchesVibe = !selections.vibe || (
+    item.vibes?.length
+      ? item.vibes.includes(selections.vibe)
+      : inferVibeMatch(item, selections.vibe)
+  );
 
   return matchesCompanion && matchesMoment && matchesVibe;
 }
@@ -769,21 +775,27 @@ function matchesPlannerProgress(
 ) {
   if (completedStepCount < 1) return true;
 
-  const matchesCompanion = item.audiences?.length
-    ? item.audiences.includes(selections.companion)
-    : inferAudienceMatch(item, selections.companion);
+  const matchesCompanion = !selections.companion || (
+    item.audiences?.length
+      ? item.audiences.includes(selections.companion)
+      : inferAudienceMatch(item, selections.companion)
+  );
 
   if (completedStepCount < 2) return matchesCompanion;
 
-  const matchesMoment = item.moments?.length
-    ? item.moments.includes(selections.moment)
-    : inferMomentMatch(item, selections.moment);
+  const matchesMoment = !selections.moment || (
+    item.moments?.length
+      ? item.moments.includes(selections.moment)
+      : inferMomentMatch(item, selections.moment)
+  );
 
   if (completedStepCount < 3) return matchesCompanion && matchesMoment;
 
-  const matchesVibe = item.vibes?.length
-    ? item.vibes.includes(selections.vibe)
-    : inferVibeMatch(item, selections.vibe);
+  const matchesVibe = !selections.vibe || (
+    item.vibes?.length
+      ? item.vibes.includes(selections.vibe)
+      : inferVibeMatch(item, selections.vibe)
+  );
 
   return matchesCompanion && matchesMoment && matchesVibe;
 }

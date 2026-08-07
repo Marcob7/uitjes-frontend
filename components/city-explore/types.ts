@@ -83,6 +83,8 @@ export type ExploreCard = {
   audiences?: PlannerCompanion[];
   moments?: PlannerMoment[];
   vibes?: PlannerVibe[];
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 export type PlannerCompanion = "solo" | "date" | "gezin" | "vrienden";

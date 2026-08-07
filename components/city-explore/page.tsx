@@ -2,10 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { ExploreBackgroundScene } from "@/components/discover/ExploreBackgroundScene";
-
 import DiscoverFlow from "./DiscoverFlow";
-import CityExploreHeroSection from "./CityExploreHeroSection";
 import CityExploreResultsSection from "./CityExploreResultsSection";
 import type {
   CityExploreViewProps,
@@ -16,17 +13,13 @@ import {
   buildExploreCards,
   filterCardsByPlannerProgress,
   filterCardsByResultFilters,
-  getCityEditorialContent,
   getEventsWithFallback,
-  isLiquidPaletteDark,
   getSafeCityTheme,
 } from "./utils";
 
-const DEFAULT_PLANNER_SELECTIONS: PlannerSelections = {
-  companion: "date",
-  moment: "nu",
-  vibe: "eten-drinken",
-};
+// A new flow has no planner answers. Values are added only after a choice card
+// is activated; the type remains shared with completed planner consumers.
+const EMPTY_PLANNER_SELECTIONS = {} as PlannerSelections;
 
 const PLANNER_STEP_COUNT = 3;
 
@@ -41,15 +34,13 @@ export default function CityExplorePage({
   const [completedStepCount, setCompletedStepCount] = useState(0);
   const [isFlowOpen, setIsFlowOpen] = useState(true);
   const [plannerSelections, setPlannerSelections] = useState<PlannerSelections>(
-    DEFAULT_PLANNER_SELECTIONS
+    EMPTY_PLANNER_SELECTIONS
   );
   const [resultFilters, setResultFilters] = useState<ResultFilterKey[]>([]);
   const resultsRef = useRef<HTMLElement | null>(null);
 
   const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
-  const editorialContent = useMemo(() => getCityEditorialContent(city), [city]);
   const cityLabel = cityTheme.label;
-  const isDarkLiquid = useMemo(() => isLiquidPaletteDark(cityTheme), [cityTheme]);
 
   const displayEvents = useMemo(() => {
     return useEventFallback ? getEventsWithFallback(city, events) : events;
@@ -79,6 +70,14 @@ export default function CityExplorePage({
   }, [plannerFilteredCards, resultFilters]);
 
   const previewCards = useMemo(() => {
+    if (
+      !plannerSelections.companion ||
+      !plannerSelections.moment ||
+      !plannerSelections.vibe
+    ) {
+      return [];
+    }
+
     const fullyMatchedCards = filterCardsByPlannerProgress(
       cards,
       plannerSelections,
@@ -132,6 +131,20 @@ export default function CityExplorePage({
     window.setTimeout(showResults, 0);
   }
 
+  function handleViewAllResults() {
+    const selectedStepCount = plannerSelections.vibe
+      ? 3
+      : plannerSelections.moment
+        ? 2
+        : plannerSelections.companion
+          ? 1
+          : 0;
+
+    setCompletedStepCount(selectedStepCount);
+    setIsFlowOpen(false);
+    window.setTimeout(showResults, 0);
+  }
+
   function handleToggleResultFilter(filter: ResultFilterKey) {
     setResultFilters((current) =>
       current.includes(filter)
@@ -160,24 +173,10 @@ export default function CityExplorePage({
 
   return (
     <main
-      className="relative isolate pt-18 min-h-screen overflow-hidden bg-[#f8f5f3] px-4 pt-4 text-[#171717] md:px-6 lg:px-8"
+      className="min-h-screen bg-[#F6F5F0] pt-32 text-[#171717] lg:pt-48"
       style={{ backgroundColor: "#f8f5f3" }}
     >
-      <ExploreBackgroundScene />
-      <div className="relative z-10 mx-auto max-w-[1240px] py-4 sm:py-6 lg:py-8">
-        <CityExploreHeroSection
-          cityLabel={cityLabel}
-          intro={editorialContent.intro}
-          resultCount={cards.length}
-          isGenericLanding={isGenericLanding}
-          cityTheme={cityTheme}
-          isDarkLiquid={isDarkLiquid}
-        />
-
-      </div>
-
-      <div className="relative z-10">
-        <CityExploreResultsSection
+      <CityExploreResultsSection
           cityLabel={cityLabel}
           filteredCards={filteredCards}
           selectedId={selectedId}
@@ -190,8 +189,7 @@ export default function CityExplorePage({
           onToggleResultFilter={handleToggleResultFilter}
           onClearResultFilters={handleClearResultFilters}
           onClearAllFilters={handleClearAllFilters}
-        />
-      </div>
+      />
       {isFlowOpen ? (
         <DiscoverFlow
           cityLabel={cityLabel}
@@ -201,9 +199,9 @@ export default function CityExplorePage({
           onSelectionChange={handlePlannerSelectionChange}
           previewCards={previewCards}
           onComplete={handleFlowComplete}
+          onViewAllResults={handleViewAllResults}
         />
       ) : null}
-      {/* The map remains available in CityExploreMapSection for future placement; it is intentionally not rendered on /ontdek. */}
     </main>
   );
 }

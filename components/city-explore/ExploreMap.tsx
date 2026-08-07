@@ -12,6 +12,7 @@ type ExploreMapProps = {
   selectedId: number | null;
   setSelectedId: (id: number) => void;
   variant?: "city" | "festival";
+  fullHeight?: boolean;
 };
 
 type MapPlace = BackendEvent & {
@@ -150,6 +151,7 @@ export default function ExploreMap({
   selectedId,
   setSelectedId,
   variant = "city",
+  fullHeight = false,
 }: ExploreMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -332,12 +334,12 @@ export default function ExploreMap({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] bg-[#f2e6d6] shadow-[0_36px_70px_rgba(52,37,22,0.12)] sm:rounded-[2.8rem]">
+    <div className={`relative overflow-hidden rounded-[1.5rem] bg-[#f2e6d6] shadow-[0_18px_42px_rgba(52,37,22,0.10)] sm:rounded-[1.75rem] ${fullHeight ? "h-full" : ""}`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.58),transparent_34%),linear-gradient(135deg,rgba(244,219,183,0.92),rgba(196,214,190,0.88))]" />
 
       <div
         ref={mapContainerRef}
-        className="relative h-[320px] w-full sm:h-[380px] lg:h-[420px] [filter:saturate(0.82)_contrast(0.95)_sepia(0.08)]"
+        className={`relative w-full [filter:saturate(0.82)_contrast(0.95)_sepia(0.08)] ${fullHeight ? "h-full" : "h-[320px] sm:h-[380px] lg:h-[420px]"}`}
       />
 
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,249,244,0.14)_0%,rgba(236,224,210,0.2)_100%)]" />
@@ -356,22 +358,9 @@ export default function ExploreMap({
       </div>
 
       {selectedPlace ? (
-        <div className="relative z-10 px-3 pb-3 pt-0 sm:absolute sm:bottom-5 sm:left-5 sm:right-5 sm:w-[320px] sm:p-0">
-          <div className="rounded-[1.5rem] bg-white/95 px-5 py-5 shadow-[0_28px_60px_rgba(51,35,21,0.18)] backdrop-blur-xl sm:rounded-[2rem] sm:px-6 sm:py-6">
-            <h3 className="text-[1.6rem] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151515] sm:text-[1.9rem]">
-              Verken op de kaart
-            </h3>
-
-            <p className="mt-3 text-[0.96rem] leading-7 text-[#5d5148]">
-              {variant === "festival"
-                ? "Bekijk waar je festivalmatches zich bevinden ten opzichte van elkaar in Nederland."
-                : "Bekijk waar je top matches zich bevinden ten opzichte van elkaar in de binnenstad."}
-            </p>
-
-            <div className="mt-5 rounded-[1.4rem] bg-[#faf6f0] px-4 py-4 ring-1 ring-black/5">
-              <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#6f644f]">
-                Geselecteerde locatie
-              </div>
+        <div className="relative z-10 px-3 pb-3 pt-0 sm:absolute sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px] sm:p-0">
+          <div className="rounded-[1.25rem] bg-white/95 px-4 py-4 shadow-[0_16px_36px_rgba(51,35,21,0.16)] backdrop-blur-xl">
+            <div className="rounded-[1rem] bg-[#faf6f0] px-3.5 py-3 ring-1 ring-black/5">
               <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#181615]">
                 {selectedPlace.title}
               </div>
@@ -385,13 +374,13 @@ export default function ExploreMap({
               ) : null}
             </div>
 
-            <button
+            {!fullHeight ? <button
               type="button"
               onClick={focusSelectedPlace}
               className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#181615] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 hover:bg-[#2a241e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
             >
               {variant === "festival" ? "Centreer selectie" : "Kaart openen"}
-            </button>
+            </button> : null}
           </div>
         </div>
       ) : null}

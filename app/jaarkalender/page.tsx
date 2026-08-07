@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarNewsletterSignupSection } from "./CalendarNewsletterSignupSection";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
-import { YearCalendarSunlightBackground } from "./YearCalendarSunlightBackground";
+import { YearCalendarEndlessDutchSunsetBackground } from "./YearCalendarEndlessDutchSunsetBackground";
 
 export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",
@@ -16,13 +16,13 @@ export const metadata = {
 
 export default function JaarkalenderPage() {
   return (
-    <main className="min-h-screen overflow-x-clip bg-[#f8f5f3] text-[#171511] mt-10">
-      <section className="relative isolate min-h-[30rem] overflow-hidden sm:min-h-[34rem] lg:min-h-[38rem]">
-        <YearCalendarSunlightBackground />
+    <main className="min-h-screen overflow-x-clip bg-[#f8f5f3] text-[#171511]">
+      <section className="relative isolate min-h-[30rem] overflow-hidden sm:min-h-[34rem] lg:min-h-[40rem]">
+        <YearCalendarEndlessDutchSunsetBackground />
         <div className="relative z-10 mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-          <div className="pb-2 pt-6 sm:pt-10 lg:pt-12">
+          <div className="pb-2 pt-24 sm:pt-28 lg:pt-[7.5rem]">
           <div className="max-w-[56rem]">
-          
+
             <h1 className="mt-4 text-[clamp(2.7rem,5.3vw,5rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#121c27]">
               De Jaarkalender van
               <span className="block text-[#008247]">Nederland</span>
