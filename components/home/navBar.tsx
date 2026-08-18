@@ -14,18 +14,25 @@ const navigationItems = [
   { href: "/faq", label: "FAQ" },
 ];
 
+type NavBarProps = {
+  position?: "absolute" | "fixed";
+};
+
 function isCurrentPath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
 
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function NavBar() {
+export default function NavBar({ position = "absolute" }: NavBarProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isHome = pathname === "/";
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 md:pt-[18px]">
+    <header
+      className={`${position} inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 md:pt-[18px]`}
+    >
       <div className="mx-auto flex w-full max-w-[1150px] items-center justify-between gap-4">
         <Link
           href="/"
@@ -44,8 +51,14 @@ export default function NavBar() {
               priority
             />
           </span>
-          <span className="whitespace-nowrap text-[15px] font-bold tracking-[-0.035em] text-white drop-shadow-[0_1px_10px_rgba(0,0,0,0.24)] sm:text-[16px]">
-            HI NEDERLAND<span className="text-white/80">.</span>
+          <span
+            className={`whitespace-nowrap text-[15px] font-bold tracking-[-0.035em] sm:text-[16px] ${
+              isHome
+                ? "text-white drop-shadow-[0_1px_10px_rgba(0,0,0,0.24)]"
+                : "text-[#171b1c]"
+            }`}
+          >
+            HI NEDERLAND<span className={isHome ? "text-white/80" : "text-[#171b1c]/68"}>.</span>
           </span>
         </Link>
 
@@ -59,10 +72,14 @@ export default function NavBar() {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`relative inline-flex py-2 text-[13px] font-medium leading-none tracking-[-0.01em] outline-none transition-colors duration-200 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent ${
+                    className={`relative inline-flex py-2 text-[13px] font-medium leading-none tracking-[-0.01em] outline-none transition-colors duration-200 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent ${
                       active
-                        ? "text-white"
-                        : "text-white/67 hover:text-white"
+                        ? isHome
+                          ? "text-white focus-visible:ring-white/90"
+                          : "text-[#171b1c] focus-visible:ring-[#171b1c]/70"
+                        : isHome
+                          ? "text-white/67 hover:text-white focus-visible:ring-white/90"
+                          : "text-[#171b1c]/72 hover:text-[#171b1c] focus-visible:ring-[#171b1c]/70"
                     }`}
                   >
                     {item.label}
@@ -87,7 +104,11 @@ export default function NavBar() {
             aria-label={mobileMenuOpen ? "Sluit menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="home-navigation-menu"
-            className="inline-flex h-[38px] w-[38px] items-center justify-center rounded-full border border-white/28 bg-white/10 text-white outline-none backdrop-blur-sm transition hover:bg-white/18 focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent lg:hidden"
+            className={`inline-flex h-[38px] w-[38px] items-center justify-center rounded-full border outline-none backdrop-blur-sm transition focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent lg:hidden ${
+              isHome
+                ? "border-white/28 bg-white/10 text-white hover:bg-white/18 focus-visible:ring-white/90"
+                : "border-[#171b1c]/14 bg-white/72 text-[#171b1c] hover:bg-white focus-visible:ring-[#171b1c]/70"
+            }`}
           >
             <span className="sr-only">
               {mobileMenuOpen ? "Sluit menu" : "Open menu"}

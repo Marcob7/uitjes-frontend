@@ -1,4 +1,3 @@
-import NavBar from "@/components/home/navBar";
 import HomeVideoSection from "@/components/home/homeVideoSection";
 import PlansFallenThroughSection from "@/components/home/PlansFallenThroughSection";
 import AgendaSection from "@/components/home/AgendaSection";
@@ -16,7 +15,6 @@ export const metadata = {
 export default function Page() {
   return (
     <main className="relative min-h-screen bg-[#f8f5f3]">
-      <NavBar />
       <HomeVideoSection />
 
       <PlansFallenThroughSection />

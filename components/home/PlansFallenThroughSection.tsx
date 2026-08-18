@@ -28,12 +28,12 @@ type MosaicPhase = {
 };
 
 const MOSAIC_COLORS: Record<MosaicTileId, string> = {
-  tan: "#E2AF77",
-  slate: "#4E586B",
-  blush: "#ECCABA",
-  blueGrey: "#AEBBC7",
-  orange: "#E89968",
-  red: "#D42D40",
+  tan: "#B89A68",
+  slate: "#2F4356",
+  blush: "#CFC7B8",
+  blueGrey: "#859B95",
+  orange: "#9C6852",
+  red: "#536B55",
 };
 
 const tile = (
@@ -45,7 +45,9 @@ const tile = (
   opacity = 1,
 ): MosaicTile => ({ x, y, width, height, radius, opacity });
 
-const hiddenTile = (): MosaicTile => tile(70, 50, 0, 0, 0, 0);
+// Keep hidden tiles just above zero-size. Animating from or to a degenerate SVG
+// rectangle can leave a rasterised fragment behind for a frame in some browsers.
+const hiddenTile = (): MosaicTile => tile(70, 50, 0.01, 0.01, 0, 0);
 
 const roundedFourTiles = (): MosaicPhase["tiles"] => ({
   tan: tile(33, 14, 35, 35, 7),
@@ -130,9 +132,13 @@ const MOSAIC_PHASES: readonly MosaicPhase[] = [
 
 const MOSAIC_LOOP_START_INDEX = 2;
 const STATIC_MOSAIC_PHASE_INDEX = 3;
-// A subtle overall speed-up keeps the reference choreography calm while
-// making each full cycle feel a little more responsive.
-const MOSAIC_PLAYBACK_RATE = 1.12;
+const MOSAIC_ROW_PHASE_INDEX = 7;
+const MOSAIC_ROW_DETOUR_Y = 64;
+const MOSAIC_ROW_DETOUR_TIMES = [0, 0.22, 0.72, 1];
+const MOSAIC_MORPH_EASE = [0.16, 1, 0.3, 1] as const;
+// This is roughly 14% faster than the existing rendered pace: enough to make
+// the composition feel more alive without changing its calm choreography.
+const MOSAIC_PLAYBACK_RATE = 1.28;
 
 export default function PlansFallenThroughSection({
   href = "/inspiratie",
@@ -147,6 +153,11 @@ export default function PlansFallenThroughSection({
   const activeMosaicPhase =
     MOSAIC_PHASES[reduceMotion ? STATIC_MOSAIC_PHASE_INDEX : mosaicPhaseIndex] ??
     MOSAIC_PHASES[0];
+  const previousMosaicPhaseIndex =
+    mosaicPhaseIndex === MOSAIC_LOOP_START_INDEX
+      ? MOSAIC_PHASES.length - 1
+      : Math.max(0, mosaicPhaseIndex - 1);
+  const previousMosaicPhase = MOSAIC_PHASES[previousMosaicPhaseIndex] ?? MOSAIC_PHASES[0];
   const mosaicTransitionDuration = !reduceMotion && isMosaicInView
     ? activeMosaicPhase.transition / MOSAIC_PLAYBACK_RATE
     : 0;
@@ -172,7 +183,7 @@ export default function PlansFallenThroughSection({
   ]);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#f7f7f1] px-5 py-[clamp(5rem,10vw,9.5rem)] text-[#183328] sm:px-8 lg:px-12">
+    <section className="relative isolate overflow-hidden bg-[#F3F1EB] px-5 py-[clamp(5rem,10vw,9.5rem)] text-[#183328] sm:px-8 lg:px-12">
       <div className="relative mx-auto grid w-full max-w-[78rem] items-center gap-12 md:gap-16 lg:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.78fr)] lg:gap-[clamp(4rem,8vw,8.5rem)]">
         <figure
           aria-hidden="true"
@@ -186,6 +197,14 @@ export default function PlansFallenThroughSection({
           >
             {MOSAIC_TILE_IDS.map((tileId) => {
               const tileState = activeMosaicPhase.tiles[tileId];
+              const previousTileState = previousMosaicPhase.tiles[tileId];
+              const isTileEntering = previousTileState.opacity === 0 && tileState.opacity > 0;
+              const isTileLeaving = previousTileState.opacity > 0 && tileState.opacity === 0;
+              const takesRowDetour =
+                mosaicPhaseIndex === MOSAIC_ROW_PHASE_INDEX &&
+                (tileId === "blueGrey" || tileId === "orange");
+              const exitDuration = Math.min(0.16, mosaicTransitionDuration * 0.24);
+              const enterDuration = Math.min(0.34, mosaicTransitionDuration * 0.58);
 
               return (
                 <motion.rect
@@ -193,8 +212,16 @@ export default function PlansFallenThroughSection({
                   fill={MOSAIC_COLORS[tileId]}
                   initial={false}
                   animate={{
-                    x: tileState.x,
-                    y: tileState.y,
+                    // The two tiles from the lower row take a short route below
+                    // the composition before joining the final row. This keeps
+                    // their movement visible without letting them cut through the
+                    // upper-row tiles midway through the morph.
+                    attrX: takesRowDetour
+                      ? [previousTileState.x, previousTileState.x, tileState.x, tileState.x]
+                      : tileState.x,
+                    attrY: takesRowDetour
+                      ? [previousTileState.y, MOSAIC_ROW_DETOUR_Y, MOSAIC_ROW_DETOUR_Y, tileState.y]
+                      : tileState.y,
                     width: tileState.width,
                     height: tileState.height,
                     rx: tileState.radius,
@@ -202,10 +229,34 @@ export default function PlansFallenThroughSection({
                     opacity: tileState.opacity,
                   }}
                   transition={{
-                    duration: mosaicTransitionDuration,
-                    // Leave the outgoing tableau immediately, then settle softly
-                    // into the next composition instead of lingering at the start.
-                    ease: [0.16, 1, 0.3, 1],
+                    attrX: {
+                      duration: mosaicTransitionDuration,
+                      ease: MOSAIC_MORPH_EASE,
+                      ...(takesRowDetour ? { times: MOSAIC_ROW_DETOUR_TIMES } : {}),
+                    },
+                    attrY: {
+                      duration: mosaicTransitionDuration,
+                      ease: MOSAIC_MORPH_EASE,
+                      ...(takesRowDetour ? { times: MOSAIC_ROW_DETOUR_TIMES } : {}),
+                    },
+                    width: { duration: mosaicTransitionDuration, ease: MOSAIC_MORPH_EASE },
+                    height: { duration: mosaicTransitionDuration, ease: MOSAIC_MORPH_EASE },
+                    rx: { duration: mosaicTransitionDuration, ease: MOSAIC_MORPH_EASE },
+                    ry: { duration: mosaicTransitionDuration, ease: MOSAIC_MORPH_EASE },
+                    // A departing tile disappears before it can contract into a
+                    // visible remnant. Entering tiles wait a fraction of a beat so
+                    // the two states never read as a double-rendered shape.
+                    opacity: {
+                      duration: isTileLeaving
+                        ? exitDuration
+                        : isTileEntering
+                          ? enterDuration
+                          : mosaicTransitionDuration,
+                      delay: isTileEntering
+                        ? Math.min(0.08, mosaicTransitionDuration * 0.12)
+                        : 0,
+                      ease: MOSAIC_MORPH_EASE,
+                    },
                   }}
                   shapeRendering="geometricPrecision"
                 />
@@ -245,7 +296,7 @@ export default function PlansFallenThroughSection({
           >
             <Link
               href={href}
-              className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#224b34] px-7 py-3 text-[0.9rem] font-semibold tracking-[0.01em] text-[#f9fbf6] shadow-[0_14px_28px_rgba(28,69,45,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#183d2a] hover:shadow-[0_18px_34px_rgba(28,69,45,0.23)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#224b34] focus-visible:ring-offset-4 focus-visible:ring-offset-[#f7f7f1] active:translate-y-0 active:scale-[0.98] sm:w-auto"
+              className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#224b34] px-7 py-3 text-[0.9rem] font-semibold tracking-[0.01em] text-[#f9fbf6] shadow-[0_14px_28px_rgba(28,69,45,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#183d2a] hover:shadow-[0_18px_34px_rgba(28,69,45,0.23)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#224b34] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3F1EB] active:translate-y-0 active:scale-[0.98] sm:w-auto"
             >
               Help mij
             </Link>
