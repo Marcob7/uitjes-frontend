@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -214,16 +213,6 @@ export default function PlansFallenThroughSection({
             })}
           </motion.svg>
 
-          <Image
-            src="/animations/flyer-bird.gif?v=5"
-            width={832}
-            height={1104}
-            priority
-            unoptimized
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute bottom-0 left-[39%] z-10 hidden w-[clamp(16rem,28vw,22rem)] max-w-none select-none md:block"
-          />
         </figure>
 
         <div className="relative z-20 max-w-[34rem] lg:justify-self-end">

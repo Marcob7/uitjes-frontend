@@ -16,7 +16,7 @@ export default function AppFrame({ children }: AppFrameProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader variant={isHome ? "homeGlass" : "default"} />
+      {!isHome ? <SiteHeader variant="default" /> : null}
       <div id="app-shell-content" className="flex-1">
         {children}
       </div>

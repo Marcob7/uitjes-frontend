@@ -1,10 +1,7 @@
-import HomeSceneSection from "@/components/home/HomeSceneSection";
-
-
+import NavBar from "@/components/home/navBar";
+import HomeVideoSection from "@/components/home/homeVideoSection";
 import PlansFallenThroughSection from "@/components/home/PlansFallenThroughSection";
 import AgendaSection from "@/components/home/AgendaSection";
-
-
 import HomeCitiesShowcaseSection from "@/components/home/HomeCitiesShowcaseSection";
 
 export const metadata = {
@@ -18,17 +15,14 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#f8f5f3]">
-      <HomeSceneSection
-        description="Van verborgen lokale plekken tot festivals, restaurants en spontane plannen. Ontdek activiteiten die passen bij jouw stemming, locatie en moment."
-      />
- 
+    <main className="relative min-h-screen bg-[#f8f5f3]">
+      <NavBar />
+      <HomeVideoSection />
 
       <PlansFallenThroughSection />
 
       <AgendaSection />
 
-  
       <HomeCitiesShowcaseSection />
     </main>
   );
