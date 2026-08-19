@@ -28,12 +28,12 @@ type MosaicPhase = {
 };
 
 const MOSAIC_COLORS: Record<MosaicTileId, string> = {
-  tan: "#B89A68",
-  slate: "#2F4356",
-  blush: "#CFC7B8",
-  blueGrey: "#859B95",
-  orange: "#9C6852",
-  red: "#536B55",
+  tan: "#C5A66A",
+  slate: "#29493C",
+  blush: "#D3CDBC",
+  blueGrey: "#91A69D",
+  orange: "#A76F58",
+  red: "#29493C",
 };
 
 const tile = (
@@ -274,7 +274,7 @@ export default function PlansFallenThroughSection({
             transition={{ ...transition, delay: reduceMotion ? 0 : 0.08 }}
             className="m-0 max-w-[12ch] text-[clamp(2.8rem,4.7vw,4.85rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#183328]"
           >
-            Zijn je plannen in duigen gevallen?
+           Wij stellen een plan voor je samen wat bij jou past.
           </motion.h2>
 
           <motion.p
@@ -284,7 +284,7 @@ export default function PlansFallenThroughSection({
             transition={{ ...transition, delay: reduceMotion ? 0 : 0.16 }}
             className="mt-6 max-w-[31rem] text-[1.02rem] leading-8 text-[#466153] sm:mt-7 sm:text-[1.125rem]"
           >
-            Geen stress. We helpen je snel aan een nieuw idee dat wél past bij jouw moment.
+           We helpen je snel aan een nieuw idee dat wél past bij jouw moment.
           </motion.p>
 
           <motion.div
@@ -298,7 +298,7 @@ export default function PlansFallenThroughSection({
               href={href}
               className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#224b34] px-7 py-3 text-[0.9rem] font-semibold tracking-[0.01em] text-[#f9fbf6] shadow-[0_14px_28px_rgba(28,69,45,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#183d2a] hover:shadow-[0_18px_34px_rgba(28,69,45,0.23)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#224b34] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3F1EB] active:translate-y-0 active:scale-[0.98] sm:w-auto"
             >
-              Help mij
+         Vind nieuwe ideeën
             </Link>
           </motion.div>
         </div>

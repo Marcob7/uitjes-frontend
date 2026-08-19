@@ -64,7 +64,7 @@ export default function FooterSection() {
                   className="h-8 w-8 shrink-0 object-contain"
                 />
                 <span className="site-brand-wordmark text-2xl">
-                  HI NEDERLAND
+           Doen
                 </span>
               </Link>
 

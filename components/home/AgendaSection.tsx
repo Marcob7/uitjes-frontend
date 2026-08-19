@@ -11,7 +11,7 @@ type AgendaSectionProps = {
 };
 
 const existingAgendaImage =
-  "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&fm=webp&w=1600&q=60";
+  "https://images.unsplash.com/photo-1584521942371-f42b968e98a0?auto=format&fit=crop&fm=webp&w=1600&q=75";
 
 export default function AgendaSection({
   imageSrc = existingAgendaImage,
@@ -68,7 +68,7 @@ export default function AgendaSection({
   return (
     <section
       ref={sectionRef}
-      className={`relative overflow-x-clip bg-white px-3 py-5 sm:h-[155vh] sm:px-0 sm:py-0 ${className}`}
+      className={`relative overflow-x-clip bg-white px-3 py-5 sm:h-[135vh] sm:px-0 sm:py-0 ${className}`}
       data-testid="animated-agenda-card"
     >
       <div className="flex min-h-[calc(100vh-6rem)] min-h-[calc(100dvh-6rem)] w-full items-center justify-center overflow-hidden sm:sticky sm:top-0 sm:h-screen sm:min-h-0 sm:px-6 lg:px-8">
@@ -81,18 +81,18 @@ export default function AgendaSection({
               className="absolute inset-0 h-full w-full object-cover sm:static"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/25 to-black/70 sm:bg-black/25" />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,46,35,0.92),rgba(13,62,49,0.82))]" />
 
             <div
-              className="absolute inset-0 flex w-full flex-col items-center justify-center px-6 text-center will-change-transform"
+              className="absolute inset-0 flex w-full flex-col items-center justify-center gap-6 px-6 text-center will-change-transform"
               style={{
                 transform: `translate3d(0, ${contentY}px, 0)`,
               }}
             >
               <h2
                 aria-label={title}
-                className="mx-auto max-w-[min(100%,22rem)] text-center text-[clamp(2.65rem,13vw,4.5rem)] font-black uppercase leading-[0.9] tracking-[0] text-white drop-shadow-[0_5px_20px_rgba(0,0,0,0.35)] sm:max-w-none sm:whitespace-nowrap sm:text-[22px] md:text-[31px] lg:text-[40px]"
-                style={{ fontFamily: "var(--font-body)" }}
+                className="mx-auto max-w-[12ch] text-center text-[clamp(2.35rem,10vw,3.5rem)] font-medium leading-[0.94] tracking-[-0.045em] text-white drop-shadow-[0_5px_20px_rgba(1,6,16,0.45)] sm:max-w-none sm:whitespace-nowrap sm:text-[clamp(2.25rem,4vw,3.75rem)]"
+                style={{ fontFamily: "var(--font-heading)" }}
               >
                 <span className="sm:hidden">Evenementen Kalender</span>
                 <span className="hidden sm:inline">Evenementen&nbsp;Kalender</span>
@@ -100,7 +100,7 @@ export default function AgendaSection({
 
               <Link
                 href="/jaarkalender"
-                className="mt-6 inline-flex min-h-[46px] items-center justify-center rounded-full bg-blue-600 px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_14px_32px_rgba(37,99,235,0.38)] transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:px-8 md:py-4"
+                className="inline-flex min-h-[46px] items-center justify-center self-center rounded-full bg-[#010610] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_14px_32px_rgba(1,6,16,0.38)] transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:px-8 md:py-4"
               >
                 {buttonText}
               </Link>

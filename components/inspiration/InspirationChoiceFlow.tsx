@@ -405,7 +405,7 @@ export function InspirationChoiceFlow({
           onEditChoices={() => setCurrentStep(1)}
           secondaryAction={selectedCity ? { label: "Bekijk alle resultaten", onClick: finishFlow } : undefined}
           exitHref="/"
-          exitLabel="Terug naar start"
+          exitLabel="Terug naar Home"
           decorativeLayer={({ isResultsStep }) => (
             <InspirationFlowScenery
               variant={isResultsStep ? "subtle" : "default"}
@@ -441,7 +441,7 @@ export function InspirationChoiceFlow({
               return (
                 <FullscreenChoiceQuestion title={step.title} description={step.description}>
                   <div className="w-full max-w-2xl rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5">
-                    <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een ondersteunde stad</label>
+                    <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een stad</label>
                     <div className="mt-2 flex flex-col gap-3 sm:flex-row">
                       <input id="inspiration-city-search" value={cityInput} onChange={(event) => { setCityInput(event.target.value); setCityError(null); }} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); selectCityFromInput(); } }} placeholder="Bijvoorbeeld Nijmegen" autoComplete="off" className="min-h-12 min-w-0 flex-1 rounded-xl border border-[#B8C5BE] bg-white px-4 text-base text-[#29342F] outline-none placeholder:text-[#65736C] focus:border-[#005FCC] focus:ring-2 focus:ring-[#005FCC]" />
                       <button type="button" onClick={selectCityFromInput} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#1D5A46] px-5 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Selecteer stad</button>

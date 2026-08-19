@@ -127,7 +127,7 @@ export default function DiscoverFlow({
       onEditChoices={() => onStepChange(1)}
       secondaryAction={{ label: "Bekijk alle resultaten", onClick: onViewAllResults }}
       exitHref="/"
-      exitLabel="Terug naar start"
+      exitLabel="Terug naar Home"
     >
       {({ isResultsStep }) =>
         isResultsStep ? (

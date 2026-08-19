@@ -168,7 +168,7 @@ export function FullscreenChoiceFlow({
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh max-w-[82rem] flex-col px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] sm:px-7 lg:px-10">
+      <div className="relative z-10 mx-auto flex min-h-dvh max-w-[82rem] flex-col px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(7rem,calc(env(safe-area-inset-top)+6rem))] sm:px-7 lg:px-10">
         <header className="flex min-h-12 items-center justify-between gap-4">
           {isResultsStep ? (
             <button
@@ -187,7 +187,7 @@ export function FullscreenChoiceFlow({
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
             >
               <ArrowLeftIcon className="h-4 w-4" />
-              <span>{exitLabel}</span>
+              <span className="text-[#29342F]">{exitLabel}</span>
             </Link>
           )}
           <p

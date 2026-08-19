@@ -165,7 +165,7 @@ export default function HomeCitiesShowcaseSection() {
   return (
     <section
       aria-labelledby="cities-showcase-title"
-      className="overflow-hidden bg-[#fff] py-[clamp(4rem,7vw,7.5rem)] text-[#6a2a2a]"
+      className="overflow-hidden bg-[#fff] pb-[clamp(4rem,7vw,7.5rem)] pt-[clamp(2.5rem,4vw,4rem)] text-[#6a2a2a]"
     >
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, y: 14 }}
@@ -179,7 +179,7 @@ export default function HomeCitiesShowcaseSection() {
             Steden en gemeenten ontdekken
           </h2>
           <p className="text-[0.8rem] font-semibold tracking-[-0.018em] text-[#6a2a2a] sm:text-sm">
-            Ontdek uitjes in steden door heel Nederland:
+            Ontdek uitjes in samenwerking met gemeentes door heel Nederland
           </p>
         </div>
 
@@ -211,7 +211,7 @@ export default function HomeCitiesShowcaseSection() {
                   <Link
                     href={`/ontdek?city=${city.slug}`}
                     aria-label={`Ontdek uitjes in ${city.name}`}
-                    className="group flex aspect-[3/2] w-full items-center justify-center rounded-[0.65rem] bg-[#f8f3f0] px-6 transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-[#f6f0ed] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.99]"
+                    className="group flex aspect-[3/2] w-full items-center justify-center rounded-[0.65rem] bg-[#F3F0E9] px-6 transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-[#ebe8e0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.99]"
                   >
                     <MunicipalityLogo city={city} />
                   </Link>

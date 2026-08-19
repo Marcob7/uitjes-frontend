@@ -31,14 +31,14 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
 
   return (
     <header
-      className={`${position} inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 md:pt-[18px]`}
+      className={`${position} inset-x-0 top-0 z-[1100] px-4 pt-4 sm:px-6 md:pt-[18px]`}
     >
       <div className="mx-auto flex w-full max-w-[1150px] items-center justify-between gap-4">
         <Link
           href="/"
           onClick={() => setMobileMenuOpen(false)}
           className="group inline-flex shrink-0 items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-          aria-label="Ga naar de homepage van Hi Nederland"
+          aria-label="Ga naar de homepage van DOEN"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-transform duration-300 group-hover:scale-[1.04]">
             <Image
@@ -58,7 +58,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
                 : "text-[#171b1c]"
             }`}
           >
-            HI NEDERLAND<span className={isHome ? "text-white/80" : "text-[#171b1c]/68"}>.</span>
+            DOEN<span className={isHome ? "text-white/80" : "text-[#171b1c]/68"}>.</span>
           </span>
         </Link>
 
