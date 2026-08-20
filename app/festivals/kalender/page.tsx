@@ -6,8 +6,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import FestivalHero from "@/components/FestivalHero";
-import WeeklyPulseSignupSection from "@/components/festivals/WeeklyPulseSignupSection";
 import FestivalPageScenery from "@/components/festivals/FestivalPageScenery";
+import { NewsLetterSection } from "@/components/NewsLetterSection";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 import FestivalGenreFilters, {
   DEFAULT_FESTIVAL_GENRE,
@@ -584,7 +584,11 @@ function FestivalsCalendarContent() {
           ) : null}
         </section>
 
-        <WeeklyPulseSignupSection className="mt-8" />
+        <NewsLetterSection
+          source="festivals"
+          interests={["festivals", "events"]}
+          className="mt-8 ml-[calc(50%-50vw)] w-screen"
+        />
       </div>
       </div>
     </main>

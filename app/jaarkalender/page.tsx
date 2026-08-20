@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CalendarNewsletterSignupSection } from "./CalendarNewsletterSignupSection";
+import { NewsLetterSection } from "@/components/NewsLetterSection";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
 import { YearCalendarEndlessDutchSunsetBackground } from "./YearCalendarEndlessDutchSunsetBackground";
@@ -54,7 +54,11 @@ export default function JaarkalenderPage() {
           <JaarkalenderInteractiveCalendar />
         </section>
 
-        <CalendarNewsletterSignupSection />
+        <NewsLetterSection
+          source="jaarkalender"
+          interests={["events"]}
+          className="mt-12 ml-[calc(50%-50vw)] w-screen"
+        />
       </div>
     </main>
   );

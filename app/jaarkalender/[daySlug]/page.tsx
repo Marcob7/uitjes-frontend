@@ -406,7 +406,7 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#f8f5f3] text-[#171511]">
-      <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12 lg:mt-18">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
@@ -416,7 +416,7 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
           className="mb-6"
         />
 
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between ">
           <div className="max-w-[44rem]">
             <h1 className="mt-5 max-w-none text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.075em] text-[#171511]">
               {day.weekdayDisplay}
