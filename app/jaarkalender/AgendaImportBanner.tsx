@@ -309,17 +309,17 @@ export function AgendaImportBanner({
 
   return (
     <>
-      <section className="rounded-xl border border-white/14 bg-white/10 backdrop-blur-xl border border-[#dbe8c8] bg-[linear-gradient(135deg,#dcefd2,#d1e8cb_48%,#cae3c9)] p-4 shadow-[0_18px_48px_rgba(89,111,54,0.08)] sm:p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/10 backdrop-blur-xl text-[#547037] shadow-[0_12px_24px_rgba(73,96,40,0.12)]">
+      <section className="rounded-[1.4rem] border border-[#ddd9d0] bg-[#fbfaf7] p-4 shadow-[0_16px_42px_rgba(47,43,34,0.05)] sm:p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:flex-col lg:items-stretch">
+          <div className="flex items-center gap-3.5">
+            <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e6efe8] text-[#176343]">
               <ImportCalendarIcon />
             </div>
-            <div>
-              <h3 className="text-[clamp(1.2rem,2vw,1.55rem)] font-semibold tracking-[-0.04em] text-[#1d2019]">
-                Importeer evenementen in mijn agenda
+            <div className="min-w-0">
+              <h3 className="text-lg font-semibold tracking-[-0.03em] text-[#20231f]">
+                Zet ze in je agenda
               </h3>
-              <p className="mt-1 text-sm leading-6 text-[#546049] sm:text-base">
+              <p className="mt-1 text-sm leading-6 text-[#686b65]">
                 Download de zichtbare uitjes als agenda-bestand.
               </p>
             </div>
@@ -332,16 +332,16 @@ export function AgendaImportBanner({
               setDownloadError(null);
               setIsOpen(true);
             }}
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#4d6f1f] px-6 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(69,99,28,0.28)] transition hover:-translate-y-0.5 hover:bg-[#416018] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#bad0c2] bg-transparent px-5 text-sm font-semibold text-[#176343] transition hover:-translate-y-0.5 hover:border-[#7da88e] hover:bg-[#eaf1ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a]"
           >
-            Importeer nu
+            Agenda exporteren
           </button>
         </div>
       </section>
 
       {isOpen ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[#17120d]/50 px-3 py-3 sm:items-center sm:px-4 sm:py-8"
+          className="fixed inset-0 z-[1200] flex items-end justify-center overflow-y-auto bg-[#17120d]/50 px-3 py-3 sm:items-center sm:px-4 sm:py-8"
           onClick={closeModal}
         >
           <div

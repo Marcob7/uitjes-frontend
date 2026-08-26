@@ -166,6 +166,7 @@ export default function HomeCitiesShowcaseSection() {
     <section
       aria-labelledby="cities-showcase-title"
       className="overflow-hidden bg-[#fff] pb-[clamp(4rem,7vw,7.5rem)] pt-[clamp(2.5rem,4vw,4rem)] text-[#6a2a2a]"
+      data-navbar-contrast="on-light"
     >
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, y: 14 }}

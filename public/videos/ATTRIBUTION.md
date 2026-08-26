@@ -8,3 +8,12 @@
 
 Pexels states that its photos and videos may be used and modified for free; credit
 is not required, but is retained here for traceability.
+
+## Jaarkalender video attribution
+
+- **File:** `green-water-adventure-calendar-hero.mp4` (18-second 1080p web source)
+- **Poster:** `green-water-adventure-calendar-hero-poster.jpg`
+- **Source:** [Family Kayaking in a River](https://www.pexels.com/video/family-kayaking-in-a-river-8206983/)
+- **Creator:** K
+- **License:** [Pexels License](https://www.pexels.com/license/)
+- **Use:** Local, muted looping background footage for the Jaarkalender hero.

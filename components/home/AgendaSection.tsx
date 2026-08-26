@@ -69,11 +69,15 @@ export default function AgendaSection({
     <section
       ref={sectionRef}
       className={`relative overflow-x-clip bg-white px-3 py-5 sm:h-[135vh] sm:px-0 sm:py-0 ${className}`}
+      data-navbar-contrast="on-light"
       data-testid="animated-agenda-card"
     >
       <div className="flex min-h-[calc(100vh-6rem)] min-h-[calc(100dvh-6rem)] w-full items-center justify-center overflow-hidden sm:sticky sm:top-0 sm:h-screen sm:min-h-0 sm:px-6 lg:px-8">
         <div className="mx-auto w-full sm:w-[88vw] lg:w-[84vw] xl:w-[80vw] 2xl:w-[74vw] sm:max-w-[1500px]">
-          <article className="relative min-h-[calc(100vh-6rem)] min-h-[calc(100dvh-6rem)] w-full overflow-hidden rounded-[2rem] shadow-[0_26px_90px_rgba(0,0,0,0.18)] sm:h-[70vh] sm:min-h-0 sm:rounded-[34px] lg:h-[68vh] xl:h-[66vh]">
+          <article
+            className="relative min-h-[calc(100vh-6rem)] min-h-[calc(100dvh-6rem)] w-full overflow-hidden rounded-[2rem] shadow-[0_26px_90px_rgba(0,0,0,0.18)] sm:h-[70vh] sm:min-h-0 sm:rounded-[34px] lg:h-[68vh] xl:h-[66vh]"
+            data-navbar-contrast="on-dark"
+          >
             <img
               src={imageSrc}
               alt={title}

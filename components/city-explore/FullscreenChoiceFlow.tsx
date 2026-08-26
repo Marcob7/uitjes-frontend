@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
+
+const useInitialFlowLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export type FullscreenChoiceFlowStep = {
   id: string;
@@ -28,6 +30,9 @@ type FullscreenChoiceFlowProps = {
     label: string;
     onClick: () => void;
   };
+  /** Lets an introductory step opt out of wizard chrome without affecting other flows. */
+  showProgress?: (context: { step: FullscreenChoiceFlowStep; stepNumber: number; totalSteps: number; isResultsStep: boolean }) => boolean;
+  showFooter?: (context: { step: FullscreenChoiceFlowStep; stepNumber: number; totalSteps: number; isResultsStep: boolean }) => boolean;
   exitHref: string;
   exitLabel: string;
   decorativeLayer?: (context: {
@@ -55,6 +60,8 @@ export function FullscreenChoiceFlow({
   onComplete,
   onEditChoices,
   secondaryAction,
+  showProgress,
+  showFooter,
   exitHref,
   exitLabel,
   decorativeLayer,
@@ -65,7 +72,6 @@ export function FullscreenChoiceFlow({
   const previousStepRef = useRef(currentStep);
   const isResultsStepRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
-  const [isMounted, setIsMounted] = useState(false);
   const labelId = useId();
   const descriptionId = useId();
   const totalSteps = steps.length;
@@ -76,11 +82,16 @@ export function FullscreenChoiceFlow({
     () => `${String(safeStep).padStart(2, "0")}/${String(totalSteps).padStart(2, "0")}`,
     [safeStep, totalSteps]
   );
+  const flowContext = { step, stepNumber: safeStep, totalSteps, isResultsStep };
+  const shouldShowProgress = showProgress?.(flowContext) ?? true;
+  const shouldShowFooter = showFooter?.(flowContext) ?? true;
 
   isResultsStepRef.current = isResultsStep;
   onCompleteRef.current = onComplete;
 
-  useEffect(() => {
+  // This must happen before paint: the flow is already present in the initial
+  // server markup, so the page beneath it never becomes briefly scrollable.
+  useInitialFlowLayoutEffect(() => {
     const body = document.body;
     const documentElement = document.documentElement;
     const previousBodyOverflow = body.style.overflow;
@@ -143,18 +154,19 @@ export function FullscreenChoiceFlow({
     });
   }, [safeStep]);
 
-  useEffect(() => setIsMounted(true), []);
+  if (!step) return null;
 
-  if (!isMounted || !step) return null;
-
-  return createPortal(
+  // Keep the dialog in the React tree instead of waiting for a client-only
+  // portal. A fixed element covers the viewport from the server render onward,
+  // which keeps the /ontdek results page from flashing before hydration.
+  return (
     <div
       ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelId}
       aria-describedby={descriptionId}
-      className="fixed inset-0 z-[1000] h-dvh overflow-y-auto overscroll-contain bg-[#F6F5F0] text-[#29342F]"
+      className="fixed inset-0 z-[1000] h-dvh overflow-x-hidden overflow-y-auto overscroll-contain bg-[#F6F5F0] text-[#29342F]"
     >
       {decorativeLayer ? (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -190,21 +202,23 @@ export function FullscreenChoiceFlow({
               <span className="text-[#29342F]">{exitLabel}</span>
             </Link>
           )}
-          <p
-            className="text-sm font-medium text-[#65736C]"
-            aria-label={`Stap ${safeStep} van ${totalSteps}${isResultsStep ? ": resultaten" : ""}`}
-          >
-            <span aria-hidden="true">{progress}</span>
-          </p>
+          {shouldShowProgress ? (
+            <p
+              className="text-sm font-medium text-[#65736C]"
+              aria-label={`Stap ${safeStep} van ${totalSteps}${isResultsStep ? ": resultaten" : ""}`}
+            >
+              <span aria-hidden="true">{progress}</span>
+            </p>
+          ) : <span aria-hidden="true" />}
         </header>
 
-        <main className={isResultsStep ? "flex flex-1 py-8 sm:py-10 lg:py-12" : "flex flex-1 items-center py-9 sm:py-12 lg:py-16"}>
+        <div className={isResultsStep ? "flex flex-1 py-8 sm:py-10 lg:py-12" : "flex flex-1 items-center py-9 sm:py-12 lg:py-16"}>
           <FlowHeadingIdsContext.Provider value={{ labelId, descriptionId }}>
             {children({ step, stepNumber: safeStep, totalSteps, isResultsStep })}
           </FlowHeadingIdsContext.Provider>
-        </main>
+        </div>
 
-        <footer className="flex items-end justify-between gap-4 border-t border-[#DCE1DC] py-4 sm:py-5">
+        {shouldShowFooter ? <footer className="flex items-end justify-between gap-4 border-t border-[#DCE1DC] py-4 sm:py-5">
           <div className="min-w-32">
             <p className="text-xs font-semibold tracking-[0.12em] text-[#65736C]">Voortgang</p>
             <div className="mt-2 flex gap-1.5" aria-hidden="true">
@@ -260,10 +274,9 @@ export function FullscreenChoiceFlow({
               ) : null}
             </div>
           )}
-        </footer>
+        </footer> : null}
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }
 
@@ -273,11 +286,15 @@ export function FullscreenChoiceQuestion({
   contextLabel,
   title,
   description,
+  primaryAction,
+  transitionLabel,
   children,
 }: {
   contextLabel?: string;
   title: string;
   description: string;
+  primaryAction?: ReactNode;
+  transitionLabel?: string;
   children: ReactNode;
 }) {
   const ids = React.useContext(FlowHeadingIdsContext);
@@ -291,13 +308,15 @@ export function FullscreenChoiceQuestion({
             id={ids?.labelId}
             data-flow-heading
             tabIndex={-1}
-            className={`${contextLabel ? "mt-3" : ""} max-w-[11ch] text-[clamp(2.7rem,6.4vw,5.75rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]`}
+            className={`${contextLabel ? "mt-3" : ""} max-w-[13ch] text-[clamp(2.7rem,6.4vw,5.75rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]`}
           >
             {title}
           </h1>
           <p id={ids?.descriptionId} className="mt-5 max-w-md text-base leading-7 text-[#65736C] sm:text-lg sm:leading-8">
             {description}
           </p>
+          {primaryAction ? <div className="mt-6">{primaryAction}</div> : null}
+          {transitionLabel ? <p className="mt-6 text-sm font-semibold text-[#65736C]">{transitionLabel}</p> : null}
         </div>
         {children}
       </div>
@@ -311,18 +330,20 @@ export function FullscreenChoiceGrid({
   selectedValue,
   onChoose,
   disabled = false,
+  compactMobile = false,
 }: {
   title: string;
   options: readonly FullscreenChoiceOption[];
   selectedValue?: string;
   onChoose: (value: string) => void;
   disabled?: boolean;
+  compactMobile?: boolean;
 }) {
   return (
     <fieldset
       role="radiogroup"
       aria-label={title}
-      className="grid gap-3 sm:grid-cols-2 sm:gap-4 motion-safe:animate-[wizardIn_240ms_cubic-bezier(0.16,1,0.3,1)_both]"
+      className={`grid ${compactMobile ? "grid-cols-2 gap-2.5 sm:gap-4" : "gap-3 sm:grid-cols-2 sm:gap-4"} motion-safe:animate-[wizardIn_240ms_cubic-bezier(0.16,1,0.3,1)_both]`}
     >
       <legend className="sr-only">{title}</legend>
       {options.map((option) => {
@@ -335,18 +356,18 @@ export function FullscreenChoiceGrid({
             aria-checked={isSelected}
             disabled={disabled}
             onClick={() => onChoose(option.value)}
-            className={`group relative min-h-40 overflow-hidden rounded-[1.4rem] border p-5 text-left transition sm:min-h-48 sm:p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC] ${
+            className={`group relative min-h-40 overflow-hidden rounded-[1.4rem] border p-5 text-left transition ${compactMobile ? "min-h-[8.75rem] p-3.5 sm:min-h-48 sm:p-6" : "sm:min-h-48 sm:p-6"} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC] ${
               isSelected
                 ? "border-[#1D5A46] bg-[#DDEBE2] text-[#173F31] shadow-[0_16px_32px_rgba(29,90,70,0.12)]"
                 : "border-[#DCE1DC] bg-white/78 text-[#29342F] hover:-translate-y-0.5 hover:border-[#9DBAAE] hover:bg-white hover:shadow-[0_14px_30px_rgba(41,52,47,0.08)]"
             } ${disabled ? "cursor-wait" : ""}`}
           >
-            <span className={`flex h-11 w-11 items-center justify-center rounded-full transition ${isSelected ? "bg-[#1D5A46] text-white" : "bg-[#F0F4ED] text-[#1D5A46] group-hover:bg-[#DDEBE2]"}`} aria-hidden="true">
+            <span className={`flex items-center justify-center rounded-full transition ${compactMobile ? "h-9 w-9 sm:h-11 sm:w-11" : "h-11 w-11"} ${isSelected ? "bg-[#1D5A46] text-white" : "bg-[#F0F4ED] text-[#1D5A46] group-hover:bg-[#DDEBE2]"}`} aria-hidden="true">
               {option.icon}
             </span>
-            <span className="mt-6 block text-xl font-semibold tracking-[-0.035em] sm:text-2xl">{option.label}</span>
-            <span className="mt-2 block max-w-[28rem] text-sm leading-6 text-[#65736C]">{option.description}</span>
-            <span className={`absolute right-5 top-5 flex h-5 w-5 items-center justify-center rounded-full border transition ${isSelected ? "border-[#1D5A46] bg-[#1D5A46] text-white" : "border-[#B8C5BE] bg-white text-transparent"}`} aria-hidden="true">
+            <span className={`block font-semibold tracking-[-0.035em] ${compactMobile ? "mt-3 text-base leading-5 sm:mt-6 sm:text-2xl sm:leading-normal" : "mt-6 text-xl sm:text-2xl"}`}>{option.label}</span>
+            <span className={`block max-w-[28rem] text-[#65736C] ${compactMobile ? "mt-1.5 text-xs leading-[1.15rem] sm:mt-2 sm:text-sm sm:leading-6" : "mt-2 text-sm leading-6"}`}>{option.description}</span>
+            <span className={`absolute flex h-5 w-5 items-center justify-center rounded-full border transition ${compactMobile ? "right-3.5 top-3.5 sm:right-5 sm:top-5" : "right-5 top-5"} ${isSelected ? "border-[#1D5A46] bg-[#1D5A46] text-white" : "border-[#B8C5BE] bg-white text-transparent"}`} aria-hidden="true">
               <CheckIcon className="h-3 w-3" />
             </span>
           </button>

@@ -23,6 +23,7 @@ export default function CtaBannerSection() {
     <section
       aria-labelledby="activity-help-heading"
       className="relative isolate flex min-h-[30rem] items-center justify-center overflow-hidden bg-[#F8F7F3] px-5 py-20 text-[#080d0e] sm:px-8 md:min-h-[26.625rem] md:py-16"
+      data-navbar-contrast="on-light"
     >
       <div
         aria-hidden="true"

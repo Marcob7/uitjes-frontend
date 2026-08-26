@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const navigationItems = [
   { href: "/", label: "Ontdek" },
@@ -18,6 +18,17 @@ type NavBarProps = {
   position?: "absolute" | "fixed";
 };
 
+/** Content contrast required by the surface directly behind the navbar. */
+type NavbarContrast = "on-dark" | "on-light";
+
+const navbarContrastAttribute = "data-navbar-contrast";
+
+function getRouteDefaultContrast(pathname: string): NavbarContrast {
+  // The home hero is the only route whose first surface is dark. All existing
+  // inner-page headers are designed for the dark navbar content variant.
+  return pathname === "/" ? "on-dark" : "on-light";
+}
+
 function isCurrentPath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
 
@@ -27,10 +38,102 @@ function isCurrentPath(pathname: string, href: string) {
 export default function NavBar({ position = "absolute" }: NavBarProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isHome = pathname === "/";
+  const routeDefaultContrast = getRouteDefaultContrast(pathname);
+  const [detectedContrast, setDetectedContrast] = useState<{
+    pathname: string;
+    value: NavbarContrast;
+  }>({ pathname, value: routeDefaultContrast });
+  const contrast =
+    detectedContrast.pathname === pathname
+      ? detectedContrast.value
+      : routeDefaultContrast;
+  const isOnDark = contrast === "on-dark";
+
+  useEffect(() => {
+    const defaultContrast = getRouteDefaultContrast(pathname);
+    const zones = Array.from(
+      document.querySelectorAll<HTMLElement>(`[${navbarContrastAttribute}]`),
+    );
+
+    setDetectedContrast((current) =>
+      current.pathname === pathname && current.value === defaultContrast
+        ? current
+        : { pathname, value: defaultContrast },
+    );
+
+    if (!zones.length) return;
+
+    let observer: IntersectionObserver | undefined;
+    let resizeObserver: ResizeObserver | undefined;
+    const intersectingZones = new Set<HTMLElement>();
+
+    const observeAtNavbar = () => {
+      observer?.disconnect();
+      intersectingZones.clear();
+
+      const navbar = document.querySelector<HTMLElement>("[data-site-navbar]");
+      const navbarRect = navbar?.getBoundingClientRect();
+      const detectionY = Math.round(
+        (navbarRect?.top ?? 16) + (navbarRect?.height ?? 40) / 2,
+      );
+      const detectionBandHeight = 2;
+      const bottomMargin = Math.max(
+        window.innerHeight - detectionY - detectionBandHeight,
+        0,
+      );
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const zone = entry.target as HTMLElement;
+            if (entry.isIntersecting) {
+              intersectingZones.add(zone);
+            } else {
+              intersectingZones.delete(zone);
+            }
+          });
+
+          // Nested zones (such as the Agenda card) occur after their parent
+          // in document order, so they correctly take precedence when both
+          // meet the navbar's small detection band.
+          const activeZone = zones.filter((zone) => intersectingZones.has(zone)).at(-1);
+          const zoneContrast = activeZone?.dataset.navbarContrast;
+          const value: NavbarContrast =
+            zoneContrast === "on-dark" || zoneContrast === "on-light"
+              ? zoneContrast
+              : defaultContrast;
+
+          setDetectedContrast((current) =>
+            current.pathname === pathname && current.value === value
+              ? current
+              : { pathname, value },
+          );
+        },
+        {
+          rootMargin: `-${detectionY}px 0px -${bottomMargin}px 0px`,
+          threshold: 0,
+        },
+      );
+
+      zones.forEach((zone) => observer?.observe(zone));
+    };
+
+    observeAtNavbar();
+    const navbar = document.querySelector<HTMLElement>("[data-site-navbar]");
+    if (navbar && "ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(observeAtNavbar);
+      resizeObserver.observe(navbar);
+    }
+
+    return () => {
+      observer?.disconnect();
+      resizeObserver?.disconnect();
+    };
+  }, [pathname]);
 
   return (
     <header
+      data-site-navbar
       className={`${position} inset-x-0 top-0 z-[1100] px-4 pt-4 sm:px-6 md:pt-[18px]`}
     >
       <div className="mx-auto flex w-full max-w-[1150px] items-center justify-between gap-4">
@@ -53,12 +156,12 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
           </span>
           <span
             className={`whitespace-nowrap text-[15px] font-bold tracking-[-0.035em] sm:text-[16px] ${
-              isHome
+              isOnDark
                 ? "text-white drop-shadow-[0_1px_10px_rgba(0,0,0,0.24)]"
                 : "text-[#171b1c]"
             }`}
           >
-            DOEN<span className={isHome ? "text-white/80" : "text-[#171b1c]/68"}>.</span>
+            DOEN<span className={isOnDark ? "text-white/80" : "text-[#171b1c]/68"}>.</span>
           </span>
         </Link>
 
@@ -74,10 +177,10 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
                     aria-current={active ? "page" : undefined}
                     className={`relative inline-flex py-2 text-[13px] font-medium leading-none tracking-[-0.01em] outline-none transition-colors duration-200 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent ${
                       active
-                        ? isHome
+                        ? isOnDark
                           ? "text-white focus-visible:ring-white/90"
                           : "text-[#171b1c] focus-visible:ring-[#171b1c]/70"
-                        : isHome
+                        : isOnDark
                           ? "text-white/67 hover:text-white focus-visible:ring-white/90"
                           : "text-[#171b1c]/72 hover:text-[#171b1c] focus-visible:ring-[#171b1c]/70"
                     }`}
@@ -105,7 +208,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
             aria-expanded={mobileMenuOpen}
             aria-controls="home-navigation-menu"
             className={`inline-flex h-[38px] w-[38px] items-center justify-center rounded-full border outline-none backdrop-blur-sm transition focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent lg:hidden ${
-              isHome
+              isOnDark
                 ? "border-white/28 bg-white/10 text-white hover:bg-white/18 focus-visible:ring-white/90"
                 : "border-[#171b1c]/14 bg-white/72 text-[#171b1c] hover:bg-white focus-visible:ring-[#171b1c]/70"
             }`}

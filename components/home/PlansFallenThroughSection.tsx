@@ -183,7 +183,10 @@ export default function PlansFallenThroughSection({
   ]);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#F3F1EB] px-5 py-[clamp(5rem,10vw,9.5rem)] text-[#183328] sm:px-8 lg:px-12">
+    <section
+      className="relative isolate overflow-hidden bg-[#F3F1EB] px-5 py-[clamp(5rem,10vw,9.5rem)] text-[#183328] sm:px-8 lg:px-12"
+      data-navbar-contrast="on-light"
+    >
       <div className="relative mx-auto grid w-full max-w-[78rem] items-center gap-12 md:gap-16 lg:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.78fr)] lg:gap-[clamp(4rem,8vw,8.5rem)]">
         <figure
           aria-hidden="true"

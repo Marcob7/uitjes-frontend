@@ -1,9 +1,11 @@
-import Link from "next/link";
-
 import { NewsLetterSection } from "@/components/NewsLetterSection";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
-import { YearCalendarEndlessDutchSunsetBackground } from "./YearCalendarEndlessDutchSunsetBackground";
+
+const CALENDAR_HERO_VIDEO =
+  "/videos/green-water-adventure-calendar-hero.mp4";
+const CALENDAR_HERO_POSTER =
+  "/videos/green-water-adventure-calendar-hero-poster.jpg";
 
 export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",
@@ -16,41 +18,75 @@ export const metadata = {
 
 export default function JaarkalenderPage() {
   return (
-    <main className="min-h-screen overflow-x-clip bg-[#f8f5f3] text-[#171511]">
-      <section className="relative isolate min-h-[30rem] overflow-hidden sm:min-h-[34rem] lg:min-h-[40rem]">
-        <YearCalendarEndlessDutchSunsetBackground />
-        <div className="relative z-10 mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-          <div className="pb-2 pt-24 sm:pt-28 lg:pt-[7.5rem]">
-          <div className="max-w-[56rem]">
+    <main className="min-h-screen overflow-x-clip bg-[#f6f3ed] text-[#171511]">
+      <section
+        className="relative isolate flex min-h-[43rem] items-end overflow-hidden bg-[#10231c] text-white sm:min-h-[76svh] lg:min-h-[82svh]"
+        data-navbar-contrast="on-dark"
+        aria-labelledby="jaarkalender-hero-title"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-30 bg-cover bg-center"
+          style={{ backgroundImage: `url(${CALENDAR_HERO_POSTER})` }}
+        />
+        <video
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-[52%_center] motion-reduce:hidden"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster={CALENDAR_HERO_POSTER}
+          aria-hidden="true"
+        >
+          <source src={CALENDAR_HERO_VIDEO} type="video/mp4" />
+        </video>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(7,16,13,0.28)_0%,rgba(7,16,13,0.22)_32%,rgba(7,16,13,0.79)_100%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,17,13,0.56)_0%,rgba(6,17,13,0.22)_48%,rgba(6,17,13,0.12)_100%)]"
+        />
 
-            <h1 className="mt-4 text-[clamp(2.7rem,5.3vw,5rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#121c27]">
-              De Jaarkalender van
-              <span className="block text-[#008247]">Nederland</span>
+        <div className="mx-auto grid w-full max-w-[1280px] gap-8 px-5 pb-16 pt-32 sm:px-7 sm:pb-20 lg:grid-cols-[minmax(0,1.32fr)_minmax(18rem,0.68fr)] lg:items-end lg:gap-16 lg:px-8 lg:pb-20">
+          <div>
+         
+            <h1
+              id="jaarkalender-hero-title"
+              style={{ maxInlineSize: "none" }}
+              className="mt-5 max-w-[11.5ch] text-[clamp(3.35rem,7.2vw,6.75rem)] font-medium leading-[0.9] tracking-[-0.064em] text-[#f5f5ef] [text-shadow:0_4px_28px_rgba(0,0,0,0.22)]"
+            >
+              Er is altijd iets om naar uit te kijken.
             </h1>
-            <p className="mt-5 max-w-[37rem] text-sm leading-6 text-[#44515b] sm:text-base sm:leading-7">
-              Ontdek een verfijnde selectie van de meest bijzondere evenementen.
-              Van intieme stadsrondes door historische stegen tot grootschalige
-              festivals die het land laten bruisen.
+          </div>
+
+          <div className="max-w-[32rem] pb-1 lg:justify-self-end">
+            <p className="text-[15px] leading-7 text-white/78 sm:text-base sm:leading-7">
+              Van festivals en stadsfeesten tot markten en bijzondere
+              weekenden. Ontdek wat er deze maand in Nederland gebeurt.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <JaarkalenderScrollButton
                 targetId="jaarkalender-kalender"
-                label="Bekijk Vandaag"
+                label="Bekijk deze maand"
               />
-              <Link
-                href="/saved"
-                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#cbd8d4] bg-white px-7 text-sm font-semibold text-[#00733d] transition hover:border-[#8ebba4] hover:bg-[#f6fbf8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247]"
-              >
-                Favorieten
-              </Link>
+              <JaarkalenderScrollButton
+                targetId="jaarkalender-overzicht"
+                label="Bekijk het hele jaar"
+                variant="secondary"
+              />
             </div>
-          </div>
           </div>
         </div>
       </section>
 
       <div className="relative mx-auto max-w-[1280px] px-4 pb-6 sm:px-6 lg:px-8 lg:pb-10">
-        <section id="jaarkalender-kalender" className="mt-8 scroll-mt-6 sm:mt-12 sm:scroll-mt-8">
+        <section
+          id="jaarkalender-kalender"
+          className="-mt-6 scroll-mt-24 sm:-mt-8 sm:scroll-mt-28 lg:-mt-9"
+        >
           <JaarkalenderInteractiveCalendar />
         </section>
 

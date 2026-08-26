@@ -64,10 +64,10 @@ type ResultsFlowStep = FullscreenChoiceFlowStep & { type: "results"; id: "result
 type InspirationFlowStep = CityFlowStep | QuestionFlowStep | ResultsFlowStep;
 
 const audienceOptions: Array<ChoiceOption<AudienceChoice>> = [
-  { value: "solo", label: "Alleen", helper: "Vrij en flexibel", icon: <PersonIcon /> },
+  { value: "solo", label: "Alleen op pad", helper: "Vrij en flexibel", icon: <PersonIcon /> },
   { value: "date", label: "Date", helper: "Samen iets bijzonders", icon: <HeartIcon /> },
-  { value: "gezin", label: "Gezin", helper: "Praktisch met kinderen", icon: <PeopleIcon /> },
-  { value: "vrienden", label: "Vrienden", helper: "Gezellig samen", icon: <PeopleIcon /> },
+  { value: "gezin", label: "Met gezin", helper: "Praktisch met kinderen", icon: <PeopleIcon /> },
+  { value: "vrienden", label: "Met vrienden", helper: "Gezellig samen", icon: <PeopleIcon /> },
 ];
 
 const momentOptions: Array<ChoiceOption<MomentChoice>> = [
@@ -103,8 +103,8 @@ const inspirationFlowSteps: InspirationFlowStep[] = [
   {
     type: "custom",
     id: "city",
-    title: "Kies een stad",
-    description: "Nog geen idee wat je wilt doen? Laat ons je helpen met onze expertise.",
+    title: "Waar wil je iets leuks doen?",
+    description: "We kunnen je helpen kiezen. Kies een stad en vertel wat bij je past voor persoonlijkere suggesties.",
   },
   {
     type: "question",
@@ -337,14 +337,6 @@ export function InspirationChoiceFlow({
     selectCity(city);
   }
 
-  function goToQuestions() {
-    if (!selectedCity) {
-      setCityError("Kies eerst een stad om verder te gaan.");
-      return;
-    }
-    setCurrentStep(2);
-  }
-
   function chooseQuestion(value: string) {
     const step = inspirationFlowSteps[currentStep - 1];
     if (step?.type !== "question") return;
@@ -353,6 +345,19 @@ export function InspirationChoiceFlow({
     if (step.id === "moment") setSelectedMoment(value as MomentChoice);
     if (step.id === "vibe") setSelectedVibe(value as VibeChoice);
     setCurrentStep((current) => Math.min(current + 1, inspirationFlowSteps.length));
+  }
+
+  function chooseAudienceFromIntroduction(value: string) {
+    if (!selectedCity) return;
+    setSelectedAudience(value as AudienceChoice);
+    setCurrentStep(3);
+  }
+
+  function viewAllFromIntroduction() {
+    setSelectedAudience(undefined);
+    setSelectedMoment(undefined);
+    setSelectedVibe(undefined);
+    finishFlow();
   }
 
   function finishFlow() {
@@ -404,6 +409,8 @@ export function InspirationChoiceFlow({
           onComplete={finishFlow}
           onEditChoices={() => setCurrentStep(1)}
           secondaryAction={selectedCity ? { label: "Bekijk alle resultaten", onClick: finishFlow } : undefined}
+          showProgress={({ stepNumber }) => stepNumber > 1}
+          showFooter={({ stepNumber }) => stepNumber > 1}
           exitHref="/"
           exitLabel="Terug naar Home"
           decorativeLayer={({ isResultsStep }) => (
@@ -439,7 +446,20 @@ export function InspirationChoiceFlow({
 
             if (step.id === "city") {
               return (
-                <FullscreenChoiceQuestion title={step.title} description={step.description}>
+                <FullscreenChoiceQuestion
+                  title={step.title}
+                  description={step.description}
+                  primaryAction={selectedCity ? (
+                    <button
+                      type="button"
+                      onClick={viewAllFromIntroduction}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
+                    >
+                      Bekijk alle uitjes in {selectedCityLabel} <span className="ml-2" aria-hidden="true">→</span>
+                    </button>
+                  ) : undefined}
+                  transitionLabel={selectedCity ? "Of krijg persoonlijkere suggesties" : undefined}
+                >
                   <div className="w-full max-w-2xl rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5">
                     <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een stad</label>
                     <div className="mt-2 flex flex-col gap-3 sm:flex-row">
@@ -448,7 +468,7 @@ export function InspirationChoiceFlow({
                     </div>
                     <p className="sr-only" aria-live="polite">{matchingCities.length} {matchingCities.length === 1 ? "stad gevonden" : "steden gevonden"}.</p>
                     {cityError ? <p className="mt-3 text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
-                    <div className="mt-5 max-h-72 overflow-y-auto pr-1">
+                    <div className={`${selectedCity ? "mt-5 max-h-40 sm:max-h-48" : "mt-5 max-h-72"} overflow-y-auto pr-1`}>
                       <p className="text-xs font-semibold tracking-[0.12em] text-[#65736C]">{cityInput.trim() ? "Zoekresultaten" : "Beschikbare steden"}</p>
                       <div className="mt-3 grid gap-2 sm:grid-cols-2">
                         {matchingCities.map((city) => {
@@ -458,9 +478,17 @@ export function InspirationChoiceFlow({
                       </div>
                       {cityInput.trim() && matchingCities.length === 0 ? <p className="py-3 text-sm leading-6 text-[#65736C]">Deze stad wordt nog niet ondersteund. Kies een stad uit de lijst.</p> : null}
                     </div>
-                    <div className="mt-5 border-t border-[#DCE1DC] pt-4">
-                      <button type="button" onClick={goToQuestions} disabled={!selectedCity} className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#1D5A46] px-5 text-sm font-semibold text-white transition hover:bg-[#174936] disabled:cursor-not-allowed disabled:bg-[#9DBAAE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Verder met {selectedCityLabel ?? "je stad"}</button>
-                    </div>
+                    {selectedCity ? (
+                      <div className="mt-5 border-t border-[#DCE1DC] pt-4">
+                        <FullscreenChoiceGrid
+                          title="Met wie ga je op pad?"
+                          selectedValue={selectedAudience}
+                          onChoose={chooseAudienceFromIntroduction}
+                          compactMobile
+                          options={audienceOptions.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))}
+                        />
+                      </div>
+                    ) : null}
                   </div>
                 </FullscreenChoiceQuestion>
               );

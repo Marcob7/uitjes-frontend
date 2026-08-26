@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ReactElement } from "react";
 
 import ExploreCardItem from "./ExploreCardItem";
+import { InspirationFlowScenery } from "../inspiration/InspirationFlowScenery";
 import {
   FullscreenChoiceFlow,
   FullscreenChoiceGrid,
@@ -55,8 +56,8 @@ const FLOW_STEPS: FlowStep[] = [
   {
     type: "question",
     id: "companion",
-    title: "Met wie ga je op pad?",
-    description: "We stemmen de suggesties af op het gezelschap waarmee je de stad in trekt.",
+    title: "Vind iets leuks in {city}",
+    description: "We kunnen je helpen kiezen. Vertel met wie je op pad gaat voor suggesties die beter bij je passen.",
     options: [
       { value: "solo" satisfies PlannerCompanion, label: "Alleen op pad", description: "Ontdek plekken en activiteiten die je makkelijk zelf kunt doen.", icon: SoloIcon },
       { value: "date" satisfies PlannerCompanion, label: "Date", description: "Vind iets dat leuk voelt om samen te doen in deze stad.", icon: HeartIcon },
@@ -107,6 +108,7 @@ export default function DiscoverFlow({
   const safeStep = Math.min(Math.max(currentStep, 1), totalSteps);
   const step = FLOW_STEPS[safeStep - 1];
   const visiblePreviewCards = useMemo(() => previewCards.slice(0, 6), [previewCards]);
+  const isIntroductionStep = safeStep === 1;
 
   useEffect(() => setIsTransitioning(false), [safeStep]);
 
@@ -126,8 +128,13 @@ export default function DiscoverFlow({
       onComplete={onComplete}
       onEditChoices={() => onStepChange(1)}
       secondaryAction={{ label: "Bekijk alle resultaten", onClick: onViewAllResults }}
+      showProgress={({ stepNumber }) => stepNumber > 1}
+      showFooter={({ stepNumber }) => stepNumber > 1}
       exitHref="/"
       exitLabel="Terug naar Home"
+      decorativeLayer={({ isResultsStep }) => (
+        <InspirationFlowScenery variant={isResultsStep ? "subtle" : "default"} />
+      )}
     >
       {({ isResultsStep }) =>
         isResultsStep ? (
@@ -148,12 +155,26 @@ export default function DiscoverFlow({
             )}
           </FullscreenChoiceResults>
         ) : step.type === "question" ? (
-          <FullscreenChoiceQuestion title={step.title} description={`Je hebt gekozen voor ${cityLabel}`}>
+          <FullscreenChoiceQuestion
+            title={step.title.replace("{city}", cityLabel)}
+            description={isIntroductionStep ? step.description : `Je hebt gekozen voor ${cityLabel}`}
+            primaryAction={isIntroductionStep ? (
+              <button
+                type="button"
+                onClick={onViewAllResults}
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
+              >
+                Bekijk alle uitjes in {cityLabel} <span className="ml-2" aria-hidden="true">→</span>
+              </button>
+            ) : undefined}
+            transitionLabel={isIntroductionStep ? "Of krijg persoonlijkere suggesties" : undefined}
+          >
             <FullscreenChoiceGrid
               title={step.title}
               selectedValue={selections[step.id]}
               disabled={isTransitioning}
               onChoose={chooseOption}
+              compactMobile={isIntroductionStep}
               options={step.options.map((option) => {
                 const Icon = option.icon;
                 return { ...option, icon: <Icon className="h-5 w-5" /> };

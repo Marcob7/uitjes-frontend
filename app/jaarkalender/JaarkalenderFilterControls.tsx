@@ -374,10 +374,10 @@ function MonthNavButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#ded8cc] bg-white/88 text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:-translate-y-0.5 hover:border-[#c7bea8] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d8d3c9] bg-[#fbfaf7] text-[#34312c] transition hover:-translate-y-0.5 hover:border-[#aaa397] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a]"
     >
-      <span aria-hidden="true" className="text-lg">
-        {label === "Vorige maand" ? "<" : ">"}
+      <span aria-hidden="true" className="-mt-px text-lg">
+        {label === "Vorige maand" ? "←" : "→"}
       </span>
     </button>
   );
@@ -1071,7 +1071,7 @@ export function JaarkalenderInteractiveCalendar() {
   return (
     <>
       <form
-        className="grid gap-1 rounded-2xl border border-[#e0e9e5] bg-white p-2 shadow-[0_16px_42px_rgba(20,54,40,0.08)] sm:grid-cols-2 sm:gap-0 sm:p-3 lg:grid-cols-[1fr_1fr_1fr_auto]"
+        className="grid gap-1 rounded-[1.55rem] border border-[#dedbd2] bg-[#fbfaf7]/95 p-2 shadow-[0_20px_60px_rgba(27,42,34,0.12)] backdrop-blur-xl sm:grid-cols-2 sm:gap-0 sm:p-2.5 lg:grid-cols-[1fr_1fr_1fr_auto]"
         onSubmit={(event) => {
           event.preventDefault();
           document
@@ -1082,42 +1082,42 @@ export function JaarkalenderInteractiveCalendar() {
         <button
           type="button"
           onClick={(event) => openModal("city", event.currentTarget)}
-          className="group flex min-h-16 min-w-0 items-center gap-3 rounded-xl px-3 text-left transition hover:bg-[#f5faf7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#008247] sm:border-r sm:border-[#e6eeea] sm:px-4"
+          className="group flex min-h-[4.25rem] min-w-0 items-center gap-3 rounded-[1.1rem] px-3 text-left transition hover:bg-[#f0f3ed] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#00784a] sm:border-r sm:border-[#e2dfd6] sm:px-4"
         >
-          <span className="text-[#008247]"><PinIcon /></span>
+          <span className="text-[#00784a]"><PinIcon /></span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#587068]">Locatie</span>
-            <span className="mt-0.5 block truncate text-sm font-medium text-[#26352f]">{selectedCity ?? "Heel Nederland"}</span>
+            <span className="block text-xs font-medium text-[#716e66]">Locatie</span>
+            <span className="mt-1 block truncate text-sm font-semibold text-[#292e2a]">{selectedCity ?? "Heel Nederland"}</span>
           </span>
-          <span className="text-[#789087] group-hover:text-[#00733d]"><ChevronDownIcon /></span>
+          <span className="text-[#8d938e] group-hover:text-[#00733d]"><ChevronDownIcon /></span>
         </button>
 
         <button
           type="button"
           onClick={(event) => openModal("category", event.currentTarget)}
-          className="group flex min-h-16 min-w-0 items-center gap-3 rounded-xl px-3 text-left transition hover:bg-[#f5faf7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#008247] sm:px-4 lg:border-r lg:border-[#e6eeea]"
+          className="group flex min-h-[4.25rem] min-w-0 items-center gap-3 rounded-[1.1rem] px-3 text-left transition hover:bg-[#f0f3ed] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#00784a] sm:px-4 lg:border-r lg:border-[#e2dfd6]"
         >
-          <span className="text-[#008247]"><FilterIcon /></span>
+          <span className="text-[#00784a]"><FilterIcon /></span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#587068]">Categorie</span>
-            <span className="mt-0.5 block truncate text-sm font-medium text-[#26352f]">
+            <span className="block text-xs font-medium text-[#716e66]">Categorie</span>
+            <span className="mt-1 block truncate text-sm font-semibold text-[#292e2a]">
               {selectedCategory ? jaarkalenderCategoryMeta[selectedCategory].label : "Alle evenementen"}
             </span>
           </span>
-          <span className="text-[#789087] group-hover:text-[#00733d]"><ChevronDownIcon /></span>
+          <span className="text-[#8d938e] group-hover:text-[#00733d]"><ChevronDownIcon /></span>
         </button>
 
         <label
-          className="group flex min-h-16 min-w-0 cursor-pointer items-center gap-3 rounded-xl px-3 transition hover:bg-[#f5faf7] focus-within:outline focus-within:outline-2 focus-within:outline-offset-[-2px] focus-within:outline-[#008247] sm:border-r sm:border-[#e6eeea] sm:px-4 lg:border-r-0"
+          className="group flex min-h-[4.25rem] min-w-0 cursor-pointer items-center gap-3 rounded-[1.1rem] px-3 transition hover:bg-[#f0f3ed] focus-within:outline focus-within:outline-2 focus-within:outline-offset-[-2px] focus-within:outline-[#00784a] sm:border-r sm:border-[#e2dfd6] sm:px-4 lg:border-r-0"
           onClick={() => {
             const input = dateInputRef.current;
             input?.focus();
             input?.showPicker?.();
           }}
         >
-          <span className="text-[#008247]"><CalendarIcon /></span>
+          <span className="text-[#00784a]"><CalendarIcon /></span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#587068]">Datum</span>
+            <span className="block text-xs font-medium text-[#716e66]">Datum</span>
             <input
               ref={dateInputRef}
               type="month"
@@ -1127,7 +1127,7 @@ export function JaarkalenderInteractiveCalendar() {
                 const [year, month] = event.target.value.split("-").map(Number);
                 if (year && month) setMonthFilter(new Date(year, month - 1, 1));
               }}
-              className="mt-0.5 block w-full min-w-0 bg-transparent text-sm font-medium text-[#26352f] outline-none"
+              className="mt-1 block w-full min-w-0 bg-transparent text-sm font-semibold text-[#292e2a] outline-none"
             />
           </span>
         </label>
@@ -1135,43 +1135,41 @@ export function JaarkalenderInteractiveCalendar() {
         <button
           type="submit"
           aria-label="Zoeken in de jaarkalender"
-          className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-[#00733d] text-white transition hover:bg-[#005f33] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247] sm:mt-2 sm:w-12 lg:mt-0"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#123e2c] px-6 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b3121] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a] sm:mt-2 lg:mt-2 lg:w-auto"
         >
           <SearchIcon />
+          <span>Zoeken</span>
         </button>
       </form>
 
       {hasActiveFilters ? (
-        <div className="mt-3 flex justify-end">
+        <div className="mt-3 flex justify-end pr-1">
           <button
             type="button"
             onClick={clearFilters}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#cbd8d4] bg-white px-4 text-sm font-semibold text-[#00733d] transition hover:border-[#8ebba4] hover:bg-[#f6fbf8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247] active:bg-[#eaf5ee]"
+            className="inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-[#176343] underline decoration-[#176343]/28 underline-offset-4 transition hover:bg-white/65 hover:decoration-[#176343] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a] active:bg-white"
           >
             Wis filters
           </button>
         </div>
       ) : null}
 
-      <div className="mb-4 mt-6 sm:mb-6 sm:mt-8">
-        <AgendaImportBanner events={visibleImportEvents} />
-      </div>
-
-      <div id="jaarkalender-overzicht" className="flex flex-col gap-4 scroll-mt-6 sm:gap-6 sm:scroll-mt-8">
+      <div
+        id="jaarkalender-overzicht"
+        className="mt-12 grid scroll-mt-24 gap-7 sm:mt-16 sm:scroll-mt-28 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.68fr)] lg:items-end lg:gap-12"
+      >
         <div>
-          <div className="flex items-center gap-3 text-[#171511]">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#edf7d8] text-[#405028] sm:h-10 sm:w-10">
-              <CalendarIcon />
-            </span>
-            <div>
-          
-              <h2 className="mt-1 text-[clamp(2rem,3vw,2.8rem)] leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                {monthTitle}
-              </h2>
-            </div>
-          </div>
+          <p className="text-sm font-semibold text-[#187047]">
+            Wat speelt er deze maand?
+          </p>
+          <h2
+            style={{ maxInlineSize: "none" }}
+            className="mt-2 text-[clamp(2.8rem,5vw,4.8rem)] font-medium leading-[0.92] tracking-[-0.058em] text-[#191b18]"
+          >
+            {monthTitle}
+          </h2>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5 sm:gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-2 sm:mt-7 sm:gap-3">
             <MonthNavButton
               label="Vorige maand"
               onClick={() => setMonthFilter(addMonths(currentMonth, -1))}
@@ -1183,15 +1181,16 @@ export function JaarkalenderInteractiveCalendar() {
             <button
               type="button"
               onClick={goToToday}
-              className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#b8d9c8] bg-[#edf7f0] px-5 text-sm font-semibold text-[#00733d] transition hover:-translate-y-0.5 hover:border-[#8ebba4] hover:bg-[#e0f0e6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008247] active:translate-y-0 active:bg-[#d5eadc]"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#b9d4c5] bg-[#e8f1eb] px-5 text-sm font-semibold text-[#176343] transition hover:-translate-y-0.5 hover:border-[#84b299] hover:bg-[#dfece3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a] active:translate-y-0 active:bg-[#d7e7dc]"
             >
               Vandaag
             </button>
           </div>
         </div>
+        <AgendaImportBanner events={visibleImportEvents} />
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-xl border border-[#e6dfd3] bg-white/72 shadow-[0_20px_60px_rgba(66,49,31,0.06)] sm:mt-8">
+      <div className="mt-7 overflow-hidden rounded-[1.4rem] border border-[#dfdbd1] bg-[#fffdf9] shadow-[0_24px_70px_rgba(53,44,31,0.07)] sm:mt-10">
         <div className="hidden md:block">
           <div className="grid grid-cols-7 border-b border-[#e6dfd3] bg-[#fffaf3]">
             {["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"].map((day) => (
@@ -1310,7 +1309,7 @@ export function JaarkalenderInteractiveCalendar() {
 
       {isOpen ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[rgba(34,26,20,0.28)] px-3 py-3 backdrop-blur-[6px] sm:items-center sm:px-4 sm:py-8"
+          className="fixed inset-0 z-[1200] flex items-end justify-center overflow-y-auto bg-[rgba(34,26,20,0.28)] px-3 py-3 backdrop-blur-[6px] sm:items-center sm:px-4 sm:py-8"
           onClick={closeModal}
         >
           <div
