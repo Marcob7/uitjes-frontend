@@ -59,7 +59,7 @@ export default function InspirationCategoryPage({ params, searchParams }: PagePr
   const cityLabel = getInspirationCityLabel(searchParams?.location, searchParams?.nearbyCity);
   const context = locationMode === "surprise" || !cityLabel ? routeCategory.label : `${routeCategory.label} ${cityLabel}`;
 
-  return <main className="min-h-screen bg-[#F6F5F0] text-[#29342F]">
+  return <main className="min-h-screen bg-[#F6F5F0] text-[#29342F] mt-18">
     <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-5 pb-16 sm:pt-8 sm:pb-24">
       <Breadcrumbs items={[{ label: "Inspiratie", href: "/inspiratie" }, { label: routeCategory.label }]} className="mb-9" />
       <header className="max-w-3xl border-b border-[#DCE1DC] pb-9 sm:pb-12">

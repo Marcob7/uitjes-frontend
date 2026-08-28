@@ -3,9 +3,9 @@ import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
 import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
 
 const CALENDAR_HERO_VIDEO =
-  "/videos/green-water-adventure-calendar-hero.mp4";
+  "/videos/year-round-adventure-calendar-hero.mp4";
 const CALENDAR_HERO_POSTER =
-  "/videos/green-water-adventure-calendar-hero-poster.jpg";
+  "/videos/year-round-adventure-calendar-hero-poster.jpg";
 
 export const metadata = {
   title: "Jaarkalender van Nederland | Uitjes NL",

@@ -1,537 +1,64 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
-import CityExploreMapSection from "@/components/city-explore/CityExploreMapSection";
-import type { BackendEvent } from "@/components/city-explore/types";
 import FavouriteButton from "@/components/FavouriteButton";
-import { AppCard, AppSection } from "@/components/ui/app";
-import {
-  buildActionSearchHref,
-  buildMapsSearchHref,
-} from "@/lib/actionLinks";
-import {
-  getAllExploreDetailSlugs,
-  getExploreDetailBySlug,
-  getFallbackExploreTitle,
-  mapCityContentToExploreDetail,
-} from "@/lib/exploreDetailData";
+import { buildActionSearchHref, buildMapsSearchHref } from "@/lib/actionLinks";
 import { getCityContentBySlug } from "@/lib/api/cityContent";
 import { normalizeCitySlug } from "@/lib/cityConfig";
+import { getAllExploreDetailSlugs, getExploreDetailBySlug, getFallbackExploreTitle, mapCityContentToExploreDetail } from "@/lib/exploreDetailData";
+import { optimizeCssBackground } from "@/lib/remoteImage";
 
-type PageProps = {
-  params: {
-    slug: string;
-  };
-  searchParams?: {
-    city?: string;
-  };
-};
-
+type PageProps = { params: { slug: string }; searchParams?: { city?: string } };
 export const dynamicParams = true;
 export const runtime = "edge";
+export function generateStaticParams() { return getAllExploreDetailSlugs().map((slug) => ({ slug })); }
 
-export function generateStaticParams() {
-  return getAllExploreDetailSlugs().map((slug) => ({
-    slug,
-  }));
+function cleanText(value?: string | null) { const clean = value?.trim(); return clean && !["undefined", "null", "nan"].includes(clean.toLowerCase()) ? clean : null; }
+async function getExploreDetail(slug: string) {
+  const fallback = getExploreDetailBySlug(slug);
+  if (fallback) return fallback;
+  const cityItem = await getCityContentBySlug(slug);
+  return cityItem ? mapCityContentToExploreDetail(cityItem, slug) : null;
 }
-
-function cleanMetadataText(value?: string | null) {
-  const cleaned = value?.trim();
-
-  if (!cleaned || ["undefined", "null", "nan"].includes(cleaned.toLowerCase())) {
-    return null;
-  }
-
-  return cleaned;
-}
-
-function getMetadataDescription(item: NonNullable<Awaited<ReturnType<typeof getExploreDetail>>>) {
-  return (
-    cleanMetadataText(item.description) ||
-    cleanMetadataText(item.aboutText) ||
-    `${item.title} is een uitje in ${item.city}.`
-  );
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   try {
     const item = await getExploreDetail(params.slug);
-
-    if (!item) {
-      return {
-        title: "Uitje niet gevonden | Uitjes",
-        description:
-          "Dit uitje is niet beschikbaar. Ontdek andere activiteiten en plekken in Nederland.",
-      };
-    }
-
-    const title = cleanMetadataText(item.title) || getFallbackExploreTitle(params.slug);
-    const city = cleanMetadataText(item.city) || "Nederland";
-
-    return {
-      title: `${title} in ${city} | Uitjes`,
-      description: getMetadataDescription(item),
-      alternates: {
-        canonical: `/ontdek/${encodeURIComponent(params.slug)}`,
-      },
-    };
+    if (!item) return { title: "Uitje niet gevonden | Uitjes", description: "Ontdek andere activiteiten en plekken in Nederland." };
+    const title = cleanText(item.title) || getFallbackExploreTitle(params.slug);
+    const city = cleanText(item.city) || "Nederland";
+    return { title: `${title} in ${city} | Uitjes`, description: cleanText(item.description) || cleanText(item.aboutText) || `${title} is een uitje in ${city}.`, alternates: { canonical: `/ontdek/${encodeURIComponent(params.slug)}` } };
   } catch {
-    return {
-      title: `${getFallbackExploreTitle(params.slug)} | Uitjes`,
-      description: "Bekijk dit uitje en ontdek meer activiteiten in Nederland.",
-      alternates: {
-        canonical: `/ontdek/${encodeURIComponent(params.slug)}`,
-      },
-    };
+    return { title: `${getFallbackExploreTitle(params.slug)} | Uitjes`, description: "Bekijk dit uitje en ontdek meer activiteiten in Nederland." };
   }
 }
 
-function CheckIcon() {
-  return (
-    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="m3.5 8.2 2.7 2.7 6.3-6.3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function CompactInfo({
-  label,
-  value,
-  href,
-}: {
-  label: string;
-  value?: string | null;
-  href?: string | null;
-}) {
-  if (!value) return null;
-
-  const content = href ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="font-semibold text-[#2f491a] underline decoration-[#b8cf79] underline-offset-4 transition hover:text-[#171511]"
-    >
-      {value}
-    </a>
-  ) : (
-    value
-  );
-
-  return (
-    <div className="border-t border-[#d9cec1]/70 py-4 first:border-t-0 first:pt-0 last:pb-0">
-      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#746355]">
-        {label}
-      </dt>
-      <dd className="mt-1 text-sm leading-6 text-[#211a14]">{content}</dd>
-    </div>
-  );
-}
-
-function getSafeExternalUrl(value?: string | null) {
-  if (!value) return null;
-
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null;
-  } catch {
-    return null;
-  }
-}
-
-function hasFreePricingLabel(value?: string | null) {
-  return value?.toLowerCase().includes("gratis") ?? false;
-}
-
-function getPrimaryCtaLabel({
-  hasTicket,
-  hasReservation,
-  hasSource,
-  isFree,
-  fallbackLabel,
-}: {
-  hasTicket: boolean;
-  hasReservation: boolean;
-  hasSource: boolean;
-  isFree: boolean;
-  fallbackLabel: string;
-}) {
-  if (hasTicket) return "Bekijk tickets";
-  if (hasReservation) return "Reserveer";
-  if (hasSource) return isFree ? "Meer informatie" : "Bekijk officiele website";
-  return fallbackLabel;
-}
-
-function getUsableHeroImage(value?: string | null) {
-  const image = value?.trim();
-
-  if (!image || image === "/images/apeldoorn_img.jpg") {
-    return null;
-  }
-
-  return image;
-}
-
-function parseCoordinates(value?: string | null) {
-  if (!value) return null;
-
-  const [latitudeValue, longitudeValue] = value
-    .split(",")
-    .map((part) => Number(part.trim()));
-
-  if (!Number.isFinite(latitudeValue) || !Number.isFinite(longitudeValue)) {
-    return null;
-  }
-
-  return { latitude: latitudeValue, longitude: longitudeValue };
-}
-
-function formatRating(item: NonNullable<Awaited<ReturnType<typeof getExploreDetail>>>) {
-  if (typeof item.ratingValue !== "number") return null;
-
-  const max = typeof item.ratingMax === "number" ? item.ratingMax : 5;
-  const reviews =
-    typeof item.reviewCount === "number"
-      ? ` (${new Intl.NumberFormat("nl-NL").format(item.reviewCount)} reviews)`
-      : "";
-  const source = item.ratingSource ? ` via ${item.ratingSource}` : "";
-
-  return `${item.ratingValue.toFixed(1).replace(".", ",")} / ${max}${reviews}${source}`;
-}
-
-function buildMapEvent(
-  item: NonNullable<Awaited<ReturnType<typeof getExploreDetail>>>
-): BackendEvent | null {
-  const parsedCoordinates = parseCoordinates(item.practical.coordinates);
-  const latitude =
-    typeof item.latitude === "number" ? item.latitude : parsedCoordinates?.latitude;
-  const longitude =
-    typeof item.longitude === "number" ? item.longitude : parsedCoordinates?.longitude;
-
-  if (typeof latitude !== "number" || typeof longitude !== "number") {
-    return null;
-  }
-
-  return {
-    id: item.eventId ?? 0,
-    slug: item.slug,
-    title: item.title,
-    city: item.city,
-    venue: item.practical.venue || item.practical.address || null,
-    start_at: null,
-    end_at: null,
-    date_text: item.practical.openingHours || null,
-    is_ongoing: false,
-    is_free: item.practical.pricing?.toLowerCase().includes("gratis") ?? false,
-    price_min: null,
-    price_note: item.practical.pricing || null,
-    source_url: item.links?.sourceUrl || null,
-    latitude,
-    longitude,
-    summary: item.description || item.aboutText,
-    rating_value: item.ratingValue ?? null,
-    review_count: item.reviewCount ?? null,
-    rating_source: item.ratingSource ?? null,
-    rating_max: item.ratingMax ?? null,
-    category_label: item.category,
-    kind: item.kind || null,
-    tags: item.tags,
-  };
-}
-
-async function getExploreDetail(slug: string) {
-  const fallbackItem = getExploreDetailBySlug(slug);
-
-  if (fallbackItem) {
-    return fallbackItem;
-  }
-
-  const cityContentItem = await getCityContentBySlug(slug);
-
-  if (!cityContentItem) {
-    return null;
-  }
-
-  return mapCityContentToExploreDetail(cityContentItem, slug);
-}
-
-function getExploreBackHref(item: Awaited<ReturnType<typeof getExploreDetail>>, city?: string) {
-  const citySlug = normalizeCitySlug(city || item?.citySlug || item?.city);
-
-  return citySlug ? `/ontdek?city=${encodeURIComponent(citySlug)}` : "/ontdek";
-}
+function ArrowIcon() { return <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.333 8h9.334M8.667 3.333 13.333 8l-4.666 4.667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>; }
+function PinIcon() { return <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 14s4-3.6 4-7.333A4 4 0 1 0 4 6.667C4 10.4 8 14 8 14Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><circle cx="8" cy="6.667" r="1.4" fill="currentColor" /></svg>; }
+function TicketIcon() { return <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 5.25a1.75 1.75 0 0 0 1.75-1.75h7.5A1.75 1.75 0 0 0 13.5 5.25v1A1.75 1.75 0 0 0 11.75 8a1.75 1.75 0 0 0 1.75 1.75v1A1.75 1.75 0 0 0 11.75 12.5h-7.5A1.75 1.75 0 0 0 2.5 10.75v-1A1.75 1.75 0 0 0 4.25 8 1.75 1.75 0 0 0 2.5 6.25v-1Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></svg>; }
+function SparkIcon() { return <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m10 2 1.48 5.1L16.5 8.5l-5.02 1.4L10 15l-1.48-5.1L3.5 8.5l5.02-1.4L10 2Z" stroke="currentColor" strokeWidth="1.35" strokeLinejoin="round" /></svg>; }
+function ImageSurface({ image, className, children }: { image?: string | null; className: string; children?: React.ReactNode }) { return <div className={className} style={image ? { backgroundImage: `linear-gradient(180deg, rgba(25,45,33,0.02), rgba(25,45,33,0.24)), ${optimizeCssBackground(image, { width: 1400, quality: 68 })}`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>{children}</div>; }
+function InfoGroup({ title, rows }: { title: string; rows: Array<[string, string | null | undefined]> }) { const valid = rows.filter((row): row is [string, string] => Boolean(row[1])); if (!valid.length) return null; return <details open className="group overflow-hidden rounded-[1.05rem] border border-[#dce1d9] bg-[#fdfdf9] [&_summary::-webkit-details-marker]:hidden"><summary className="flex min-h-[4.5rem] cursor-pointer list-none items-center justify-between gap-4 px-5 text-[1.02rem] font-semibold tracking-[-0.025em] text-[#25382e]"><span>{title}</span><svg className="h-4 w-4 text-[#59685d] transition group-open:rotate-180" viewBox="0 0 16 16" fill="none"><path d="m4 9.5 4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><dl className="border-t border-[#e2e5df]">{valid.map(([label, value]) => <div key={label} className="grid gap-1 border-b border-[#e2e5df] px-5 py-3.5 last:border-0 sm:grid-cols-[9rem_1fr] sm:gap-6"><dt className="text-sm text-[#70776f]">{label}</dt><dd className="text-sm font-semibold leading-6 text-[#25382e]">{value}</dd></div>)}</dl></details>; }
 
 export default async function ExploreDetailPage({ params, searchParams }: PageProps) {
   const item = await getExploreDetail(params.slug);
-
-  if (!item) {
-    notFound();
-  }
-
-  const exploreBackHref = getExploreBackHref(item, searchParams?.city);
-
-  const locationQuery = [item.practical.venue, item.practical.address, item.city]
-    .filter(Boolean)
-    .join(", ");
-  const heroImage = getUsableHeroImage(item.heroImage);
-  const ratingLabel = formatRating(item);
-  const mapEvent = buildMapEvent(item);
-  const mapEvents = mapEvent ? [mapEvent] : [];
-  const ticketHref = getSafeExternalUrl(item.links?.ticketUrl);
-  const reservationHref = getSafeExternalUrl(item.links?.reservationUrl);
-  const sourceHref = getSafeExternalUrl(item.links?.sourceUrl);
-  const isFree = hasFreePricingLabel(item.practical.pricing);
-  const reserveHref =
-    ticketHref ||
-    reservationHref ||
-    sourceHref ||
-    buildActionSearchHref({
-      title: item.title,
-      location: locationQuery,
-      actionLabel: item.actions.reserveLabel,
-    });
-  const primaryCtaLabel = getPrimaryCtaLabel({
-    hasTicket: Boolean(ticketHref),
-    hasReservation: Boolean(reservationHref),
-    hasSource: Boolean(sourceHref),
-    isFree,
-    fallbackLabel: item.actions.reserveLabel,
-  });
+  if (!item) notFound();
+  const citySlug = normalizeCitySlug(searchParams?.city || item.citySlug || item.city);
+  const exploreBackHref = citySlug ? `/ontdek?city=${encodeURIComponent(citySlug)}` : "/ontdek";
+  const locationQuery = [item.practical.venue, item.practical.address, item.city].filter(Boolean).join(", ");
   const routeHref = locationQuery ? buildMapsSearchHref(locationQuery) : null;
-  return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_12%_0%,rgba(198,223,154,0.2),transparent_24%),radial-gradient(circle_at_86%_8%,rgba(247,231,200,0.35),transparent_26%),linear-gradient(180deg,#fbf7ef,#f8f5f3_45%,#f6f1ea)] text-[#171511]">
-      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-6 pb-10 lg:pt-8 lg:pb-12">
-        <div>
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Ontdek", href: exploreBackHref },
-              { label: item.title },
-            ]}
-            className="mb-6"
-          />
+  const reserveHref = item.links?.ticketUrl || item.links?.reservationUrl || item.links?.sourceUrl || buildActionSearchHref({ title: item.title, location: locationQuery, actionLabel: item.actions.reserveLabel });
+  const heroImage = item.heroImage || item.gallery[0];
+  const practicalRows: Array<[string, string | null | undefined]> = [["Locatie", item.practical.venue || item.practical.address], ["Stad", item.city], ["Datum en tijd", item.practical.openingHours], ["Prijs", item.practical.pricing], ["Type", item.practical.cuisine || item.kind]];
+  const visitRows: Array<[string, string | null | undefined]> = [["Praktische info", item.practical.practicalInfo], ["Status", item.status], ["Categorie", item.category], ["Tags", item.tags?.join(" · ")]];
 
-          <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_390px] lg:items-start">
-            <div className="min-w-0">
-              <AppCard
-                variant="glass"
-                padding="lg"
-                className="rounded-[2rem] border-[#d9cec1]/70 bg-white/76 text-[#211a14] shadow-[0_22px_58px_rgba(66,49,31,0.12)]"
-              >
-                <div className="flex flex-wrap gap-2">
-                  <span className="rounded-full border border-[#d9cec1]/80 bg-[#fbf8f3] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#4b4036]">
-                    {item.category}
-                  </span>
-                  <span className="rounded-full border border-[#bfd58d]/80 bg-[#e8f2d0] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#162016]">
-                    {item.status}
-                  </span>
-                </div>
-
-                <div className="mt-7 grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#746355]">
-                      {item.city}
-                    </p>
-                    <h1 className="mt-3 max-w-[13ch] text-[clamp(2.8rem,6vw,5.2rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-[#171511]">
-                      {item.title}
-                    </h1>
-                    <p className="mt-5 max-w-3xl text-base leading-7 text-[#4b4036] md:text-lg">
-                      {item.subtitle}
-                    </p>
-                  </div>
-
-                  {heroImage ? (
-                    <div className="relative min-h-[220px] overflow-hidden rounded-[1.6rem] border border-white/70 bg-white/55 shadow-[0_18px_42px_rgba(66,49,31,0.12)] xl:min-h-[310px]">
-                      <Image
-                        src={heroImage}
-                        alt={item.heroImageAlt || item.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1280px) 100vw, 340px"
-                        priority
-                      />
-                    </div>
-                  ) : (
-                    <div className="rounded-[1.6rem] border border-[#d9cec1]/80 bg-[#fbf8f3]/76 p-5 text-sm leading-6 text-[#66584a]">
-                      <div className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#746355]">
-                        Geen beeld
-                      </div>
-                      <p className="mt-2">
-                        De beschikbare informatie staat hier centraal; er is geen
-                        grote fotosectie nodig om dit moment te beoordelen.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </AppCard>
-
-              <AppCard
-                variant="glass"
-                padding="lg"
-                className="mt-6 rounded-[2rem] border-[#d9cec1]/70 bg-white/80 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.1)]"
-              >
-                <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#171511]">
-                  {item.aboutTitle}
-                </h2>
-                <p className="mt-5 max-w-4xl text-base leading-8 text-[#3f3429] md:text-lg">
-                  {item.aboutText}
-                </p>
-
-                {item.description ? (
-                  <p className="mt-6 max-w-4xl border-t border-[#d9cec1]/70 pt-6 text-sm leading-7 text-[#5b4c3e] md:text-base">
-                    {item.description}
-                  </p>
-                ) : null}
-              </AppCard>
-
-              {item.reasons.length > 0 ? (
-                <AppCard
-                  variant="glass"
-                  padding="lg"
-                  className="mt-6 rounded-[2rem] border-[#d9cec1]/70 bg-white/72 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.1)]"
-                >
-                  <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
-                    Waarom dit past
-                  </h2>
-                  <ul className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {item.reasons.map((reason) => (
-                      <li key={reason} className="flex items-start gap-3 text-sm leading-6 text-[#2d241c]">
-                        <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#162016]">
-                          <CheckIcon />
-                        </span>
-                        <span>{reason}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </AppCard>
-              ) : null}
-
-              {item.tags && item.tags.length > 0 ? (
-                <AppCard
-                  variant="glass"
-                  padding="lg"
-                  className="mt-6 rounded-[2rem] border-[#d9cec1]/70 bg-white/72 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.1)]"
-                >
-                  <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
-                    Tags en categorie
-                  </h2>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {[item.category, ...item.tags].map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-[#d9cec1]/80 bg-[#fbf8f3] px-3 py-1.5 text-xs font-semibold text-[#4b4036]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </AppCard>
-              ) : null}
-            </div>
-
-            <aside className="space-y-5 lg:sticky lg:top-8">
-              <AppCard
-                variant="elevated"
-                padding="md"
-                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.12)]"
-              >
-                <a
-                  href={reserveHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="uitjes-cta mb-3 inline-flex min-h-14 w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition hover:-translate-y-0.5"
-                >
-                  {primaryCtaLabel}
-                </a>
-
-                <div className={`grid gap-3 ${routeHref ? "sm:grid-cols-2" : "grid-cols-1"}`}>
-                  {routeHref ? (
-                    <a
-                      href={routeHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#b9aa98]/70 bg-[#f7f1e8] px-4 text-sm font-medium text-[#211a14] transition hover:bg-[#efe4d7]"
-                    >
-                      {item.actions.routeLabel}
-                    </a>
-                  ) : null}
-                  {typeof item.eventId === "number" ? (
-                    <FavouriteButton eventId={item.eventId} />
-                  ) : (
-                    <div className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d9cec1]/80 bg-white/55 px-4 text-sm font-medium text-[#746355]">
-                      Bewaren binnenkort beschikbaar
-                    </div>
-                  )}
-                </div>
-
-                {sourceHref && reserveHref !== sourceHref ? (
-                  <a
-                    href={sourceHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#d9cec1]/80 bg-white/70 px-4 text-sm font-medium text-[#4b4036] transition hover:bg-[#fbf8f3]"
-                  >
-                    Open website
-                  </a>
-                ) : null}
-              </AppCard>
-
-              <AppCard
-                variant="glass"
-                padding="lg"
-                className="rounded-[1.8rem] border-[#d9cec1]/70 bg-white/82 text-[#211a14] shadow-[0_18px_42px_rgba(66,49,31,0.12)]"
-              >
-                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#171511]">
-                  Praktisch
-                </h3>
-
-                <dl className="mt-5">
-                  <CompactInfo label="Locatie" value={item.practical.venue} />
-                  <CompactInfo label="Stad" value={item.city} />
-                  <CompactInfo label="Adres" value={item.practical.address} />
-                  <CompactInfo label="Datum en tijd" value={item.practical.openingHours} />
-                  <CompactInfo label="Prijs" value={item.practical.pricing} />
-                  <CompactInfo label="Categorie/type" value={item.practical.cuisine || item.kind} />
-                  <CompactInfo label="Reviews" value={ratingLabel} />
-                  <CompactInfo
-                    label={ticketHref ? "Tickets" : sourceHref ? "Bron" : "Website"}
-                    value={ticketHref ? "Bekijk tickets" : sourceHref ? "Open bron" : null}
-                    href={ticketHref || sourceHref}
-                  />
-                  <CompactInfo label="Praktische info" value={item.practical.practicalInfo} />
-                </dl>
-              </AppCard>
-
-              {mapEvents.length > 0 ? (
-                <CityExploreMapSection
-                  cityLabel={item.city}
-                  events={mapEvents}
-                  layout="embedded"
-                />
-              ) : locationQuery ? (
-                <div className="rounded-[1.8rem] border border-[#d9cec1]/70 bg-white/66 p-5 text-sm leading-6 text-[#66584a] shadow-[0_14px_34px_rgba(66,49,31,0.08)] backdrop-blur-xl">
-                  <div className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#746355]">
-                    Kaart niet beschikbaar
-                  </div>
-                  <p className="mt-2">
-                    Er zijn nog geen bruikbare coordinaten voor deze locatie.
-                    Gebruik de routeknop voor een zoekroute.
-                  </p>
-                </div>
-              ) : null}
-            </aside>
-          </section>
-        </div>
-      </AppSection>
-    </main>
-  );
+  return <main className="min-h-screen bg-[#fbfaf6] text-[#203329]"><div className="mx-auto max-w-[1420px] px-4 pb-20 pt-5 sm:px-6 sm:pt-8 lg:px-10 lg:pb-28">
+    <Breadcrumbs className="mb-7 sm:mb-9" items={[{ label: "Home", href: "/" }, { label: "Ontdek", href: exploreBackHref }, { label: item.title }]} />
+    <section className="overflow-hidden rounded-[1.75rem] bg-[#eff0eb] shadow-[0_24px_70px_rgba(33,49,40,0.08)] lg:grid lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]" aria-labelledby="explore-title"><div className="relative z-10 min-w-0 overflow-hidden px-6 py-8 sm:px-10 sm:py-11 lg:px-14 lg:py-14"><div className="absolute left-0 top-0 h-24 w-24 rounded-br-[5rem] border-b border-r border-[#dae4d7]" aria-hidden="true" /><div className="relative"><div className="flex flex-wrap items-center gap-2"></div><h1 id="explore-title" className="mt-8 max-w-[10ch] break-words text-[clamp(3.25rem,6.2vw,6.4rem)] font-semibold leading-[0.88] tracking-[-0.072em] text-[#15251d] [overflow-wrap:anywhere]">{item.title}</h1><p className="mt-6 max-w-xl text-[1rem] leading-7 text-[#5f6d63] sm:text-[1.08rem]">{item.subtitle || item.description || item.aboutText}</p><div className="mt-8 grid max-w-xl gap-3 border-y border-[#d8dfd5] py-5 text-sm text-[#365045] sm:grid-cols-2"><span className="inline-flex items-center gap-2.5"><PinIcon />{item.city}</span><span className="inline-flex items-center gap-2.5"><TicketIcon />{item.practical.pricing || "Bekijk actuele prijs"}</span><span className="inline-flex items-center gap-2.5 sm:col-span-2"><PinIcon />{item.practical.venue || item.practical.address || "Locatie volgt"}</span></div><div className="mt-8 flex flex-wrap gap-3"><a href={reserveHref} target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#203d2e] px-5 text-sm font-semibold text-white transition hover:bg-[#315b43]"><TicketIcon /> {item.actions.reserveLabel || "Bekijk opties"}</a>{routeHref ? <a href={routeHref} target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#c8d3c7] bg-[#fbfcf8] px-5 text-sm font-semibold text-[#294634] transition hover:bg-white"><PinIcon /> {item.actions.routeLabel || "Bekijk route"}</a> : null}</div></div></div><ImageSurface image={heroImage} className="relative z-0 min-h-[23rem] overflow-hidden bg-[#cad5c9] sm:min-h-[31rem] lg:min-h-full"><div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(24,39,30,0.6))] p-5 sm:p-7"><p className="text-sm font-medium text-white">{item.practical.venue || item.city}</p></div></ImageSurface></section>
+    {item.reasons.length ? <section className="mt-20 sm:mt-28" aria-labelledby="fit-title"><div className="mx-auto max-w-3xl text-center"><p className="inline-flex rounded-full bg-[#eef2e9] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#315c43]">Waarom dit bij je past</p><h2 id="fit-title" className="mx-auto mt-5 text-[clamp(2.45rem,5vw,4.6rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#17291f]">Een uitje dat meer doet dan je agenda vullen.</h2></div><div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{item.reasons.map((reason, index) => <article key={reason} className="rounded-[1.35rem] bg-[#f1f2ed] px-6 py-7 text-center transition hover:-translate-y-1 hover:bg-[#e9eee5]"><span className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#fbfcf8] text-[#42684f]">{index === 0 ? <SparkIcon /> : <span className="text-sm font-bold">0{index + 1}</span>}</span><p className="mt-5 text-[1.05rem] font-semibold leading-6 tracking-[-0.03em] text-[#203329]">{reason}</p></article>)}</div></section> : null}
+    <section className="mt-24 rounded-[1.75rem] bg-[#f1f3eb] px-6 py-9 sm:mt-32 sm:px-10 sm:py-12 lg:px-14 lg:py-16" aria-labelledby="expect-title"><div className="grid gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-16"><div><h2 id="expect-title" className="mt-5 text-[clamp(2.3rem,4vw,3.9rem)] font-semibold leading-[0.93] tracking-[-0.06em] text-[#17291f]">Wat kun je verwachten?</h2><p className="mt-6 max-w-xl text-[1rem] leading-8 text-[#5e6d62]">{item.aboutText}</p>{item.description ? <p className="mt-4 max-w-xl text-[1rem] leading-8 text-[#5e6d62]">{item.description}</p> : null}</div><div className="grid gap-3 sm:grid-cols-2"><article className="rounded-[1.15rem] border border-[#dbe1d8] bg-[#fbfcf8] p-6"><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#578063]">Categorie</span><p className="mt-3 text-xl font-semibold tracking-[-0.04em]">{item.category}</p></article><article className="rounded-[1.15rem] border border-[#dbe1d8] bg-[#fbfcf8] p-6"><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#578063]">Prijs</span><p className="mt-3 text-xl font-semibold tracking-[-0.04em]">{item.practical.pricing || "Op aanvraag"}</p></article><article className="rounded-[1.15rem] border border-[#dbe1d8] bg-[#fbfcf8] p-6 sm:col-span-2"><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#578063]">Praktisch</span><p className="mt-3 text-lg font-semibold tracking-[-0.04em]">{item.practical.openingHours || "Controleer de actuele openingstijden"}</p></article></div></div></section>
+    <section className="mx-auto mt-24 max-w-[1040px] sm:mt-32" aria-labelledby="visit-title"><h2 id="visit-title" className="mt-3 text-[clamp(2.3rem,4vw,3.7rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[#17291f]">Plan je bezoek</h2><div className="mt-8 space-y-4"><InfoGroup title="In één oogopslag" rows={practicalRows} /><InfoGroup title="Handig om te weten" rows={visitRows} /></div><div className="mt-6 grid gap-3 sm:grid-cols-3"><a href={reserveHref} target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#203d2e] px-5 text-sm font-semibold text-white transition hover:bg-[#315b43]"><TicketIcon /> {item.actions.reserveLabel || "Bekijk opties"}</a>{routeHref ? <a href={routeHref} target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#c9d3c7] bg-white px-5 text-sm font-semibold text-[#294634] transition hover:bg-[#f2f6ef]"><PinIcon /> Plan route</a> : null}{typeof item.eventId === "number" ? <FavouriteButton eventId={item.eventId} className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#c9d3c7] bg-white px-5 text-sm font-semibold text-[#294634] transition hover:bg-[#f2f6ef]" savedClassName="inline-flex min-h-12 items-center justify-center rounded-full bg-[#e4efe0] px-5 text-sm font-semibold text-[#315c43]" /> : null}</div></section>
+    {item.similarPlaces.length ? <section className="mt-24 sm:mt-32" aria-labelledby="similar-title"><h2 id="similar-title" className="mt-3 text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[#17291f]">Misschien ook leuk</h2><div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{item.similarPlaces.slice(0, 4).map((place) => <article key={place.title} className="group"><ImageSurface image={place.image} className="aspect-[1.08] overflow-hidden rounded-[1.35rem] bg-[#e1e6dd] transition group-hover:scale-[0.985]"><span className="m-3 inline-flex rounded-full bg-white/88 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#315c43]">{place.badge}</span></ImageSurface><h3 className="mt-4 text-[1.12rem] font-semibold leading-tight tracking-[-0.035em] text-[#203329]">{place.title}</h3><p className="mt-2 text-sm font-semibold text-[#345846]">{place.subtitle}</p></article>)}</div></section> : null}
+    <section className="mt-24 sm:mt-32" aria-labelledby="gallery-title"><h2 id="gallery-title" className="mt-3 max-w-2xl text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[0.94] tracking-[-0.06em] text-[#17291f]">Een voorproefje van je volgende uitje.</h2><div className="mt-9 grid gap-3 md:grid-cols-12 md:grid-rows-2"><ImageSurface image={item.gallery[0] || heroImage} className="relative min-h-[17rem] overflow-hidden rounded-[1.45rem] bg-[#d9e2d7] md:col-span-5 md:row-span-2 md:min-h-[34.5rem]"><span className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#294634]">Sfeerbeeld</span></ImageSurface><ImageSurface image={item.gallery[1] || heroImage} className="min-h-[15rem] overflow-hidden rounded-[1.45rem] bg-[#e8e3d7] md:col-span-7 md:min-h-0" /><ImageSurface image={item.gallery[2] || heroImage} className="min-h-[15rem] overflow-hidden rounded-[1.45rem] bg-[#dfe7df] md:col-span-3 md:min-h-0" /><ImageSurface image={item.gallery[3] || heroImage} className="min-h-[15rem] overflow-hidden rounded-[1.45rem] bg-[#e8e3d7] md:col-span-4 md:min-h-0" /></div></section>
+  </div></main>;
 }

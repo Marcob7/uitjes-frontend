@@ -102,3 +102,4 @@
     at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
     at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
  GET /ontdek?city=apeldoorn 500 in 7ms
+[?25h

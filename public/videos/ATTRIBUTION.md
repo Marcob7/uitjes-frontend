@@ -11,9 +11,9 @@ is not required, but is retained here for traceability.
 
 ## Jaarkalender video attribution
 
-- **File:** `green-water-adventure-calendar-hero.mp4` (18-second 1080p web source)
-- **Poster:** `green-water-adventure-calendar-hero-poster.jpg`
-- **Source:** [Family Kayaking in a River](https://www.pexels.com/video/family-kayaking-in-a-river-8206983/)
-- **Creator:** K
+- **File:** `year-round-adventure-calendar-hero.mp4` (15-second 1080p web source)
+- **Poster:** `year-round-adventure-calendar-hero-poster.jpg`
+- **Source:** [Group of Friends on a Road Trip](https://www.pexels.com/video/group-of-friends-on-a-road-trip-5329320/)
+- **Creator:** cottonbro studio
 - **License:** [Pexels License](https://www.pexels.com/license/)
 - **Use:** Local, muted looping background footage for the Jaarkalender hero.

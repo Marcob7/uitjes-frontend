@@ -253,7 +253,7 @@ export default function EventsPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#F6F3EE] px-4 py-6 text-[#171717] md:px-6 lg:px-10 lg:py-10">
+    <main className="min-h-screen bg-[#F6F3EE] px-4 py-6 text-[#171717] md:px-6 lg:px-10 lg:py-10 mt-28">
       <div className="mx-auto grid max-w-[1440px] gap-8 xl:grid-cols-[320px_minmax(0,1fr)]">
         {/* Linker kolom: lijst met uitjes */}
         <aside className="xl:sticky xl:top-6 xl:h-fit">

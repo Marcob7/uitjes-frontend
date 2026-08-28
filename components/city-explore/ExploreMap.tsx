@@ -197,23 +197,29 @@ export default function ExploreMap({
     let map: MapLibreMap | null = null;
     let cancelled = false;
 
-    import("maplibre-gl").then((maplibregl) => {
-      if (cancelled || !mapContainerRef.current) {
-        return;
-      }
+    void import("maplibre-gl")
+      .then((maplibregl) => {
+        if (cancelled || !mapContainerRef.current) {
+          return;
+        }
 
-      maplibreRef.current = maplibregl;
-      map = new maplibregl.Map({
-        container: mapContainerRef.current,
-        style: "https://tiles.openfreemap.org/styles/bright",
-        center: [firstPlace.longitude, firstPlace.latitude],
-        zoom: 12,
-        attributionControl: false,
+        maplibreRef.current = maplibregl;
+        map = new maplibregl.Map({
+          container: mapContainerRef.current,
+          style: "https://tiles.openfreemap.org/styles/bright",
+          center: [firstPlace.longitude, firstPlace.latitude],
+          zoom: 12,
+          attributionControl: false,
+        });
+
+        mapRef.current = map;
+        setMapReadyToken((current) => current + 1);
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          console.error("De kaart kon niet worden geladen.", error);
+        }
       });
-
-      mapRef.current = map;
-      setMapReadyToken((current) => current + 1);
-    });
 
     return () => {
       cancelled = true;
