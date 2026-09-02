@@ -248,6 +248,8 @@ export function mapCityContentToInspirationResult(
       item.venue ? `Te vinden bij ${item.venue}` : null,
     ]).slice(0, 4),
     gallery: item.imageUrl ? [`url('${item.imageUrl}')`] : [fallbackImage],
+    latitude: item.latitude,
+    longitude: item.longitude,
   };
 }
 

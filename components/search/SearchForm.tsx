@@ -6,9 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AppSearchInput } from "@/components/ui/app";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 
-type SearchFormProps = { initialQuery: string; showEmptyFeedback?: boolean };
+type SearchFormProps = {
+  initialQuery: string;
+  showEmptyFeedback?: boolean;
+  className?: string;
+};
 
-export default function SearchForm({ initialQuery, showEmptyFeedback = false }: SearchFormProps) {
+export default function SearchForm({ initialQuery, showEmptyFeedback = false, className }: SearchFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(initialQuery);
@@ -47,12 +51,14 @@ export default function SearchForm({ initialQuery, showEmptyFeedback = false }: 
         setError(null);
         startTransition(() => router.push("/zoeken"));
       }}
-      placeholder="Zoek op stad, activiteit of festival"
+      placeholder="Waar heb je zin in?"
       submitLabel="Zoek"
       errorMessage={error}
       statusMessage={isPending ? "Zoeken…" : null}
       isSubmitting={isPending}
+      className={className}
       inputClassName="min-h-12"
+      submitButtonClassName="!border-[#1d5a46] !bg-[#1d5a46] !text-white hover:!bg-[#164a3a]"
     />
   );
 }

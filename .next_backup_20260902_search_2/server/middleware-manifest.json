@@ -1,0 +1,441 @@
+{
+  "version": 3,
+  "middleware": {},
+  "functions": {
+    "/api/city-content/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/app/api/city-content/route.js"
+      ],
+      "name": "app/api/city-content/route",
+      "page": "/api/city-content/route",
+      "matchers": [
+        {
+          "regexp": "^/api/city\\-content$",
+          "originalSource": "/api/city-content"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/events/[id]/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/events/[id]/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/app/events/[id]/page.js"
+      ],
+      "name": "app/events/[id]/page",
+      "page": "/events/[id]/page",
+      "matchers": [
+        {
+          "regexp": "^/events/(?<id>[^/]+?)$",
+          "originalSource": "/events/[id]"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/festivals/lijst/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/festivals/lijst/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/app/festivals/lijst/page.js"
+      ],
+      "name": "app/festivals/lijst/page",
+      "page": "/festivals/lijst/page",
+      "matchers": [
+        {
+          "regexp": "^/festivals/lijst$",
+          "originalSource": "/festivals/lijst"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/festivals/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/festivals/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/app/festivals/page.js"
+      ],
+      "name": "app/festivals/page",
+      "page": "/festivals/page",
+      "matchers": [
+        {
+          "regexp": "^/festivals$",
+          "originalSource": "/festivals"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/inspiratie/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/inspiratie/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/394.js",
+        "server/edge-chunks/239.js",
+        "server/app/inspiratie/page.js"
+      ],
+      "name": "app/inspiratie/page",
+      "page": "/inspiratie/page",
+      "matchers": [
+        {
+          "regexp": "^/inspiratie$",
+          "originalSource": "/inspiratie"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/inspiratie/[category]/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/inspiratie/[category]/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/986.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/260.js",
+        "server/app/inspiratie/[category]/page.js"
+      ],
+      "name": "app/inspiratie/[category]/page",
+      "page": "/inspiratie/[category]/page",
+      "matchers": [
+        {
+          "regexp": "^/inspiratie/(?<category>[^/]+?)$",
+          "originalSource": "/inspiratie/[category]"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/inspiratie/[category]/[slug]/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/inspiratie/[category]/[slug]/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/558.js",
+        "server/app/inspiratie/[category]/[slug]/page.js"
+      ],
+      "name": "app/inspiratie/[category]/[slug]/page",
+      "page": "/inspiratie/[category]/[slug]/page",
+      "matchers": [
+        {
+          "regexp": "^/inspiratie/(?<category>[^/]+?)/(?<slug>[^/]+?)$",
+          "originalSource": "/inspiratie/[category]/[slug]"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/nieuws/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/nieuws/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/986.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/260.js",
+        "server/app/nieuws/page.js"
+      ],
+      "name": "app/nieuws/page",
+      "page": "/nieuws/page",
+      "matchers": [
+        {
+          "regexp": "^/nieuws$",
+          "originalSource": "/nieuws"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/uitjes/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/uitjes/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/986.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/260.js",
+        "server/app/uitjes/page.js"
+      ],
+      "name": "app/uitjes/page",
+      "page": "/uitjes/page",
+      "matchers": [
+        {
+          "regexp": "^/uitjes$",
+          "originalSource": "/uitjes"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/zoeken/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/zoeken/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/986.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/260.js",
+        "server/edge-chunks/752.js",
+        "server/edge-chunks/394.js",
+        "server/edge-chunks/558.js",
+        "server/app/zoeken/page.js"
+      ],
+      "name": "app/zoeken/page",
+      "page": "/zoeken/page",
+      "matchers": [
+        {
+          "regexp": "^/zoeken$",
+          "originalSource": "/zoeken"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/ontdek/[slug]/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/ontdek/[slug]/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/986.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/260.js",
+        "server/edge-chunks/752.js",
+        "server/edge-chunks/839.js",
+        "server/app/ontdek/[slug]/page.js"
+      ],
+      "name": "app/ontdek/[slug]/page",
+      "page": "/ontdek/[slug]/page",
+      "matchers": [
+        {
+          "regexp": "^/ontdek/(?<slug>[^/]+?)$",
+          "originalSource": "/ontdek/[slug]"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/ontdek/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/ontdek/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/edge-chunks/752.js",
+        "server/edge-chunks/394.js",
+        "server/edge-chunks/239.js",
+        "server/edge-chunks/839.js",
+        "server/app/ontdek/page.js"
+      ],
+      "name": "app/ontdek/page",
+      "page": "/ontdek/page",
+      "matchers": [
+        {
+          "regexp": "^/ontdek$",
+          "originalSource": "/ontdek"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    },
+    "/festivals/kaart/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/festivals/kaart/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/720.js",
+        "server/edge-chunks/109.js",
+        "server/edge-chunks/186.js",
+        "server/app/festivals/kaart/page.js"
+      ],
+      "name": "app/festivals/kaart/page",
+      "page": "/festivals/kaart/page",
+      "matchers": [
+        {
+          "regexp": "^/festivals/kaart$",
+          "originalSource": "/festivals/kaart"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "tLOMpU_4iGxfZFL60Fa4q",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "PjGHOoAsg3EelbVGwsDscJDm7Spf9lrCYhZHIEeWUt8=",
+        "__NEXT_PREVIEW_MODE_ID": "f553fb179bbd8662b558ae870d55fc34",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a796c4a7bacbb62ea2a87c9af3929b790b99688349458e9a57b42750f7d4f75b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9db08ee72ea0a65d433eedd3e8a31796749df79b573da044a1207bfd607033c8"
+      }
+    }
+  },
+  "sortedMiddleware": []
+}

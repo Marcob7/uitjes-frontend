@@ -32,6 +32,8 @@ export type InspirationResult = {
   type: string;
   reasons: string[];
   gallery: string[];
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 export type InspirationResultQuery = {

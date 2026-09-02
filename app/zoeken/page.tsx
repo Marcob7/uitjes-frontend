@@ -1,24 +1,62 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-import { AppButton, AppResultCard, AppSection } from "@/components/ui/app";
 import SearchForm from "@/components/search/SearchForm";
-import SearchRetryButton from "@/components/search/SearchRetryButton";
+import SearchResultsExperience from "@/components/search/SearchResultsExperience";
 import { getGeneralSearchResults } from "@/lib/search/searchResults";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 
 export const runtime = "edge";
 
-type SearchPageProps = { searchParams?: { query?: string } };
+type SearchPageProps = {
+  searchParams?: {
+    query?: string;
+  };
+};
+
+const popularSearches = [
+  { label: "vandaag", query: "vandaag" },
+  { label: "dit weekend", query: "weekend" },
+  { label: "met kinderen", query: "kinderen" },
+  { label: "gratis", query: "gratis" },
+  { label: "buiten", query: "buiten" },
+];
+
+const discoveryLinks = [
+  {
+    eyebrow: "Vandaag",
+    title: "Spontaan op pad",
+    description: "Vind iets leuks voor vandaag, dichtbij huis.",
+    href: "/zoeken?query=vandaag&when=today",
+  },
+  {
+    eyebrow: "Voor samen",
+    title: "Met kinderen",
+    description: "Ideeën voor een vrije middag of een heel weekend.",
+    href: "/zoeken?query=kinderen&category=met-kinderen",
+  },
+  {
+    eyebrow: "Op ontdekking",
+    title: "Kies een stad",
+    description: "Bekijk lokale tips en uitjes per stad.",
+    href: "/ontdek",
+  },
+];
 
 export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
   const query = normalizeSearchQuery(searchParams?.query);
-  return query
-    ? { title: `Zoeken naar ${query} | Uitjes`, description: `Bekijk zoekresultaten voor ${query}.`, alternates: { canonical: "/zoeken" } }
-    : { title: "Zoeken | Uitjes", alternates: { canonical: "/zoeken" } };
-}
 
-function getResultCountLabel(count: number) {
-  return count === 1 ? "1 resultaat" : `${count} resultaten`;
+  return query
+    ? {
+        title: `Zoeken naar ${query} | Uitjes`,
+        description: `Bekijk zoekresultaten voor ${query}.`,
+        alternates: { canonical: "/zoeken" },
+      }
+    : {
+        title: "Zoeken | Uitjes",
+        description: "Vind inspiratie, activiteiten en lokale tips die bij je passen.",
+        alternates: { canonical: "/zoeken" },
+      };
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -28,52 +66,83 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     : { status: "success" as const, results: [] };
 
   return (
-    <main className="min-h-screen bg-[#f8f5f3] text-[#171511]">
-      <AppSection maxWidth="wide" spacing="sm" innerClassName="pt-8 pb-8 sm:pt-12">
-        <div className="max-w-4xl">
-          <h1 className="text-[clamp(2.4rem,6vw,4.7rem)] font-semibold leading-[0.92] tracking-[-0.06em]">Zoeken</h1>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-[#665d54] sm:text-base">Vind inspiratie, activiteiten en lokale tips die bij je passen.</p>
-          <div className="mt-6"><SearchForm initialQuery={query} showEmptyFeedback={!query} /></div>
+    <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
+      <section className="search-hero" data-navbar-contrast="on-light">
+        <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-28 sm:px-6 sm:pb-12 sm:pt-32 lg:px-8 lg:pb-14">
+          <div className="max-w-4xl">
+            <span className="search-section-label">DOEN zoeken</span>
+            <h1 className="mt-3 max-w-[10ch] font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">
+              Zoeken
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[#68746d] sm:text-lg">
+              Vind inspiratie, activiteiten en lokale tips die bij je passen.
+            </p>
+
+            <SearchForm
+              initialQuery={query}
+              showEmptyFeedback={!query}
+              className="mt-7 max-w-3xl"
+            />
+
+            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#68746d]">
+              <span className="font-semibold text-[#3d5146]">Populair:</span>
+              {popularSearches.map((item) => (
+                <Link
+                  key={item.query}
+                  href={`/zoeken?query=${encodeURIComponent(item.query)}`}
+                  className="rounded-full border border-[#d7e0d7] bg-white/75 px-3 py-1.5 transition hover:border-[#1d5a46] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
-      </AppSection>
+      </section>
 
       {query ? (
-        <AppSection maxWidth="wide" spacing="md" innerClassName="pt-0 pb-16">
-          <section className="border-t border-[#ded5cb] pt-7 sm:pt-9" aria-labelledby="search-results-heading">
-            {searchState.status === "error" ? (
-              <div className="max-w-2xl py-3 sm:py-6" role="alert" aria-labelledby="search-error-heading">
-                <h2 id="search-error-heading" className="text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-tight tracking-[-0.05em]">Zoeken lukt op dit moment niet.</h2>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-[#665d54] sm:text-base">Probeer het opnieuw.</p>
-                <div className="mt-6"><SearchRetryButton /></div>
-              </div>
-            ) : searchState.results.length > 0 ? (
-              <>
-                <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                  <h2 id="search-results-heading" className="max-w-[26ch] text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-tight tracking-[-0.05em]">Resultaten voor &quot;{query}&quot;</h2>
-                  <p className="text-sm font-medium text-[#665d54]" aria-live="polite">{getResultCountLabel(searchState.results.length)}</p>
-                </div>
-                <div className="grid gap-5 lg:grid-cols-2">
-                  {searchState.results.map((result) => <AppResultCard key={result.id} {...result} ctaLabel="Bekijk resultaat" />)}
-                </div>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <AppButton href="/ontdek" variant="dark">Kies een stad</AppButton>
-                  <AppButton href="/inspiratie" variant="dark">Bekijk inspiratie</AppButton>
-                  <AppButton href="/uitjes" variant="dark">Populaire categorieën</AppButton>
-                </div>
-              </>
-            ) : (
-              <div className="max-w-2xl py-3 sm:py-6" aria-live="polite">
-                <h2 id="search-results-heading" className="text-[clamp(1.8rem,3vw,2.8rem)] font-semibold leading-tight tracking-[-0.05em]">Geen resultaten voor &quot;{query}&quot;</h2>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-[#665d54] sm:text-base">Controleer de spelling, probeer een andere zoekterm of ontdek activiteiten per stad.</p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <AppButton href="/ontdek" variant="dark">Ontdek activiteiten</AppButton>
-                  <AppButton href="/inspiratie" variant="outline">Bekijk inspiratie</AppButton>
-                </div>
-              </div>
-            )}
-          </section>
-        </AppSection>
-      ) : null}
+        <SearchResultsExperience
+          query={query}
+          results={searchState.status === "success" ? searchState.results : []}
+          error={searchState.status === "error"}
+        />
+      ) : (
+        <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-10 lg:px-8">
+          <div className="border-t border-[#dce1dc] pt-7 sm:pt-9">
+            <div className="max-w-2xl">
+              <span className="search-section-label">Begin hier</span>
+              <h2 className="mt-3 font-heading text-[clamp(2.25rem,4.5vw,3.7rem)] leading-[0.94] tracking-[-0.06em] text-[#22312a]">
+                Waar heb je zin in?
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-[#68746d] sm:text-base">
+                Zoek op een activiteit, stad of moment. Of kies een vertrekpunt hieronder.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {discoveryLinks.map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="group rounded-[1.45rem] border border-[#dce1dc] bg-white p-5 shadow-[0_12px_30px_rgba(33,54,43,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#b8d2bd] hover:shadow-[0_18px_36px_rgba(33,54,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] sm:p-6"
+                >
+                  <span className="search-section-label text-[#52725e]">{item.eyebrow}</span>
+                  <h3 className="mt-3 font-heading text-[clamp(1.65rem,3vw,2.2rem)] leading-none tracking-[-0.05em] text-[#22312a]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 max-w-[28ch] text-sm leading-6 text-[#68746d]">
+                    {item.description}
+                  </p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#1d5a46]">
+                    Ontdek meer
+                    <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

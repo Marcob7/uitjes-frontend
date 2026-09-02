@@ -22,6 +22,7 @@ export type AppSearchInputProps = {
   submitLabel?: string;
   className?: string;
   inputClassName?: string;
+  submitButtonClassName?: string;
   autoFocus?: boolean;
   inputId?: string;
   errorMessage?: string | null;
@@ -42,6 +43,7 @@ export function AppSearchInput({
   submitLabel = "Zoek",
   className,
   inputClassName,
+  submitButtonClassName,
   autoFocus,
   inputId = "app-search-input",
   errorMessage,
@@ -69,9 +71,10 @@ export function AppSearchInput({
     >
       <div className="flex flex-col gap-2 md:flex-row md:items-center">
         <div className="relative flex min-h-12 flex-1 items-center rounded-2xl px-4 sm:rounded-full">
-          <span className="mr-3 text-lg text-[#756b61]" aria-hidden="true">
-            &#8981;
-          </span>
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mr-3 h-5 w-5 shrink-0 text-[#68746d]">
+            <circle cx="8.75" cy="8.75" r="5.75" stroke="currentColor" strokeWidth="1.5" />
+            <path d="m13 13 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
           <label htmlFor={inputId} className="sr-only">
             Zoeken
           </label>
@@ -104,7 +107,7 @@ export function AppSearchInput({
         </div>
 
         {showSubmitButton ? (
-          <AppButton type="submit" variant="primary" size="md" disabled={isSubmitting} className="md:min-w-[6.5rem]">
+          <AppButton type="submit" variant="primary" size="md" disabled={isSubmitting} className={cn("md:min-w-[6.5rem]", submitButtonClassName)}>
             {isSubmitting ? "Zoeken…" : submitLabel}
           </AppButton>
         ) : null}

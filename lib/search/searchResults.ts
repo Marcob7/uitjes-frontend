@@ -6,7 +6,7 @@ import {
   searchCityContent,
   type CityContentItem,
 } from "@/lib/api/cityContent";
-import { normalizeCitySlug } from "@/lib/cityConfig";
+import { cityOptions, getCityConfig, normalizeCitySlug } from "@/lib/cityConfig";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 
 export type GeneralSearchResult = {
@@ -15,7 +15,20 @@ export type GeneralSearchResult = {
   description: string;
   href: string;
   image?: string;
+  imageAlt?: string;
   badge: string;
+  categorySlug?: string;
+  city: string;
+  citySlug: string;
+  location: string;
+  priceLabel?: string;
+  priceMin?: number | null;
+  isFree: boolean;
+  ratingValue?: number | null;
+  reviewCount?: number | null;
+  startAt?: string | null;
+  dateLabel?: string | null;
+  kind?: string | null;
   tags: string[];
   meta: string;
   source: "inspiration" | "city-content";
@@ -130,13 +143,30 @@ function mapInspirationResult(
 
   if (score == null) return null;
 
+  const numericRating = Number.parseFloat(result.rating.replace(",", "."));
+  const priceIsFree = normalize(result.price).includes("gratis") || normalize(result.price).includes("0");
+  const citySlug = normalizeCitySlug(result.city);
+
   return {
     id: `inspiration:${result.category}:${result.slug}`,
     title: result.title,
     description: result.description,
     href: `/inspiratie/${result.category}/${result.slug}`,
     image: unwrapCssImageUrl(result.image),
+    imageAlt: result.title,
     badge: result.categoryLabel,
+    categorySlug: result.category,
+    city: result.city,
+    citySlug,
+    location: result.location,
+    priceLabel: result.price,
+    priceMin: null,
+    isFree: priceIsFree,
+    ratingValue: Number.isFinite(numericRating) ? numericRating : null,
+    reviewCount: null,
+    startAt: null,
+    dateLabel: result.categories.includes("weekend") ? "Dit weekend" : result.categories.includes("vandaag") ? "Vandaag" : null,
+    kind: result.type,
     tags: [result.city, result.price, ...result.tags].slice(0, 5),
     meta: `${result.type} - ${result.location}`,
     source: "inspiration",
@@ -151,6 +181,11 @@ function formatPrice(item: CityContentItem) {
     return `EUR ${item.priceMin.toFixed(2).replace(".", ",")}`;
   }
   return null;
+}
+
+function getCityDisplayLabel(value: string) {
+  const normalizedValue = normalizeCitySlug(value);
+  return cityOptions.find((city) => city.value === normalizedValue)?.label ?? value;
 }
 
 function getCityContentHref(item: CityContentItem) {
@@ -196,8 +231,10 @@ function mapCityContentResult(
 
   if (score == null) return null;
 
-  const cityLabel = item.cityName ?? item.city ?? "Nederland";
-  const location = item.venue ?? item.address ?? cityLabel;
+  const cityLabel = getCityDisplayLabel(item.cityName ?? item.city ?? "Nederland");
+  const citySlug = normalizeCitySlug(item.city ?? item.cityName ?? "");
+  const cityFallbackImage = getCityConfig(citySlug).cardImage ?? getCityConfig(citySlug).fallbackImage;
+  const location = compactStrings([item.venue ?? item.address, cityLabel]).join(" · ");
   const price = formatPrice(item);
 
   return {
@@ -208,8 +245,21 @@ function mapCityContentResult(
       item.description ??
       "Een resultaat uit de lokale city-content collectie.",
     href: getCityContentHref(item),
-    image: item.imageUrl ?? undefined,
+    image: item.imageUrl ?? cityFallbackImage ?? undefined,
+    imageAlt: item.imageAlt ?? `${cityLabel} · ${item.title}`,
     badge: item.category ?? (item.kind === "food_drink" ? "Eten & drinken" : "Uitje"),
+    categorySlug: normalizeCitySlug(item.category ?? item.kind ?? "uitje"),
+    city: cityLabel,
+    citySlug,
+    location,
+    priceLabel: price ?? undefined,
+    priceMin: item.priceMin,
+    isFree: item.isFree || item.priceMin === 0,
+    ratingValue: item.ratingValue,
+    reviewCount: item.reviewCount,
+    startAt: item.startAt,
+    dateLabel: item.dateText,
+    kind: item.kind,
     tags: compactStrings([cityLabel, price, ...item.tags]).slice(0, 5),
     meta: compactStrings([item.kind, location]).join(" - "),
     source: "city-content",

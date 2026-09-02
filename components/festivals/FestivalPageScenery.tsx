@@ -2,7 +2,7 @@ export default function FestivalPageScenery() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[620px] overflow-hidden sm:h-[700px] lg:h-[820px]"
+      className="pointer-events-none absolute inset-x-0 top-0 z-0 hidden h-[620px] overflow-hidden sm:h-[700px] lg:h-[820px] min-[1500px]:block"
     >
       <svg
         viewBox="0 0 360 64"

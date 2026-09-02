@@ -24,8 +24,11 @@ type CityExploreResultsSectionProps = {
   selectedId: number | null;
   onSelectCard: (id: number) => void;
   sectionRef: RefObject<HTMLElement | null>;
-  plannerSelections: PlannerSelections;
-  completedStepCount: number;
+  plannerSelections?: PlannerSelections;
+  completedStepCount?: number;
+  selectionLabels?: string[];
+  hasPlannerSelections?: boolean;
+  isLoading?: boolean;
   onEditSelection: (step: number) => void;
   resultFilters: ResultFilterKey[];
   onToggleResultFilter: (filter: ResultFilterKey) => void;
@@ -238,8 +241,11 @@ export default function CityExploreResultsSection({
   selectedId,
   onSelectCard,
   sectionRef,
-  plannerSelections,
-  completedStepCount,
+  plannerSelections = {} as PlannerSelections,
+  completedStepCount = 0,
+  selectionLabels: selectionLabelsOverride,
+  hasPlannerSelections,
+  isLoading = false,
   onEditSelection,
   resultFilters,
   onToggleResultFilter,
@@ -275,7 +281,7 @@ export default function CityExploreResultsSection({
   const hasMoreResults = visibleResultCount < filteredCards.length;
   const hasExpandableResults = filteredCards.length > INITIAL_VISIBLE_RESULTS;
   const hasResultFilters = resultFilters.length > 0;
-  const hasPlannerFilters = completedStepCount > 0;
+  const hasPlannerFilters = hasPlannerSelections ?? completedStepCount > 0;
   const hasActiveFilters = hasResultFilters || hasPlannerFilters;
   const filterModalId = "explore-filter-modal";
   const filterTitleId = "explore-filter-title";
@@ -283,9 +289,10 @@ export default function CityExploreResultsSection({
     filteredCards.length === 1
       ? "1 resultaat"
       : `${filteredCards.length} resultaten`;
-  const selectionLabels = activeFilters
+  const selectionLabels = selectionLabelsOverride ?? activeFilters
     .filter((filter) => filter.id !== "city")
     .map((filter) => filter.label);
+  const isLoadingResults = isLoading && filteredCards.length === 0;
 
   useEffect(() => {
     setVisibleState((current) => {
@@ -451,7 +458,7 @@ export default function CityExploreResultsSection({
 
         {isFilterModalOpen ? (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-[1200] flex items-center justify-center p-4"
             onKeyDown={handleFilterModalKeyDown}
           >
             <button
@@ -554,19 +561,25 @@ export default function CityExploreResultsSection({
 
         <div className="mt-5 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(470px,0.82fr)] lg:items-start lg:gap-8 xl:gap-10">
           <div>
-            <div className="grid gap-5 border-y border-[#DCE1DC] py-5 sm:grid-cols-2">
-              {displayedCards.map((card) => (
-                <ExploreCardItem
-                  key={card.id}
-                  card={card}
-                  isSelected={selectedId === card.id}
-                  onSelect={() => onSelectCard(card.id)}
-                  variant="flow"
-                />
-              ))}
-            </div>
+            {isLoadingResults ? (
+              <div className="border-y border-[#DCE1DC] py-10 text-sm leading-6 text-[#65736C]" role="status">
+                We vullen deze selectie met actuele stadssuggesties.
+              </div>
+            ) : (
+              <div className="grid gap-5 border-y border-[#DCE1DC] py-5 sm:grid-cols-2">
+                {displayedCards.map((card) => (
+                  <ExploreCardItem
+                    key={card.id}
+                    card={card}
+                    isSelected={selectedId === card.id}
+                    onSelect={() => onSelectCard(card.id)}
+                    variant="flow"
+                  />
+                ))}
+              </div>
+            )}
 
-        {hasExpandableResults && !hasNoResults ? (
+        {hasExpandableResults && !hasNoResults && !isLoadingResults ? (
           <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-medium text-[#786d63]">
               {visibleResultCount} van {filteredCards.length} resultaten
@@ -587,7 +600,7 @@ export default function CityExploreResultsSection({
           </div>
         ) : null}
 
-        {hasNoResults ? (
+        {hasNoResults && !isLoadingResults ? (
           <div className="mt-8 rounded-[2rem] border border-[#d5e1bd] bg-white/78 p-6 text-[#171511] shadow-[0_18px_42px_rgba(75,92,52,0.08)] backdrop-blur-xl sm:p-8">
             <div className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#667b36]">
               Geen directe matches
@@ -627,7 +640,7 @@ export default function CityExploreResultsSection({
             <div className="sticky top-40 h-[min(760px,calc(100dvh-10rem))] min-h-[560px]">
               <CityExploreMapSection
                 cityLabel={cityLabel}
-                events={filteredCards}
+                events={displayedCards}
                 selectedId={selectedId}
                 setSelectedId={onSelectCard}
                 layout="embedded"
@@ -638,13 +651,13 @@ export default function CityExploreResultsSection({
         </div>
 
         {isMobileMapOpen ? (
-          <div className="fixed inset-0 z-50 bg-[#F6F5F0] p-3 lg:hidden" role="dialog" aria-modal="true" aria-label={`Kaart van ${cityLabel}`}>
+          <div className="fixed inset-0 z-[1200] bg-[#F6F5F0] p-3 lg:hidden" role="dialog" aria-modal="true" aria-label={`Kaart van ${cityLabel}`}>
             <div className="mb-3 flex items-center justify-between px-1">
               <h2 className="text-lg font-semibold text-[#29342F]">{cityLabel} op de kaart</h2>
               <button type="button" onClick={() => setIsMobileMapOpen(false)} className="inline-flex min-h-11 items-center rounded-full border border-[#DCE1DC] bg-white px-4 text-sm font-semibold text-[#355E7A]">Lijst bekijken</button>
             </div>
             <div className="h-[calc(100dvh-5.25rem)]">
-              <CityExploreMapSection cityLabel={cityLabel} events={filteredCards} selectedId={selectedId} setSelectedId={(id) => { onSelectCard(id); }} layout="embedded" fullHeight />
+              <CityExploreMapSection cityLabel={cityLabel} events={displayedCards} selectedId={selectedId} setSelectedId={(id) => { onSelectCard(id); }} layout="embedded" fullHeight />
             </div>
           </div>
         ) : null}

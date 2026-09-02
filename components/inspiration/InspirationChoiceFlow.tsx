@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import ExploreCardItem from "@/components/city-explore/ExploreCardItem";
+import CityExploreResultsSection from "@/components/city-explore/CityExploreResultsSection";
 import {
   FullscreenChoiceFlow,
   FullscreenChoiceGrid,
@@ -12,12 +13,14 @@ import {
   FullscreenChoiceResults,
   type FullscreenChoiceFlowStep,
 } from "@/components/city-explore/FullscreenChoiceFlow";
-import type { ExploreCard } from "@/components/city-explore/types";
+import type { ExploreCard, ResultFilterKey } from "@/components/city-explore/types";
+import { filterCardsByResultFilters } from "@/components/city-explore/utils";
 import { getCityContentByCity, type CityContentItem } from "@/lib/api/cityContent";
 import { CITY_CONTENT_CITY_SLUGS, isCityContentCity } from "@/lib/cityContentCities";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import {
   featuredInspirationCities,
+  resolveNearestInspirationCityFromCoordinates,
   type InspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
@@ -211,6 +214,8 @@ function toExploreCard(result: InspirationResult, index: number): ExploreCard {
     rating: Number.isFinite(parsedRating) ? parsedRating : null,
     tags: result.tags,
     kind: result.type,
+    latitude: result.latitude ?? null,
+    longitude: result.longitude ?? null,
   };
 }
 
@@ -222,14 +227,18 @@ export function InspirationChoiceFlow({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const resultsHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  const resultsRef = useRef<HTMLElement | null>(null);
   const hasObservedUrlState = useRef(false);
-  const pendingCityUrl = useRef<string | null>(null);
+  const pendingCityUrl = useRef<string | null | undefined>(null);
   const legacyCity = initialLocation === "nearby" ? initialNearbyCity : initialLocation;
   const initialSelectedCity = findSupportedCity(initialCity ?? legacyCity);
   const [selectedCity, setSelectedCity] = useState<string | undefined>(initialSelectedCity?.value);
   const [cityInput, setCityInput] = useState(initialSelectedCity?.label ?? "");
   const [cityError, setCityError] = useState<string | null>(null);
+  const [isCityListOpen, setIsCityListOpen] = useState(false);
+  const [activeCityIndex, setActiveCityIndex] = useState(-1);
+  const [isResolvingLocation, setIsResolvingLocation] = useState(false);
+  const cityInputRef = useRef<HTMLInputElement | null>(null);
   // A new flow starts with no substantive answers. A city from the URL is the
   // sole persisted initial selection; answers remain in state for editing and
   // back navigation within this mounted flow.
@@ -240,11 +249,13 @@ export function InspirationChoiceFlow({
   const [isFlowOpen, setIsFlowOpen] = useState(true);
   const [cityContentItems, setCityContentItems] = useState<CityContentItem[]>([]);
   const [isLoadingCity, setIsLoadingCity] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [resultFilters, setResultFilters] = useState<ResultFilterKey[]>([]);
 
   const urlCity = searchParams.get("city");
   const matchingCities = useMemo(() => {
     const query = normalizeCitySlug(cityInput);
-    if (!query) return supportedInspirationCities.slice(0, 8);
+    if (!query) return supportedInspirationCities;
     return supportedInspirationCities.filter((city) => {
       const label = normalizeCitySlug(city.label);
       return city.value.includes(query) || label.includes(query);
@@ -257,8 +268,17 @@ export function InspirationChoiceFlow({
   );
   const previewCards = useMemo(() => filteredResults.slice(0, 6).map(toExploreCard), [filteredResults]);
   const fullCards = useMemo(() => filteredResults.map(toExploreCard), [filteredResults]);
+  const filteredCards = useMemo(
+    () => filterCardsByResultFilters(fullCards, resultFilters),
+    [fullCards, resultFilters]
+  );
   const selectedCityLabel = supportedInspirationCities.find((city) => city.value === selectedCity)?.label ?? selectedCity;
   const totalPreviewCount = Math.min(filteredResults.length, 6);
+  const selectionLabels = [
+    selectedAudience ? audienceOptions.find((option) => option.value === selectedAudience)?.label : null,
+    selectedMoment ? momentOptions.find((option) => option.value === selectedMoment)?.label : null,
+    selectedVibe ? vibeOptions.find((option) => option.value === selectedVibe)?.label : null,
+  ].filter((label): label is string => Boolean(label));
 
   useEffect(() => {
     if (!hasObservedUrlState.current) {
@@ -266,10 +286,13 @@ export function InspirationChoiceFlow({
       return;
     }
 
-    // router.replace updates search params asynchronously. Keep the freshly
-    // selected city while that URL update is in flight instead of briefly
-    // resetting it to the previous query value.
-    if (pendingCityUrl.current === selectedCity && urlCity !== selectedCity) {
+    if (pendingCityUrl.current === undefined && urlCity === null) {
+      pendingCityUrl.current = null;
+    }
+
+    // URL updates are asynchronous. Keep the freshly selected (or cleared)
+    // city while the previous query string is still rendered.
+    if (pendingCityUrl.current !== null && pendingCityUrl.current === selectedCity && urlCity !== selectedCity) {
       return;
     }
 
@@ -312,29 +335,71 @@ export function InspirationChoiceFlow({
     return () => { isCancelled = true; };
   }, [selectedCity]);
 
-  function updateCityUrl(city: string) {
+  function updateCityUrl(city?: string) {
     pendingCityUrl.current = city;
     const params = new URLSearchParams(searchParams.toString());
-    params.set("city", city);
+    if (city) {
+      params.set("city", city);
+    } else {
+      params.delete("city");
+    }
     params.delete("location");
     params.delete("nearbyCity");
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   }
 
   function selectCity(city: CityOption) {
     setSelectedCity(city.value);
     setCityInput(city.label);
     setCityError(null);
+    setIsCityListOpen(false);
+    setActiveCityIndex(-1);
     updateCityUrl(city.value);
   }
 
-  function selectCityFromInput() {
-    const city = findSupportedCity(cityInput);
+  function selectCityFromInput(preferredIndex = activeCityIndex) {
+    const city = findSupportedCity(cityInput) ?? matchingCities[preferredIndex] ?? matchingCities[0];
     if (!city) {
       if (cityInput.trim()) setCityError("Kies een stad uit de getoonde lijst.");
       return;
     }
     selectCity(city);
+  }
+
+  function clearCity() {
+    setSelectedCity(undefined);
+    setCityInput("");
+    setCityError(null);
+    setIsCityListOpen(false);
+    setActiveCityIndex(-1);
+    updateCityUrl();
+    cityInputRef.current?.focus();
+  }
+
+  function requestLocation() {
+    setCityError(null);
+    if (!("geolocation" in navigator)) {
+      setCityError("We konden je locatie niet bepalen. Kies zelf een stad.");
+      return;
+    }
+
+    setIsResolvingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const city = findSupportedCity(resolveNearestInspirationCityFromCoordinates({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        }));
+        setIsResolvingLocation(false);
+        if (city) selectCity(city);
+      },
+      () => {
+        setIsResolvingLocation(false);
+        setCityError("We konden je locatie niet bepalen. Kies zelf een stad.");
+      },
+      { enableHighAccuracy: false, maximumAge: 5 * 60 * 1000, timeout: 10000 }
+    );
   }
 
   function chooseQuestion(value: string) {
@@ -362,7 +427,11 @@ export function InspirationChoiceFlow({
 
   function finishFlow() {
     setIsFlowOpen(false);
-    window.setTimeout(() => resultsHeadingRef.current?.focus({ preventScroll: true }), 0);
+    window.setTimeout(() => {
+      resultsRef.current
+        ?.querySelector<HTMLElement>("#explore-results-heading")
+        ?.focus({ preventScroll: true });
+    }, 0);
   }
 
   function openFlowAtCityStep() {
@@ -370,36 +439,53 @@ export function InspirationChoiceFlow({
     setIsFlowOpen(true);
   }
 
-  return (
-    <main className="min-h-screen bg-[#F6F5F0] px-4 pb-16 pt-28 text-[#29342F] sm:px-7 lg:px-10">
-      <section aria-hidden={isFlowOpen} className={isFlowOpen ? "invisible" : "mx-auto max-w-[72rem]"}>
-        <div className="flex flex-col justify-between gap-5 border-b border-[#DCE1DC] pb-7 sm:flex-row sm:items-end">
-          <div>
-            <h1 ref={resultsHeadingRef} id="inspiration-results-heading" tabIndex={-1} className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.92] tracking-[-0.06em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]">
-              Dit past bij jouw keuzes
-            </h1>
-            <p className="mt-4 text-base leading-7 text-[#65736C] sm:text-lg">
-              {selectedCityLabel ? `${fullCards.length} ${fullCards.length === 1 ? "idee" : "ideeën"} in ${selectedCityLabel}` : "Kies een stad om jouw resultaten te bekijken."}
-            </p>
-          </div>
-          <button type="button" onClick={openFlowAtCityStep} className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border border-[#DCE1DC] bg-white px-5 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">
-            Keuzes aanpassen
-          </button>
-        </div>
+  function handleToggleResultFilter(filter: ResultFilterKey) {
+    setResultFilters((current) =>
+      current.includes(filter)
+        ? current.filter((item) => item !== filter)
+        : [...current, filter]
+    );
+  }
 
-        {isLoadingCity ? (
-          <p className="py-10 text-base text-[#65736C]" role="status">We vullen je selectie met actuele city-content.</p>
-        ) : fullCards.length ? (
-          <div className="mt-7 grid gap-3 sm:grid-cols-2 sm:gap-4">
-            {fullCards.map((card) => <ExploreCardItem key={card.href} card={card} variant="flow" isSelected={false} onSelect={() => undefined} />)}
-          </div>
-        ) : (
-          <div className="mt-8 max-w-2xl border-y border-[#DCE1DC] py-8 sm:py-10">
-            <p className="text-lg font-semibold tracking-[-0.025em]">We vonden nog geen perfecte match{selectedCityLabel ? ` in ${selectedCityLabel}` : ""}.</p>
-            <p className="mt-2 text-sm leading-6 text-[#65736C] sm:text-base">Pas je keuzes aan of kies een andere stad.</p>
-          </div>
-        )}
-      </section>
+  function handleClearResultFilters() {
+    setResultFilters([]);
+  }
+
+  function handleClearAllFilters() {
+    setResultFilters([]);
+    setSelectedAudience(undefined);
+    setSelectedMoment(undefined);
+    setSelectedVibe(undefined);
+  }
+
+  useEffect(() => {
+    const firstAvailableId = filteredCards[0]?.id ?? null;
+    setSelectedId((current) =>
+      current && filteredCards.some((card) => card.id === current)
+        ? current
+        : firstAvailableId
+    );
+  }, [filteredCards]);
+
+  return (
+    <main className="min-h-screen bg-[#F6F5F0] pb-16 pt-32 text-[#29342F] lg:pt-48">
+      <div aria-hidden={isFlowOpen} className={isFlowOpen ? "invisible" : undefined}>
+        <CityExploreResultsSection
+          cityLabel={selectedCityLabel ?? "Nederland"}
+          filteredCards={filteredCards}
+          selectedId={selectedId}
+          onSelectCard={setSelectedId}
+          sectionRef={resultsRef}
+          selectionLabels={selectionLabels}
+          hasPlannerSelections={selectionLabels.length > 0}
+          isLoading={isLoadingCity}
+          onEditSelection={openFlowAtCityStep}
+          resultFilters={resultFilters}
+          onToggleResultFilter={handleToggleResultFilter}
+          onClearResultFilters={handleClearResultFilters}
+          onClearAllFilters={handleClearAllFilters}
+        />
+      </div>
 
       {isFlowOpen ? (
         <FullscreenChoiceFlow
@@ -462,21 +548,81 @@ export function InspirationChoiceFlow({
                 >
                   <div className="w-full max-w-2xl rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5">
                     <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een stad</label>
-                    <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-                      <input id="inspiration-city-search" value={cityInput} onChange={(event) => { setCityInput(event.target.value); setCityError(null); }} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); selectCityFromInput(); } }} placeholder="Bijvoorbeeld Nijmegen" autoComplete="off" className="min-h-12 min-w-0 flex-1 rounded-xl border border-[#B8C5BE] bg-white px-4 text-base text-[#29342F] outline-none placeholder:text-[#65736C] focus:border-[#005FCC] focus:ring-2 focus:ring-[#005FCC]" />
-                      <button type="button" onClick={selectCityFromInput} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#1D5A46] px-5 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Selecteer stad</button>
+                    <div className="relative mt-2">
+                      <div className="flex flex-col gap-3 sm:flex-row">
+                        <div className="flex min-h-12 min-w-0 flex-1 items-center rounded-xl border border-[#B8C5BE] bg-white transition focus-within:border-[#005FCC] focus-within:ring-2 focus-within:ring-[#005FCC]">
+                          <input
+                          ref={cityInputRef}
+                          id="inspiration-city-search"
+                          role="combobox"
+                          aria-autocomplete="list"
+                          aria-expanded={isCityListOpen}
+                          aria-controls="inspiration-city-listbox"
+                          aria-activedescendant={activeCityIndex >= 0 && activeCityIndex < matchingCities.length ? `inspiration-city-option-${matchingCities[activeCityIndex].value}` : undefined}
+                          value={cityInput}
+                          onChange={(event) => {
+                            const nextInput = event.target.value;
+                            setCityInput(nextInput);
+                            setCityError(null);
+                            setIsCityListOpen(true);
+                            setActiveCityIndex(-1);
+                            if (selectedCity && nextInput !== selectedCityLabel) {
+                              setSelectedCity(undefined);
+                              updateCityUrl();
+                            }
+                          }}
+                          onFocus={() => setIsCityListOpen(true)}
+                          onKeyDown={(event) => {
+                            if (event.key === "ArrowDown") {
+                              event.preventDefault();
+                              setIsCityListOpen(true);
+                              setActiveCityIndex((index) => Math.min(index + 1, matchingCities.length - 1));
+                            } else if (event.key === "ArrowUp") {
+                              event.preventDefault();
+                              setIsCityListOpen(true);
+                              setActiveCityIndex((index) => Math.max(index - 1, 0));
+                            } else if (event.key === "Enter") {
+                              event.preventDefault();
+                              selectCityFromInput();
+                            } else if (event.key === "Escape") {
+                              event.preventDefault();
+                              setIsCityListOpen(false);
+                              setActiveCityIndex(-1);
+                            }
+                          }}
+                          placeholder="Bijvoorbeeld Nijmegen"
+                          autoComplete="off"
+                          inputMode="search"
+                          spellCheck={false}
+                          className="min-h-12 min-w-0 flex-1 rounded-xl bg-transparent px-4 text-base text-[#29342F] outline-none placeholder:text-[#65736C]"
+                          />
+                          {cityInput ? <button type="button" onClick={clearCity} aria-label="Geselecteerde stad wissen" className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#65736C] transition hover:bg-[#F1F4F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">×</button> : null}
+                          <button type="button" onClick={() => { setIsCityListOpen((open) => !open); setActiveCityIndex(-1); cityInputRef.current?.focus(); }} aria-label={isCityListOpen ? "Steden sluiten" : "Steden tonen"} aria-expanded={isCityListOpen} aria-controls="inspiration-city-listbox" className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#29342F] transition hover:bg-[#F1F4F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"><ChevronIcon /></button>
+                        </div>
+                        <button type="button" onClick={() => selectCityFromInput()} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#1D5A46] px-5 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Selecteer stad</button>
+                      </div>
+                      {isCityListOpen ? (
+                        <div id="inspiration-city-listbox" role="listbox" aria-label="Beschikbare steden" className="absolute z-20 mt-2 max-h-[min(18rem,45vh)] w-full overflow-y-auto rounded-xl border border-[#DCE1DC] bg-white p-1.5 shadow-[0_20px_45px_rgba(41,52,47,0.16)]">
+                          {matchingCities.map((city, index) => (
+                            <button
+                              key={city.value}
+                              id={`inspiration-city-option-${city.value}`}
+                              role="option"
+                              aria-selected={city.value === selectedCity}
+                              type="button"
+                              onMouseEnter={() => setActiveCityIndex(index)}
+                              onMouseDown={(event) => { event.preventDefault(); selectCity(city); }}
+                              className={`flex min-h-11 w-full items-center justify-between rounded-lg px-3 text-left text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC] ${index === activeCityIndex ? "bg-[#EEF5F0] text-[#173F31]" : "text-[#29342F] hover:bg-[#F4F6F4]"}`}
+                            ><span>{city.label}</span>{city.value === selectedCity ? <CheckIcon /> : null}</button>
+                          ))}
+                          {matchingCities.length === 0 ? <p className="px-3 py-3 text-sm leading-6 text-[#65736C]">Deze stad wordt nog niet ondersteund. Kies een andere stad.</p> : null}
+                        </div>
+                      ) : null}
                     </div>
                     <p className="sr-only" aria-live="polite">{matchingCities.length} {matchingCities.length === 1 ? "stad gevonden" : "steden gevonden"}.</p>
-                    {cityError ? <p className="mt-3 text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
-                    <div className={`${selectedCity ? "mt-5 max-h-40 sm:max-h-48" : "mt-5 max-h-72"} overflow-y-auto pr-1`}>
-                      <p className="text-xs font-semibold tracking-[0.12em] text-[#65736C]">{cityInput.trim() ? "Zoekresultaten" : "Beschikbare steden"}</p>
-                      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                        {matchingCities.map((city) => {
-                          const isSelected = city.value === selectedCity;
-                          return <button key={city.value} type="button" aria-pressed={isSelected} onClick={() => selectCity(city)} className={`flex min-h-12 items-center justify-between rounded-xl border px-4 text-left text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] ${isSelected ? "border-[#1D5A46] bg-[#DDEBE2] text-[#173F31]" : "border-[#DCE1DC] bg-white text-[#29342F] hover:border-[#9DBAAE]"}`}><span>{city.label}</span>{isSelected ? <CheckIcon /> : null}</button>;
-                        })}
-                      </div>
-                      {cityInput.trim() && matchingCities.length === 0 ? <p className="py-3 text-sm leading-6 text-[#65736C]">Deze stad wordt nog niet ondersteund. Kies een stad uit de lijst.</p> : null}
+                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                      <button type="button" onClick={requestLocation} disabled={isResolvingLocation} className="min-h-11 text-sm font-semibold text-[#355E7A] underline decoration-[#B8C5BE] underline-offset-4 transition hover:text-[#173F31] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] disabled:cursor-wait disabled:opacity-70">{isResolvingLocation ? "Locatie bepalen…" : "Gebruik mijn locatie"}</button>
+                      {cityError ? <p className="text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
                     </div>
                     {selectedCity ? (
                       <div className="mt-5 border-t border-[#DCE1DC] pt-4">
@@ -508,6 +654,7 @@ export function InspirationChoiceFlow({
 }
 
 function CheckIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4.2 4.2L19.5 6" /></svg>; }
+function ChevronIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7 10 5 5 5-5" /></svg>; }
 function PersonIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="3" /><path d="M6.5 19a5.5 5.5 0 0 1 11 0" /></svg>; }
 function HeartIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" /></svg>; }
 function PeopleIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M16 19v-1.5a3.5 3.5 0 0 0-7 0V19" /><circle cx="12.5" cy="8" r="3" /><path d="M5 18v-1a3 3 0 0 1 3-3M19 18v-1a3 3 0 0 0-3-3" /></svg>; }

@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "middleware": {},
+  "functions": {
+    "/inspiratie/page": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/inspiratie/page_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/app/inspiratie/page.js"
+      ],
+      "name": "app/inspiratie/page",
+      "page": "/inspiratie/page",
+      "matchers": [
+        {
+          "regexp": "^/inspiratie$",
+          "originalSource": "/inspiratie"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "0gTISuX7BqFJ7qzSVYNjmcyXmDha//mnGeiG1ayemzE="
+      }
+    }
+  },
+  "sortedMiddleware": []
+}
