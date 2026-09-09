@@ -49,42 +49,6 @@ export default function Breadcrumbs({
   const backTarget = [...items].slice(0, -1).reverse().find((item) => item.href)?.href;
 
   return (
-    <nav aria-label="Breadcrumb" className={className}>
-      <div className="flex flex-wrap items-center gap-2">
-        {backTarget ? (
-          <Link
-            href={backTarget}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#e7dfd4] bg-white/92 px-4 py-2 text-sm font-medium text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
-          >
-            <ArrowLeftIcon />
-            Terug
-          </Link>
-        ) : null}
-
-        <ol className="mt-8 flex min-w-0 flex-wrap items-center gap-2">
-          {items.map((item, index) => {
-            const isCurrent = index === items.length - 1 || !item.href;
-
-            return (
-              <li key={`${item.label}-${index}`} className="flex min-w-0 items-center gap-2">
-                {index > 0 ? <ChevronIcon /> : null}
-                {isCurrent ? (
-                  <span className="inline-flex min-h-10 max-w-full items-center rounded-full bg-[#f3ede5] px-4 py-2 text-sm font-semibold text-[#171511]">
-                    <span className="truncate">{item.label}</span>
-                  </span>
-                ) : (
-                  <Link
-                    href={item.href!}
-                    className="inline-flex min-h-10 max-w-full items-center rounded-full border border-[#e7dfd4] bg-white/92 px-4 py-2 text-sm font-medium text-[#4d433a] shadow-[0_8px_18px_rgba(60,44,23,0.05)] transition hover:bg-white hover:text-[#171511] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
-                  >
-                    <span className="truncate">{item.label}</span>
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-    </nav>
+   <div></div>
   );
 }

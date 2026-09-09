@@ -58,9 +58,7 @@ export default function DayNavigationCTA({
 
       <div className="relative mx-auto max-w-[1280px] px-5 sm:px-7 lg:px-8">
         <div className="mx-auto max-w-[46rem] text-center">
-          <p className="text-[0.67rem] font-semibold uppercase tracking-[0.2em] text-[#617846]">
-            Verder kijken
-          </p>
+        
           <h2 id="day-navigation-title" className="mt-4 text-[clamp(2.15rem,4.2vw,4rem)] font-medium leading-[0.94] tracking-[-0.065em] text-[#1c251d]">
             Meer ontdekken rond deze dag.
           </h2>

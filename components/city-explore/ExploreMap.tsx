@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
+import Link from "next/link";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { BackendEvent } from "./types";
@@ -367,7 +368,7 @@ export default function ExploreMap({
       </div>
 
       {selectedPlace ? (
-        <div className="relative z-10 px-3 pb-3 pt-0 sm:absolute sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px] sm:p-0">
+        <div className={`z-10 ${fullHeight ? "absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px]" : "relative px-3 pb-3 pt-0 sm:absolute sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px] sm:p-0"}`}>
           <div className="rounded-[1.25rem] bg-white/95 px-4 py-4 shadow-[0_16px_36px_rgba(51,35,21,0.16)] backdrop-blur-xl">
             <div className="rounded-[1rem] bg-[#faf6f0] px-3.5 py-3 ring-1 ring-black/5">
               <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#181615]">
@@ -383,10 +384,20 @@ export default function ExploreMap({
               ) : null}
             </div>
 
+            {selectedPlace.href ? (
+              <Link
+                href={selectedPlace.href}
+                aria-label={`Bekijk ${selectedPlace.title}`}
+                className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#2e4a14] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(44,67,18,0.18)] transition hover:-translate-y-0.5 hover:bg-[#233b10] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
+              >
+                Bekijk uitje
+              </Link>
+            ) : null}
+
             {!fullHeight ? <button
               type="button"
               onClick={focusSelectedPlace}
-              className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#181615] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 hover:bg-[#2a241e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
+              className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#181615] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 hover:bg-[#2a241e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
             >
               {variant === "festival" ? "Centreer selectie" : "Kaart openen"}
             </button> : null}

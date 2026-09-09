@@ -152,7 +152,7 @@ export default function ExploreCardItem({
         </span>
         <span className="min-w-0">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="text-xs font-semibold tracking-[0.13em] text-[#1D5A46]">
+            <span className="min-w-0 truncate text-sm font-medium leading-5 tracking-normal text-[#1D5A46]">
               {card.label}
             </span>
             {highlight ? (

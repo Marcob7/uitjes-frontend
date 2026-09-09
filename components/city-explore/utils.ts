@@ -1,4 +1,5 @@
 import { getCityConfig } from "@/lib/cityConfig";
+import { resolveActivityImage } from "@/lib/activityImages";
 import {
   APELDOORN_DUMMY_EVENTS,
   CITY_EDITORIAL_CONTENT,
@@ -132,8 +133,8 @@ export function getSafeCityTheme(city: string): SafeCityTheme {
       label: "Haarlem",
       description:
         "Van historische musea tot moderne jazz-avonden aan het water. Wij cureren de meest authentieke ervaringen in de stad van de bloemen.",
-      heroImage: "/images/apeldoorn_img.jpg",
-      fallbackImage: "/images/apeldoorn_img.jpg",
+      heroImage: "/images/fallback-walking.webp",
+      fallbackImage: "/images/fallback-walking.webp",
       liquid: {
         deep: "#173822",
         mid: "#5f8a32",
@@ -160,8 +161,8 @@ export function getSafeCityTheme(city: string): SafeCityTheme {
       description:
         config?.description ||
         `Ontdek bijzondere plekken, culturele highlights en lokale favorieten in ${city}.`,
-      heroImage: config?.heroImage || "/images/apeldoorn_img.jpg",
-      fallbackImage: config?.fallbackImage || "/images/apeldoorn_img.jpg",
+      heroImage: config?.heroImage || "/images/fallback-walking.webp",
+      fallbackImage: config?.fallbackImage || "/images/fallback-walking.webp",
       liquid: {
         deep: config?.liquid?.deep || "#132016",
         mid: config?.liquid?.mid || "#4f7a45",
@@ -182,8 +183,8 @@ export function getSafeCityTheme(city: string): SafeCityTheme {
       slug: normalizedCity,
       label: city.charAt(0).toUpperCase() + city.slice(1),
       description: `Ontdek bijzondere plekken, culturele highlights en lokale favorieten in ${city}.`,
-      heroImage: "/images/apeldoorn_img.jpg",
-      fallbackImage: "/images/apeldoorn_img.jpg",
+      heroImage: "/images/fallback-walking.webp",
+      fallbackImage: "/images/fallback-walking.webp",
       liquid: {
         deep: "#132016",
         mid: "#4f7a45",
@@ -386,13 +387,17 @@ export function buildExploreCards(
   citySlug?: string
 ): ExploreCard[] {
   if (activeTab !== "events") {
-    return mockCardsByCategory[activeTab];
+    return mockCardsByCategory[activeTab].map((card) => ({
+      ...card,
+      image: resolveActivityImage({ image: card.image, category: card.label, title: card.title, tags: card.tags }),
+    }));
   }
 
   if (!events?.length) {
     return useMockFallback
       ? mockCardsByCategory.events.map((card) => ({
           ...card,
+          image: resolveActivityImage({ image: card.image, category: card.label, title: card.title, tags: card.tags }),
           href: appendCityToExploreHref(card.href, citySlug),
         }))
       : [];
@@ -411,7 +416,7 @@ export function buildExploreCards(
       label: event.category_label || (event.is_free ? "Free event" : "Event"),
       time: formatTimeRange(event.start_at, event.end_at),
       location: formatVenue(event.venue, cityLabel),
-      image: event.image || null,
+      image: resolveActivityImage({ image: event.image, category: event.category_label, kind: event.kind, title: event.title, tags: event.tags }),
       imageAlt: event.imageAlt,
       href: appendCityToExploreHref(
         `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,

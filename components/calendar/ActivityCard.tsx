@@ -47,7 +47,7 @@ function ActivityVisual({ card }: { card: TimelineCard }) {
     <div className={`relative aspect-[4/3] overflow-hidden p-5 sm:p-6 ${tone}`}>
       <div aria-hidden="true" className="absolute -right-7 -top-10 h-40 w-40 rounded-full border border-current opacity-15" />
       <div aria-hidden="true" className="absolute bottom-5 left-5 h-px w-[62%] bg-current opacity-30" />
-      <p aria-hidden="true" className="relative text-[0.67rem] font-semibold uppercase tracking-[0.2em] opacity-85">
+      <p aria-hidden="true" className="relative text-sm font-medium leading-5 tracking-normal opacity-85">
         {card.category}
       </p>
     </div>
@@ -61,13 +61,10 @@ export default function ActivityCard({ daySlug, slot, card }: ActivityCardProps)
     <Link
       href={href}
       className="group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-[#e6ded4] bg-[#fffdf9] shadow-[0_12px_34px_rgba(61,40,22,0.035)] transition duration-300 hover:-translate-y-1 hover:border-[#cfd9c5] hover:shadow-[0_18px_42px_rgba(61,40,22,0.065)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#83aa50]"
-    >
+      >
       <div className="overflow-hidden"><ActivityVisual card={card} /></div>
       <div className="flex flex-1 flex-col px-5 py-6 sm:px-6">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-[#6d884b]">
-          {card.category}
-        </p>
-        <h3 className="mt-3 max-w-none text-[clamp(1.45rem,2.1vw,1.85rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
+        <h3 className="max-w-none text-[clamp(1.45rem,2.1vw,1.85rem)] leading-[0.98] tracking-[-0.05em] text-[#171511]">
           {card.title}
         </h3>
         {card.location ? (

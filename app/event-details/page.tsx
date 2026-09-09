@@ -283,17 +283,6 @@ function CalendarIcon() {
     </svg>
   );
 }
-
-function SectionLabel({ number, children }: { number: string; children: ReactNode }) {
-  return (
-    <p className="flex items-center gap-3 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#6a7368]">
-      <span className="text-[#a05c3a]">{number}</span>
-      <span className="h-px w-8 bg-[#b8c1b4]" />
-      {children}
-    </p>
-  );
-}
-
 function WeekendCard({ event }: { event: WeekendEvent }) {
   if (event.featured) {
     return (
@@ -312,7 +301,7 @@ function WeekendCard({ event }: { event: WeekendEvent }) {
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,24,17,0.05)_22%,rgba(15,24,17,0.86)_100%)]" />
         <div className="relative mt-auto flex w-full flex-col gap-5 p-6 sm:p-8 lg:p-10">
-          <span className="w-fit rounded-full border border-white/35 bg-white/12 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] backdrop-blur-sm">
+          <span className="text-sm font-medium leading-5 tracking-normal text-white/90">
             {event.label} · uitgelicht
           </span>
           <div>
@@ -354,7 +343,7 @@ function WeekendCard({ event }: { event: WeekendEvent }) {
       />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,16,12,0.02)_28%,rgba(10,16,12,0.76)_100%)]" />
       <div className="relative mt-auto w-full p-5 text-white sm:p-6">
-        <p className="text-[0.64rem] font-bold uppercase tracking-[0.18em] text-white/75">
+        <p className="text-sm font-medium leading-5 tracking-normal text-white/85">
           {event.label}
         </p>
         <h3 className="mt-2 max-w-[14ch] text-[clamp(1.6rem,3vw,2.3rem)] font-medium leading-[0.96] tracking-[-0.05em]">
@@ -407,7 +396,7 @@ function EventRail({ items, railRef }: { items: TodayEvent[]; railRef: RefObject
             <Image src={event.image} alt="" fill unoptimized sizes="88px" className="object-cover transition duration-500 group-hover:scale-105" />
           </div>
           <div className="min-w-0 py-1">
-            <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#a05c3a]">{event.time} · {event.kind}</p>
+            <p className="truncate text-sm font-medium leading-5 tracking-normal text-[#a05c3a]">{event.time} · {event.kind}</p>
             <h3 className="mt-2 truncate text-base font-semibold tracking-[-0.03em] text-[#1f2a21]">{event.title}</h3>
             <p className="mt-1 truncate text-xs text-[#6f796d]">{event.location}</p>
           </div>
@@ -435,7 +424,7 @@ function CategoryTile({ category }: { category: Category }) {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,19,0.02)_22%,rgba(18,24,19,0.74)_100%)]" />
       <div className="relative mt-auto flex w-full items-end justify-between gap-4 p-6 text-white sm:p-7">
         <div>
-          <p className="text-[0.64rem] font-bold uppercase tracking-[0.18em] text-white/75">{category.kicker}</p>
+          <p className="text-sm font-medium leading-5 tracking-normal text-white/85">{category.kicker}</p>
           <h3 className="mt-2 text-[clamp(2rem,4vw,3.3rem)] font-medium leading-[0.9] tracking-[-0.06em]">{category.title}</h3>
         </div>
         <span className="mb-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f6f3ec] text-[#203226] transition-transform duration-300 group-hover:translate-x-1">
@@ -452,10 +441,10 @@ function TimelineCard({ moment }: { moment: UpcomingMoment }) {
       <div className="relative h-44 overflow-hidden">
         <Image src={moment.image} alt="" fill unoptimized sizes="320px" className="object-cover" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,28,21,0.02),rgba(20,28,21,0.45))]" />
-        <span className="absolute left-4 top-4 rounded-full bg-[#f6f3ec]/92 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#2f3c30]">{moment.month}</span>
+        <span className="absolute left-4 top-4 text-sm font-medium leading-5 tracking-normal text-white/90">{moment.month}</span>
       </div>
       <div className="p-5">
-        <p className="text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[#a05c3a]">{moment.date}</p>
+        <p className="text-sm font-medium leading-5 tracking-normal text-[#a05c3a]">{moment.date}</p>
         <h3 className="mt-3 text-[1.45rem] font-medium leading-[0.98] tracking-[-0.045em] text-[#1e2b21]">{moment.title}</h3>
         <p className="mt-3 inline-flex items-center gap-2 text-sm text-[#6d776b]"><PinIcon /> {moment.location}</p>
       </div>
@@ -527,8 +516,8 @@ export default function EventsPage() {
         <div className="mx-auto max-w-[1440px] px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-32">
           <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
             <div>
-              <SectionLabel number="01">Dit weekend uitgelicht</SectionLabel>
-              <h2 id="weekend-title" className="mt-6 max-w-[12ch] text-[clamp(2.8rem,6vw,6rem)] font-medium leading-[0.86] tracking-[-0.07em] text-[#223327]">De events waar Nederland het over heeft.</h2>
+            
+              <h2 id="weekend-title" className="mt-6 max-w-[12ch] text-[clamp(2.8rem,6vw,6rem)] font-medium leading-[0.86] tracking-[-0.07em] text-[#223327]">Dit weekend uitgelicht.</h2>
             </div>
             <p className="max-w-[22rem] text-sm leading-6 text-[#697568] md:pb-1">Een redactionele selectie voor 28–30 augustus. Grote publiekstrekkers, kleine ontdekkingen en alles ertussenin.</p>
           </div>
@@ -542,7 +531,7 @@ export default function EventsPage() {
         <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end">
             <div>
-              <SectionLabel number="02">Vandaag & vanavond</SectionLabel>
+          
               <h2 id="today-title" className="mt-5 max-w-[11ch] text-[clamp(2.5rem,5vw,5rem)] font-medium leading-[0.88] tracking-[-0.065em] text-[#223327]">Nog geen plannen?</h2>
               <p className="mt-4 max-w-[33rem] text-[15px] leading-7 text-[#687366]">Deze events zijn vandaag nog te bezoeken. Kies een tijd, pak je jas en ga.</p>
             </div>
@@ -560,7 +549,7 @@ export default function EventsPage() {
       <section className="border-b border-[#dfe1d7] bg-[#f6f3ec]" aria-labelledby="category-title">
         <div className="mx-auto max-w-[1440px] px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-32">
           <div className="max-w-[48rem]">
-            <SectionLabel number="03">Kies je sfeer</SectionLabel>
+         
             <h2 id="category-title" className="mt-6 max-w-[10ch] text-[clamp(3rem,6vw,6rem)] font-medium leading-[0.84] tracking-[-0.073em] text-[#223327]">Waar heb je zin in?</h2>
             <p className="mt-5 max-w-[31rem] text-[15px] leading-7 text-[#697568]">Vier manieren om je agenda te vullen. Van dansvloer tot museumzaal, altijd met iets om naar uit te kijken.</p>
           </div>
@@ -579,7 +568,7 @@ export default function EventsPage() {
         <div className="relative mx-auto max-w-[1440px] px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-32">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
-              <SectionLabel number="04">Binnenkort</SectionLabel>
+         
               <h2 id="upcoming-title" className="mt-6 max-w-[11ch] text-[clamp(3rem,6vw,6rem)] font-medium leading-[0.84] tracking-[-0.073em] text-[#203327]">Zet deze alvast in je agenda.</h2>
             </div>
             <p className="max-w-[25rem] text-sm leading-6 text-[#5e6d5e] md:pb-1">Een horizontale reis door de komende maanden. Sla een datum op en laat de voorpret beginnen.</p>
@@ -595,7 +584,7 @@ export default function EventsPage() {
               ))}
             </div>
             <div className="mt-5 flex justify-between gap-4 sm:mt-7">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-[#637062]">Scroll om verder te reizen →</p>
+           
               <div className="flex gap-2">
                 <RailButton label="Scroll agenda terug" direction="left" onClick={() => scrollRail(timelineRailRef, "left")} />
                 <RailButton label="Scroll agenda vooruit" direction="right" onClick={() => scrollRail(timelineRailRef, "right")} />

@@ -58,9 +58,7 @@ export default function FeaturedActivity({
   return (
     <section aria-labelledby="featured-activity-title">
       <div className="mx-auto max-w-[42rem] text-center">
-        <p className="inline-flex rounded-full border border-[#ded7cc] bg-[#fffdf9] px-3 py-1.5 text-[0.66rem] font-semibold uppercase tracking-[0.17em] text-[#6f844e]">
-          Tip voor deze dag
-        </p>
+      
         <h2
           id="featured-activity-title"
           style={{ fontFamily: "var(--font-body)" }}
@@ -94,9 +92,7 @@ export default function FeaturedActivity({
         </div>
 
         <div className="flex min-w-0 flex-col items-start px-6 py-7 sm:px-9 sm:py-9 lg:px-10 lg:py-11">
-          <p className="text-[0.67rem] font-semibold uppercase tracking-[0.18em] text-[#6e884b]">
-            {category}
-          </p>
+  
           <h3 className="mt-4 max-w-none text-[clamp(2rem,3.4vw,3rem)] leading-[0.96] tracking-[-0.06em] text-[#171511]">
             {card.title}
           </h3>

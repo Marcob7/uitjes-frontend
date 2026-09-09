@@ -8,6 +8,11 @@ export type CategoryKey =
 export type BackendEvent = {
   id: number;
   slug?: string | null;
+  /**
+   * Feature-owned destination for this result. Shared consumers (such as the
+   * map) must use this directly instead of deriving a route from event data.
+   */
+  href?: string | null;
   title: string;
   city: string;
   venue: string | null;

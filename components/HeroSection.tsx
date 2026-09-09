@@ -93,9 +93,7 @@ export default function HeroSection() {
           >
             <div className="border-b border-[#ece1d2] px-5 py-4 sm:px-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8d5b33]">
-                  Begin hier
-                </p>
+             
                 <span className="rounded-full border border-[#e4d5c1] bg-[#faf4eb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8d5b33]">
                   Vandaag populair
                 </span>

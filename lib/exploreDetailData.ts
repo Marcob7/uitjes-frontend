@@ -6,6 +6,7 @@ import {
 import { slugify } from "@/components/city-explore/utils";
 import type { CityContentItem } from "@/lib/api/cityContent";
 import { normalizeCitySlug } from "@/lib/cityConfig";
+import { resolveActivityImage } from "@/lib/activityImages";
 
 export type ExploreDetailItem = {
   eventId?: number | null;
@@ -145,8 +146,14 @@ function formatCityContentPricing(item: CityContentItem) {
   return undefined;
 }
 
-function getFallbackImage(image?: string | null) {
-  return image || "/images/apeldoorn_img.jpg";
+function getFallbackImage(
+  image?: string | null,
+  category?: string | null,
+  kind?: string | null,
+  title?: string | null,
+  tags?: string[] | null
+) {
+  return resolveActivityImage({ image, category, kind, title, tags });
 }
 
 export function mapCityContentToExploreDetail(
@@ -157,7 +164,7 @@ export function mapCityContentToExploreDetail(
   const citySlug = normalizeCitySlug(item.city || item.cityName);
   const title = item.title || titleFromSlug(slug);
   const category = item.category || (item.kind === "food_drink" ? "Eten & drinken" : "Moment");
-  const image = getFallbackImage(item.imageUrl);
+  const image = getFallbackImage(item.imageUrl, category, item.kind, title, item.tags);
   const pricing = formatCityContentPricing(item);
   const isFoodDrink = item.kind === "food_drink";
   const dateLabel =
@@ -195,7 +202,7 @@ export function mapCityContentToExploreDetail(
     reviewCount: item.reviewCount,
     ratingSource: item.ratingSource,
     ratingMax: item.ratingMax,
-    gallery: [image, "/images/apeldoorn_img.jpg", "/images/julianatoren.jpg", image],
+    gallery: [image, image, image, image],
     reasons: [
       "Geselecteerd uit de actuele city-content data",
       item.venue ? `Locatie: ${item.venue}` : "Past bij een route door de stad",
@@ -237,12 +244,12 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
     category: "speciaal geselecteerd TIP",
     status: "VANDAAG OPEN",
     subtitle: "Culinair | Centrum Haarlem | Gratis | 4.8",
-    heroImage: "/images/apeldoorn_img.jpg",
+    heroImage: "/images/fallback-market.webp",
     gallery: [
-      "/images/apeldoorn_img.jpg",
-      "/images/julianatoren.jpg",
-      "/images/apeldoorn_img.jpg",
-      "/images/julianatoren.jpg",
+      "/images/fallback-market.webp",
+      "/images/fallback-market.webp",
+      "/images/fallback-market.webp",
+      "/images/fallback-market.webp",
     ],
     reasons: [
       "Levendige sfeer op een centrale plek",
@@ -268,19 +275,19 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
       {
         title: "Lokale Makers Markt",
         subtitle: "Creatief en lokaal | 4.7",
-        image: "/images/julianatoren.jpg",
+        image: "/images/fallback-market.webp",
         badge: "HAARLEM CENTRUM",
       },
       {
         title: "Spaarne Bistro",
         subtitle: "Bistro | EUR 18 - EUR 36 | 4.6",
-        image: "/images/apeldoorn_img.jpg",
+        image: "/images/fallback-restaurant.webp",
         badge: "AAN HET WATER",
       },
       {
         title: "De Oude Stadskeuken",
         subtitle: "Modern lokaal | EUR 22 - EUR 40 | 4.8",
-        image: "/images/julianatoren.jpg",
+        image: "/images/fallback-restaurant.webp",
         badge: "BINNENSTAD",
       },
     ],
@@ -292,12 +299,12 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
     category: "speciaal geselecteerd TIP",
     status: "VANDAAG OPEN",
     subtitle: "Cultuur | Centrum Apeldoorn | EUR 14,50 | 4.7",
-    heroImage: "/images/apeldoorn_img.jpg",
+    heroImage: "/images/fallback-museum.webp",
     gallery: [
-      "/images/apeldoorn_img.jpg",
-      "/images/julianatoren.jpg",
-      "/images/apeldoorn_img.jpg",
-      "/images/julianatoren.jpg",
+      "/images/fallback-museum.webp",
+      "/images/fallback-museum.webp",
+      "/images/fallback-museum.webp",
+      "/images/fallback-museum.webp",
     ],
     reasons: [
       "Sterke culturele avondactiviteit",
@@ -323,19 +330,19 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
       {
         title: "Live muziek in Gigant",
         subtitle: "Muziek | EUR 18 | 4.6",
-        image: "/images/julianatoren.jpg",
+        image: "/images/fallback-live-music.webp",
         badge: "APELDOORN",
       },
       {
         title: "Voorjaarsmarkt in het centrum",
         subtitle: "Lokaal | Gratis | 4.5",
-        image: "/images/apeldoorn_img.jpg",
+        image: "/images/fallback-market.webp",
         badge: "CENTRUM",
       },
       {
         title: "Wandeling door Park Berg & Bos",
         subtitle: "Buiten | EUR 7,50 | 4.8",
-        image: "/images/julianatoren.jpg",
+        image: "/images/fallback-walking.webp",
         badge: "NATUUR",
       },
     ],
@@ -347,12 +354,12 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
     category: "speciaal geselecteerd TIP",
     status: "VANAVOND",
     subtitle: "Live muziek | Apeldoorn | EUR 18 | 4.6",
-    heroImage: "/images/julianatoren.jpg",
+    heroImage: "/images/fallback-live-music.webp",
     gallery: [
-      "/images/julianatoren.jpg",
-      "/images/apeldoorn_img.jpg",
-      "/images/julianatoren.jpg",
-      "/images/apeldoorn_img.jpg",
+      "/images/fallback-live-music.webp",
+      "/images/fallback-live-music.webp",
+      "/images/fallback-live-music.webp",
+      "/images/fallback-live-music.webp",
     ],
     reasons: [
       "Sterke avondsfeer",
@@ -378,19 +385,19 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
       {
         title: "Avond in CODA Museum",
         subtitle: "Cultuur | EUR 14,50 | 4.7",
-        image: "/images/apeldoorn_img.jpg",
+        image: "/images/fallback-museum.webp",
         badge: "CENTRUM",
       },
       {
         title: "Filmavond in Vue Apeldoorn",
         subtitle: "Film | EUR 11 | 4.5",
-        image: "/images/julianatoren.jpg",
+        image: "/images/fallback-cinema.webp",
         badge: "AVOND",
       },
       {
         title: "Food & Drinks op het Marktplein",
         subtitle: "Food | Gratis | 4.6",
-        image: "/images/apeldoorn_img.jpg",
+        image: "/images/fallback-market.webp",
         badge: "MARKTPLEIN",
       },
     ],
@@ -420,7 +427,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       ]
         .filter(Boolean)
         .join(" | "),
-      heroImage: eventMatch.image || "/images/apeldoorn_img.jpg",
+      heroImage: getFallbackImage(eventMatch.image, eventMatch.category_label, eventMatch.kind, eventMatch.title, eventMatch.tags),
       latitude: eventMatch.latitude,
       longitude: eventMatch.longitude,
       ratingValue:
@@ -434,10 +441,10 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       ratingSource: eventMatch.rating_source || null,
       ratingMax: typeof eventMatch.rating_max === "number" ? eventMatch.rating_max : null,
       gallery: [
-        eventMatch.image || "/images/apeldoorn_img.jpg",
-        "/images/apeldoorn_img.jpg",
-        "/images/julianatoren.jpg",
-        eventMatch.image || "/images/julianatoren.jpg",
+        getFallbackImage(eventMatch.image, eventMatch.category_label, eventMatch.kind, eventMatch.title, eventMatch.tags),
+        getFallbackImage(eventMatch.image, eventMatch.category_label, eventMatch.kind, eventMatch.title, eventMatch.tags),
+        getFallbackImage(eventMatch.image, eventMatch.category_label, eventMatch.kind, eventMatch.title, eventMatch.tags),
+        getFallbackImage(eventMatch.image, eventMatch.category_label, eventMatch.kind, eventMatch.title, eventMatch.tags),
       ],
       reasons: [
         "Past goed in een spontane route door de stad",
@@ -483,7 +490,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
           ]
             .filter(Boolean)
             .join(" | "),
-          image: event.image || "/images/apeldoorn_img.jpg",
+          image: getFallbackImage(event.image, event.category_label, event.kind, event.title, event.tags),
           badge: event.city.toUpperCase(),
         })),
     };
@@ -502,13 +509,13 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       subtitle: [cardMatch.location, cardMatch.price, cardMatch.rating?.toFixed(1)]
         .filter(Boolean)
         .join(" | "),
-      heroImage: getFallbackImage(cardMatch.image),
+      heroImage: getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
       ratingValue: cardMatch.rating ?? null,
       gallery: [
-        getFallbackImage(cardMatch.image),
-        "/images/apeldoorn_img.jpg",
-        "/images/julianatoren.jpg",
-        getFallbackImage(cardMatch.image),
+        getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
+        getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
+        getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
+        getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
       ],
       reasons: [
         "Handige fallback op basis van je huidige mock card",
@@ -539,7 +546,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
           subtitle: [card.label, card.price, card.rating?.toFixed(1)]
             .filter(Boolean)
             .join(" | "),
-          image: getFallbackImage(card.image),
+          image: getFallbackImage(card.image, card.label, card.kind, card.title, card.tags),
           badge: "CURATED",
         })),
     };

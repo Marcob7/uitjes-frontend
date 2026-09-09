@@ -256,11 +256,7 @@ export default function FaqPageClient() {
           className="pointer-events-none absolute -right-24 top-20 -z-10 h-72 w-72 rounded-full border border-[#a6c77c]/30 bg-[#e8f2d0]/35 blur-[1px] sm:-right-12 sm:top-24"
         />
         <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-          <p className="mb-5 inline-flex items-center gap-2 text-[0.68rem] font-extrabold uppercase tracking-[0.2em] text-[#557d5d]">
-            <span aria-hidden="true" className="h-px w-7 bg-current" />
-            Hulp bij je volgende plan
-            <span aria-hidden="true" className="h-px w-7 bg-current" />
-          </p>
+     
           <h1 className="mx-auto max-w-[12ch] text-[clamp(3rem,8vw,6rem)] font-semibold leading-[0.92] tracking-[-0.065em] text-[#202d29]">
             Waar kunnen we je mee <span className="text-[#1d5a46] italic">helpen?</span>
           </h1>
@@ -323,9 +319,7 @@ export default function FaqPageClient() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="mb-3 text-[0.68rem] font-extrabold uppercase tracking-[0.2em] text-[#557d5d]">
-                Vind je weg
-              </p>
+      
               <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
                 Waar gaat je vraag over?
               </h2>
@@ -386,9 +380,7 @@ export default function FaqPageClient() {
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="mb-3 text-[0.68rem] font-extrabold uppercase tracking-[0.2em] text-[#557d5d]">
-                Veelgestelde vragen
-              </p>
+            
               <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
                 Antwoorden zonder omwegen.
               </h2>
@@ -517,9 +509,7 @@ export default function FaqPageClient() {
       <section className="bg-[#f7f5ec] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
-            <p className="mb-3 text-[0.68rem] font-extrabold uppercase tracking-[0.2em] text-[#557d5d]">
-              Nog iets nodig?
-            </p>
+          
             <h2 className="max-w-[15ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
               We denken graag met je mee.
             </h2>

@@ -70,7 +70,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <section className="search-hero" data-navbar-contrast="on-light">
         <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-28 sm:px-6 sm:pb-12 sm:pt-32 lg:px-8 lg:pb-14">
           <div className="max-w-4xl">
-            <span className="search-section-label">DOEN zoeken</span>
+          
             <h1 className="mt-3 max-w-[10ch] font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">
               Zoeken
             </h1>
@@ -110,7 +110,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-10 lg:px-8">
           <div className="border-t border-[#dce1dc] pt-7 sm:pt-9">
             <div className="max-w-2xl">
-              <span className="search-section-label">Begin hier</span>
+    
               <h2 className="mt-3 font-heading text-[clamp(2.25rem,4.5vw,3.7rem)] leading-[0.94] tracking-[-0.06em] text-[#22312a]">
                 Waar heb je zin in?
               </h2>
@@ -126,7 +126,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   href={item.href}
                   className="group rounded-[1.45rem] border border-[#dce1dc] bg-white p-5 shadow-[0_12px_30px_rgba(33,54,43,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#b8d2bd] hover:shadow-[0_18px_36px_rgba(33,54,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] sm:p-6"
                 >
-                  <span className="search-section-label text-[#52725e]">{item.eyebrow}</span>
+                
                   <h3 className="mt-3 font-heading text-[clamp(1.65rem,3vw,2.2rem)] leading-none tracking-[-0.05em] text-[#22312a]">
                     {item.title}
                   </h3>

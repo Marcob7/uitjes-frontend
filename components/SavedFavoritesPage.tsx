@@ -133,9 +133,7 @@ export default function SavedFavoritesPage() {
 
         {status !== "checking" && !isAuthenticated ? (
           <div className="rounded-[1.7rem] border border-white/70 bg-white/65 p-5 text-[#3f3429] shadow-[0_18px_42px_rgba(66,49,31,0.08)] backdrop-blur-xl sm:p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7a6d60]">
-              Uitgelogd
-            </p>
+        
             <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">Log in om uitjes te bewaren</h2>
             <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d6458]">
               Je lijst is gekoppeld aan je account, zodat je bewaarde uitjes later weer rustig terugvindt.

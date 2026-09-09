@@ -207,7 +207,7 @@ function SearchResultCard({ result, index }: { result: GeneralSearchResult; inde
         <div className="px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <span className="inline-flex max-w-full items-center rounded-full bg-[#e2eee2] px-2.5 py-1 text-[0.64rem] font-bold uppercase tracking-[0.13em] text-[#1d5a46]">
+              <span className="inline-flex max-w-full items-center text-sm font-medium leading-5 tracking-normal text-[#1d5a46]">
                 <span className="truncate">{result.badge}</span>
               </span>
               <h3 className="mt-3 line-clamp-2 text-[1.22rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#22312a] sm:text-[1.34rem]">
@@ -407,7 +407,7 @@ export default function SearchResultsExperience({ query, results, error = false 
     return (
       <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 lg:px-8" aria-labelledby="search-error-heading">
         <div className="search-empty-state max-w-2xl" role="alert">
-          <span className="search-section-label">Zoekresultaten</span>
+        
           <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">We kunnen de resultaten niet laden.</h2>
           <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">Er ging iets mis tijdens het zoeken. Probeer het nog een keer.</p>
           <div className="mt-6"><SearchRetryButton /></div>
@@ -421,7 +421,7 @@ export default function SearchResultsExperience({ query, results, error = false 
       <div className="search-results-toolbar border-y border-[#dce1dc] py-5 sm:py-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <span className="search-section-label">Zoekresultaten</span>
+         
             <h2 id="search-results-heading" className="mt-2 font-heading text-[clamp(1.8rem,3.5vw,2.75rem)] leading-[1] tracking-[-0.055em] text-[#22312a]">
               {filteredResults.length} {filteredResults.length === 1 ? "resultaat" : "resultaten"} <span className="text-[#68746d]">voor “{query}”</span>
             </h2>
@@ -500,7 +500,7 @@ export default function SearchResultsExperience({ query, results, error = false 
         <div className="search-empty-state mt-7" aria-live="polite">
           <span className="search-empty-mark" aria-hidden="true">⌕</span>
           <div className="max-w-2xl">
-            <span className="search-section-label">Geen match</span>
+        
             <h3 className="mt-3 font-heading text-[clamp(2rem,4vw,3.1rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">Geen resultaten gevonden</h3>
             <p className="mt-3 text-sm leading-6 text-[#68746d] sm:text-base">Probeer je zoekopdracht iets ruimer te maken of verwijder een filter.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -513,7 +513,7 @@ export default function SearchResultsExperience({ query, results, error = false 
 
       <div className="mt-14 grid gap-4 rounded-[1.7rem] border border-[#cbdacc] bg-[#e7f0e4] p-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-8">
         <div>
-          <span className="search-section-label text-[#52725e]">Nog aan het rondkijken?</span>
+    
           <h3 className="mt-3 max-w-[22ch] font-heading text-[clamp(1.75rem,3vw,2.55rem)] leading-[1] tracking-[-0.05em] text-[#1e3e2e]">Nog niet gevonden waar je zin in hebt?</h3>
           <p className="mt-3 max-w-xl text-sm leading-6 text-[#4e6858]">Laat ons je helpen iets passends te vinden.</p>
         </div>
@@ -523,7 +523,7 @@ export default function SearchResultsExperience({ query, results, error = false 
       <div className="mt-14 border-t border-[#dce1dc] pt-7">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <span className="search-section-label">Snelle routes</span>
+         
             <h3 className="mt-2 font-heading text-[clamp(1.75rem,3vw,2.45rem)] leading-none tracking-[-0.05em] text-[#22312a]">Verder ontdekken</h3>
           </div>
           <p className="text-sm text-[#7a857d]">Een ander vertrekpunt nodig?</p>
@@ -546,7 +546,7 @@ export default function SearchResultsExperience({ query, results, error = false 
           >
             <div className="flex items-start justify-between gap-5 border-b border-[#dce1dc] px-5 py-5 sm:px-7">
               <div>
-                <span className="search-section-label">Verfijnen</span>
+            
                 <h2 id="filter-sheet-title" className="mt-2 font-heading text-3xl leading-none tracking-[-0.05em] text-[#22312a]">Filters</h2>
                 <p className="mt-2 text-sm text-[#68746d]">Maak de selectie passend bij je plan.</p>
               </div>

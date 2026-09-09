@@ -1,14 +1,12 @@
 import type { CityContentItem } from "@/lib/api/cityContent";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { resolveActivityImage, toCssImageUrl } from "@/lib/activityImages";
 import {
   inspirationCategoryLabels,
   inspirationResults,
   type InspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
-
-const fallbackImage =
-  "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')";
 
 function compactStrings(values: Array<string | null | undefined>) {
   return values.filter((value): value is string => Boolean(value?.trim()));
@@ -234,7 +232,7 @@ export function mapCityContentToInspirationResult(
     tags: item.tags,
     price: formatPrice(item),
     location,
-    image: item.imageUrl ? `url('${item.imageUrl}')` : fallbackImage,
+    image: toCssImageUrl(resolveActivityImage({ image: item.imageUrl, category: item.category, kind: item.kind, title: item.title, tags: item.tags })),
     detail: item.description ?? description,
     badge: getBadge(item, primaryCategory),
     rating: item.priorityScore ? String(item.priorityScore) : "Nieuw",
@@ -247,7 +245,7 @@ export function mapCityContentToInspirationResult(
       item.summary,
       item.venue ? `Te vinden bij ${item.venue}` : null,
     ]).slice(0, 4),
-    gallery: item.imageUrl ? [`url('${item.imageUrl}')`] : [fallbackImage],
+    gallery: [toCssImageUrl(resolveActivityImage({ image: item.imageUrl, category: item.category, kind: item.kind, title: item.title, tags: item.tags }))],
     latitude: item.latitude,
     longitude: item.longitude,
   };

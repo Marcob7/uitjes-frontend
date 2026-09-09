@@ -21,10 +21,7 @@ export default function ActivitiesSection({
   return (
     <section aria-labelledby="activities-title">
       <div className="border-t border-[#e4ddd3] pt-10 sm:pt-12">
-        <p className="flex items-center gap-2 text-[0.7rem] font-semibold text-[#6c844d]">
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
-          Dit is er vandaag te doen
-        </p>
+      
         <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h2
             id="activities-title"

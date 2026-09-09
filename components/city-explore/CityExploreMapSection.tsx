@@ -49,6 +49,7 @@ export default function CityExploreMapSection({
       events={events.map((event) => ({
         id: event.id,
         title: event.title,
+        href: event.href,
         city: "city" in event ? event.city : cityLabel,
         venue: "venue" in event ? event.venue : event.location,
         start_at: "start_at" in event ? event.start_at : event.startAt ?? null,

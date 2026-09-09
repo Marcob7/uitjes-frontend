@@ -420,7 +420,7 @@ function CountBlock({
       <div className="text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-none tracking-[-0.08em] text-[#1b1712]">
         +{count}
       </div>
-      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8c8072]">
+      <p className="mt-2 text-sm font-medium leading-5 tracking-normal text-[#8c8072]">
         activiteiten
       </p>
     </div>
@@ -448,7 +448,7 @@ function MobileCalendarCell({ cell }: { cell: MonthCalendarCell }) {
           {cell.day}
         </div>
         {cell.monthLabel ? (
-          <span className="pt-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-[#a79d91]">
+          <span className="pt-1 text-[11px] font-medium leading-4 tracking-normal text-[#a79d91]">
             {cell.monthLabel}
           </span>
         ) : null}
@@ -531,14 +531,14 @@ function CalendarCell({
           {day}
         </span>
         {monthLabel ? (
-          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#a19485]">
+          <span className="text-sm font-medium leading-5 tracking-normal text-[#a19485]">
             {monthLabel}
           </span>
         ) : null}
       </div>
       <div className="mt-6 flex flex-1 flex-col">{children}</div>
       {href ? (
-        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#66594e] transition group-hover:text-[#4f7628]">
+        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-medium leading-5 tracking-normal text-[#66594e] transition group-hover:text-[#4f7628]">
           Open
           <ArrowIcon />
         </span>
@@ -1159,9 +1159,7 @@ export function JaarkalenderInteractiveCalendar() {
         className="mt-12 grid scroll-mt-24 gap-7 sm:mt-16 sm:scroll-mt-28 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.68fr)] lg:items-end lg:gap-12"
       >
         <div>
-          <p className="text-sm font-semibold text-[#187047]">
-            Wat speelt er deze maand?
-          </p>
+        
           <h2
             style={{ maxInlineSize: "none" }}
             className="mt-2 text-[clamp(2.8rem,5vw,4.8rem)] font-medium leading-[0.92] tracking-[-0.058em] text-[#191b18]"
@@ -1196,7 +1194,7 @@ export function JaarkalenderInteractiveCalendar() {
             {["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"].map((day) => (
               <div
                 key={day}
-                className="px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7e7366]"
+                className="px-4 py-4 text-center text-xs font-medium tracking-normal text-[#7e7366]"
               >
                 {day}
               </div>
