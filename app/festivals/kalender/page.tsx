@@ -386,7 +386,7 @@ function FestivalsCalendarContent() {
           title="Festival kalender Nederland"
           description={
             <>
-          Ontdek de culturele vibe van heel Nederland. Van rauwe underground techno in Amsterdam tot relaxte jazz aan zee.
+        Op zoek naar je volgende festival? Check wat er binnenkort door heel Nederland losgaat.
             </>
           }
           search={
