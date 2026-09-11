@@ -11,6 +11,7 @@ export const runtime = "edge";
 type SearchPageProps = {
   searchParams?: {
     query?: string;
+    q?: string;
   };
 };
 
@@ -44,7 +45,7 @@ const discoveryLinks = [
 ];
 
 export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
-  const query = normalizeSearchQuery(searchParams?.query);
+  const query = normalizeSearchQuery(searchParams?.query ?? searchParams?.q);
 
   return query
     ? {
@@ -60,7 +61,7 @@ export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const query = normalizeSearchQuery(searchParams?.query);
+  const query = normalizeSearchQuery(searchParams?.query ?? searchParams?.q);
   const searchState = query
     ? await getGeneralSearchResults(query)
     : { status: "success" as const, results: [] };

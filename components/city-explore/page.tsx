@@ -27,7 +27,6 @@ export default function CityExplorePage({
   city,
   events,
   useEventFallback = true,
-  isGenericLanding = false,
 }: CityExploreViewProps) {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);

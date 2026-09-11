@@ -68,7 +68,6 @@ export function FullscreenChoiceFlow({
   children,
 }: FullscreenChoiceFlowProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
-  const headerActionRef = useRef<HTMLAnchorElement | HTMLButtonElement | null>(null);
   const previousStepRef = useRef(currentStep);
   const isResultsStepRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
@@ -102,8 +101,6 @@ export function FullscreenChoiceFlow({
     body.style.overflow = "hidden";
     documentElement.style.overflow = "hidden";
     if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
-
-    window.requestAnimationFrame(() => headerActionRef.current?.focus());
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -180,11 +177,10 @@ export function FullscreenChoiceFlow({
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh max-w-[82rem] flex-col px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(7rem,calc(env(safe-area-inset-top)+6rem))] sm:px-7 lg:px-10">
+      <div className="relative z-10 mx-auto flex min-h-dvh max-w-[82rem] flex-col px-4 pb-[max(0.875rem,env(safe-area-inset-bottom))] pt-[var(--mobile-flow-top-offset)] sm:px-7 sm:pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pt-[max(7rem,calc(env(safe-area-inset-top)+6rem))] lg:px-10">
         <header className="flex min-h-12 items-center justify-between gap-4">
           {isResultsStep ? (
             <button
-              ref={headerActionRef as React.RefObject<HTMLButtonElement>}
               type="button"
               onClick={onComplete}
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
@@ -194,7 +190,6 @@ export function FullscreenChoiceFlow({
             </button>
           ) : (
             <Link
-              ref={headerActionRef as React.RefObject<HTMLAnchorElement>}
               href={exitHref}
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
             >
@@ -212,14 +207,14 @@ export function FullscreenChoiceFlow({
           ) : <span aria-hidden="true" />}
         </header>
 
-        <div className={isResultsStep ? "flex flex-1 py-8 sm:py-10 lg:py-12" : "flex flex-1 items-center py-9 sm:py-12 lg:py-16"}>
+        <div className={isResultsStep ? "flex flex-1 py-5 sm:py-10 lg:py-12" : "flex flex-1 items-center py-4 sm:py-12 lg:py-16"}>
           <FlowHeadingIdsContext.Provider value={{ labelId, descriptionId }}>
             {children({ step, stepNumber: safeStep, totalSteps, isResultsStep })}
           </FlowHeadingIdsContext.Provider>
         </div>
 
-        {shouldShowFooter ? <footer className="flex items-end justify-between gap-4 border-t border-[#DCE1DC] py-4 sm:py-5">
-          <div className="min-w-32">
+        {shouldShowFooter ? <footer className="flex flex-col gap-3 border-t border-[#DCE1DC] py-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:py-5">
+          <div className="hidden min-w-32 sm:block">
             <p className="text-xs font-semibold tracking-[0.12em] text-[#65736C]">Voortgang</p>
             <div className="mt-2 flex gap-1.5" aria-hidden="true">
               {steps.map((flowStep, index) => (
@@ -250,12 +245,12 @@ export function FullscreenChoiceFlow({
               </button>
             </div>
           ) : (
-            <div className={`flex w-full flex-col gap-3 ${safeStep > 1 ? "sm:flex-row sm:items-center sm:justify-between" : "sm:items-end"}`}>
+            <div className={`flex w-full gap-2.5 ${safeStep > 1 ? "flex-row items-center justify-between sm:gap-3" : "justify-end sm:items-end"}`}>
               {safeStep > 1 ? (
                 <button
                   type="button"
                   onClick={() => onStepChange(safeStep - 1)}
-                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:w-auto"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-3 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:flex-none sm:px-4"
                 >
                   <ArrowLeftIcon className="h-4 w-4" />
                   Vorige
@@ -265,7 +260,7 @@ export function FullscreenChoiceFlow({
                 <button
                   type="button"
                   onClick={secondaryAction.onClick}
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:w-auto"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full border border-[#DCE1DC] bg-white/80 px-3 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:flex-none sm:px-4"
                 >
                   {secondaryAction.label}
                 </button>
@@ -287,38 +282,38 @@ export function FullscreenChoiceQuestion({
   title,
   description,
   primaryAction,
-  transitionLabel,
   children,
 }: {
   contextLabel?: string;
   title: string;
   description: string;
   primaryAction?: ReactNode;
-  transitionLabel?: string;
   children: ReactNode;
 }) {
   const ids = React.useContext(FlowHeadingIdsContext);
 
   return (
     <div className="w-full">
-      <div className="grid gap-10 lg:grid-cols-[minmax(16rem,0.82fr)_minmax(0,1.45fr)] lg:items-end lg:gap-16">
+      <div className="grid gap-5 sm:gap-10 lg:grid-cols-[minmax(16rem,0.82fr)_minmax(0,1.45fr)] lg:items-end lg:gap-16">
         <div className="max-w-xl lg:pb-4">
           {contextLabel ? <p className="mt-5 text-sm font-medium text-[#65736C]">{contextLabel}</p> : null}
           <h1
             id={ids?.labelId}
             data-flow-heading
             tabIndex={-1}
-            className={`${contextLabel ? "mt-3" : ""} max-w-[13ch] text-[clamp(2.7rem,6.4vw,5.75rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]`}
+            className={`${contextLabel ? "mt-2 sm:mt-3" : ""} max-w-[13ch] text-[clamp(2.25rem,10vw,2.7rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC] sm:text-[clamp(2.7rem,6.4vw,5.75rem)]`}
           >
             {title}
           </h1>
-          <p id={ids?.descriptionId} className="mt-5 max-w-md text-base leading-7 text-[#65736C] sm:text-lg sm:leading-8">
+          <p id={ids?.descriptionId} className="mt-3 max-w-md text-[0.9375rem] leading-6 text-[#65736C] sm:mt-5 sm:text-lg sm:leading-8">
             {description}
           </p>
-          {primaryAction ? <div className="mt-6">{primaryAction}</div> : null}
-          {transitionLabel ? <p className="mt-6 text-sm font-semibold text-[#65736C]">{transitionLabel}</p> : null}
+          {primaryAction ? <div className="mt-6 hidden lg:block">{primaryAction}</div> : null}
         </div>
-        {children}
+        <div>
+          {children}
+          {primaryAction ? <div className="mt-4 lg:hidden [&>*]:w-full">{primaryAction}</div> : null}
+        </div>
       </div>
     </div>
   );
@@ -330,20 +325,18 @@ export function FullscreenChoiceGrid({
   selectedValue,
   onChoose,
   disabled = false,
-  compactMobile = false,
 }: {
   title: string;
   options: readonly FullscreenChoiceOption[];
   selectedValue?: string;
   onChoose: (value: string) => void;
   disabled?: boolean;
-  compactMobile?: boolean;
 }) {
   return (
     <fieldset
       role="radiogroup"
       aria-label={title}
-      className={`grid ${compactMobile ? "grid-cols-2 gap-2.5 sm:gap-4" : "gap-3 sm:grid-cols-2 sm:gap-4"} motion-safe:animate-[wizardIn_240ms_cubic-bezier(0.16,1,0.3,1)_both]`}
+      className={`grid grid-cols-2 gap-2.5 sm:gap-4 motion-safe:animate-[wizardIn_240ms_cubic-bezier(0.16,1,0.3,1)_both]`}
     >
       <legend className="sr-only">{title}</legend>
       {options.map((option) => {
@@ -356,18 +349,18 @@ export function FullscreenChoiceGrid({
             aria-checked={isSelected}
             disabled={disabled}
             onClick={() => onChoose(option.value)}
-            className={`group relative min-h-40 overflow-hidden rounded-[1.4rem] border p-5 text-left transition ${compactMobile ? "min-h-[8.75rem] p-3.5 sm:min-h-48 sm:p-6" : "sm:min-h-48 sm:p-6"} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC] ${
+            className={`group relative min-h-[7.5rem] overflow-hidden rounded-[1.15rem] border p-3 text-left transition sm:min-h-48 sm:rounded-[1.4rem] sm:p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC] ${
               isSelected
                 ? "border-[#1D5A46] bg-[#DDEBE2] text-[#173F31] shadow-[0_16px_32px_rgba(29,90,70,0.12)]"
                 : "border-[#DCE1DC] bg-white/78 text-[#29342F] hover:-translate-y-0.5 hover:border-[#9DBAAE] hover:bg-white hover:shadow-[0_14px_30px_rgba(41,52,47,0.08)]"
             } ${disabled ? "cursor-wait" : ""}`}
           >
-            <span className={`flex items-center justify-center rounded-full transition ${compactMobile ? "h-9 w-9 sm:h-11 sm:w-11" : "h-11 w-11"} ${isSelected ? "bg-[#1D5A46] text-white" : "bg-[#F0F4ED] text-[#1D5A46] group-hover:bg-[#DDEBE2]"}`} aria-hidden="true">
+            <span className={`flex h-8 w-8 items-center justify-center rounded-full transition sm:h-11 sm:w-11 ${isSelected ? "bg-[#1D5A46] text-white" : "bg-[#F0F4ED] text-[#1D5A46] group-hover:bg-[#DDEBE2]"}`} aria-hidden="true">
               {option.icon}
             </span>
-            <span className={`block font-semibold tracking-[-0.035em] ${compactMobile ? "mt-3 text-base leading-5 sm:mt-6 sm:text-2xl sm:leading-normal" : "mt-6 text-xl sm:text-2xl"}`}>{option.label}</span>
-            <span className={`block max-w-[28rem] text-[#65736C] ${compactMobile ? "mt-1.5 text-xs leading-[1.15rem] sm:mt-2 sm:text-sm sm:leading-6" : "mt-2 text-sm leading-6"}`}>{option.description}</span>
-            <span className={`absolute flex h-5 w-5 items-center justify-center rounded-full border transition ${compactMobile ? "right-3.5 top-3.5 sm:right-5 sm:top-5" : "right-5 top-5"} ${isSelected ? "border-[#1D5A46] bg-[#1D5A46] text-white" : "border-[#B8C5BE] bg-white text-transparent"}`} aria-hidden="true">
+            <span className="mt-2.5 block pr-4 text-[0.9375rem] font-semibold leading-5 tracking-[-0.035em] sm:mt-6 sm:text-2xl sm:leading-normal">{option.label}</span>
+            <span className="mt-1 block max-w-[28rem] text-xs leading-[1.1rem] text-[#65736C] sm:mt-2 sm:text-sm sm:leading-6">{option.description}</span>
+            <span className={`absolute right-3 top-3 flex h-4 w-4 items-center justify-center rounded-full border transition sm:right-5 sm:top-5 sm:h-5 sm:w-5 ${isSelected ? "border-[#1D5A46] bg-[#1D5A46] text-white" : "border-[#B8C5BE] bg-white text-transparent"}`} aria-hidden="true">
               <CheckIcon className="h-3 w-3" />
             </span>
           </button>

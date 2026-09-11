@@ -216,23 +216,35 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
             <span className="sr-only">
               {mobileMenuOpen ? "Sluit menu" : "Open menu"}
             </span>
-            <span className="flex flex-col gap-1.5" aria-hidden="true">
-              <span
-                className={`block h-px w-4 bg-current transition-transform duration-200 ${
-                  mobileMenuOpen ? "translate-y-[3.5px] rotate-45" : ""
-                }`}
-              />
-              <span
-                className={`block h-px w-4 bg-current transition-opacity duration-200 ${
-                  mobileMenuOpen ? "opacity-0" : "opacity-100"
-                }`}
-              />
-              <span
-                className={`block h-px w-4 bg-current transition-transform duration-200 ${
-                  mobileMenuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
-                }`}
-              />
-            </span>
+            {mobileMenuOpen ? (
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="m3 3 10 10M13 3 3 13"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 4h12M2 8h12M2 12h12"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
           </button>
         </div>
       </div>

@@ -118,6 +118,16 @@ type CityContentFetchOptions = {
 
 const DEFAULT_LIMIT = 100;
 const SEARCH_LIMIT = 24;
+// A search is only useful while the person who initiated it is still waiting.
+// Keep the complete city-content lookup comfortably below the UI timeout.
+const CITY_CONTENT_REQUEST_TIMEOUT_MS = 10_000;
+
+class CityContentTimeoutError extends Error {
+  constructor() {
+    super("De city-content aanvraag duurde te lang.");
+    this.name = "CityContentTimeoutError";
+  }
+}
 
 function normalizeString(value: unknown): string | null {
   if (typeof value !== "string") {
@@ -324,22 +334,36 @@ function logCityContentError(error: unknown) {
 }
 
 async function fetchCityContentPage(
-  params: CityContentParams = {}
+  params: CityContentParams = {},
+  timeoutMs = CITY_CONTENT_REQUEST_TIMEOUT_MS,
 ): Promise<CityContentApiResponse> {
   let lastError: unknown = null;
+  const deadline = Date.now() + timeoutMs;
 
   for (const url of getCityContentRequestUrls(params)) {
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) throw new CityContentTimeoutError();
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), remainingMs);
+
     try {
-      const response = await fetch(url, { cache: "no-store" });
+      const response = await fetch(url, { cache: "no-store", signal: controller.signal });
       const payload = (await response.json().catch(() => null)) as CityContentApiResponse | null;
 
       if (!response.ok) {
         throw new Error(`GET ${url} failed: ${response.status}`);
       }
 
-      return payload ?? { results: [] };
+      if (!payload || !Array.isArray(payload.results)) {
+        throw new Error(`GET ${url} returned an invalid city-content response`);
+      }
+
+      return payload;
     } catch (error) {
-      lastError = error;
+      lastError = controller.signal.aborted ? new CityContentTimeoutError() : error;
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 

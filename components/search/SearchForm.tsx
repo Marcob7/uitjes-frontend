@@ -19,7 +19,7 @@ export default function SearchForm({ initialQuery, showEmptyFeedback = false, cl
   const [error, setError] = useState<string | null>(showEmptyFeedback ? "Vul eerst een zoekterm in." : null);
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
-  const urlQuery = normalizeSearchQuery(searchParams.get("query"));
+  const urlQuery = normalizeSearchQuery(searchParams.get("query") ?? searchParams.get("q"));
 
   useEffect(() => {
     setQuery(urlQuery);
@@ -56,6 +56,7 @@ export default function SearchForm({ initialQuery, showEmptyFeedback = false, cl
       errorMessage={error}
       statusMessage={isPending ? "Zoeken…" : null}
       isSubmitting={isPending}
+      disableSubmitWhileSubmitting={false}
       className={className}
       inputClassName="min-h-12"
       submitButtonClassName="!border-[#1d5a46] !bg-[#1d5a46] !text-white hover:!bg-[#164a3a]"

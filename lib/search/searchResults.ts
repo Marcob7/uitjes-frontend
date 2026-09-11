@@ -303,6 +303,15 @@ export async function getGeneralSearchResults(
       console.warn("Search city-content request failed:", error);
     }
 
+    // The inspiration collection is local and independent from city-content.
+    // Do not hide useful matches merely because the remote source timed out.
+    if (dummyMatches.length > 0) {
+      return {
+        status: "success",
+        results: uniqueResults(dummyMatches).sort(sortResults),
+      };
+    }
+
     return { status: "error" };
   }
 

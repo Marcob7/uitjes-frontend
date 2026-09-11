@@ -4,7 +4,8 @@ import SearchForm from "@/components/search/SearchForm";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 
 export default function SearchError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  const query = normalizeSearchQuery(new URLSearchParams(window.location.search).get("query"));
+  const params = new URLSearchParams(window.location.search);
+  const query = normalizeSearchQuery(params.get("query") ?? params.get("q"));
 
   return (
     <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
@@ -24,10 +25,10 @@ export default function SearchError({ reset }: { error: Error & { digest?: strin
         <div className="search-empty-state max-w-2xl" role="alert" aria-labelledby="search-error-heading">
       
           <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">
-            We kunnen de resultaten niet laden.
+            Zoeken lukt op dit moment niet
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">
-            Er ging iets mis tijdens het zoeken. Probeer het nog een keer.
+            Er ging iets mis bij het ophalen van de resultaten. Probeer het opnieuw.
           </p>
           <button
             type="button"

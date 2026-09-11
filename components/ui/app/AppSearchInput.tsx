@@ -28,6 +28,7 @@ export type AppSearchInputProps = {
   errorMessage?: string | null;
   statusMessage?: string | null;
   isSubmitting?: boolean;
+  disableSubmitWhileSubmitting?: boolean;
   onClear?: () => void;
   inputRef?: React.Ref<HTMLInputElement>;
 };
@@ -49,6 +50,7 @@ export function AppSearchInput({
   errorMessage,
   statusMessage,
   isSubmitting = false,
+  disableSubmitWhileSubmitting = true,
   onClear,
   inputRef,
 }: AppSearchInputProps) {
@@ -107,7 +109,7 @@ export function AppSearchInput({
         </div>
 
         {showSubmitButton ? (
-          <AppButton type="submit" variant="primary" size="md" disabled={isSubmitting} className={cn("md:min-w-[6.5rem]", submitButtonClassName)}>
+          <AppButton type="submit" variant="primary" size="md" disabled={isSubmitting && disableSubmitWhileSubmitting} className={cn("md:min-w-[6.5rem]", submitButtonClassName)}>
             {isSubmitting ? "Zoeken…" : submitLabel}
           </AppButton>
         ) : null}

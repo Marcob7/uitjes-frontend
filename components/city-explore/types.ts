@@ -54,7 +54,6 @@ export type CityExploreViewProps = {
   city: string;
   events: BackendEvent[];
   useEventFallback?: boolean;
-  isGenericLanding?: boolean;
 };
 
 export type ExploreCard = {

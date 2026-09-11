@@ -42,6 +42,8 @@
   --inspiration-map-route: #7d9c78;
   --inspiration-map-accent: #138a50;
   --inspiration-map-ink: #35533d;
+  /* Fixed mobile navbar: 1rem top padding + 2.5rem control height + 0.75rem gap. */
+  --mobile-flow-top-offset: calc(env(safe-area-inset-top) + 4.25rem);
 }
 
 @theme inline {

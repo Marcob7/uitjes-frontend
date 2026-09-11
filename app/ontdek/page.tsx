@@ -136,10 +136,8 @@ async function getCityContentEvents(city: string): Promise<BackendEvent[]> {
 
 async function BackendCityExplorePage({
   city,
-  isGenericLanding = false,
 }: {
   city: string;
-  isGenericLanding?: boolean;
 }) {
   const events = await getCityContentEvents(city);
 
@@ -148,7 +146,6 @@ async function BackendCityExplorePage({
       city={city}
       events={events}
       useEventFallback={false}
-      isGenericLanding={isGenericLanding}
     />
   );
 }
@@ -161,11 +158,10 @@ export default function OntdekPage({ searchParams }: OntdekPageProps) {
     redirect(`/zoeken?query=${encodeURIComponent(query)}`);
   }
 
-  const hasExplicitCity = Boolean(searchParams?.city || cityFromQuery);
   const city = normalizeCity(searchParams?.city ?? cityFromQuery ?? undefined);
 
   if (isCityContentCity(city)) {
-    return <BackendCityExplorePage city={city} isGenericLanding={!hasExplicitCity} />;
+    return <BackendCityExplorePage city={city} />;
   }
 
   const dummyEvents = getEventsWithFallback(city, []);
@@ -175,7 +171,6 @@ export default function OntdekPage({ searchParams }: OntdekPageProps) {
       city={city}
       events={dummyEvents}
       useEventFallback
-      isGenericLanding={!hasExplicitCity}
     />
   );
 }

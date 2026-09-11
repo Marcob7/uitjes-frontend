@@ -1,0 +1,44 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3002
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3002
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1332ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1234ms (1405 modules)
+ GET / 200 in 2173ms
+ ○ Compiling /inspiratie ...
+ ✓ Compiled /inspiratie in 1385ms (1288 modules)
+ GET /inspiratie 200 in 1597ms
+ ✓ Compiled in 1007ms (2007 modules)
+ ✓ Compiled (1993 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\7.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\7.pack.gz'
+ ✓ Compiled in 573ms (1993 modules)
+ ✓ Compiled in 597ms (726 modules)
+ ✓ Compiled in 546ms (726 modules)
+ ✓ Compiled in 680ms (726 modules)
+ ✓ Compiled in 546ms (1288 modules)
+ ✓ Compiled in 480ms (1288 modules)
+ ✓ Compiled in 250ms (726 modules)
+ ✓ Compiled in 216ms (726 modules)
+ ✓ Compiled in 233ms (726 modules)
+ ✓ Compiled in 187ms (726 modules)
+ ✓ Compiled in 194ms (726 modules)
+ ✓ Compiled in 194ms (726 modules)
+ ✓ Compiled in 226ms (726 modules)
+ ✓ Compiled in 219ms (726 modules)
+ ✓ Compiled in 221ms (726 modules)
+ ✓ Compiled in 198ms (726 modules)
+ ✓ Compiled in 198ms (726 modules)
+ ✓ Compiled in 211ms (726 modules)
+ ✓ Compiled in 216ms (726 modules)
+ ✓ Compiled in 228ms (726 modules)
+ ✓ Compiled in 213ms (726 modules)
+ ✓ Compiled in 226ms (726 modules)
+ ✓ Compiled in 176ms (726 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\12.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\12.pack.gz'
+ ✓ Compiled in 271ms (726 modules)

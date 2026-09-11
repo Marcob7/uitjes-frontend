@@ -408,8 +408,8 @@ export default function SearchResultsExperience({ query, results, error = false 
       <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 lg:px-8" aria-labelledby="search-error-heading">
         <div className="search-empty-state max-w-2xl" role="alert">
         
-          <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">We kunnen de resultaten niet laden.</h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">Er ging iets mis tijdens het zoeken. Probeer het nog een keer.</p>
+          <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">Zoeken lukt op dit moment niet</h2>
+          <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">Er ging iets mis bij het ophalen van de resultaten. Probeer het opnieuw.</p>
           <div className="mt-6"><SearchRetryButton /></div>
         </div>
       </section>
@@ -501,8 +501,8 @@ export default function SearchResultsExperience({ query, results, error = false 
           <span className="search-empty-mark" aria-hidden="true">⌕</span>
           <div className="max-w-2xl">
         
-            <h3 className="mt-3 font-heading text-[clamp(2rem,4vw,3.1rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">Geen resultaten gevonden</h3>
-            <p className="mt-3 text-sm leading-6 text-[#68746d] sm:text-base">Probeer je zoekopdracht iets ruimer te maken of verwijder een filter.</p>
+            <h3 className="mt-3 font-heading text-[clamp(2rem,4vw,3.1rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">Geen uitjes gevonden voor “{query}”</h3>
+            <p className="mt-3 text-sm leading-6 text-[#68746d] sm:text-base">Probeer een andere zoekterm, verwijder een filter of kies hieronder iets populairs.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               {hasAnyFilters ? <button type="button" onClick={clearFilters} className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1d5a46] px-5 text-sm font-semibold text-white outline-none transition hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc]">Wis filters</button> : null}
               <button type="button" onClick={() => document.getElementById("site-search")?.focus()} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#b5c4b8] bg-white px-5 text-sm font-semibold text-[#1d5a46] outline-none transition hover:border-[#1d5a46] focus-visible:ring-2 focus-visible:ring-[#005fcc]">Zoek opnieuw</button>

@@ -544,9 +544,9 @@ export function InspirationChoiceFlow({
                       Bekijk alle uitjes in {selectedCityLabel} <span className="ml-2" aria-hidden="true">→</span>
                     </button>
                   ) : undefined}
-                  transitionLabel={selectedCity ? "Of krijg persoonlijkere suggesties" : undefined}
                 >
-                  <div className="w-full max-w-2xl rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5">
+                  <div className={`w-full max-w-2xl ${selectedCity ? "border-0 bg-transparent p-0 shadow-none sm:rounded-[1.4rem] sm:border sm:border-[#DCE1DC] sm:bg-white/[0.96] sm:p-5 sm:shadow-[0_14px_30px_rgba(41,52,47,0.06)]" : "rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5"}`}>
+                    <div className={selectedCity ? "hidden sm:block" : undefined}>
                     <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een stad</label>
                     <div className="relative mt-2">
                       <div className="flex flex-col gap-3 sm:flex-row">
@@ -624,13 +624,13 @@ export function InspirationChoiceFlow({
                       <button type="button" onClick={requestLocation} disabled={isResolvingLocation} className="min-h-11 text-sm font-semibold text-[#355E7A] underline decoration-[#B8C5BE] underline-offset-4 transition hover:text-[#173F31] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] disabled:cursor-wait disabled:opacity-70">{isResolvingLocation ? "Locatie bepalen…" : "Gebruik mijn locatie"}</button>
                       {cityError ? <p className="text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
                     </div>
+                    </div>
                     {selectedCity ? (
-                      <div className="mt-5 border-t border-[#DCE1DC] pt-4">
+                      <div className="mt-0 border-t-0 pt-0 sm:mt-5 sm:border-t sm:border-[#DCE1DC] sm:pt-4">
                         <FullscreenChoiceGrid
                           title="Met wie ga je op pad?"
                           selectedValue={selectedAudience}
                           onChoose={chooseAudienceFromIntroduction}
-                          compactMobile
                           options={audienceOptions.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))}
                         />
                       </div>

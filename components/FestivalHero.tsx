@@ -29,7 +29,7 @@ export default function FestivalHero({
           colorDeep="#170b14"
           colorMid="#7a1f3d"
           colorHighlight="#ffb84d"
-          speed={0.58}
+          speed={0.68}
           flowStrength={0.78}
           grain={0.021}
           contrast={1.05}

@@ -167,14 +167,12 @@ export default function DiscoverFlow({
                 Bekijk alle uitjes in {cityLabel} <span className="ml-2" aria-hidden="true">→</span>
               </button>
             ) : undefined}
-            transitionLabel={isIntroductionStep ? "Of krijg persoonlijkere suggesties" : undefined}
           >
             <FullscreenChoiceGrid
               title={step.title}
               selectedValue={selections[step.id]}
               disabled={isTransitioning}
               onChoose={chooseOption}
-              compactMobile={isIntroductionStep}
               options={step.options.map((option) => {
                 const Icon = option.icon;
                 return { ...option, icon: <Icon className="h-5 w-5" /> };
