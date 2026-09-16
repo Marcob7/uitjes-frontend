@@ -2,22 +2,184 @@
 > frontend@0.1.0 dev
 > next dev -p 3001
 
- ⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3001
-    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
-    at listenInCluster (node:net:1997:12)
-    at Server.listen (node:net:2102:7)
-    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:280:16
-    at new Promise (<anonymous>)
-    at startServer (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:191:11)
-    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:310:52
-    at Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:26)
-    at process.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:310:35)
-    at process.emit (node:events:508:28) {
-  code: 'EADDRINUSE',
-  errno: -4091,
-  syscall: 'listen',
-  address: '::',
-  port: 3001
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1046ms
+ ○ Compiling /inspiratie/[category]/[slug] ...
+ ✓ Compiled /inspiratie/[category]/[slug] in 968ms (831 modules)
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 1189ms
+ ✓ Compiled in 148ms (550 modules)
+ ✓ Compiled in 35ms (281 modules)
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 199ms
+ ○ Compiling /ontdek/[slug] ...
+ ✓ Compiled /ontdek/[slug] in 571ms (921 modules)
+ GET /ontdek/apeldoorn 200 in 788ms
+ ✓ Compiled /zoeken in 445ms (958 modules)
+ GET /zoeken 200 in 710ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 170ms
+ GET /ontdek/apeldoorn 200 in 168ms
+ GET /zoeken 200 in 19ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 23ms
+ GET /ontdek/apeldoorn 200 in 22ms
+ GET /zoeken 200 in 17ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 24ms
+ GET /ontdek/apeldoorn 200 in 21ms
+ GET /zoeken 200 in 16ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 23ms
+ GET /ontdek/apeldoorn 200 in 19ms
+ GET /zoeken 200 in 18ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 20ms
+ GET /ontdek/apeldoorn 200 in 20ms
+ GET /zoeken 200 in 16ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 20ms
+ GET /ontdek/apeldoorn 200 in 20ms
+ GET /zoeken 200 in 16ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 20ms
+ GET /ontdek/apeldoorn 200 in 20ms
+ GET /zoeken 200 in 14ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 72ms
+ GET /inspiratie/romantisch/veluwe-picknickroute 200 in 62ms
+ ✓ Compiled /favicon.ico in 87ms (57 modules)
+ GET /favicon.ico 200 in 478ms
+ ✓ Compiled in 823ms (924 modules)
+ ✓ Compiled in 344ms (924 modules)
+ ✓ Compiled in 197ms (334 modules)
+ ✓ Compiled in 185ms (334 modules)
+ ✓ Compiled in 381ms (924 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development\0.pack.gz'
+ ✓ Compiled in 986ms (924 modules)
+ ✓ Compiled in 254ms (334 modules)
+ ✓ Compiled in 191ms (334 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\5.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\5.pack.gz'
+ ✓ Compiled in 601ms (334 modules)
+ ✓ Compiled in 224ms (334 modules)
+ ○ Compiling /ontdek ...
+ ✓ Compiled /ontdek in 1312ms (986 modules)
+ GET /ontdek?city=apeldoorn 200 in 1555ms
+ ✓ Compiled /_not-found in 411ms (612 modules)
+ ✓ Compiled in 80ms (612 modules)
+ GET /_next/static/css/app/layout.css?v=1789561911777 404 in 609ms
+ GET /_next/static/chunks/main-app.js?v=1789561911777 404 in 596ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 595ms
+ GET /_next/static/chunks/app/ontdek/error.js 404 in 586ms
+ GET /_next/static/chunks/app/layout.js 404 in 541ms
+ GET /_next/static/chunks/app/ontdek/loading.js 404 in 586ms
+ GET /ontdek?city=apeldoorn 200 in 252ms
+ GET /_next/static/css/app/layout.css?v=1789561928819 404 in 17ms
+ GET /_next/static/chunks/main-app.js?v=1789561928819 404 in 32ms
+ GET /_next/static/chunks/app/ontdek/error.js 404 in 31ms
+ GET /_next/static/chunks/app/layout.js 404 in 27ms
+ GET /_next/static/chunks/app/ontdek/loading.js 404 in 27ms
+ ✓ Compiled /favicon.ico in 88ms (306 modules)
+ ⨯ Error: Cannot find module './377.js'
+Require stack:
+- C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+- C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1421:15)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)
+    at Module._load (node:internal/modules/cjs/loader:1227:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at __webpack_require__.f.require (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:203:28)
+    at C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:116:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:167:22)
+    at C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js:1:35897
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js:1:35942)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:84
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36)
+    at async DevServer.findPageComponents (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\.next\\server\\app\\favicon.ico\\route.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ],
+  page: '/favicon.ico'
 }
-[?25h
+ GET /favicon.ico 500 in 107ms
+ ✓ Compiled in 460ms (927 modules)
+ ✓ Compiled in 322ms (351 modules)
+ ✓ Compiled in 580ms (351 modules)
+ ✓ Compiled in 254ms (351 modules)
+ ✓ Compiled in 491ms (351 modules)
+ ✓ Compiled in 221ms (351 modules)
+ ✓ Compiled /ontdek in 164ms (635 modules)
+ ⨯ TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js:37:33)
+    at Object.fn [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js:318:21)
+    at JSON.parse (<anonymous>)
+digest: "1017550701"
+[TypeError: Cannot read properties of undefined (reading 'call')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading 'call')]
+ ⨯ [TypeError: Cannot read properties of null (reading 'default')]
+ GET /ontdek?city=Lelystad 500 in 377ms
+ GET /favicon.ico 200 in 44ms
+ ✓ Compiled in 1029ms (941 modules)
+ ✓ Compiled /ontdek in 73ms (635 modules)
+ ⨯ TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js:37:33)
+    at Object.fn [as require] (C:\Users\Marco\EventsPlanner\frontend\.next\server\edge-runtime-webpack.js:318:21)
+    at JSON.parse (<anonymous>)
+digest: "1017550701"
+[TypeError: Cannot read properties of undefined (reading 'call')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading 'call')]
+ ⨯ [TypeError: Cannot read properties of null (reading 'default')]
+ GET /ontdek?city=apeldoorn 500 in 229ms
+ ✓ Compiled in 1432ms (941 modules)
+ ✓ Compiled in 278ms (351 modules)
+ ✓ Compiled in 467ms (351 modules)
+ ✓ Compiled in 238ms (351 modules)
+ ✓ Compiled in 290ms (351 modules)
+ ✓ Compiled in 658ms (941 modules)
+ ✓ Compiled in 202ms (351 modules)
+ ✓ Compiled in 221ms (351 modules)
+ ✓ Compiled in 277ms (941 modules)

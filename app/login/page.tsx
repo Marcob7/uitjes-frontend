@@ -10,12 +10,10 @@ export default function LoginPage() {
   const { isAuthenticated, logout, status, user } = useAuth();
 
   return (
-    <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-neutral-950 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-neutral-950 sm:px-6 lg:px-8 my-4">
       <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
         <section className="pt-4 lg:pt-10">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
-            Account
-          </p>
+       
           <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95] tracking-[-0.055em]">
             Inloggen
           </h1>
@@ -82,7 +80,7 @@ export default function LoginPage() {
                     Inloggen met Google
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-neutral-600">
-                    De bestaande Google login blijft beschikbaar.
+                   Gebruik je google account om in te loggen.
                   </p>
                 </div>
                 <LoginWithGoogle />

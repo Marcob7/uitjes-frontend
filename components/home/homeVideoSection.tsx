@@ -73,7 +73,7 @@ export default function HomeVideoSection() {
         className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(2,10,15,0.30)_0%,rgba(4,15,24,0.42)_38%,rgba(3,13,18,0.53)_100%)]"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[53rem] -translate-y-3 flex-col items-center px-5 pb-12 pt-28 text-center sm:px-8 sm:pt-32">
+      <div className="site-header-content-safe relative z-10 mx-auto flex w-full max-w-[53rem] -translate-y-3 flex-col items-center px-5 pb-12 text-center sm:px-8">
         <h1
           id="home-video-heading"
           style={{ maxInlineSize: "none" }}

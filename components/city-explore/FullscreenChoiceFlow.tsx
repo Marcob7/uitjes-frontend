@@ -165,19 +165,20 @@ export function FullscreenChoiceFlow({
       aria-describedby={descriptionId}
       className="fixed inset-0 z-[1000] h-dvh overflow-x-hidden overflow-y-auto overscroll-contain bg-[#F6F5F0] text-[#29342F]"
     >
-      {decorativeLayer ? (
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          {decorativeLayer({ isResultsStep, stepNumber: safeStep, totalSteps })}
-        </div>
-      ) : (
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute -left-28 top-[13%] h-72 w-72 rounded-full bg-[#DDEBE2] blur-3xl" />
-          <div className="absolute right-[-8rem] top-[-6rem] h-80 w-80 rounded-full bg-[#EFE1BD]/75 blur-3xl" />
-          <div className="absolute bottom-[-10rem] left-[42%] h-72 w-72 rounded-full bg-[#DCE8ED]/80 blur-3xl" />
-        </div>
-      )}
+      <div className="relative isolate h-max min-h-dvh">
+        {decorativeLayer ? (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            {decorativeLayer({ isResultsStep, stepNumber: safeStep, totalSteps })}
+          </div>
+        ) : (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            <div className="absolute -left-28 top-[13%] h-72 w-72 rounded-full bg-[#DDEBE2] blur-3xl" />
+            <div className="absolute right-[-8rem] top-[-6rem] h-80 w-80 rounded-full bg-[#EFE1BD]/75 blur-3xl" />
+            <div className="absolute bottom-[-10rem] left-[42%] h-72 w-72 rounded-full bg-[#DCE8ED]/80 blur-3xl" />
+          </div>
+        )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh max-w-[82rem] flex-col px-4 pb-[max(0.875rem,env(safe-area-inset-bottom))] pt-[var(--mobile-flow-top-offset)] sm:px-7 sm:pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pt-[max(7rem,calc(env(safe-area-inset-top)+6rem))] lg:px-10">
+        <div className="relative z-10 mx-auto flex min-h-dvh max-w-[82rem] flex-col px-4 pb-[max(0.875rem,env(safe-area-inset-bottom))] pt-[var(--mobile-flow-top-offset)] sm:px-7 sm:pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pt-[max(7rem,calc(env(safe-area-inset-top)+6rem))] lg:px-10">
         <header className="flex min-h-12 items-center justify-between gap-4">
           {isResultsStep ? (
             <button
@@ -207,7 +208,7 @@ export function FullscreenChoiceFlow({
           ) : <span aria-hidden="true" />}
         </header>
 
-        <div className={isResultsStep ? "flex flex-1 py-5 sm:py-10 lg:py-12" : "flex flex-1 items-center py-4 sm:py-12 lg:py-16"}>
+        <div className={isResultsStep ? "flex min-h-max flex-1 py-5 sm:py-10 lg:py-12" : "flex min-h-max flex-1 items-center py-4 sm:py-12 lg:py-16"}>
           <FlowHeadingIdsContext.Provider value={{ labelId, descriptionId }}>
             {children({ step, stepNumber: safeStep, totalSteps, isResultsStep })}
           </FlowHeadingIdsContext.Provider>
@@ -270,6 +271,7 @@ export function FullscreenChoiceFlow({
             </div>
           )}
         </footer> : null}
+        </div>
       </div>
     </div>
   );

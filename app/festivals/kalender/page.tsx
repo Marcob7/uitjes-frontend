@@ -381,7 +381,7 @@ function FestivalsCalendarContent() {
     <main className="festival-calendar-page relative min-h-screen overflow-hidden bg-[#f8f5f3] text-[#171511]">
       <FestivalPageScenery />
       <div className="relative z-10">
-      <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10 mt-18">
+      <div className="mx-auto mt-0 w-full max-w-7xl px-4 py-8 sm:px-6 lg:mt-18 lg:px-8 lg:py-10">
         <FestivalHero
           title="Festival kalender Nederland"
           description={

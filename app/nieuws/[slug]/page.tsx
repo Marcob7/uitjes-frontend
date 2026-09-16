@@ -90,7 +90,7 @@ export default function NewsDetailPage({ params }: NewsDetailPageProps) {
   ].filter((item): item is { label: string; dateTime: string | null } => item !== null);
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_82%_3%,rgba(224,239,229,0.78),transparent_26%),linear-gradient(180deg,#F6F7F2_0%,#F4F6F3_60%,#EEF3F0_100%)] pt-24 text-[#29342F] sm:pt-28">
+    <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_82%_3%,rgba(224,239,229,0.78),transparent_26%),linear-gradient(180deg,#F6F7F2_0%,#F4F6F3_60%,#EEF3F0_100%)] pt-6 text-[#29342F] sm:pt-8 lg:pt-28">
       <AppSection maxWidth="default" spacing="sm" innerClassName="pt-6 pb-14 sm:pt-8 sm:pb-20">
         <Breadcrumbs
           items={[

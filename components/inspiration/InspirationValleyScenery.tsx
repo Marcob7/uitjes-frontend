@@ -2,7 +2,7 @@ export function InspirationValleyScenery() {
   return (
     <div
       aria-hidden="true"
-      className="inspiration-valley pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      className="inspiration-valley pointer-events-none absolute inset-0 z-0 h-full min-h-full w-full overflow-hidden"
     >
       <div className="inspiration-valley__sky absolute inset-0" />
       <div className="inspiration-valley__sun absolute right-[12%] top-24 h-20 w-20 rounded-full bg-[#f3d38b]/45 blur-[1px] sm:right-[17%] sm:top-20 sm:h-24 sm:w-24" />
@@ -10,7 +10,7 @@ export function InspirationValleyScenery() {
       <div className="inspiration-valley__cloud inspiration-valley__cloud--two absolute right-[7%] top-60 hidden h-4 w-20 rounded-full bg-white/26 blur-[1px] md:block" />
 
       <svg
-        className="inspiration-valley__landscape absolute left-1/2 top-[16rem] h-auto min-h-[25rem] w-[175vw] max-w-none -translate-x-1/2 min-[520px]:top-[17rem] min-[520px]:min-h-[28rem] min-[520px]:w-[155vw] md:bottom-[-1rem] md:left-auto md:right-0 md:top-auto md:min-h-[44rem] md:w-[max(1850px,122vw)] md:translate-x-0"
+        className="inspiration-valley__landscape absolute left-1/2 top-[16rem] h-[calc(100%-16rem)] w-[175vw] max-w-none -translate-x-1/2 min-[520px]:top-[17rem] min-[520px]:h-[calc(100%-17rem)] min-[520px]:w-[155vw] md:bottom-[-1rem] md:left-auto md:right-0 md:top-auto md:h-auto md:min-h-[44rem] md:w-[max(1850px,122vw)] md:translate-x-0"
         viewBox="0 0 1600 900"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

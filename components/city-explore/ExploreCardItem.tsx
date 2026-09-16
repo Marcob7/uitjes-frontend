@@ -89,14 +89,20 @@ function ArrowIcon() {
   return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h13M13 7l5 5-5 5" /></svg>;
 }
 
-function formatRating(card: ExploreCard) {
-  const value = card.ratingValue ?? card.rating;
-  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+function formatReviewSummary(card: ExploreCard) {
+  const value = card.ratingValue;
+  const reviewCount = card.reviewCount;
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    typeof reviewCount !== "number" ||
+    !Number.isFinite(reviewCount) ||
+    reviewCount <= 0
+  ) return null;
+
   const rating = new Intl.NumberFormat("nl-NL", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
-  const reviews = typeof card.reviewCount === "number" && Number.isFinite(card.reviewCount)
-    ? ` · ${new Intl.NumberFormat("nl-NL").format(card.reviewCount)}`
-    : "";
-  return { label: `${rating}${reviews}`, title: card.ratingSource ? `${rating}${reviews} via ${card.ratingSource}` : `${rating}${reviews}` };
+  const reviews = `${new Intl.NumberFormat("nl-NL").format(reviewCount)} ${reviewCount === 1 ? "review" : "reviews"}`;
+  return { rating, reviews, reviewCount, title: card.ratingSource ? `${rating} · ${reviews} via ${card.ratingSource}` : `${rating} · ${reviews}` };
 }
 
 function getHighlightLabel(card: ExploreCard) {
@@ -113,14 +119,13 @@ export default function ExploreCardItem({
   onSelect,
   variant = "default",
 }: ExploreCardItemProps) {
-  const rating = formatRating(card);
+  const reviewSummary = formatReviewSummary(card);
   const highlight = getHighlightLabel(card);
   const eventId = typeof card.eventId === "number" && card.eventId > 0 ? card.eventId : null;
   const activityIcon = getExploreActivityIcon(card);
   const metadata = [
     card.location,
     card.time && card.time !== "Tijd volgt" ? card.time : null,
-    rating ? `★ ${rating.label}` : null,
   ].filter(Boolean);
 
   const isFlowVariant = variant === "flow";
@@ -136,57 +141,87 @@ export default function ExploreCardItem({
             }`
       }`}
     >
-      <Link
-        href={card.href}
-        onFocus={onSelect}
-        onClick={onSelect}
-        aria-label={`Bekijk ${card.title}`}
-        className={`grid min-h-30 grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-center gap-x-3 gap-y-2 py-5 pr-14 transition sm:min-h-28 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)_2.75rem] sm:gap-x-5 sm:pr-16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC] ${
+      <div
+        className={`grid min-h-30 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-5 transition sm:min-h-28 sm:gap-x-5 ${
           isFlowVariant
-          ? "min-h-36 px-5 py-6 hover:bg-[#F7FAF6] sm:px-6"
+            ? "min-h-36 px-5 py-6 hover:bg-[#F7FAF6] sm:px-6"
             : "sm:px-3 sm:hover:bg-white/70"
         }`}
       >
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DDEBE2] text-[#1D5A46]" aria-hidden="true">
-          <ActivityIcon name={activityIcon} />
-        </span>
-        <span className="min-w-0">
-          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="min-w-0 truncate text-sm font-medium leading-5 tracking-normal text-[#1D5A46]">
-              {card.label}
+        <div className="grid min-w-0 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)] sm:gap-x-5">
+          <Link
+            href={card.href}
+            onFocus={onSelect}
+            onClick={onSelect}
+            aria-label={`Bekijk ${card.title}`}
+            className="col-span-full grid min-w-0 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)] sm:gap-x-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC]"
+          >
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DDEBE2] text-[#1D5A46]" aria-hidden="true">
+            <ActivityIcon name={activityIcon} />
+          </span>
+          <span className="min-w-0">
+            <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="min-w-0 truncate text-sm font-medium leading-5 tracking-normal text-[#1D5A46]">
+                {card.label}
+              </span>
+              {highlight ? (
+                <span className="rounded-full bg-[#DDEBE2] px-2 py-0.5 text-[0.65rem] font-semibold text-[#1D5A46]">
+                  {highlight}
+                </span>
+              ) : null}
             </span>
-            {highlight ? (
-              <span className="rounded-full bg-[#DDEBE2] px-2 py-0.5 text-[0.65rem] font-semibold text-[#1D5A46]">
-                {highlight}
+            <span className="mt-1 block truncate text-lg font-semibold tracking-[-0.025em] text-[#29342F] sm:text-xl">
+              {card.title}
+            </span>
+            {metadata.length ? (
+              <span
+                className="mt-1 block truncate text-sm text-[#65736C]"
+              >
+                {metadata.join(" · ")}
               </span>
             ) : null}
           </span>
-          <span className="mt-1 block truncate text-lg font-semibold tracking-[-0.025em] text-[#29342F] sm:text-xl">
-            {card.title}
-          </span>
-          {metadata.length ? (
-            <span
-              title={rating?.title}
-              className="mt-1 block truncate text-sm text-[#65736C]"
-            >
-              {metadata.join(" · ")}
+          {card.price ? (
+            <span className="col-start-2 text-sm font-semibold text-[#1D5A46] sm:col-start-auto sm:text-right">
+              {card.price}
             </span>
           ) : null}
-        </span>
-        {card.price ? (
-          <span className="col-start-2 text-sm font-semibold text-[#1D5A46] sm:col-start-auto sm:text-right">
-            {card.price}
-          </span>
-        ) : null}
-        <span className="col-start-3 row-span-2 row-start-1 flex h-11 w-11 items-center justify-center rounded-full bg-[#1D5A46] text-white transition group-hover:bg-[#355E7A]" aria-hidden="true">
-          <ArrowIcon />
-        </span>
-      </Link>
-      {eventId ? (
-        <div className="absolute right-14 top-5 z-10 sm:right-[4.75rem]">
-          <FavouriteButton eventId={eventId} variant="compact" />
+          </Link>
+          {reviewSummary ? (
+            <div className="col-start-2 flex min-w-0 items-center gap-1.5 text-sm leading-5 text-[#65736C] sm:col-start-2">
+              <span className="inline-flex shrink-0 items-center gap-1 font-medium text-[#53645B]" title={reviewSummary.title}>
+                <span className="text-[#B7791F]"><StarIcon /></span>
+                {reviewSummary.rating}
+              </span>
+              <span aria-hidden="true">·</span>
+              {card.reviewsHref ? (
+                <Link
+                  href={card.reviewsHref}
+                  onFocus={onSelect}
+                  aria-label={`Bekijk ${reviewSummary.reviews} voor ${card.title}`}
+                  className="truncate underline decoration-[#AEB9B1] underline-offset-4 transition hover:text-[#1D5A46] hover:decoration-[#1D5A46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
+                >
+                  {reviewSummary.reviews}
+                </Link>
+              ) : (
+                <span className="truncate">{reviewSummary.reviews}</span>
+              )}
+            </div>
+          ) : null}
         </div>
-      ) : null}
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          {eventId ? <FavouriteButton eventId={eventId} variant="compact" /> : null}
+          <Link
+            href={card.href}
+            onFocus={onSelect}
+            onClick={onSelect}
+            aria-label={`Bekijk ${card.title}`}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1D5A46] text-white transition group-hover:bg-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
+          >
+            <ArrowIcon />
+          </Link>
+        </div>
+      </div>
     </article>
   );
 }

@@ -465,7 +465,7 @@ export default function EventsPage() {
   }
 
   return (
-    <main className="mt-24 min-h-screen overflow-x-clip bg-[#f6f3ec] text-[#1d2a20]">
+    <main className="mt-0 min-h-screen overflow-x-clip bg-[#f6f3ec] text-[#1d2a20] lg:mt-24">
       <section className="relative isolate overflow-hidden border-b border-[#d9ddd2] bg-[#dce8d7]" data-navbar-contrast="on-light" aria-labelledby="hero-title">
         <div aria-hidden="true" className="absolute -left-24 -top-32 h-72 w-72 rounded-full bg-[#f1c68f]/50 blur-3xl" />
         <div aria-hidden="true" className="absolute -bottom-40 right-[-5rem] h-[28rem] w-[28rem] rounded-full bg-[#b7d2cc]/55 blur-3xl" />

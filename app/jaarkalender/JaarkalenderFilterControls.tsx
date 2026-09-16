@@ -1321,9 +1321,7 @@ export function JaarkalenderInteractiveCalendar() {
           >
             <div className="flex items-start justify-between gap-4 border-b border-[#f0e2d6] px-5 py-5 sm:px-7 sm:py-6">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8f7b68]">
-                  Jaarkalender
-                </p>
+               
                 <h3
                   id="jaarkalender-filter-title"
                   className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[#171511] sm:text-4xl"

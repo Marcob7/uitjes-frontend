@@ -19,10 +19,10 @@ export function InspirationFlowScenery({
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 h-full min-h-full w-full overflow-hidden"
     >
       <div
-        className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${
+        className={`absolute inset-0 h-full min-h-full w-full transition-opacity duration-300 motion-reduce:transition-none ${
           isSubtle
             ? "opacity-40 max-sm:[&_.inspiration-valley__landscape]:top-[36rem]"
             : "max-sm:[&_.inspiration-valley__landscape]:top-[36rem]"

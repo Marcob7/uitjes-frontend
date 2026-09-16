@@ -1,0 +1,28 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3011
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3011
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 987ms
+ ○ Compiling /ontdek ...
+ ✓ Compiled /ontdek in 2.7s (923 modules)
+ GET /ontdek?city=apeldoorn 200 in 3006ms
+ ✓ Compiled in 217ms (586 modules)
+ ✓ Compiled in 37ms (305 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /ontdek?city=apeldoorn 200 in 192ms
+ ✓ Compiled /favicon.ico in 170ms (57 modules)
+ GET /favicon.ico 200 in 562ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 489ms (319 modules)
+ ✓ Compiled in 518ms (905 modules)
+ ✓ Compiled in 330ms (905 modules)
+ ✓ Compiled in 453ms (905 modules)
+ ✓ Compiled in 199ms (319 modules)
+ ✓ Compiled in 193ms (319 modules)
+ ✓ Compiled in 183ms (319 modules)
+ ✓ Compiled in 196ms (319 modules)

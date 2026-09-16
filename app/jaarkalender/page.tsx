@@ -50,7 +50,7 @@ export default function JaarkalenderPage() {
           className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,17,13,0.56)_0%,rgba(6,17,13,0.22)_48%,rgba(6,17,13,0.12)_100%)]"
         />
 
-        <div className="mx-auto grid w-full max-w-[1280px] gap-8 px-5 pb-16 pt-32 sm:px-7 sm:pb-20 lg:grid-cols-[minmax(0,1.32fr)_minmax(18rem,0.68fr)] lg:items-end lg:gap-16 lg:px-8 lg:pb-20">
+        <div className="site-header-content-safe mx-auto grid w-full max-w-[1280px] gap-8 px-5 pb-16 sm:px-7 sm:pb-20 lg:grid-cols-[minmax(0,1.32fr)_minmax(18rem,0.68fr)] lg:items-end lg:gap-16 lg:px-8 lg:pb-20 lg:pt-32">
           <div>
          
             <h1

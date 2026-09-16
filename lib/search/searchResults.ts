@@ -143,7 +143,7 @@ function mapInspirationResult(
 
   if (score == null) return null;
 
-  const numericRating = Number.parseFloat(result.rating.replace(",", "."));
+  const numericRating = result.ratingValue;
   const priceIsFree = normalize(result.price).includes("gratis") || normalize(result.price).includes("0");
   const citySlug = normalizeCitySlug(result.city);
 
@@ -162,8 +162,8 @@ function mapInspirationResult(
     priceLabel: result.price,
     priceMin: null,
     isFree: priceIsFree,
-    ratingValue: Number.isFinite(numericRating) ? numericRating : null,
-    reviewCount: null,
+    ratingValue: typeof numericRating === "number" && Number.isFinite(numericRating) ? numericRating : null,
+    reviewCount: result.reviewCount,
     startAt: null,
     dateLabel: result.categories.includes("weekend") ? "Dit weekend" : result.categories.includes("vandaag") ? "Vandaag" : null,
     kind: result.type,

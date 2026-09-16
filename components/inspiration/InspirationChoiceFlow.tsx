@@ -200,7 +200,6 @@ function getFilteredResults({
 }
 
 function toExploreCard(result: InspirationResult, index: number): ExploreCard {
-  const parsedRating = Number.parseFloat(result.rating.replace(",", "."));
   return {
     id: index + 1,
     title: result.title,
@@ -211,7 +210,11 @@ function toExploreCard(result: InspirationResult, index: number): ExploreCard {
     href: result.href ?? `/inspiratie/${result.category}/${result.slug}`,
     description: result.description,
     price: result.price,
-    rating: Number.isFinite(parsedRating) ? parsedRating : null,
+    ratingValue: result.ratingValue,
+    reviewCount: result.reviewCount,
+    ratingSource: result.ratingSource,
+    ratingMax: result.ratingMax,
+    reviewsHref: result.reviewsHref ?? result.href ?? `/inspiratie/${result.category}/${result.slug}`,
     tags: result.tags,
     kind: result.type,
     latitude: result.latitude ?? null,

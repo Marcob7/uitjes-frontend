@@ -42,8 +42,14 @@
   --inspiration-map-route: #7d9c78;
   --inspiration-map-accent: #138a50;
   --inspiration-map-ink: #35533d;
-  /* Fixed mobile navbar: 1rem top padding + 2.5rem control height + 0.75rem gap. */
-  --mobile-flow-top-offset: calc(env(safe-area-inset-top) + 4.25rem);
+  /*
+   * The fixed header is 2.5rem tall, has 1rem of visual breathing room below
+   * it, and sits below the device safe area. Keep this as the single source
+   * of truth for mobile/tablet page starts and fullscreen flow controls.
+   */
+  --site-header-offset-mobile: calc(max(1rem, env(safe-area-inset-top)) + 3.25rem);
+  --site-header-offset-tablet: calc(max(1.125rem, env(safe-area-inset-top)) + 3.25rem);
+  --mobile-flow-top-offset: var(--site-header-offset-mobile);
 }
 
 @theme inline {
@@ -181,6 +187,58 @@ button:disabled {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * The header is fixed below lg. Normal routes start after its complete visual
+ * footprint; fullscreen entry flows opt out because they consume the same
+ * variable inside their own controls. This avoids route-specific offsets and
+ * keeps safe-area handling in exactly one calculation.
+ */
+/*
+ * Apply the default offset inside each page surface, rather than before it in
+ * AppFrame. That lets a page background continue beneath the fixed header.
+ * Full-bleed routes and pages with a dedicated foreground safe zone opt out.
+ */
+#app-shell-content:not(.app-shell-content--immersive) > main {
+  padding-top: var(--site-header-offset-mobile);
+}
+
+#app-shell-content:not(.app-shell-content--immersive) > main:has(.site-header-content-safe) {
+  padding-top: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #app-shell-content:not(.app-shell-content--immersive) > main {
+    padding-top: var(--site-header-offset-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  #app-shell-content:not(.app-shell-content--immersive) > main {
+    padding-top: 0;
+  }
+}
+
+/*
+ * Full-bleed heroes keep their scenery at viewport origin, while their
+ * interactive foreground opts into this shared safe zone instead of relying
+ * on the document shell. Editorial spacing can remain larger than this floor.
+ */
+.site-header-content-safe {
+  padding-top: max(7rem, var(--site-header-offset-mobile));
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .site-header-content-safe {
+    padding-top: max(8rem, var(--site-header-offset-tablet));
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-header-content-safe {
+    padding-top: 8rem;
   }
 }
 

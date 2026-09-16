@@ -235,7 +235,11 @@ export function mapCityContentToInspirationResult(
     image: toCssImageUrl(resolveActivityImage({ image: item.imageUrl, category: item.category, kind: item.kind, title: item.title, tags: item.tags })),
     detail: item.description ?? description,
     badge: getBadge(item, primaryCategory),
-    rating: item.priorityScore ? String(item.priorityScore) : "Nieuw",
+    ratingValue: item.ratingValue,
+    reviewCount: item.reviewCount,
+    ratingSource: item.ratingSource,
+    ratingMax: item.ratingMax,
+    reviewsHref: getCityContentHref(item),
     openingHours: item.openingHoursText ?? item.dateText ?? "Check actuele tijden",
     type: getTypeLabel(item),
     reasons: compactStrings([

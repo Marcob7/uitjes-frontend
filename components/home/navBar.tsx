@@ -134,7 +134,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
   return (
     <header
       data-site-navbar
-      className={`${position} inset-x-0 top-0 z-[1100] px-4 pt-4 sm:px-6 md:pt-[18px]`}
+      className={`${position} inset-x-0 top-0 z-[1100] px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-6 md:pt-[max(1.125rem,env(safe-area-inset-top))]`}
     >
       <div className="mx-auto flex w-full max-w-[1150px] items-center justify-between gap-4">
         <Link

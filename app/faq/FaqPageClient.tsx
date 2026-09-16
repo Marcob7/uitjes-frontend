@@ -245,7 +245,7 @@ export default function FaqPageClient() {
     <main className="overflow-hidden bg-[#f7f5ec] text-[#202d29]">
       <section
         data-navbar-contrast="on-light"
-        className="relative isolate overflow-hidden border-b border-[#dfe6d8] px-4 pb-16 pt-28 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8 lg:pb-24 lg:pt-36"
+        className="site-header-content-safe relative isolate overflow-hidden border-b border-[#dfe6d8] px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24 lg:pt-36"
       >
         <div
           aria-hidden="true"

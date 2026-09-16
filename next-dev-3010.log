@@ -1,0 +1,57 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3010
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3010
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1161ms
+ ○ Compiling /ontdek ...
+ ✓ Compiled /ontdek in 3s (936 modules)
+ GET /ontdek?city=apeldoorn 200 in 3231ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 735ms (586 modules)
+ ✓ Compiled in 194ms (319 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /ontdek?city=apeldoorn 200 in 219ms
+ ✓ Compiled /inspiratie in 287ms (907 modules)
+ GET /inspiratie?city=apeldoorn 200 in 486ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 1444ms (921 modules)
+ GET /ontdek?city=apeldoorn 200 in 108ms
+ ○ Compiling /faq ...
+ ✓ Compiled /faq in 2.2s (1499 modules)
+ ✓ Compiled /ontdek/[slug] in 468ms (2163 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ⨯ Error [TypeError]: Cannot read properties of undefined (reading 'default')
+    at runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:79:88)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 965ms (1748 modules)
+ GET /ontdek?city=apeldoorn 500 in 1115ms
+ ✓ Compiled /favicon.ico in 148ms (836 modules)
+ GET /favicon.ico 200 in 202ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 543ms (958 modules)
+ ✓ Compiled in 860ms (1555 modules)
+ ✓ Compiled in 375ms (1555 modules)
+ ✓ Compiled in 474ms (1555 modules)
+ ✓ Compiled in 464ms (1555 modules)
+ ✓ Compiled in 366ms (1555 modules)
+ ✓ Compiled in 294ms (1555 modules)
+ ✓ Compiled in 213ms (959 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies

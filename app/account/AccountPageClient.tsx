@@ -16,9 +16,7 @@ export default function AccountPageClient() {
     <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-neutral-950 sm:px-6 lg:px-8">
       <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <section className="pt-4 lg:pt-10">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
-            Account
-          </p>
+         
           <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.5rem)] leading-[0.95] tracking-[-0.055em]">
             Jouw profiel
           </h1>

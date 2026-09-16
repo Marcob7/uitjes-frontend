@@ -33,6 +33,7 @@ export type BackendEvent = {
   review_count?: number | string | null;
   rating_source?: string | null;
   rating_max?: number | string | null;
+  reviews_href?: string | null;
   image?: string | null;
   imageAlt?: string | null;
   priority_score?: number | null;
@@ -70,11 +71,12 @@ export type ExploreCard = {
   price?: string;
   distance?: string;
   status?: string;
-  rating?: number | null;
   ratingValue?: number | null;
   reviewCount?: number | null;
   ratingSource?: string | null;
   ratingMax?: number | null;
+  /** Feature-owned review destination, supplied by the data mapper. */
+  reviewsHref?: string | null;
   priorityScore?: number | null;
   featured?: boolean;
   editorsPick?: boolean;

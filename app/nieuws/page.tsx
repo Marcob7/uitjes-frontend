@@ -55,7 +55,7 @@ export default function NewsOverviewPage({ searchParams }: NewsOverviewPageProps
   const activeCategoryLabel = activeCategory || rawCategory || "deze selectie";
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_92%_5%,rgba(221,235,226,0.7),transparent_27%),linear-gradient(180deg,#F6F7F2_0%,#F4F6F3_52%,#EEF3F0_100%)] pt-24 text-[#29342F] sm:pt-28">
+    <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_92%_5%,rgba(221,235,226,0.7),transparent_27%),linear-gradient(180deg,#F6F7F2_0%,#F4F6F3_52%,#EEF3F0_100%)] pt-6 text-[#29342F] sm:pt-8 lg:pt-28">
       <AppSection maxWidth="default" spacing="sm" innerClassName="pt-6 pb-14 sm:pt-8 sm:pb-20">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Nieuws & inspiratie" }]} className="mb-8" />
 

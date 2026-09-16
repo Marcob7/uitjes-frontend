@@ -27,7 +27,11 @@ export type InspirationResult = {
   image: string;
   detail: string;
   badge?: string;
-  rating: string;
+  ratingValue: number | null;
+  reviewCount: number | null;
+  ratingSource: string | null;
+  ratingMax: number | null;
+  reviewsHref?: string;
   openingHours: string;
   type: string;
   reasons: string[];
