@@ -60,3 +60,5 @@
 <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
  ✓ Compiled in 224ms (959 modules)
 <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 377ms (1555 modules)
