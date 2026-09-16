@@ -506,11 +506,10 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
       citySlug: "haarlem",
       category: cardMatch.label.toUpperCase(),
       status: (cardMatch.status || "CURATED PICK").toUpperCase(),
-      subtitle: [cardMatch.location, cardMatch.price, cardMatch.rating?.toFixed(1)]
+      subtitle: [cardMatch.location, cardMatch.price]
         .filter(Boolean)
         .join(" | "),
       heroImage: getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
-      ratingValue: cardMatch.rating ?? null,
       gallery: [
         getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
         getFallbackImage(cardMatch.image, cardMatch.label, cardMatch.kind, cardMatch.title, cardMatch.tags),
@@ -543,7 +542,7 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
         .slice(0, 3)
         .map((card) => ({
           title: card.title,
-          subtitle: [card.label, card.price, card.rating?.toFixed(1)]
+          subtitle: [card.label, card.price]
             .filter(Boolean)
             .join(" | "),
           image: getFallbackImage(card.image, card.label, card.kind, card.title, card.tags),

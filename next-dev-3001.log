@@ -187,3 +187,4 @@ digest: "1017550701"
 <w> [webpack.cache.PackFileCacheStrategy] Restoring pack from C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
  ✓ Compiled in 296ms (941 modules)
  ✓ Compiled in 208ms (351 modules)
+ ✓ Compiled in 481ms (941 modules)
