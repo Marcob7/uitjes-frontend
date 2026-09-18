@@ -1,10 +1,13 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
-import { cityOptions as sharedCityOptions } from "@/lib/cityConfig";
+import {
+  cityOptions as sharedCityOptions,
+  normalizeCitySlug,
+} from "@/lib/cityConfig";
 import { isCityContentCity } from "@/lib/cityContentCities";
 
 import {
@@ -92,6 +95,19 @@ const WEEKDAY_SHORT_LABELS = ["ma", "di", "wo", "do", "vr", "za", "zo"];
 
 function getCityFromLocation(location: string) {
   return location.split(",").at(-1)?.trim() ?? location;
+}
+
+function getCityLabelFromUrl(value: string | null) {
+  if (!value) return null;
+
+  const normalizedValue = normalizeCitySlug(value);
+  return (
+    sharedCityOptions.find(
+      (city) =>
+        city.value === normalizedValue ||
+        normalizeCitySlug(city.label) === normalizedValue
+    )?.label ?? value
+  );
 }
 
 function isSameMonth(date: Date, monthDate: Date) {
@@ -762,7 +778,7 @@ export function JaarkalenderInteractiveCalendar() {
   const [selectedCity, setSelectedCity] = useState<string | null>(() =>
     typeof window === "undefined"
       ? null
-      : new URLSearchParams(window.location.search).get("city")
+      : getCityLabelFromUrl(new URLSearchParams(window.location.search).get("city"))
   );
   const [selectedCategory, setSelectedCategory] =
     useState<JaarkalenderCategoryKey | null>(() => {
@@ -774,8 +790,13 @@ export function JaarkalenderInteractiveCalendar() {
         : null;
     });
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const cityComboboxRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const dateInputRef = useRef<HTMLInputElement | null>(null);
+  const cityInputRef = useRef<HTMLInputElement | null>(null);
+  const [cityQuery, setCityQuery] = useState("");
+  const [isCityMenuOpen, setIsCityMenuOpen] = useState(false);
+  const [activeCityIndex, setActiveCityIndex] = useState(-1);
 
   const syncFilterParams = (
     city: string | null,
@@ -787,7 +808,7 @@ export function JaarkalenderInteractiveCalendar() {
     const url = new URL(window.location.href);
     const isDefaultMonth = getMonthInputValue(month) === getMonthInputValue(DEFAULT_CALENDAR_MONTH);
 
-    if (city) url.searchParams.set("city", city);
+    if (city) url.searchParams.set("city", normalizeCitySlug(city));
     else url.searchParams.delete("city");
 
     if (category) url.searchParams.set("category", category);
@@ -831,7 +852,7 @@ export function JaarkalenderInteractiveCalendar() {
       const params = new URLSearchParams(window.location.search);
       const category = params.get("category");
 
-      setSelectedCity(params.get("city"));
+      setSelectedCity(getCityLabelFromUrl(params.get("city")));
       setSelectedCategory(
         category && category in jaarkalenderCategoryMeta
           ? (category as JaarkalenderCategoryKey)
@@ -857,6 +878,18 @@ export function JaarkalenderInteractiveCalendar() {
       hasBackendContent: isCityContentCity(city.value),
     }));
   }, []);
+
+  const matchingCityOptions = useMemo(() => {
+    const normalizedQuery = normalizeCitySlug(cityQuery);
+
+    if (!normalizedQuery) {
+      return [];
+    }
+
+    return cityOptions.filter((city) =>
+      normalizeCitySlug(city.label).includes(normalizedQuery)
+    );
+  }, [cityOptions, cityQuery]);
 
   const categoryOptions = Object.keys(
     jaarkalenderCategoryMeta
@@ -1013,7 +1046,7 @@ export function JaarkalenderInteractiveCalendar() {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !event.defaultPrevented) {
         closeModal();
         return;
       }
@@ -1056,13 +1089,85 @@ export function JaarkalenderInteractiveCalendar() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || modalMode !== "city") return;
+
+    const focusTimer = window.setTimeout(() => cityInputRef.current?.focus(), 0);
+    return () => window.clearTimeout(focusTimer);
+  }, [isOpen, modalMode]);
+
   const openModal = (
     mode: FilterModalMode,
     triggerElement: HTMLElement
   ) => {
     triggerRef.current = triggerElement;
     setModalMode(mode);
+    if (mode === "city") {
+      setCityQuery("");
+      setActiveCityIndex(-1);
+      setIsCityMenuOpen(false);
+    }
     setIsOpen(true);
+  };
+
+  const selectCity = (city: JaarkalenderCityOption) => {
+    setCityFilter(city.label);
+    setCityQuery("");
+    setActiveCityIndex(-1);
+    setIsCityMenuOpen(false);
+    closeModal();
+  };
+
+  const clearCity = () => {
+    setCityQuery("");
+    setActiveCityIndex(-1);
+    setIsCityMenuOpen(true);
+    if (selectedCity) {
+      setCityFilter(null);
+    }
+    cityInputRef.current?.focus();
+  };
+
+  const handleCityInputKeyDown = (
+    event: ReactKeyboardEvent<HTMLInputElement>
+  ) => {
+    const optionCount = matchingCityOptions.length;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setIsCityMenuOpen(true);
+      if (optionCount) {
+        setActiveCityIndex((index) => (index + 1 + optionCount) % optionCount);
+      }
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setIsCityMenuOpen(true);
+      if (optionCount) {
+        setActiveCityIndex((index) =>
+          index <= 0 ? optionCount - 1 : index - 1
+        );
+      }
+      return;
+    }
+
+    if (event.key === "Enter" && activeCityIndex >= 0) {
+      const city = matchingCityOptions[activeCityIndex];
+      if (city) {
+        event.preventDefault();
+        selectCity(city);
+      }
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setCityQuery("");
+      setActiveCityIndex(-1);
+      setIsCityMenuOpen(false);
+    }
   };
 
   const modalTitle =
@@ -1340,49 +1445,118 @@ export function JaarkalenderInteractiveCalendar() {
               </button>
             </div>
 
-            <div className="overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
+            <div
+              className="overflow-y-auto px-5 py-5 sm:px-7 sm:py-6"
+              onClick={(event) => {
+                if (
+                  modalMode === "city" &&
+                  isCityMenuOpen &&
+                  !cityComboboxRef.current?.contains(event.target as Node)
+                ) {
+                  setIsCityMenuOpen(false);
+                  setActiveCityIndex(-1);
+                }
+              }}
+            >
               {modalMode === "city" ? (
-                <div className="grid gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCityFilter(null);
-                      closeModal();
-                    }}
-                    className={`min-h-12 rounded-full border px-5 text-left text-sm font-semibold transition ${
-                      selectedCity === null
-                        ? "border-[#b8df71] bg-[#f3fadf] text-[#2c381d]"
-                        : "border-transparent bg-white/78 text-[#4f4339] hover:bg-[#eedfd2]"
-                    }`}
+                <div ref={cityComboboxRef} className="relative">
+                  <label
+                    htmlFor="jaarkalender-city-search"
+                    className="mb-2 block text-sm font-semibold text-[#3e352d]"
                   >
-                    Heel Nederland
-                  </button>
-                  {cityOptions.map((city) => (
-                    <button
-                      key={city.label}
-                      type="button"
-                      onClick={() => {
-                        setCityFilter(city.label);
-                        closeModal();
+                    Zoek een plaats
+                  </label>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#176343]">
+                      <SearchIcon />
+                    </span>
+                    <input
+                      ref={cityInputRef}
+                      id="jaarkalender-city-search"
+                      type="text"
+                      value={cityQuery}
+                      role="combobox"
+                      aria-autocomplete="list"
+                      aria-expanded={isCityMenuOpen && Boolean(cityQuery)}
+                      aria-controls="jaarkalender-city-options"
+                      aria-activedescendant={
+                        activeCityIndex >= 0
+                          ? `jaarkalender-city-option-${activeCityIndex}`
+                          : undefined
+                      }
+                      placeholder="Zoek een plaats..."
+                      onFocus={() => setIsCityMenuOpen(true)}
+                      onChange={(event) => {
+                        setCityQuery(event.target.value);
+                        setActiveCityIndex(-1);
+                        setIsCityMenuOpen(true);
                       }}
-                      className={`flex min-h-12 items-center justify-between gap-3 rounded-full border px-5 text-left text-sm font-semibold transition ${
-                        selectedCity === city.label
-                          ? "border-[#b8df71] bg-[#f3fadf] text-[#2c381d]"
-                          : "border-transparent bg-white/78 text-[#4f4339] hover:bg-[#eedfd2]"
-                      }`}
+                      onKeyDown={handleCityInputKeyDown}
+                      className="min-h-14 w-full rounded-2xl border border-[#d9d1c6] bg-white py-3 pl-12 pr-12 text-base font-medium text-[#241f19] outline-none transition placeholder:text-[#897c6e] focus:border-[#176343] focus:ring-2 focus:ring-[#176343]/20"
+                    />
+                    {(cityQuery || selectedCity) && (
+                      <button
+                        type="button"
+                        aria-label="Wis locatie"
+                        onClick={clearCity}
+                        className="absolute inset-y-0 right-1.5 my-auto inline-flex h-11 w-11 items-center justify-center rounded-xl text-[#66594e] transition hover:bg-[#f2e7dc] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a]"
+                      >
+                        <CloseIcon />
+                      </button>
+                    )}
+                  </div>
+
+                  {selectedCity ? (
+                    <p className="mt-3 text-sm text-[#5f5145]">
+                      Geselecteerd: <span className="font-semibold text-[#264434]">{selectedCity}</span>
+                    </p>
+                  ) : (
+                    <p className="mt-3 text-sm text-[#6c5f53]">Zoek op naam om een plaats te kiezen.</p>
+                  )}
+
+                  {isCityMenuOpen && cityQuery ? (
+                    <div
+                      id="jaarkalender-city-options"
+                      role="listbox"
+                      aria-label="Gevonden plaatsen"
+                      className="mt-3 max-h-[min(19rem,calc(100dvh-20rem))] overflow-y-auto rounded-2xl border border-[#e6d9cb] bg-white p-1.5 shadow-[0_16px_34px_rgba(68,49,31,0.12)]"
                     >
-                      <span className="min-w-0 truncate">{city.label}</span>
-                      {city.hasBackendContent ? (
-                        <span className="shrink-0 rounded-full bg-[#d9efad] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#33421f]">
-                          Live
-                        </span>
-                      ) : city.hasCalendarItems ? null : (
-                        <span className="shrink-0 rounded-full bg-[#efe5d8] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c6b59]">
-                          Binnenkort
-                        </span>
+                      {matchingCityOptions.length ? (
+                        matchingCityOptions.map((city, index) => (
+                          <button
+                            key={city.label}
+                            id={`jaarkalender-city-option-${index}`}
+                            type="button"
+                            role="option"
+                            aria-selected={selectedCity === city.label}
+                            onMouseDown={(event) => event.preventDefault()}
+                            onClick={() => selectCity(city)}
+                            onMouseMove={() => setActiveCityIndex(index)}
+                            className={`flex min-h-12 w-full items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#00784a] ${
+                              index === activeCityIndex
+                                ? "bg-[#edf4e8] text-[#1e3e2b]"
+                                : "text-[#3f352c] hover:bg-[#f8f1e9]"
+                            }`}
+                          >
+                            <span className="min-w-0 truncate">{city.label}</span>
+                            {city.hasBackendContent ? (
+                              <span className="shrink-0 rounded-full bg-[#d9efad] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#33421f]">
+                                Live
+                              </span>
+                            ) : city.hasCalendarItems ? null : (
+                              <span className="shrink-0 rounded-full bg-[#efe5d8] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c6b59]">
+                                Binnenkort
+                              </span>
+                            )}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-3.5 py-4 text-sm font-medium text-[#6c5f53]">
+                          Geen plaatsen gevonden
+                        </p>
                       )}
-                    </button>
-                  ))}
+                    </div>
+                  ) : null}
                 </div>
               ) : (
                 <div className="grid gap-2">

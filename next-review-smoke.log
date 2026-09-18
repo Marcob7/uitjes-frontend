@@ -1,0 +1,37 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3001
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Ready in 1023ms
+ ○ Compiling /ontdek ...
+ ✓ Compiled /ontdek in 2.9s (936 modules)
+ GET /ontdek?city=apeldoorn 200 in 3117ms
+ ✓ Compiled in 169ms (586 modules)
+ ✓ Compiled in 180ms (319 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\edge-server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled /inspiratie in 240ms (907 modules)
+ GET /inspiratie?city=apeldoorn 200 in 457ms
+ GET /ontdek?city=apeldoorn 200 in 252ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 313ms (325 modules)
+ ✓ Compiled in 217ms (325 modules)
+ ✓ Compiled in 193ms (325 modules)
+ ✓ Compiled in 150ms (325 modules)
+ ✓ Compiled in 165ms (325 modules)
+ ✓ Compiled in 212ms (325 modules)
+ ✓ Compiled in 221ms (325 modules)
+ ✓ Compiled in 277ms (325 modules)
+ ✓ Compiled in 201ms (325 modules)
+ ✓ Compiled in 275ms (325 modules)
+ ✓ Compiled in 207ms (325 modules)
+ ✓ Compiled in 209ms (325 modules)
+ ✓ Compiled in 179ms (325 modules)
+ ✓ Compiled in 212ms (325 modules)
+ ✓ Compiled in 259ms (325 modules)

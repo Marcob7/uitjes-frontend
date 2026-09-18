@@ -239,7 +239,7 @@ export function mapCityContentToInspirationResult(
     reviewCount: item.reviewCount,
     ratingSource: item.ratingSource,
     ratingMax: item.ratingMax,
-    reviewsHref: getCityContentHref(item),
+    reviewsHref: item.reviewsHref ?? undefined,
     openingHours: item.openingHoursText ?? item.dateText ?? "Check actuele tijden",
     type: getTypeLabel(item),
     reasons: compactStrings([

@@ -1,3 +1,5 @@
+import { buildGoogleCalendarHref as buildCalendarHref } from "@/lib/calendarIntegration";
+
 type CalendarLinkInput = {
   title: string;
   details?: string;
@@ -10,13 +12,6 @@ function normalizeParts(parts: Array<string | null | undefined>) {
   return parts
     .map((part) => part?.trim())
     .filter((part): part is string => Boolean(part));
-}
-
-function formatGoogleCalendarDate(date: Date) {
-  return date
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}Z$/, "Z");
 }
 
 export function buildWebSearchHref(parts: Array<string | null | undefined>) {
@@ -57,22 +52,13 @@ export function buildGoogleCalendarHref({
   start,
   end,
 }: CalendarLinkInput) {
-  const safeEnd = end ?? new Date(start.getTime() + 2 * 60 * 60 * 1000);
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: title,
-    dates: `${formatGoogleCalendarDate(start)}/${formatGoogleCalendarDate(
-      safeEnd
-    )}`,
+  return buildCalendarHref({
+    title,
+    start,
+    end,
+    isAllDay: false,
+    location,
+    description: details,
+    uid: `uitjes-${start.getTime()}@uitjes-nl.local`,
   });
-
-  if (details) {
-    params.set("details", details);
-  }
-
-  if (location) {
-    params.set("location", location);
-  }
-
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }

@@ -30,6 +30,7 @@ export type CityContentItem = {
   reviewCount: number | null;
   ratingSource: string | null;
   ratingMax: number | null;
+  reviewsHref: string | null;
   featured: boolean;
   editorsPick: boolean;
   hiddenGem: boolean;
@@ -74,6 +75,7 @@ type BackendCityContentItem = {
   review_count?: unknown;
   rating_source?: unknown;
   rating_max?: unknown;
+  reviews_href?: unknown;
   featured?: unknown;
   is_featured?: unknown;
   editors_pick?: unknown;
@@ -235,6 +237,7 @@ export function normalizeCityContentItem(
     reviewCount: normalizeReviewCount(item.review_count),
     ratingSource: normalizeString(item.rating_source),
     ratingMax,
+    reviewsHref: normalizeString(item.reviews_href),
     featured: normalizeBoolean(item.featured) || normalizeBoolean(item.is_featured),
     editorsPick: normalizeBoolean(item.editors_pick),
     hiddenGem: normalizeBoolean(item.hidden_gem) || normalizeBoolean(item.is_hidden_gem),

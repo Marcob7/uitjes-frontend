@@ -111,6 +111,7 @@ function mapCityContentToBackendEvent(
     review_count: item.reviewCount,
     rating_source: item.ratingSource,
     rating_max: item.ratingMax,
+    reviews_href: item.reviewsHref,
     featured: item.featured,
     editors_pick: item.editorsPick,
     hidden_gem: item.hiddenGem,

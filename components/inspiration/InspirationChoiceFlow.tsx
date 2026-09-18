@@ -214,7 +214,7 @@ function toExploreCard(result: InspirationResult, index: number): ExploreCard {
     reviewCount: result.reviewCount,
     ratingSource: result.ratingSource,
     ratingMax: result.ratingMax,
-    reviewsHref: result.reviewsHref ?? result.href ?? `/inspiratie/${result.category}/${result.slug}`,
+    reviewsHref: result.reviewsHref ?? null,
     tags: result.tags,
     kind: result.type,
     latitude: result.latitude ?? null,

@@ -432,10 +432,7 @@ export function buildExploreCards(
       reviewCount: normalizeReviewCount(event.review_count),
       ratingSource: event.rating_source ?? null,
       ratingMax,
-      reviewsHref: event.reviews_href?.trim() || appendCityToExploreHref(
-        `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,
-        event.city || citySlug
-      ),
+      reviewsHref: event.reviews_href?.trim() || null,
       priorityScore: event.priority_score ?? null,
       featured: Boolean(event.featured || event.is_featured),
       editorsPick: Boolean(event.editors_pick),
