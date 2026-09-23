@@ -62,19 +62,30 @@ function normalizeQuery(query: string) {
   return normalizeCitySlug(query).replace(/-/g, " ");
 }
 
+/** Resolves an input value to a city from the shared city configuration. */
+export function getSupportedCitySlug(
+  query: string | null | undefined,
+): string | null {
+  const normalizedQuery = normalizeCitySlug(normalizeSearchQuery(query));
+
+  if (!normalizedQuery) return null;
+
+  return (
+    cityOptions.find(
+      (city) =>
+        city.value === normalizedQuery ||
+        normalizeCitySlug(city.label) === normalizedQuery,
+    )?.value ?? null
+  );
+}
+
 export function detectSearchIntent(query: string | null | undefined): SearchIntent {
   const routeQuery = normalizeSearchQuery(query);
   const normalized = normalizeQuery(routeQuery);
 
   if (!normalized) return "onbekend";
 
-  const matchedCity = cityOptions.some(
-    (city) =>
-      normalizeCitySlug(city.label) === normalizeCitySlug(routeQuery) ||
-      city.value === normalizeCitySlug(routeQuery)
-  );
-
-  if (matchedCity) return "stad";
+  if (getSupportedCitySlug(routeQuery)) return "stad";
 
   if (festivalTerms.some((term) => normalized.includes(normalizeQuery(term)))) {
     return "festival";
@@ -97,7 +108,8 @@ export function getSearchRoute(query: string | null | undefined) {
   if (intent === "festival") return `/festivals/kalender?query=${encodedQuery}`;
   if (intent === "zoeken") return `/zoeken?query=${encodedQuery}`;
   if (intent === "stad") {
-    return `/ontdek?city=${encodeURIComponent(normalizeCitySlug(trimmedQuery))}`;
+    const citySlug = getSupportedCitySlug(trimmedQuery);
+    return citySlug ? `/ontdek?city=${encodeURIComponent(citySlug)}` : null;
   }
 
   return `/zoeken?query=${encodedQuery}`;

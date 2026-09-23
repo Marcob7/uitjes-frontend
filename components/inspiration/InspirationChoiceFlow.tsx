@@ -102,12 +102,15 @@ const supportedInspirationCities: CityOption[] = Array.from(supportedCitySlugs)
   .filter((city): city is CityOption => Boolean(city))
   .sort((a, b) => a.label.localeCompare(b.label, "nl"));
 
+const citySelectionTitle = "Waar wil je iets leuks doen?";
+const citySelectionDescription = "We kunnen je helpen kiezen. Kies een stad en vertel wat bij je past voor persoonlijkere suggesties.";
+
 const inspirationFlowSteps: InspirationFlowStep[] = [
   {
     type: "custom",
     id: "city",
-    title: "Waar wil je iets leuks doen?",
-    description: "We kunnen je helpen kiezen. Kies een stad en vertel wat bij je past voor persoonlijkere suggesties.",
+    title: citySelectionTitle,
+    description: citySelectionDescription,
   },
   {
     type: "question",
@@ -276,6 +279,12 @@ export function InspirationChoiceFlow({
     [fullCards, resultFilters]
   );
   const selectedCityLabel = supportedInspirationCities.find((city) => city.value === selectedCity)?.label ?? selectedCity;
+  const cityIntroTitle = selectedCityLabel
+    ? `Leuke ideeën in ${selectedCityLabel}`
+    : citySelectionTitle;
+  const cityIntroDescription = selectedCityLabel
+    ? "Maak het persoonlijker of bekijk meteen alle uitjes."
+    : citySelectionDescription;
   const totalPreviewCount = Math.min(filteredResults.length, 6);
   const selectionLabels = [
     selectedAudience ? audienceOptions.find((option) => option.value === selectedAudience)?.label : null,
@@ -536,8 +545,8 @@ export function InspirationChoiceFlow({
             if (step.id === "city") {
               return (
                 <FullscreenChoiceQuestion
-                  title={step.title}
-                  description={step.description}
+                  title={cityIntroTitle}
+                  description={cityIntroDescription}
                   primaryAction={selectedCity ? (
                     <button
                       type="button"

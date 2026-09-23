@@ -170,7 +170,7 @@ export default function ExploreCardItem({
                 </span>
               ) : null}
             </span>
-            <span className="mt-1 block truncate text-lg font-semibold tracking-[-0.025em] text-[#29342F] sm:text-xl">
+            <span className="mt-1 block line-clamp-2 text-lg font-semibold leading-6 tracking-[-0.025em] text-[#29342F] sm:text-xl">
               {card.title}
             </span>
             {metadata.length ? (
@@ -216,9 +216,9 @@ export default function ExploreCardItem({
             onFocus={onSelect}
             onClick={onSelect}
             aria-label={`Bekijk ${card.title}`}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1D5A46] text-white transition group-hover:bg-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1D5A46] px-4 text-sm font-semibold text-white transition group-hover:bg-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
           >
-            <ArrowIcon />
+            Bekijk <ArrowIcon />
           </Link>
         </div>
       </div>

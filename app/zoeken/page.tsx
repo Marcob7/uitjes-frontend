@@ -64,7 +64,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = normalizeSearchQuery(searchParams?.query ?? searchParams?.q);
   const searchState = query
     ? await getGeneralSearchResults(query)
-    : { status: "success" as const, results: [] };
+    : { status: "empty" as const, results: [] };
 
   return (
     <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
@@ -104,7 +104,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {query ? (
         <SearchResultsExperience
           query={query}
-          results={searchState.status === "success" ? searchState.results : []}
+          results={searchState.status === "success" || searchState.status === "partial" ? searchState.results : []}
           error={searchState.status === "error"}
         />
       ) : (

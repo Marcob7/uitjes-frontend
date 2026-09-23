@@ -31,6 +31,10 @@ export type ExploreDetailItem = {
   aboutTitle: string;
   aboutText: string;
   description?: string;
+  calendar?: {
+    startAt: string;
+    endAt?: string | null;
+  };
   tags?: string[];
   links?: {
     sourceUrl?: string | null;
@@ -212,6 +216,7 @@ export function mapCityContentToExploreDetail(
     aboutTitle: "Over deze plek",
     aboutText,
     description: item.summary && item.summary !== aboutText ? item.summary : undefined,
+    calendar: item.startAt ? { startAt: item.startAt, endAt: item.endAt } : undefined,
     tags,
     links: {
       sourceUrl: item.sourceUrl,
@@ -473,6 +478,9 @@ function buildFallbackExploreDetail(slug: string): ExploreDetailItem | undefined
         cuisine: eventMatch.category_label || "Curated moment",
         pricing: formatPrice(eventMatch.price_min, eventMatch.is_free),
       },
+      calendar: eventMatch.start_at
+        ? { startAt: eventMatch.start_at, endAt: eventMatch.end_at }
+        : undefined,
       actions: {
         reserveLabel: eventMatch.is_free ? "Bekijk moment" : "Bekijk tickets",
         routeLabel: "Bekijk route",

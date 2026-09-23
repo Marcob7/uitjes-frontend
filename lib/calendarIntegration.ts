@@ -9,6 +9,47 @@ export type CalendarEvent = {
   uid: string;
 };
 
+/** A serializable calendar event used at server/client boundaries. */
+export type CalendarEventInput = {
+  title: string;
+  startAt?: string | null;
+  endAt?: string | null;
+  location?: string | null;
+  description?: string | null;
+  url?: string | null;
+  uid: string;
+};
+
+function parseStructuredDate(value?: string | null) {
+  if (!value) return null;
+  // Date labels and opening-hours text are deliberately not accepted here.
+  // Only an ISO date or ISO date-time from a structured data field is valid.
+  if (!/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/.test(value)) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function isCalendarExportable(event: CalendarEventInput) {
+  return Boolean(event.title.trim() && parseStructuredDate(event.startAt));
+}
+
+export function toCalendarEvent(event: CalendarEventInput): CalendarEvent | null {
+  const start = parseStructuredDate(event.startAt);
+  if (!start || !event.title.trim()) return null;
+  const isAllDay = /^\d{4}-\d{2}-\d{2}$/.test(event.startAt ?? "");
+  const end = isAllDay ? undefined : parseStructuredDate(event.endAt);
+  return {
+    title: event.title,
+    start,
+    end: end && end > start ? end : undefined,
+    isAllDay,
+    location: event.location || undefined,
+    description: event.description || undefined,
+    url: event.url || undefined,
+    uid: event.uid,
+  };
+}
+
 const pad = (value: number) => String(value).padStart(2, "0");
 
 function formatDate(date: Date) {

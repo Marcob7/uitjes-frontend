@@ -26,6 +26,7 @@ export type GeneralSearchResult = {
   isFree: boolean;
   ratingValue?: number | null;
   reviewCount?: number | null;
+  reviewsHref?: string | null;
   startAt?: string | null;
   dateLabel?: string | null;
   kind?: string | null;
@@ -37,7 +38,15 @@ export type GeneralSearchResult = {
 
 export type GeneralSearchResultState =
   | { status: "success"; results: GeneralSearchResult[] }
+  | { status: "empty"; results: [] }
+  | { status: "partial"; results: GeneralSearchResult[] }
   | { status: "error" };
+
+type SearchTerms = {
+  direct: string[];
+  related: string[];
+  all: string[];
+};
 
 const queryAliases: Record<string, string[]> = {
   museum: ["musea", "cultuur", "expositie", "bibliotheek"],
@@ -74,48 +83,70 @@ function compactStrings(values: Array<string | null | undefined>) {
   return values.filter((value): value is string => Boolean(value?.trim()));
 }
 
-function getSearchTerms(query: string) {
+function getSearchTerms(query: string): SearchTerms {
   const normalizedQuery = normalize(query);
-  if (!normalizedQuery) return [];
+  if (!normalizedQuery) return { direct: [], related: [], all: [] };
 
-  const terms = new Set([normalizedQuery]);
-  const queryParts = normalizedQuery.split(/\s+/).filter(Boolean);
+  const direct = new Set([normalizedQuery]);
+  const related = new Set<string>();
+  const queryParts = normalizedQuery.split(/\s+/).filter((part) => part.length >= 3);
 
   for (const part of queryParts) {
-    terms.add(part);
+    direct.add(part);
   }
 
   for (const [alias, expansions] of Object.entries(queryAliases)) {
     const normalizedAlias = normalize(alias);
 
     if (normalizedQuery.includes(normalizedAlias)) {
-      expansions.forEach((expansion) => terms.add(normalize(expansion)));
+      expansions.forEach((expansion) => related.add(normalize(expansion)));
     }
   }
 
-  return [...terms];
+  related.forEach((term) => direct.delete(term));
+  return { direct: [...direct], related: [...related], all: [...direct, ...related] };
 }
 
-function fieldMatches(value: string, terms: string[]) {
-  const normalizedValue = normalize(value);
-  return terms.some((term) => normalizedValue.includes(term));
+function fieldMatch(value: string, terms: string[], allowCompound = false) {
+  const normalized = normalize(value).replace(/[^\p{L}\p{N}]+/gu, " ");
+  const normalizedValue = ` ${normalized} `;
+  const match = terms.find((term) => {
+    const normalizedTerm = term.replace(/[^\p{L}\p{N}]+/gu, " ");
+    return allowCompound
+      ? normalized.includes(normalizedTerm)
+      : normalizedValue.includes(` ${normalizedTerm} `);
+  });
+
+  return match ? { exact: normalized === match, term: match } : null;
 }
 
+// Search relevance is deliberately decided here, in one place. The API only
+// supplies candidates; a description mention is never allowed to outrank a
+// title, category or tag match.
 function scoreFields(fields: {
   title: string;
   category: string;
-  description: string;
   tags: string;
-}, terms: string[]) {
-  if (fieldMatches(fields.title, terms)) return 0;
-  if (fieldMatches(fields.category, terms)) return 1;
-  if (fieldMatches(`${fields.description} ${fields.tags}`, terms)) return 2;
-  return null;
+  slug: string;
+  description: string;
+}, terms: SearchTerms) {
+  const directTitle = fieldMatch(fields.title, terms.direct, true);
+  if (directTitle) return directTitle.exact ? 1_000 : 900;
+  if (fieldMatch(fields.title, terms.related, true)) return 850;
+  if (fieldMatch(fields.category, terms.direct, true)) return 800;
+  if (fieldMatch(fields.category, terms.related, true)) return 740;
+  if (fieldMatch(fields.tags, terms.direct, true)) return 720;
+  if (fieldMatch(fields.tags, terms.related, true)) return 680;
+  if (fieldMatch(fields.slug, terms.direct, true)) return 640;
+  if (fieldMatch(fields.slug, terms.related, true)) return 580;
+  if (fieldMatch(fields.description, terms.direct)) return 260;
+  if (fieldMatch(fields.description, terms.related)) return 220;
+  return 0;
 }
 
 function mapInspirationResult(
   result: InspirationResult,
-  terms: string[]
+  terms: SearchTerms
 ): GeneralSearchResult | null {
   const categoryText = [
     result.category,
@@ -137,11 +168,12 @@ function mapInspirationResult(
       category: categoryText,
       description: descriptionText,
       tags: result.tags.join(" "),
+      slug: result.slug,
     },
     terms
   );
 
-  if (score == null) return null;
+  if (score < 500) return null;
 
   const numericRating = result.ratingValue;
   const priceIsFree = normalize(result.price).includes("gratis") || normalize(result.price).includes("0");
@@ -164,6 +196,7 @@ function mapInspirationResult(
     isFree: priceIsFree,
     ratingValue: typeof numericRating === "number" && Number.isFinite(numericRating) ? numericRating : null,
     reviewCount: result.reviewCount,
+    reviewsHref: result.reviewsHref ?? null,
     startAt: null,
     dateLabel: result.categories.includes("weekend") ? "Dit weekend" : result.categories.includes("vandaag") ? "Vandaag" : null,
     kind: result.type,
@@ -198,18 +231,13 @@ function getCityContentHref(item: CityContentItem) {
 
 function mapCityContentResult(
   item: CityContentItem,
-  terms: string[]
+  terms: SearchTerms
 ): GeneralSearchResult | null {
   if (!item.title) return null;
 
   const categoryText = compactStrings([
     item.category,
     item.kind,
-    item.city,
-    item.cityName,
-    item.venue,
-    item.venueAddress,
-    item.address,
   ]).join(" ");
   const descriptionText = compactStrings([
     item.summary,
@@ -225,11 +253,12 @@ function mapCityContentResult(
       category: categoryText,
       description: descriptionText,
       tags: item.tags.join(" "),
+      slug: item.slug ?? "",
     },
     terms
   );
 
-  if (score == null) return null;
+  if (score < 500) return null;
 
   const cityLabel = getCityDisplayLabel(item.cityName ?? item.city ?? "Nederland");
   const citySlug = normalizeCitySlug(item.city ?? item.cityName ?? "");
@@ -257,6 +286,7 @@ function mapCityContentResult(
     isFree: item.isFree || item.priceMin === 0,
     ratingValue: item.ratingValue,
     reviewCount: item.reviewCount,
+    reviewsHref: item.reviewsHref,
     startAt: item.startAt,
     dateLabel: item.dateText,
     kind: item.kind,
@@ -268,8 +298,9 @@ function mapCityContentResult(
 }
 
 function sortResults(a: GeneralSearchResult, b: GeneralSearchResult) {
-  if (a.score !== b.score) return a.score - b.score;
-  if (a.source !== b.source) return a.source === "city-content" ? -1 : 1;
+  if (a.score !== b.score) return b.score - a.score;
+  if ((a.ratingValue ?? 0) !== (b.ratingValue ?? 0)) return (b.ratingValue ?? 0) - (a.ratingValue ?? 0);
+  if ((a.reviewCount ?? 0) !== (b.reviewCount ?? 0)) return (b.reviewCount ?? 0) - (a.reviewCount ?? 0);
   return a.title.localeCompare(b.title, "nl");
 }
 
@@ -288,7 +319,7 @@ export async function getGeneralSearchResults(
   query: string
 ): Promise<GeneralSearchResultState> {
   const terms = getSearchTerms(query);
-  if (terms.length === 0) return { status: "success", results: [] };
+  if (terms.all.length === 0) return { status: "empty", results: [] };
 
   const dummyMatches = inspirationResults
     .map((result) => mapInspirationResult(result, terms))
@@ -297,7 +328,7 @@ export async function getGeneralSearchResults(
   let cityContent: CityContentItem[];
 
   try {
-    cityContent = await searchCityContent(query, { throwOnError: true });
+    cityContent = await searchCityContent(query, terms.all, { throwOnError: true });
   } catch (error) {
     if (process.env.NODE_ENV !== "production") {
       console.warn("Search city-content request failed:", error);
@@ -307,7 +338,7 @@ export async function getGeneralSearchResults(
     // Do not hide useful matches merely because the remote source timed out.
     if (dummyMatches.length > 0) {
       return {
-        status: "success",
+        status: "partial",
         results: uniqueResults(dummyMatches).sort(sortResults),
       };
     }
@@ -319,8 +350,9 @@ export async function getGeneralSearchResults(
     .map((item) => mapCityContentResult(item, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
 
-  return {
-    status: "success",
-    results: uniqueResults([...cityContentMatches, ...dummyMatches]).sort(sortResults),
-  };
+  const results = uniqueResults([...cityContentMatches, ...dummyMatches]).sort(sortResults);
+
+  return results.length > 0
+    ? { status: "success", results }
+    : { status: "empty", results: [] };
 }

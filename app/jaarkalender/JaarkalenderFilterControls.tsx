@@ -1,6 +1,6 @@
 "use client";
 
-import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
@@ -83,13 +83,10 @@ const MONTH_SHORT_NAMES = [
   "dec",
 ];
 
+// The available fixture data happens to cover October 2024. It must never
+// decide which period visitors see when they open the calendar.
 const JAARKALENDER_DATA_YEAR = 2024;
 const JAARKALENDER_DATA_MONTH = 9;
-const DEFAULT_CALENDAR_MONTH = new Date(
-  JAARKALENDER_DATA_YEAR,
-  JAARKALENDER_DATA_MONTH,
-  1
-);
 
 const WEEKDAY_SHORT_LABELS = ["ma", "di", "wo", "do", "vr", "za", "zo"];
 
@@ -190,15 +187,19 @@ function getMonthInputValue(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
-function getMonthFromUrl(value: string | null) {
+function getCurrentLocalMonth(now = new Date()) {
+  return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+function getMonthFromUrl(value: string | null, fallbackMonth: Date) {
   if (!value || !/^\d{4}-\d{2}$/.test(value)) {
-    return DEFAULT_CALENDAR_MONTH;
+    return fallbackMonth;
   }
 
   const [year, month] = value.split("-").map(Number);
   return year && month >= 1 && month <= 12
     ? new Date(year, month - 1, 1)
-    : DEFAULT_CALENDAR_MONTH;
+    : fallbackMonth;
 }
 
 function hasJaarkalenderDataForMonth(date: Date) {
@@ -226,7 +227,9 @@ function filterCalendarItems(
 ) {
   return day.calendarItems.filter((item) => {
     const cityMatches =
-      !selectedCity || getCityFromLocation(item.locatie) === selectedCity;
+      !selectedCity ||
+      normalizeCitySlug(getCityFromLocation(item.locatie)) ===
+        normalizeCitySlug(selectedCity);
     const categoryMatches =
       !selectedCategory || item.categorie === selectedCategory;
 
@@ -599,12 +602,33 @@ function EmptyState({
     ? jaarkalenderCategoryMeta[selectedCategory].label
     : null;
   const filterText = [selectedCity, categoryLabel].filter(Boolean).join(" en ");
+  const cityQuery = selectedCity
+    ? `?city=${encodeURIComponent(normalizeCitySlug(selectedCity))}`
+    : "";
 
   return (
     <div className="border-t border-[#e6dfd3] bg-[#fffaf3] px-5 py-6 text-sm text-[#66594e] sm:px-8">
-      Geen activiteiten gevonden voor {monthTitle.toLowerCase()}
-      {filterText ? ` met ${filterText}` : ""}. Kies een
-      andere stad of categorie om de dummy kalender opnieuw te vullen.
+      <p>
+        Geen uitjes gevonden{selectedCity ? ` in ${selectedCity}` : ""} voor
+        {` ${monthTitle.toLowerCase()}`}
+        {filterText && !selectedCity ? ` met ${filterText}` : ""}.
+      </p>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <Link
+          href={`/ontdek${cityQuery}`}
+          className="inline-flex min-h-10 items-center rounded-full bg-[#176343] px-4 font-semibold text-white transition hover:bg-[#104d34] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a]"
+        >
+          Bekijk uitjes {selectedCity ? `in ${selectedCity}` : ""}
+        </Link>
+        {selectedCity ? (
+          <Link
+            href={`/inspiratie${cityQuery}`}
+            className="inline-flex min-h-10 items-center rounded-full border border-[#b9d4c5] px-4 font-semibold text-[#176343] transition hover:bg-[#eaf1ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00784a]"
+          >
+            Inspiratie voor {selectedCity}
+          </Link>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -764,16 +788,18 @@ export function JaarkalenderInteractiveCalendar() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<FilterModalMode>("city");
   const [today, setToday] = useState(() => new Date());
+  const [defaultMonth] = useState(() => getCurrentLocalMonth());
   const [mobileView, setMobileView] = useState<MobileCalendarView>("month");
   const [currentMonth, setCurrentMonth] = useState(() =>
     getMonthFromUrl(
       typeof window === "undefined"
         ? null
-        : new URLSearchParams(window.location.search).get("date")
+        : new URLSearchParams(window.location.search).get("date"),
+      getCurrentLocalMonth()
     )
   );
   const [selectedWeekDate, setSelectedWeekDate] = useState(
-    () => new Date(JAARKALENDER_DATA_YEAR, JAARKALENDER_DATA_MONTH, 1)
+    () => getCurrentLocalMonth()
   );
   const [selectedCity, setSelectedCity] = useState<string | null>(() =>
     typeof window === "undefined"
@@ -806,7 +832,7 @@ export function JaarkalenderInteractiveCalendar() {
     if (typeof window === "undefined") return;
 
     const url = new URL(window.location.href);
-    const isDefaultMonth = getMonthInputValue(month) === getMonthInputValue(DEFAULT_CALENDAR_MONTH);
+    const isDefaultMonth = getMonthInputValue(month) === getMonthInputValue(defaultMonth);
 
     if (city) url.searchParams.set("city", normalizeCitySlug(city));
     else url.searchParams.delete("city");
@@ -838,14 +864,14 @@ export function JaarkalenderInteractiveCalendar() {
   const clearFilters = () => {
     setSelectedCity(null);
     setSelectedCategory(null);
-    setCurrentMonth(DEFAULT_CALENDAR_MONTH);
-    syncFilterParams(null, null, DEFAULT_CALENDAR_MONTH);
+    setCurrentMonth(defaultMonth);
+    syncFilterParams(null, null, defaultMonth);
   };
 
   const hasActiveFilters =
     selectedCity !== null ||
     selectedCategory !== null ||
-    getMonthInputValue(currentMonth) !== getMonthInputValue(DEFAULT_CALENDAR_MONTH);
+    getMonthInputValue(currentMonth) !== getMonthInputValue(defaultMonth);
 
   useEffect(() => {
     const syncStateFromUrl = () => {
@@ -858,12 +884,15 @@ export function JaarkalenderInteractiveCalendar() {
           ? (category as JaarkalenderCategoryKey)
           : null
       );
-      setCurrentMonth(getMonthFromUrl(params.get("date")));
+      setCurrentMonth(getMonthFromUrl(params.get("date"), defaultMonth));
     };
 
+    // Client components hydrate from the server-rendered fallback, so also
+    // apply the URL once after hydration (not only on back/forward).
+    syncStateFromUrl();
     window.addEventListener("popstate", syncStateFromUrl);
     return () => window.removeEventListener("popstate", syncStateFromUrl);
-  }, []);
+  }, [defaultMonth]);
 
   const cityOptions = useMemo(() => {
     const cities = jaarkalenderDays.flatMap((day) =>
@@ -1170,6 +1199,26 @@ export function JaarkalenderInteractiveCalendar() {
     }
   };
 
+  const openMonthPicker = (event: ReactMouseEvent<HTMLLabelElement>) => {
+    const input = dateInputRef.current;
+    if (!input || event.target === input) return;
+
+    // A label click otherwise forwards a second click to its control. Preventing
+    // that default keeps one picker attempt; direct input clicks stay native.
+    event.preventDefault();
+    input.focus();
+
+    if (typeof input.showPicker !== "function") return;
+
+    try {
+      // Synchronous in the original user click. If a browser refuses it, the
+      // focused native control remains available as the fallback.
+      input.showPicker();
+    } catch {
+      // Browsers may reject showPicker despite a user gesture.
+    }
+  };
+
   const modalTitle =
     modalMode === "city" ? "Kies een locatie" : "Kies een categorie";
 
@@ -1214,11 +1263,7 @@ export function JaarkalenderInteractiveCalendar() {
 
         <label
           className="group flex min-h-[4.25rem] min-w-0 cursor-pointer items-center gap-3 rounded-[1.1rem] px-3 transition hover:bg-[#f0f3ed] focus-within:outline focus-within:outline-2 focus-within:outline-offset-[-2px] focus-within:outline-[#00784a] sm:border-r sm:border-[#e2dfd6] sm:px-4 lg:border-r-0"
-          onClick={() => {
-            const input = dateInputRef.current;
-            input?.focus();
-            input?.showPicker?.();
-          }}
+          onClick={openMonthPicker}
         >
           <span className="text-[#00784a]"><CalendarIcon /></span>
           <span className="min-w-0 flex-1">

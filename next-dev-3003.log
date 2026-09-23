@@ -1,0 +1,118 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3003
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3003
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 982ms
+ ○ Compiling /inspiratie ...
+ ✓ Compiled /inspiratie in 3s (911 modules)
+ GET /inspiratie?city=apeldoorn 200 in 3326ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ○ Compiling /favicon.ico ...
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled /favicon.ico in 1653ms (937 modules)
+ GET /favicon.ico 200 in 1518ms
+ GET /inspiratie?city=apeldoorn 200 in 90ms
+ GET /favicon.ico 200 in 8ms
+ GET /inspiratie?city=apeldoorn 200 in 58ms
+ GET /inspiratie?city=apeldoorn 200 in 22ms
+ GET /inspiratie?city=apeldoorn 200 in 22ms
+ GET /favicon.ico 200 in 9ms
+ GET /inspiratie?city=apeldoorn 200 in 79ms
+ GET /favicon.ico 200 in 8ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ GET /inspiratie 200 in 85ms
+ GET /inspiratie?city=apeldoorn 200 in 19ms
+ ✓ Compiled /ontdek in 299ms (907 modules)
+ GET /ontdek?city=apeldoorn 200 in 556ms
+ GET /ontdek?city=apeldoorn 200 in 75ms
+ GET /ontdek?city=apeldoorn 200 in 24ms
+ GET /ontdek?city=amersfoort 200 in 87ms
+ GET /ontdek?city=apeldoorn 200 in 24ms
+ GET /ontdek?city=apeldoorn 200 in 51ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ⨯ Error [TypeError]: Cannot read properties of undefined (reading 'default')
+    at runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:79:88)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ ○ Compiling /_error ...
+ ⨯ Error [TypeError]: Cannot read properties of undefined (reading 'default')
+    at runWithTaggedErrors (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\web\sandbox\sandbox.js:79:88)
+    at async DevServer.runEdgeFunction (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:1207:24)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:248:37)
+    at async DevServer.handleRequestImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20)
+    at async Span.traceAsyncFn (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (file://C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13)
+ ✓ Compiled /_error in 788ms (546 modules)
+ GET /inspiratie?city=apeldoorn 500 in 954ms
+ ✓ Compiled in 16ms (49 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 670ms (511 modules)
+ ✓ Compiled in 268ms (511 modules)
+ ✓ Compiled in 246ms (511 modules)
+ ✓ Compiled in 230ms (511 modules)
+ ✓ Compiled in 710ms (1107 modules)
+ ✓ Compiled in 191ms (511 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 476ms (511 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/favicon.ico/route' in C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js', but to 'Error: Can't resolve '../../../../.next/server/app/favicon.ico/route' in 'C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/favicon.ico/route (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ✓ Compiled in 277ms (511 modules)
+ ✓ Compiled in 206ms (511 modules)
+ ✓ Compiled in 186ms (511 modules)
+ ✓ Compiled in 211ms (511 modules)
+ ✓ Compiled in 175ms (511 modules)
+ ✓ Compiled in 252ms (511 modules)
+ ✓ Compiled in 241ms (511 modules)
+ ✓ Compiled in 234ms (511 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz'
+ ✓ Compiled in 570ms (511 modules)
+ ✓ Compiled in 239ms (511 modules)
+ ✓ Compiled in 232ms (511 modules)
+ ✓ Compiled in 222ms (511 modules)
+ ✓ Compiled in 246ms (511 modules)
+ ✓ Compiled in 249ms (511 modules)
+ ✓ Compiled in 210ms (511 modules)
+ ✓ Compiled in 290ms (511 modules)

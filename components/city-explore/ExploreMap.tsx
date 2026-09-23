@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { MouseEvent, PointerEvent } from "react";
 import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
 import Link from "next/link";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -326,6 +327,16 @@ export default function ExploreMap({
     });
   }
 
+  // The map canvas listens for pointer and click events on its container. Keep
+  // those map gestures out of the React popup, without cancelling the anchor's
+  // default navigation. This is especially important for a touch tap: a map
+  // drag/click must not consume the tap that opens a detail page.
+  function keepPopupInteractionOutOfMap(
+    event: PointerEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>
+  ) {
+    event.stopPropagation();
+  }
+
   if (mapPlaces.length === 0) {
     return (
       <div className="relative overflow-hidden rounded-[2.8rem] bg-[#f2e6d6] shadow-[0_36px_70px_rgba(52,37,22,0.12)]">
@@ -368,7 +379,11 @@ export default function ExploreMap({
       </div>
 
       {selectedPlace ? (
-        <div className={`z-10 ${fullHeight ? "absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px]" : "relative px-3 pb-3 pt-0 sm:absolute sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px] sm:p-0"}`}>
+        <div
+          className={`z-10 ${fullHeight ? "absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px]" : "relative px-3 pb-3 pt-0 sm:absolute sm:bottom-4 sm:left-4 sm:right-auto sm:w-[275px] sm:p-0"}`}
+          onPointerDownCapture={keepPopupInteractionOutOfMap}
+          onClickCapture={keepPopupInteractionOutOfMap}
+        >
           <div className="rounded-[1.25rem] bg-white/95 px-4 py-4 shadow-[0_16px_36px_rgba(51,35,21,0.16)] backdrop-blur-xl">
             <div className="rounded-[1rem] bg-[#faf6f0] px-3.5 py-3 ring-1 ring-black/5">
               <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#181615]">

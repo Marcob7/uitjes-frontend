@@ -158,6 +158,8 @@ export default function DiscoverFlow({
           <FullscreenChoiceQuestion
             title={step.title.replace("{city}", cityLabel)}
             description={isIntroductionStep ? step.description : `Je hebt gekozen voor ${cityLabel}`}
+            introNote={isIntroductionStep ? "Maak het persoonlijker, of bekijk meteen alle uitjes." : undefined}
+            showPrimaryActionBeforeChoicesOnMobile={isIntroductionStep}
             primaryAction={isIntroductionStep ? (
               <button
                 type="button"

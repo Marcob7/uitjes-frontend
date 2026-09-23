@@ -283,12 +283,18 @@ export function FullscreenChoiceQuestion({
   contextLabel,
   title,
   description,
+  introNote,
+  showPrimaryActionBeforeChoicesOnMobile = false,
   primaryAction,
   children,
 }: {
   contextLabel?: string;
   title: string;
   description: string;
+  /** Optional route-specific reassurance for an introductory question. */
+  introNote?: string;
+  /** Keeps an introductory skip route visible before the choice grid on small screens. */
+  showPrimaryActionBeforeChoicesOnMobile?: boolean;
   primaryAction?: ReactNode;
   children: ReactNode;
 }) {
@@ -310,11 +316,12 @@ export function FullscreenChoiceQuestion({
           <p id={ids?.descriptionId} className="mt-3 max-w-md text-[0.9375rem] leading-6 text-[#65736C] sm:mt-5 sm:text-lg sm:leading-8">
             {description}
           </p>
-          {primaryAction ? <div className="mt-6 hidden lg:block">{primaryAction}</div> : null}
+          {introNote ? <p className="mt-2 max-w-md text-sm leading-5 text-[#52635B]">{introNote}</p> : null}
+          {primaryAction ? <div className={showPrimaryActionBeforeChoicesOnMobile ? "mt-4 lg:mt-6 [&>*]:w-full lg:[&>*]:w-auto" : "mt-6 hidden lg:block"}>{primaryAction}</div> : null}
         </div>
         <div>
           {children}
-          {primaryAction ? <div className="mt-4 lg:hidden [&>*]:w-full">{primaryAction}</div> : null}
+          {primaryAction && !showPrimaryActionBeforeChoicesOnMobile ? <div className="mt-4 lg:hidden [&>*]:w-full">{primaryAction}</div> : null}
         </div>
       </div>
     </div>

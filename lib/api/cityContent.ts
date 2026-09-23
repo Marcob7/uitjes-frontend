@@ -9,6 +9,7 @@ export type CityContentParams = {
   city?: string | null;
   type?: CityContentType | null;
   query?: string | null;
+  terms?: string[] | null;
   limit?: number | null;
   offset?: number | null;
 };
@@ -105,13 +106,18 @@ type BackendCityContentItem = {
 };
 
 type CityContentApiResponse = {
-  results?: BackendCityContentItem[];
+  results: BackendCityContentItem[];
   count?: number;
   limit?: number;
   offset?: number;
   next_offset?: number | null;
   has_more?: boolean;
 };
+
+// Older city-content deployments can return the result list directly.  Both
+// that shape and the paginated object shape represent a successful request,
+// including when the list is empty.
+type CityContentApiPayload = CityContentApiResponse | BackendCityContentItem[];
 
 type CityContentFetchOptions = {
   fallback?: CityContentItem[];
@@ -271,6 +277,7 @@ function buildCityContentUrl(params: CityContentParams = {}) {
   if (params.city) searchParams.set("city", params.city);
   if (params.type) searchParams.set("type", params.type);
   if (params.query) searchParams.set("query", params.query);
+  if (params.terms?.length) searchParams.set("terms", params.terms.join(","));
   if (typeof params.limit === "number") searchParams.set("limit", String(params.limit));
   if (typeof params.offset === "number") searchParams.set("offset", String(params.offset));
 
@@ -286,6 +293,7 @@ function buildCityContentPath(params: CityContentParams = {}) {
   if (params.city) searchParams.set("city", params.city);
   if (params.type) searchParams.set("type", params.type);
   if (params.query) searchParams.set("query", params.query);
+  if (params.terms?.length) searchParams.set("terms", params.terms.join(","));
   if (typeof params.limit === "number") searchParams.set("limit", String(params.limit));
   if (typeof params.offset === "number") searchParams.set("offset", String(params.offset));
 
@@ -336,6 +344,19 @@ function logCityContentError(error: unknown) {
   }
 }
 
+function normalizeCityContentResponse(payload: unknown): CityContentApiResponse | null {
+  if (Array.isArray(payload)) {
+    return { results: payload as BackendCityContentItem[] };
+  }
+
+  if (!payload || typeof payload !== "object") return null;
+
+  const response = payload as Partial<CityContentApiResponse>;
+  if (!Array.isArray(response.results)) return null;
+
+  return response as CityContentApiResponse;
+}
+
 async function fetchCityContentPage(
   params: CityContentParams = {},
   timeoutMs = CITY_CONTENT_REQUEST_TIMEOUT_MS,
@@ -352,17 +373,18 @@ async function fetchCityContentPage(
 
     try {
       const response = await fetch(url, { cache: "no-store", signal: controller.signal });
-      const payload = (await response.json().catch(() => null)) as CityContentApiResponse | null;
+      const payload = (await response.json().catch(() => null)) as CityContentApiPayload | null;
 
       if (!response.ok) {
         throw new Error(`GET ${url} failed: ${response.status}`);
       }
 
-      if (!payload || !Array.isArray(payload.results)) {
+      const cityContentResponse = normalizeCityContentResponse(payload);
+      if (!cityContentResponse) {
         throw new Error(`GET ${url} returned an invalid city-content response`);
       }
 
-      return payload;
+      return cityContentResponse;
     } catch (error) {
       lastError = controller.signal.aborted ? new CityContentTimeoutError() : error;
     } finally {
@@ -381,7 +403,7 @@ export async function getCityContent(
 ): Promise<CityContentItem[]> {
   try {
     const payload = await fetchCityContentPage(params);
-    return (payload.results ?? []).map(normalizeCityContentItem);
+    return payload.results.map(normalizeCityContentItem);
   } catch (error) {
     logCityContentError(error);
     if (options.throwOnError) throw error;
@@ -400,7 +422,7 @@ async function getAllCityContent(
   try {
     for (;;) {
       const payload = await fetchCityContentPage({ ...params, limit, offset });
-      items.push(...(payload.results ?? []).map(normalizeCityContentItem));
+      items.push(...payload.results.map(normalizeCityContentItem));
 
       if (!payload.has_more || payload.next_offset == null) {
         return items;
@@ -471,10 +493,11 @@ export async function getCityFoodDrink(
 
 export async function searchCityContent(
   query: string,
+  terms: string[] = [],
   options: CityContentFetchOptions = {}
 ) {
   const trimmedQuery = query.trim();
   if (!trimmedQuery) return [];
 
-  return getCityContent({ query: trimmedQuery, limit: SEARCH_LIMIT }, options);
+  return getCityContent({ query: trimmedQuery, terms, limit: SEARCH_LIMIT }, options);
 }

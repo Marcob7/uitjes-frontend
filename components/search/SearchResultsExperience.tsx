@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 import SavePlaceButton from "@/components/SavePlaceButton";
 import SearchRetryButton from "@/components/search/SearchRetryButton";
+import ResultCard from "@/components/ui/ResultCard";
 import type { GeneralSearchResult } from "@/lib/search/searchResults";
 
 type SortOption = "match" | "rating" | "price" | "recent";
@@ -124,23 +125,9 @@ function getWhenLabel(value: string) {
   return WHEN_OPTIONS.find((option) => option.value === value)?.label ?? value;
 }
 
-function formatReviewCount(value: number) {
-  return new Intl.NumberFormat("nl-NL").format(value);
-}
-
 function formatPriceLabel(value?: string) {
   if (!value) return null;
   return value.replace(/^EUR\s?/i, "€ ");
-}
-
-function getFallbackBackground(index: number) {
-  const backgrounds = [
-    "radial-gradient(circle at 72% 20%, rgba(208, 226, 191, .92), transparent 38%), linear-gradient(140deg, #eef3e9, #d8e7d8)",
-    "radial-gradient(circle at 18% 22%, rgba(222, 213, 182, .85), transparent 38%), linear-gradient(140deg, #f4eee2, #dce5dd)",
-    "radial-gradient(circle at 70% 12%, rgba(180, 211, 220, .82), transparent 38%), linear-gradient(140deg, #e8f1ed, #d6e1e7)",
-  ];
-
-  return backgrounds[index % backgrounds.length];
 }
 
 function ChevronDownIcon() {
@@ -172,87 +159,25 @@ function HeartIcon({ filled = false }: { filled?: boolean }) {
   );
 }
 
-function SearchResultImage({ result, index }: { result: GeneralSearchResult; index: number }) {
-  const [imageFailed, setImageFailed] = useState(!result.image);
-
-  return (
-    <div className="search-result-image relative aspect-[1.28] overflow-hidden bg-[#e8eee7]" style={{ background: getFallbackBackground(index) }}>
-      {!imageFailed && result.image ? (
-        <img
-          src={result.image}
-          alt={result.imageAlt ?? ""}
-          loading={index < 3 ? "eager" : "lazy"}
-          onError={() => setImageFailed(true)}
-          className="h-full w-full object-cover transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.045]"
-        />
-      ) : (
-        <div className="absolute inset-0 flex items-end p-4 sm:p-5">
-          <span className="font-heading text-[clamp(2.8rem,6vw,4.4rem)] leading-none tracking-[-0.08em] text-[#1d5a46]/35">
-            {result.city.slice(0, 1).toUpperCase()}
-          </span>
-        </div>
-      )}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#15291f]/18 via-transparent to-white/10" />
-    </div>
-  );
-}
-
 function SearchResultCard({ result, index }: { result: GeneralSearchResult; index: number }) {
   const priceLabel = formatPriceLabel(result.priceLabel);
 
   return (
-    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.45rem] border border-[#dce1dc] bg-white shadow-[0_12px_30px_rgba(33,54,43,0.055)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(33,54,43,0.1)]">
-      <Link href={result.href} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-[-2px]">
-        <SearchResultImage result={result} index={index} />
-        <div className="px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <span className="inline-flex max-w-full items-center text-sm font-medium leading-5 tracking-normal text-[#1d5a46]">
-                <span className="truncate">{result.badge}</span>
-              </span>
-              <h3 className="mt-3 line-clamp-2 text-[1.22rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#22312a] sm:text-[1.34rem]">
-                {result.title}
-              </h3>
-            </div>
-          </div>
-
-          <div className="mt-3 flex items-center gap-2 text-[0.78rem] text-[#68746d]">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="h-3.5 w-3.5 shrink-0">
-              <path d="M8 14s4-3.7 4-7.2a4 4 0 1 0-8 0C4 10.3 8 14 8 14Z" stroke="currentColor" strokeWidth="1.25" />
-              <circle cx="8" cy="6.8" r="1.35" stroke="currentColor" strokeWidth="1.25" />
-            </svg>
-            <span className="truncate">{result.location || result.city}</span>
-          </div>
-
-          <div className="mt-4 flex min-h-5 flex-wrap items-center gap-x-3 gap-y-1 text-[0.78rem] text-[#53645a]">
-            {result.ratingValue ? (
-              <span className="inline-flex items-center gap-1 font-semibold text-[#334d3d]">
-                <span className="text-[#b77929]" aria-hidden="true">★</span>
-                {result.ratingValue.toFixed(1).replace(".", ",")}
-                {typeof result.reviewCount === "number" ? <span className="font-normal text-[#7b847e]">({formatReviewCount(result.reviewCount)})</span> : null}
-              </span>
-            ) : null}
-            {priceLabel ? <span className="font-semibold text-[#334d3d]">{priceLabel}</span> : null}
-            {result.dateLabel ? <span>{result.dateLabel}</span> : null}
-          </div>
-
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#1d5a46]">
-            Bekijk uitje
-            <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </span>
-        </div>
-      </Link>
-
-      <SavePlaceButton
-        item={{ id: result.id, title: result.title, href: result.href, meta: result.location, image: result.image }}
-        className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 text-[#33493b] shadow-[0_6px_18px_rgba(29,52,39,0.1)] backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2"
-        savedClassName="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d5a46] bg-[#1d5a46] text-white shadow-[0_6px_18px_rgba(29,52,39,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2"
-        savedChildren={<><HeartIcon filled /><span className="sr-only">Verwijder uit bewaard</span></>}
-      >
-        <HeartIcon />
-        <span className="sr-only">Bewaar {result.title}</span>
-      </SavePlaceButton>
-    </article>
+    <ResultCard
+      href={result.href}
+      title={result.title}
+      image={result.image}
+      imageAlt={result.imageAlt}
+      category={result.badge}
+      location={result.location || result.city}
+      date={result.dateLabel}
+      price={priceLabel}
+      rating={result.ratingValue}
+      reviewCount={result.reviewCount}
+      reviewsHref={result.reviewsHref}
+      priority={index < 3}
+      favoriteAction={<SavePlaceButton item={{ id: result.id, title: result.title, href: result.href, meta: result.location, image: result.image }} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 text-[#33493b] shadow-[0_6px_18px_rgba(29,52,39,0.1)] backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2" savedClassName="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d5a46] bg-[#1d5a46] text-white shadow-[0_6px_18px_rgba(29,52,39,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2" savedChildren={<><HeartIcon filled /><span className="sr-only">Verwijder uit bewaard</span></>}><HeartIcon /><span className="sr-only">Bewaar {result.title}</span></SavePlaceButton>}
+    />
   );
 }
 
