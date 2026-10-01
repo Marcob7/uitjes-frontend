@@ -1,7 +1,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import type { JaarkalenderDay } from "@/app/jaarkalender/data";
+import {
+  formatJaarkalenderDate,
+  type JaarkalenderDay,
+} from "@/app/jaarkalender/data";
 
 type DayHeroProps = {
   day: JaarkalenderDay;
@@ -96,6 +99,10 @@ export default function DayHero({
   isToday,
 }: DayHeroProps) {
   const activityCount = day.calendarSummary.displayCount;
+  const formattedDate = formatJaarkalenderDate(day.isoDate);
+  const dateLabel = formattedDate
+    ? `${formattedDate.charAt(0).toUpperCase()}${formattedDate.slice(1)}`
+    : `${day.weekdayDisplay} ${day.dayNumber} ${day.monthDisplay} ${day.year}`;
 
   return (
     <section
@@ -127,8 +134,7 @@ export default function DayHero({
             style={{ fontFamily: "var(--font-body)" }}
             className="mt-2 max-w-none text-[clamp(3rem,6vw,5.7rem)] font-medium leading-[0.94] tracking-[-0.075em] text-[#171715]"
           >
-            <span className="block">{day.weekdayDisplay} {day.dayNumber}</span>
-            <span className="block">{day.monthDisplay}</span>
+            <span className="block">{dateLabel}</span>
           </h1>
           <p className="mt-3 text-sm leading-6 text-[#65635e] sm:text-[15px]">
             {activityCount} activiteiten door heel Nederland

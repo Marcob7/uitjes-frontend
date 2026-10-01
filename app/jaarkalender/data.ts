@@ -3,6 +3,21 @@ const MONTH_INDEX = 9;
 const MONTH_NAME = "oktober";
 const MONTH_DISPLAY = "Oktober";
 
+const dutchMonthNames = [
+  "januari",
+  "februari",
+  "maart",
+  "april",
+  "mei",
+  "juni",
+  "juli",
+  "augustus",
+  "september",
+  "oktober",
+  "november",
+  "december",
+];
+
 const weekdayNames = [
   "zondag",
   "maandag",
@@ -11,61 +26,6 @@ const weekdayNames = [
   "donderdag",
   "vrijdag",
   "zaterdag",
-];
-
-const cities = [
-  "Amsterdam",
-  "Rotterdam",
-  "Utrecht",
-  "Eindhoven",
-  "Zwolle",
-  "Den Haag",
-  "Groningen",
-  "Nijmegen",
-];
-
-const museumVenues = [
-  "Rijksmuseum",
-  "Kunsthal",
-  "Spoorwegmuseum",
-  "Designhuis",
-  "Museum Arnhem",
-  "Fotomuseum",
-  "TextielMuseum",
-  "Grote Kerk",
-];
-
-const dayRunTitles = [
-  "Stadsrun langs het water",
-  "Lunchconcert in de binnentuin",
-  "Streetfood Sessions",
-  "Makersmarkt op het plein",
-  "Design tour door de stad",
-  "Open atelier route",
-  "Middag aan de kade",
-  "Botanische tuinwandeling",
-];
-
-const eveningTitles = [
-  "Amsterdam Live Sessions",
-  "Glow by Night",
-  "Noorderlicht Concert",
-  "Late Museum Hour",
-  "City Jazz Collective",
-  "Canal Nights",
-  "Neon Film Club",
-  "After Dark Stories",
-];
-
-const lateNightTitles = [
-  "Night Glow Parade",
-  "Late Night Expo",
-  "Silent Disco aan de Maas",
-  "Midnight Food Hall",
-  "After Hours Cinema",
-  "Lichtparade Centrum",
-  "Night Market Special",
-  "Jazz Encore",
 ];
 
 export const jaarkalenderCategoryMeta = {
@@ -113,6 +73,9 @@ export type JaarkalenderCalendarItem = {
   title: string;
   locatie: string;
   datum: string;
+  /** An ISO date/time in the calendar's local time, or an all-day ISO date. */
+  startAt: string;
+  endAt?: string;
   categorie: JaarkalenderCategoryKey;
   metWie: string;
   prijs: string;
@@ -223,6 +186,10 @@ export type TimelineCard = {
   location: string;
   tone: TimelineCardTone;
   image?: string;
+  price?: string;
+  date?: string;
+  rating?: number;
+  reviewCount?: number;
   primaryAction?: string;
   secondaryAction?: string;
   metaNote?: string;
@@ -264,43 +231,34 @@ function makeSlug(dayNumber: number) {
   return `${getWeekday(dayNumber)}-${dayNumber}-${MONTH_NAME}-${YEAR}`;
 }
 
+function makeSlugForDate(date: Date) {
+  return `${weekdayNames[date.getDay()]}-${date.getDate()}-${dutchMonthNames[date.getMonth()]}-${date.getFullYear()}`;
+}
+
 function makeIsoDate(dayNumber: number) {
   return `${YEAR}-${String(MONTH_INDEX + 1).padStart(2, "0")}-${String(
     dayNumber
   ).padStart(2, "0")}`;
 }
 
-function getImage(seed: number) {
-  const images = [
-    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-    "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
-    "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-    "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
-    "https://images.unsplash.com/photo-1506157786151-b8491531f063",
-    "https://images.unsplash.com/photo-1459749411175-04bf5292ceea",
-    "https://images.unsplash.com/photo-1511192336575-5a79af67a629",
-    "https://images.unsplash.com/photo-1503095396549-807759245b35",
-  ];
+const calendarTimeSlots = [
+  "09:30",
+  "11:00",
+  "12:30",
+  "14:00",
+  "16:30",
+  "18:00",
+  "20:30",
+  "21:30",
+  "22:15",
+];
 
-  return images[seed % images.length];
+function getCalendarTime(itemIndex: number) {
+  return calendarTimeSlots[itemIndex % calendarTimeSlots.length];
 }
 
 function getCalendarDateLabel(dayNumber: number, itemIndex: number) {
-  const timeSlots = [
-    "09:30",
-    "11:00",
-    "12:30",
-    "14:00",
-    "16:30",
-    "18:00",
-    "20:30",
-    "21:30",
-    "22:15",
-  ];
-
-  return `${dayNumber} ${MONTH_NAME} ${YEAR} · ${
-    timeSlots[itemIndex % timeSlots.length]
-  }`;
+  return `${dayNumber} ${MONTH_NAME} ${YEAR} · ${getCalendarTime(itemIndex)}`;
 }
 
 function buildCalendarItems(dayNumber: number): JaarkalenderCalendarItem[] {
@@ -320,6 +278,7 @@ function buildCalendarItems(dayNumber: number): JaarkalenderCalendarItem[] {
       title: titleOptions[(dayNumber + index) % titleOptions.length],
       locatie: `${location.venue}, ${location.city}`,
       datum: getCalendarDateLabel(dayNumber, index),
+      startAt: `${makeIsoDate(dayNumber)}T${getCalendarTime(index)}:00`,
       categorie: category,
       metWie:
         calendarCompanions[(dayNumber + index) % calendarCompanions.length],
@@ -360,97 +319,34 @@ function buildCalendarData(dayNumber: number) {
   return {
     calendarItems,
     calendarSummary: buildCalendarSummary(dayNumber, calendarItems),
+    timeline: buildCalendarTimeline(calendarItems),
   };
 }
 
-function buildGenericTimeline(dayNumber: number): TimelineSlot[] {
-  const city = cities[dayNumber % cities.length];
-  const museum = museumVenues[dayNumber % museumVenues.length];
-  const runTitle = dayRunTitles[dayNumber % dayRunTitles.length];
-  const foodCity = cities[(dayNumber + 2) % cities.length];
-  const eveningTitle = eveningTitles[dayNumber % eveningTitles.length];
-  const lateNightTitle = lateNightTitles[dayNumber % lateNightTitles.length];
+function buildCalendarTimeline(
+  calendarItems: JaarkalenderCalendarItem[]
+): TimelineSlot[] {
+  const tones: TimelineCardTone[] = ["peach", "mint", "sand", "dark", "light"];
 
-  return [
-    {
-      time: "09:00",
-      accent: "lime",
-      display: "feature",
-      cards: [
-        {
-          category: "culture",
-          label: `${museum}, ${city}`,
-          venue: museum,
-          title: `Ochtendprogramma in ${museum}`,
-          description:
-            "Een rustig begin van de dag met speciaal geselecteerd tours, lichte muziek en vroege toegang voor liefhebbers van cultuur.",
-          location: `${museum}, ${city}`,
-          tone: "peach",
-          primaryAction: "Add to Calendar",
-        },
-      ],
-    },
-    {
-      time: "12:00",
-      accent: "lime",
-      display: "grid",
-      cards: [
-        {
-          category: "sport",
-          venue: city,
-          title: runTitle,
-          description:
-            "Een energieke middagstop met ruimte om aan te haken, te lunchen en andere mensen uit de stad te ontmoeten.",
-          location: `Centrum ${city}`,
-          tone: "mint",
-        },
-        {
-          category: "food",
-          venue: foodCity,
-          title: "Lokale proefmarkt",
-          description:
-            "Van kleine makers tot verrassende keukens. Ideaal voor een langzame lunch of spontane culinaire ontdekking.",
-          location: `Markthal, ${foodCity}`,
-          tone: "sand",
-        },
-      ],
-    },
-    {
-      time: "18:00",
-      accent: "lime",
-      display: "hero",
-      cards: [
-        {
-          category: "music",
-          venue: city,
-          title: eveningTitle,
-          description:
-            "De zon zakt weg en de stad schakelt door naar livemuziek, warme lampen en een avond vol sfeer.",
-          location: `${city} by night`,
-          tone: "dark",
-          image: getImage(dayNumber),
-          primaryAction: "Get Tickets",
-          secondaryAction: "Add to Calendar",
-        },
-      ],
-    },
-    {
-      time: "22:00",
-      accent: "red",
-      display: "compact",
-      cards: [
-        {
-          category: "festival",
-          venue: city,
-          title: lateNightTitle,
-          description: "Een late afsluiter voor wie nog even door wil.",
-          location: `${city} - Late program`,
-          tone: "light",
-          metaNote: `${city} - after hours`,
-        },
-      ],
-    },
-  ];
+  return calendarItems.map((item, index) => ({
+    time: item.startAt.match(/T(\d{2}:\d{2})/)?.[1] ?? "De hele dag",
+    accent: item.categorie === "festival" ? "red" : "lime",
+    display: "grid",
+    cards: [
+      {
+        category: jaarkalenderCategoryMeta[item.categorie].label,
+        venue: item.locatie,
+        title: item.title,
+        description: [item.binnenBuiten, item.sfeer, item.metWie]
+          .filter(Boolean)
+          .join(" · "),
+        location: item.locatie,
+        tone: tones[index % tones.length],
+        price: item.prijs,
+        date: item.datum,
+      },
+    ],
+  }));
 }
 
 function buildDay(dayNumber: number): JaarkalenderDay {
@@ -469,123 +365,150 @@ function buildDay(dayNumber: number): JaarkalenderDay {
     filterCity: "Alle steden",
     filterCategory: "Alle categorieen",
     ...buildCalendarData(dayNumber),
-    timeline: buildGenericTimeline(dayNumber),
   };
 }
 
-const tenthDayCalendarData = buildCalendarData(10);
+function buildEmptyDay(date: Date): JaarkalenderDay {
+  const weekday = weekdayNames[date.getDay()];
 
-const tenthDayOverride: JaarkalenderDay = {
-  slug: makeSlug(10),
-  isoDate: makeIsoDate(10),
-  dayNumber: 10,
-  weekday: "donderdag",
-  weekdayDisplay: "Donderdag",
-  monthDisplay: MONTH_DISPLAY,
-  year: YEAR,
-  intro:
-    "Een overzicht van culturele hoogtepunten, festivals en lokale ontmoetingen in heel Nederland.",
-  filterCity: "Alle steden",
-  filterCategory: "Alle categorieen",
-  ...tenthDayCalendarData,
-  timeline: [
-    {
-      time: "09:00",
-      accent: "lime",
-      display: "feature",
-      cards: [
-        {
-          category: "culture",
-          label: "Rijksmuseum, Amsterdam",
-          venue: "Rijksmuseum",
-          title: "Morgenlicht in het Rijks",
-          description:
-            "Een exclusieve vroege opening voor speciaal geselecteerden en kunstliefhebbers. Ontdek de galerijen voordat de grote drukte begint.",
-          location: "Rijksmuseum, Amsterdam",
-          tone: "peach",
-          primaryAction: "Add to Calendar",
-        },
-      ],
-    },
-    {
-      time: "12:00",
-      accent: "lime",
-      display: "grid",
-      cards: [
-        {
-          category: "sport",
-          venue: "Utrecht",
-          title: "Stadsrun Utrecht",
-          description:
-            "Een energieke middagrun langs de Oudegracht voor alle niveaus.",
-          location: "Domplein",
-          tone: "mint",
-        },
-        {
-          category: "food",
-          venue: "Rotterdam",
-          title: "Streetfood Market",
-          description:
-            "Lokale smaken en internationale delicatessen in het hart van de stad.",
-          location: "Markthal, Rotterdam",
-          tone: "sand",
-        },
-      ],
-    },
-    {
-      time: "18:00",
-      accent: "lime",
-      display: "hero",
-      cards: [
-        {
-          category: "music",
-          venue: "Amsterdam",
-          title: "Amsterdam Live Sessions",
-          description:
-            "De zon gaat onder, de muziek gaat aan. Een intieme avond met de beste indie-artiesten van dit moment.",
-          location: "Amsterdam by night",
-          tone: "dark",
-          image:
-            "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
-          primaryAction: "Get Tickets",
-          secondaryAction: "Add to Calendar",
-        },
-      ],
-    },
-    {
-      time: "22:00",
-      accent: "red",
-      display: "compact",
-      cards: [
-        {
-          category: "festival",
-          venue: "Eindhoven",
-          title: "Night Glow Parade",
-          description: "Laatavond programma in Strijp-S.",
-          location: "Eindhoven - Strijp-S",
-          tone: "light",
-          metaNote: "Festival",
-        },
-      ],
-    },
-  ],
-};
+  return {
+    slug: makeSlugForDate(date),
+    isoDate: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+      date.getDate()
+    ).padStart(2, "0")}`,
+    dayNumber: date.getDate(),
+    weekday,
+    weekdayDisplay: capitalize(weekday),
+    monthDisplay: capitalize(dutchMonthNames[date.getMonth()]),
+    year: date.getFullYear(),
+    intro: "Een overzicht van evenementen en uitjes op deze dag.",
+    filterCity: "Alle steden",
+    filterCategory: "Alle categorieen",
+    calendarItems: [],
+    calendarSummary: { displayCount: 0, text: "Geen uitjes", categories: [] },
+    timeline: [],
+  };
+}
 
 export const jaarkalenderDays: JaarkalenderDay[] = Array.from(
   { length: 31 },
-  (_, index) => {
-    const dayNumber = index + 1;
-
-    if (dayNumber === 10) {
-      return tenthDayOverride;
-    }
-
-    return buildDay(dayNumber);
-  }
+  (_, index) => buildDay(index + 1)
 );
 
+const monthNumbers: Record<string, number> = {
+  januari: 0,
+  februari: 1,
+  maart: 2,
+  april: 3,
+  mei: 4,
+  juni: 5,
+  juli: 6,
+  augustus: 7,
+  september: 8,
+  oktober: 9,
+  november: 10,
+  december: 11,
+};
+
+/**
+ * Parses the date portion of a Dutch day slug. The weekday is deliberately
+ * ignored: it is present for readable URLs, not to determine the date.
+ */
+export function parseJaarkalenderDaySlug(slug: string) {
+  const match = slug.toLowerCase().match(/^.+?-(\d{1,2})-([a-z]+)-(\d{4})$/);
+  if (!match) return null;
+
+  const [, dayValue, monthName, yearValue] = match;
+  const month = monthNumbers[monthName];
+  const day = Number(dayValue);
+  const year = Number(yearValue);
+  if (month === undefined || !Number.isInteger(day) || !Number.isInteger(year)) {
+    return null;
+  }
+
+  const date = new Date(year, month, day);
+  return date.getFullYear() === year && date.getMonth() === month && date.getDate() === day
+    ? date
+    : null;
+}
+
+function getLocalCalendarDate(value: string) {
+  const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const localDateTime = value.match(/^(\d{4})-(\d{2})-(\d{2})T/);
+  const parts = dateOnly ?? localDateTime;
+
+  if (parts && !/(?:Z|[+-]\d{2}:?\d{2})$/.test(value)) {
+    return new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  const partsFromTimeZone = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Amsterdam",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(parsed);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    partsFromTimeZone.find((item) => item.type === type)?.value;
+  return new Date(Number(part("year")), Number(part("month")) - 1, Number(part("day")));
+}
+
+function calendarDateKey(date: Date) {
+  return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(
+    date.getDate()
+  ).padStart(2, "0")}`;
+}
+
+/** One shared local-day comparison for the calendar overview and day routes. */
+export function eventOccursOnJaarkalenderDate(
+  item: JaarkalenderCalendarItem,
+  date: Date
+) {
+  const start = getLocalCalendarDate(item.startAt);
+  const end = item.endAt ? getLocalCalendarDate(item.endAt) : start;
+  if (!start || !end) return false;
+
+  const targetKey = calendarDateKey(date);
+  const startKey = calendarDateKey(start);
+  const endKey = calendarDateKey(end);
+  return targetKey >= startKey && targetKey <= endKey;
+}
+
+export function getJaarkalenderCalendarItemsForDate(date: Date) {
+  return jaarkalenderDays.flatMap((day) =>
+    day.calendarItems.filter((item) => eventOccursOnJaarkalenderDate(item, date))
+  );
+}
+
+export function formatJaarkalenderDate(isoDate: string) {
+  const date = getLocalCalendarDate(isoDate);
+  if (!date) return null;
+
+  return new Intl.DateTimeFormat("nl-NL", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
 export function getJaarkalenderDayBySlug(slug: string) {
-  return jaarkalenderDays.find((day) => day.slug === slug);
+  const date = parseJaarkalenderDaySlug(slug);
+  if (!date) return undefined;
+
+  const isoDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate()
+  ).padStart(2, "0")}`;
+  return (
+    jaarkalenderDays.find((day) => day.isoDate === isoDate) ??
+    buildEmptyDay(date)
+  );
+}
+
+export function getJaarkalenderHrefForDate(date: Date) {
+  return `/jaarkalender/${makeSlugForDate(date)}`;
 }
 
 export function getJaarkalenderDayByNumber(dayNumber: number) {
@@ -644,9 +567,13 @@ export function getJaarkalenderEventHrefForCard(
 export function getJaarkalenderEventEntriesForDay(
   day: JaarkalenderDay
 ): JaarkalenderEventEntry[] {
+  const date = getLocalCalendarDate(day.isoDate);
+  const timeline = date
+    ? buildCalendarTimeline(getJaarkalenderCalendarItemsForDate(date))
+    : [];
   let eventIndex = 0;
 
-  return day.timeline.flatMap((slot, slotIndex) =>
+  return timeline.flatMap((slot, slotIndex) =>
     slot.cards.map((card, cardIndex) => {
       const entry: JaarkalenderEventEntry = {
         day,

@@ -3,13 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const navigationItems = [
-  { href: "/", label: "Ontdek" },
-  { href: "/inspiratie", label: "Inspiratie" },
-  { href: "/jaarkalender", label: "Agenda" },
+  { href: "/", label: "Home" },
+  { href: "/ontdek", label: "Ontdek" },
   { href: "/event-details", label: "Events" },
+  { href: "/inspiratie", label: "Inspiratie" },
+  { href: "/jaarkalender", label: "Jaarkalender" },
   { href: "/festivals/kalender", label: "Festivals" },
   { href: "/faq", label: "FAQ" },
 ];
@@ -38,6 +39,7 @@ function isCurrentPath(pathname: string, href: string) {
 export default function NavBar({ position = "absolute" }: NavBarProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
   const routeDefaultContrast = getRouteDefaultContrast(pathname);
   const [detectedContrast, setDetectedContrast] = useState<{
     pathname: string;
@@ -48,6 +50,13 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
       ? detectedContrast.value
       : routeDefaultContrast;
   const isOnDark = contrast === "on-dark";
+
+  // Navigation can also happen through browser history or another control on
+  // the page. Keeping this here makes menu cleanup independent of a link's
+  // individual click handler and prevents a stale mobile overlay after routes.
+  useEffect(() => {
+    closeMobileMenu();
+  }, [closeMobileMenu, pathname]);
 
   useEffect(() => {
     const defaultContrast = getRouteDefaultContrast(pathname);
@@ -139,7 +148,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
       <div className="mx-auto flex w-full max-w-[1150px] items-center justify-between gap-4">
         <Link
           href="/"
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
           className="group inline-flex shrink-0 items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           aria-label="Ga naar de homepage van DOEN"
         >
@@ -196,6 +205,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
         <div className="flex shrink-0 items-center gap-2.5">
           <Link
             href="/login"
+            onClick={closeMobileMenu}
             className="inline-flex h-[38px] items-center justify-center rounded-full bg-[#f1f2f2] px-4 text-[13px] font-semibold text-[#131719] shadow-[0_8px_22px_rgba(0,0,0,0.13)] outline-none transition duration-200 hover:bg-white hover:shadow-[0_10px_28px_rgba(0,0,0,0.19)] focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           >
             Inloggen
@@ -264,7 +274,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
                     <Link
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={closeMobileMenu}
                       className={`flex min-h-11 items-center rounded-[0.95rem] px-4 text-[15px] font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-white/90 ${
                         active
                           ? "bg-white text-[#101617]"

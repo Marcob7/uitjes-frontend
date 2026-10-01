@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 
 import ActivitiesSection from "@/components/calendar/ActivitiesSection";
 import DayNavigationCTA from "@/components/calendar/DayNavigationCTA";
-import FeaturedActivity from "@/components/calendar/FeaturedActivity";
 import DayHero from "@/components/calendar/DayHero";
 import {
+  formatJaarkalenderDate,
   generateJaarkalenderStaticParams,
+  getJaarkalenderEventEntriesForDay,
   getJaarkalenderDayByNumber,
   getJaarkalenderDayBySlug,
+  getJaarkalenderHrefForDate,
   getJaarkalenderHref,
 } from "../data";
 
@@ -17,8 +19,6 @@ type PageProps = {
     daySlug: string;
   };
 };
-
-export const dynamicParams = false;
 
 export function generateStaticParams() {
   return generateJaarkalenderStaticParams();
@@ -46,23 +46,25 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
     notFound();
   }
 
-  const previousDayHref = getJaarkalenderHref(day.dayNumber - 1);
-  const nextDayHref = getJaarkalenderHref(day.dayNumber + 1);
-  const previousDay = getJaarkalenderDayByNumber(day.dayNumber - 1);
-  const nextDay = getJaarkalenderDayByNumber(day.dayNumber + 1);
-  const todayDay = getJaarkalenderDayByNumber(10) ?? day;
-  const featuredSlot =
-    day.timeline.find((slot) => slot.cards.some((card) => card.image)) ??
-    day.timeline[0];
-  const featuredCard = featuredSlot
-    ? featuredSlot.cards.find((card) => card.image) ?? featuredSlot.cards[0]
-    : null;
-  const activities = day.timeline.flatMap((slot) =>
-    slot.cards
-      .filter((card) => card !== featuredCard)
-      .map((card) => ({ slot, card }))
+  const selectedDate = new Date(`${day.isoDate}T12:00:00`);
+  const previousDate = new Date(selectedDate);
+  previousDate.setDate(selectedDate.getDate() - 1);
+  const nextDate = new Date(selectedDate);
+  nextDate.setDate(selectedDate.getDate() + 1);
+  const previousDayHref = getJaarkalenderHrefForDate(previousDate);
+  const nextDayHref = getJaarkalenderHrefForDate(nextDate);
+  const previousDay = getJaarkalenderDayBySlug(
+    previousDayHref.split("/").at(-1) ?? ""
   );
-  const dayLabel = `${day.weekdayDisplay.toLowerCase()} ${day.dayNumber} ${day.monthDisplay.toLowerCase()}`;
+  const nextDay = getJaarkalenderDayBySlug(
+    nextDayHref.split("/").at(-1) ?? ""
+  );
+  const todayDay = getJaarkalenderDayByNumber(10) ?? day;
+  const activities = getJaarkalenderEventEntriesForDay(day).map(({ slot, card }) => ({
+    slot,
+    card,
+  }));
+  const dayLabel = formatJaarkalenderDate(day.isoDate) ?? day.isoDate;
 
   return (
     <main className="min-h-screen bg-[#f8f5f3] text-[#171511]">
@@ -75,15 +77,7 @@ export default function JaarkalenderDayPage({ params }: PageProps) {
       />
 
       <div className="mx-auto max-w-[1280px] px-4 pb-12 pt-10 sm:px-6 lg:px-8 lg:pb-16">
-        {featuredSlot && featuredCard ? (
-          <FeaturedActivity
-            daySlug={day.slug}
-            slot={featuredSlot}
-            card={featuredCard}
-          />
-        ) : null}
-
-        <div className="mt-16 sm:mt-20">
+        <div>
           <ActivitiesSection
             daySlug={day.slug}
             dayLabel={dayLabel}

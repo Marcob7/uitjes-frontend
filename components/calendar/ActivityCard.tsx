@@ -19,6 +19,10 @@ export default function ActivityCard({ daySlug, slot, card }: ActivityCardProps)
       imageAlt={card.title}
       category={card.category}
       location={card.location}
+      price={card.price}
+      date={card.date}
+      rating={card.rating}
+      reviewCount={card.reviewCount}
       className="h-full"
     />
   );

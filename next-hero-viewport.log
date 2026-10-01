@@ -1,0 +1,159 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3001
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1035ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.1s (1405 modules)
+ ✓ Compiled in 80ms (719 modules)
+ ✓ Compiled in 49ms (686 modules)
+ GET / 200 in 2960ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled /favicon.ico in 262ms (751 modules)
+ GET /favicon.ico 200 in 314ms
+ GET / 200 in 114ms
+ GET /favicon.ico 200 in 7ms
+ GET / 200 in 73ms
+ GET /favicon.ico 200 in 7ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 550ms (700 modules)
+ ✓ Compiled in 286ms (700 modules)
+ ✓ Compiled in 269ms (700 modules)
+ ✓ Compiled /event-details in 471ms (1415 modules)
+ GET /event-details 200 in 592ms
+ ✓ Compiled /favicon.ico in 73ms (757 modules)
+ ⨯ Error: Cannot find module './377.js'
+Require stack:
+- C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js
+- C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1421:15)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)
+    at Module._load (node:internal/modules/cjs/loader:1227:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at __webpack_require__.f.require (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:203:28)
+    at C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:116:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Marco\EventsPlanner\frontend\.next\server\webpack-runtime.js:167:22)
+    at C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js:1:35897
+    at Object.<anonymous> (C:\Users\Marco\EventsPlanner\frontend\.next\server\app\favicon.ico\route.js:1:35942)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:152:16)
+    at requirePage (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:84
+    at async loadComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:714:36)
+    at async DevServer.findPageComponents (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\.next\\server\\app\\favicon.ico\\route.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Marco\\EventsPlanner\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 98ms
+ GET /event-details 200 in 136ms
+ ✓ Compiled /_not-found in 242ms (1450 modules)
+ GET /_next/static/css/app/layout.css?v=1790862360133 404 in 325ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 299ms
+ GET /_next/static/chunks/main-app.js?v=1790862360133 404 in 302ms
+ GET /_next/static/chunks/app/layout.js 404 in 300ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\entries.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\entries.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\plugins\next-types-plugin\index.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\plugins\next-types-plugin\index.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack-config.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ✓ Compiled in 656ms (1423 modules)
+ ✓ Compiled in 239ms (704 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected C:\Users\Marco\EventsPlanner\frontend\.next\server\app\_not-found\page.js)
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\handle-externals.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs C:\Users\Marco\EventsPlanner\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ✓ Compiled in 376ms (704 modules)
+ ✓ Compiled in 545ms (1423 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\1.pack.gz'
+ ✓ Compiled in 542ms (704 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\3.pack.gz'
+ ✓ Compiled /event-details in 180ms (725 modules)
+ ✓ Compiled /_not-found in 125ms (1418 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 735ms (1644 modules)
+ GET /event-details 404 in 1192ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 510ms (1647 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+ ✓ Compiled in 350ms (889 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\Marco\EventsPlanner\frontend\.next\cache\webpack\client-development\0.pack.gz'

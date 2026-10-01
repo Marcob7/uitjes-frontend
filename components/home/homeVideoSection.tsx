@@ -75,7 +75,7 @@ export default function HomeVideoSection() {
 
   return (
     <section
-      className="relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#10282a] text-white"
+      className="relative isolate flex min-h-screen min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#10282a] text-white"
       data-navbar-contrast="on-dark"
       aria-labelledby="home-video-heading"
     >

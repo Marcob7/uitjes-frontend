@@ -31,7 +31,7 @@ export default function ActivitiesSection({
             Alle activiteiten.
           </h2>
           <p className="pb-1 text-[15px] leading-6 text-[#71675c]">
-            {activities.length} activiteiten op {dayLabel}
+            {activities.length} {activities.length === 1 ? "evenement" : "evenementen"} op {dayLabel}
           </p>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function ActivitiesSection({
         </div>
       ) : (
         <div className="mt-9 rounded-[1.35rem] border border-dashed border-[#dcd4c9] bg-[#fffdf9]/72 px-6 py-9 text-center text-sm leading-6 text-[#71675c]">
-          Geen activiteiten gevonden voor deze dag. Pas je filters aan of bekijk een andere dag.
+          Geen evenementen gevonden op deze dag.
         </div>
       )}
     </section>

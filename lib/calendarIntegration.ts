@@ -37,7 +37,7 @@ export function toCalendarEvent(event: CalendarEventInput): CalendarEvent | null
   const start = parseStructuredDate(event.startAt);
   if (!start || !event.title.trim()) return null;
   const isAllDay = /^\d{4}-\d{2}-\d{2}$/.test(event.startAt ?? "");
-  const end = isAllDay ? undefined : parseStructuredDate(event.endAt);
+  const end = parseStructuredDate(event.endAt);
   return {
     title: event.title,
     start,
@@ -96,13 +96,17 @@ function safeEnd(event: CalendarEvent) {
   return event.end ?? new Date(event.start.getTime() + 2 * 60 * 60 * 1000);
 }
 
+function allDayEnd(event: CalendarEvent) {
+  const end = event.end && event.end > event.start ? event.end : event.start;
+  return new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1);
+}
+
 export function buildGoogleCalendarHref(event: CalendarEvent) {
   const params = new URLSearchParams({ action: "TEMPLATE", text: event.title });
   const details = descriptionWithUrl(event);
 
   if (event.isAllDay) {
-    const nextDay = new Date(event.start.getFullYear(), event.start.getMonth(), event.start.getDate() + 1);
-    params.set("dates", `${formatDate(event.start)}/${formatDate(nextDay)}`);
+    params.set("dates", `${formatDate(event.start)}/${formatDate(allDayEnd(event))}`);
   } else {
     params.set("dates", `${formatUtcDateTime(event.start)}/${formatUtcDateTime(safeEnd(event))}`);
   }
@@ -122,7 +126,7 @@ export function buildOutlookCalendarHref(event: CalendarEvent) {
 
   if (event.isAllDay) {
     params.set("startdt", formatDate(event.start));
-    params.set("enddt", formatDate(new Date(event.start.getFullYear(), event.start.getMonth(), event.start.getDate() + 1)));
+    params.set("enddt", formatDate(allDayEnd(event)));
     params.set("allday", "true");
   } else {
     params.set("startdt", event.start.toISOString());
@@ -142,8 +146,7 @@ export function makeIcsCalendar(events: CalendarEvent[]) {
     const details = descriptionWithUrl(event);
     lines.push("BEGIN:VEVENT", `UID:${escapeIcsText(event.uid)}`, `DTSTAMP:${stamp}`);
     if (event.isAllDay) {
-      const nextDay = new Date(event.start.getFullYear(), event.start.getMonth(), event.start.getDate() + 1);
-      lines.push(`DTSTART;VALUE=DATE:${formatDate(event.start)}`, `DTEND;VALUE=DATE:${formatDate(nextDay)}`);
+      lines.push(`DTSTART;VALUE=DATE:${formatDate(event.start)}`, `DTEND;VALUE=DATE:${formatDate(allDayEnd(event))}`);
     } else {
       lines.push(`DTSTART:${formatLocalDateTime(event.start)}`, `DTEND:${formatLocalDateTime(safeEnd(event))}`);
     }
