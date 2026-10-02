@@ -24,10 +24,7 @@ export default function SearchSection() {
       <div className="relative mx-auto flex min-h-[580px] max-w-7xl items-center px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
-          <div className="inline-flex items-center rounded-full bg-[#2b2b2b]/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#ff5a2a] backdrop-blur-sm sm:text-sm">
-            Jouw lokale stadsgids
-          </div>
-
+          
           {/* Titel */}
           <h1 className="mt-6 text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Ontdek wat er te

@@ -1,6 +1,11 @@
 "use client";
 
-import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, ReactNode } from "react";
+import type {
+  FormEvent as ReactFormEvent,
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
+  ReactNode,
+} from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
@@ -28,6 +33,12 @@ type JaarkalenderCityOption = {
   label: string;
   hasCalendarItems: boolean;
   hasBackendContent: boolean;
+};
+
+type JaarkalenderInitialFilters = {
+  category?: string;
+  city?: string;
+  date?: string;
 };
 
 type MonthCalendarCell = {
@@ -146,15 +157,22 @@ function getCurrentLocalMonth(now = new Date()) {
   return new Date(now.getFullYear(), now.getMonth(), 1);
 }
 
-function getMonthFromUrl(value: string | null, fallbackMonth: Date) {
-  if (!value || !/^\d{4}-\d{2}$/.test(value)) {
-    return fallbackMonth;
+function getMonthFromInputValue(value: string) {
+  if (!/^\d{4}-\d{2}$/.test(value)) {
+    return null;
   }
 
   const [year, month] = value.split("-").map(Number);
-  return year && month >= 1 && month <= 12
-    ? new Date(year, month - 1, 1)
-    : fallbackMonth;
+  const monthDate = new Date(year, month - 1, 1);
+
+  return year >= 1 && month >= 1 && month <= 12 &&
+    monthDate.getFullYear() === year && monthDate.getMonth() === month - 1
+    ? monthDate
+    : null;
+}
+
+function getMonthFromUrl(value: string | null, fallbackMonth: Date) {
+  return value ? getMonthFromInputValue(value) ?? fallbackMonth : fallbackMonth;
 }
 
 function hasJaarkalenderDataForMonth(date: Date) {
@@ -584,29 +602,41 @@ function EmptyState({
   );
 }
 
-export function JaarkalenderInteractiveCalendar() {
+export function JaarkalenderInteractiveCalendar({
+  initialFilters = {},
+}: {
+  initialFilters?: JaarkalenderInitialFilters;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<FilterModalMode>("city");
   const [today, setToday] = useState(() => new Date());
   const [defaultMonth] = useState(() => getCurrentLocalMonth());
-  const [currentMonth, setCurrentMonth] = useState(() =>
+  // This is the only month state. The input, URL, heading and calendar grid
+  // deliberately all derive from it so they cannot display different months.
+  const [selectedMonth, setSelectedMonth] = useState(() =>
     getMonthFromUrl(
-      typeof window === "undefined"
-        ? null
-        : new URLSearchParams(window.location.search).get("date"),
+      initialFilters.date ??
+        (typeof window === "undefined"
+          ? null
+          : new URLSearchParams(window.location.search).get("date")),
       getCurrentLocalMonth()
     )
   );
   const [selectedCity, setSelectedCity] = useState<string | null>(() =>
-    typeof window === "undefined"
-      ? null
-      : getCityLabelFromUrl(new URLSearchParams(window.location.search).get("city"))
+    getCityLabelFromUrl(
+      initialFilters.city ??
+        (typeof window === "undefined"
+          ? null
+          : new URLSearchParams(window.location.search).get("city"))
+    )
   );
   const [selectedCategory, setSelectedCategory] =
     useState<JaarkalenderCategoryKey | null>(() => {
-      if (typeof window === "undefined") return null;
-
-      const category = new URLSearchParams(window.location.search).get("category");
+      const category =
+        initialFilters.category ??
+        (typeof window === "undefined"
+          ? null
+          : new URLSearchParams(window.location.search).get("category"));
       return category && category in jaarkalenderCategoryMeta
         ? (category as JaarkalenderCategoryKey)
         : null;
@@ -639,35 +669,63 @@ export function JaarkalenderInteractiveCalendar() {
     if (isDefaultMonth) url.searchParams.delete("date");
     else url.searchParams.set("date", getMonthInputValue(month));
 
-    window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    const nextHref = `${url.pathname}${url.search}${url.hash}`;
+    const currentHref = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    if (nextHref !== currentHref) {
+      window.history.pushState(null, "", nextHref);
+    }
   };
 
   const setMonthFilter = (month: Date) => {
-    setCurrentMonth(month);
-    syncFilterParams(selectedCity, selectedCategory, month);
+    const normalizedMonth = getMonthFromInputValue(getMonthInputValue(month));
+    if (!normalizedMonth) return;
+
+    setSelectedMonth(normalizedMonth);
+    syncFilterParams(selectedCity, selectedCategory, normalizedMonth);
+  };
+
+  const applyMonthInputValue = (value: string) => {
+    const month = getMonthFromInputValue(value);
+    if (month) {
+      setMonthFilter(month);
+    }
+  };
+
+  const handleFilterSubmit = (event: ReactFormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Read the native field at submit time as well. This covers a month picker
+    // whose final value is committed together with the form submission.
+    applyMonthInputValue(
+      dateInputRef.current?.value ?? getMonthInputValue(selectedMonth)
+    );
+    document
+      .getElementById("jaarkalender-overzicht")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const setCityFilter = (city: string | null) => {
     setSelectedCity(city);
-    syncFilterParams(city, selectedCategory, currentMonth);
+    syncFilterParams(city, selectedCategory, selectedMonth);
   };
 
   const setCategoryFilter = (category: JaarkalenderCategoryKey | null) => {
     setSelectedCategory(category);
-    syncFilterParams(selectedCity, category, currentMonth);
+    syncFilterParams(selectedCity, category, selectedMonth);
   };
 
   const clearFilters = () => {
     setSelectedCity(null);
     setSelectedCategory(null);
-    setCurrentMonth(defaultMonth);
+    setSelectedMonth(defaultMonth);
     syncFilterParams(null, null, defaultMonth);
   };
 
   const hasActiveFilters =
     selectedCity !== null ||
     selectedCategory !== null ||
-    getMonthInputValue(currentMonth) !== getMonthInputValue(defaultMonth);
+    getMonthInputValue(selectedMonth) !== getMonthInputValue(defaultMonth);
 
   useEffect(() => {
     const syncStateFromUrl = () => {
@@ -680,7 +738,7 @@ export function JaarkalenderInteractiveCalendar() {
           ? (category as JaarkalenderCategoryKey)
           : null
       );
-      setCurrentMonth(getMonthFromUrl(params.get("date"), defaultMonth));
+      setSelectedMonth(getMonthFromUrl(params.get("date"), defaultMonth));
     };
 
     // Client components hydrate from the server-rendered fallback, so also
@@ -727,8 +785,8 @@ export function JaarkalenderInteractiveCalendar() {
 
   const monthCalendarCells = useMemo<MonthCalendarCell[]>(
     () =>
-      getMonthGrid(currentMonth).map((date) => {
-        const isCurrentMonth = isSameMonth(date, currentMonth);
+      getMonthGrid(selectedMonth).map((date) => {
+        const isCurrentMonth = isSameMonth(date, selectedMonth);
         const isToday = isCurrentMonth && isSameDay(date, today);
         const day = getJaarkalenderDayForDate(date, daysByNumber);
 
@@ -761,11 +819,11 @@ export function JaarkalenderInteractiveCalendar() {
           isToday,
         };
       }),
-    [currentMonth, daysByNumber, selectedCategory, selectedCity, today]
+    [daysByNumber, selectedCategory, selectedCity, selectedMonth, today]
   );
 
   const visibleImportEvents = useMemo<AgendaImportEvent[]>(() => {
-    if (!hasJaarkalenderDataForMonth(currentMonth)) {
+    if (!hasJaarkalenderDataForMonth(selectedMonth)) {
       return [];
     }
 
@@ -784,7 +842,7 @@ export function JaarkalenderInteractiveCalendar() {
         item,
       }));
     });
-  }, [currentMonth, selectedCategory, selectedCity]);
+  }, [selectedCategory, selectedCity, selectedMonth]);
 
   const totalVisibleItems = useMemo(
     () =>
@@ -795,8 +853,8 @@ export function JaarkalenderInteractiveCalendar() {
     [monthCalendarCells]
   );
   const monthTitle = `${
-    MONTH_NAMES[currentMonth.getMonth()]
-  } ${currentMonth.getFullYear()}`;
+    MONTH_NAMES[selectedMonth.getMonth()]
+  } ${selectedMonth.getFullYear()}`;
 
   const closeModal = () => {
     setIsOpen(false);
@@ -976,12 +1034,7 @@ export function JaarkalenderInteractiveCalendar() {
     <>
       <form
         className="grid gap-1 rounded-[1.55rem] border border-[#dedbd2] bg-[#fbfaf7]/95 p-2 shadow-[0_20px_60px_rgba(27,42,34,0.12)] backdrop-blur-xl sm:grid-cols-2 sm:gap-0 sm:p-2.5 lg:grid-cols-[1fr_1fr_1fr_auto]"
-        onSubmit={(event) => {
-          event.preventDefault();
-          document
-            .getElementById("jaarkalender-overzicht")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }}
+        onSubmit={handleFilterSubmit}
       >
         <button
           type="button"
@@ -1021,12 +1074,10 @@ export function JaarkalenderInteractiveCalendar() {
             <input
               ref={dateInputRef}
               type="month"
+              name="date"
               aria-label="Kies een maand"
-              value={getMonthInputValue(currentMonth)}
-              onChange={(event) => {
-                const [year, month] = event.target.value.split("-").map(Number);
-                if (year && month) setMonthFilter(new Date(year, month - 1, 1));
-              }}
+              value={getMonthInputValue(selectedMonth)}
+              onChange={(event) => applyMonthInputValue(event.target.value)}
               className="mt-1 block w-full min-w-0 bg-transparent text-sm font-semibold text-[#292e2a] outline-none"
             />
           </span>
@@ -1070,11 +1121,11 @@ export function JaarkalenderInteractiveCalendar() {
           <div className="mt-6 flex flex-wrap items-center gap-2 sm:mt-7 sm:gap-3">
             <MonthNavButton
               label="Vorige maand"
-              onClick={() => setMonthFilter(addMonths(currentMonth, -1))}
+              onClick={() => setMonthFilter(addMonths(selectedMonth, -1))}
             />
             <MonthNavButton
               label="Volgende maand"
-              onClick={() => setMonthFilter(addMonths(currentMonth, 1))}
+              onClick={() => setMonthFilter(addMonths(selectedMonth, 1))}
             />
             <button
               type="button"

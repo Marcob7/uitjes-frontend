@@ -16,7 +16,23 @@ export const metadata = {
   },
 };
 
-export default function JaarkalenderPage() {
+// The calendar's initial state comes from the query string, so render this
+// route per request instead of serving a default-month shell first.
+export const dynamic = "force-dynamic";
+
+type JaarkalenderPageProps = {
+  searchParams?: Record<string, string | string[] | undefined>;
+};
+
+function getSearchParam(
+  searchParams: JaarkalenderPageProps["searchParams"],
+  key: string
+) {
+  const value = searchParams?.[key];
+  return typeof value === "string" ? value : undefined;
+}
+
+export default function JaarkalenderPage({ searchParams }: JaarkalenderPageProps) {
   return (
     <main className="min-h-screen overflow-x-clip bg-[#f6f3ed] text-[#171511]">
       <section
@@ -87,7 +103,13 @@ export default function JaarkalenderPage() {
           id="jaarkalender-kalender"
           className="-mt-6 scroll-mt-24 sm:-mt-8 sm:scroll-mt-28 lg:-mt-9"
         >
-          <JaarkalenderInteractiveCalendar />
+          <JaarkalenderInteractiveCalendar
+            initialFilters={{
+              category: getSearchParam(searchParams, "category"),
+              city: getSearchParam(searchParams, "city"),
+              date: getSearchParam(searchParams, "date"),
+            }}
+          />
         </section>
 
         <NewsLetterSection

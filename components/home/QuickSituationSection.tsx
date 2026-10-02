@@ -25,10 +25,7 @@ export default function QuickSituationSection() {
     <section className="px-4 pb-3 pt-1 md:px-6 md:pb-4 lg:px-8">
       <div className="rounded-[28px] border border-[#efe6df] bg-[#f7f3ef] px-5 py-5 shadow-[0_8px_24px_rgba(95,80,67,0.04)] md:rounded-[32px] md:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
-          <p className="shrink-0 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#3f4c55] md:text-[13px]">
-            Snel ontdekken
-          </p>
-
+         
           <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
             {situationLinks.map((item) => (
               <Link

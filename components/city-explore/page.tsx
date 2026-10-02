@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import DiscoverFlow from "./DiscoverFlow";
 import CityExploreResultsSection from "./CityExploreResultsSection";
@@ -16,10 +17,13 @@ import {
   getEventsWithFallback,
   getSafeCityTheme,
 } from "./utils";
-
-// A new flow has no planner answers. Values are added only after a choice card
-// is activated; the type remains shared with completed planner consumers.
-const EMPTY_PLANNER_SELECTIONS = {} as PlannerSelections;
+import {
+  buildDiscoverDetailHref,
+  buildDiscoverUrl,
+  getDiscoverPlannerStepCount,
+  getDiscoverUrlState,
+  type DiscoverView,
+} from "./discoverUrl";
 
 const PLANNER_STEP_COUNT = 3;
 
@@ -28,14 +32,23 @@ export default function CityExplorePage({
   events,
   useEventFallback = true,
 }: CityExploreViewProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const discoverQuery = searchParams.toString();
+  const urlState = useMemo(
+    () => getDiscoverUrlState(new URLSearchParams(discoverQuery), city),
+    [city, discoverQuery]
+  );
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [completedStepCount, setCompletedStepCount] = useState(0);
   const [isFlowOpen, setIsFlowOpen] = useState(true);
   const [plannerSelections, setPlannerSelections] = useState<PlannerSelections>(
-    EMPTY_PLANNER_SELECTIONS
+    () => urlState.plannerSelections
   );
-  const [resultFilters, setResultFilters] = useState<ResultFilterKey[]>([]);
+  const [resultFilters, setResultFilters] = useState<ResultFilterKey[]>(
+    () => urlState.resultFilters
+  );
   const resultsRef = useRef<HTMLElement | null>(null);
 
   const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
@@ -86,6 +99,17 @@ export default function CityExplorePage({
     return filterCardsByResultFilters(fullyMatchedCards, resultFilters);
   }, [cards, plannerSelections, resultFilters]);
 
+  // The query string is the persistent source of truth. Keeping the local
+  // state in lockstep also makes browser back/forward restore the exact result
+  // set and its labels, instead of leaving stale answers behind.
+  useLayoutEffect(() => {
+    setPlannerSelections(urlState.plannerSelections);
+    setCompletedStepCount(getDiscoverPlannerStepCount(urlState.plannerSelections));
+    setResultFilters(urlState.resultFilters);
+    if (urlState.selectedId) setSelectedId(urlState.selectedId);
+    if (urlState.isResultsOpen) setIsFlowOpen(false);
+  }, [urlState]);
+
   function scrollToSection(target: HTMLElement | null, block: ScrollLogicalPosition) {
     if (!target) {
       return;
@@ -114,51 +138,108 @@ export default function CityExplorePage({
   function openPlannerAtStep(step = 1) {
     setCurrentStep(step);
     setIsFlowOpen(true);
+    router.replace(buildDiscoverUrl(city, plannerSelections), { scroll: false });
   }
 
   function handlePlannerSelectionChange(
     key: keyof PlannerSelections,
-    value: PlannerSelections[keyof PlannerSelections]
+    value: NonNullable<PlannerSelections[keyof PlannerSelections]>
   ) {
-    setPlannerSelections((current) => ({ ...current, [key]: value }));
+    const nextSelections = { ...plannerSelections, [key]: value };
+    setPlannerSelections(nextSelections);
+    router.push(buildDiscoverUrl(city, nextSelections), { scroll: false });
   }
 
   function handleFlowComplete() {
     setCompletedStepCount(PLANNER_STEP_COUNT);
     setCurrentStep(PLANNER_STEP_COUNT);
     setIsFlowOpen(false);
+    router.replace(
+      buildDiscoverUrl(city, plannerSelections, {
+        resultFilters,
+        isResultsOpen: true,
+        view: "list",
+        selectedId,
+      }),
+      { scroll: false }
+    );
     window.setTimeout(showResults, 0);
   }
 
   function handleViewAllResults() {
-    const selectedStepCount = plannerSelections.vibe
-      ? 3
-      : plannerSelections.moment
-        ? 2
-        : plannerSelections.companion
-          ? 1
-          : 0;
-
-    setCompletedStepCount(selectedStepCount);
+    // This is deliberately different from completing the planner: it removes
+    // every personal and result filter while retaining the selected city.
+    setPlannerSelections({});
+    setCompletedStepCount(0);
+    setResultFilters([]);
+    setCurrentStep(1);
     setIsFlowOpen(false);
+    router.push(
+      buildDiscoverUrl(city, {}, { isResultsOpen: true, view: "list" }),
+      { scroll: false }
+    );
     window.setTimeout(showResults, 0);
   }
 
   function handleToggleResultFilter(filter: ResultFilterKey) {
-    setResultFilters((current) =>
-      current.includes(filter)
-        ? current.filter((item) => item !== filter)
-        : [...current, filter]
+    const nextFilters = resultFilters.includes(filter)
+      ? resultFilters.filter((item) => item !== filter)
+      : [...resultFilters, filter];
+    setResultFilters(nextFilters);
+    router.replace(
+      buildDiscoverUrl(city, plannerSelections, {
+        resultFilters: nextFilters,
+        isResultsOpen: true,
+        view: urlState.view,
+        selectedId,
+      }),
+      { scroll: false }
     );
   }
 
   function handleClearResultFilters() {
     setResultFilters([]);
+    router.replace(
+      buildDiscoverUrl(city, plannerSelections, {
+        isResultsOpen: true,
+        view: urlState.view,
+        selectedId,
+      }),
+      { scroll: false }
+    );
   }
 
   function handleClearAllFilters() {
-    setResultFilters([]);
-    openPlannerAtStep(1);
+    handleViewAllResults();
+  }
+
+  function handleSelectCard(id: number) {
+    setSelectedId(id);
+  }
+
+  function handleMapSelectCard(id: number) {
+    setSelectedId(id);
+    router.replace(
+      buildDiscoverUrl(city, plannerSelections, {
+        resultFilters,
+        isResultsOpen: true,
+        view: urlState.view,
+        selectedId: id,
+      }),
+      { scroll: false }
+    );
+  }
+
+  function handleViewChange(view: DiscoverView) {
+    router.replace(
+      buildDiscoverUrl(city, plannerSelections, {
+        resultFilters,
+        isResultsOpen: true,
+        view,
+        selectedId,
+      }),
+      { scroll: false }
+    );
   }
 
   useEffect(() => {
@@ -179,7 +260,8 @@ export default function CityExplorePage({
           cityLabel={cityLabel}
           filteredCards={filteredCards}
           selectedId={selectedId}
-          onSelectCard={setSelectedId}
+          onSelectCard={handleSelectCard}
+          onMapSelectCard={handleMapSelectCard}
           sectionRef={resultsRef}
           plannerSelections={plannerSelections}
           completedStepCount={completedStepCount}
@@ -188,6 +270,18 @@ export default function CityExplorePage({
           onToggleResultFilter={handleToggleResultFilter}
           onClearResultFilters={handleClearResultFilters}
           onClearAllFilters={handleClearAllFilters}
+          view={urlState.view}
+          onViewChange={handleViewChange}
+          getDetailHref={(href) =>
+            buildDiscoverDetailHref(href, {
+              city,
+              plannerSelections,
+              resultFilters,
+              isResultsOpen: true,
+              view: urlState.view,
+              selectedId,
+            })
+          }
       />
       {isFlowOpen ? (
         <DiscoverFlow

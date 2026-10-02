@@ -240,7 +240,7 @@ export default function CalendarSectionBlock({
         <div className="rounded-[2rem] border border-[#ECE6DD] bg-white p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-[12px] uppercase tracking-[0.14em] text-[#918B83]">
+              <div className="text-[12px]  tracking-[0.14em] text-[#918B83]">
                 Kalender ingeklapt
               </div>
               <div className="mt-2 text-[24px] font-semibold text-[#171717]">

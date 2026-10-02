@@ -72,7 +72,7 @@ export default function HeroSection() {
           </div>
 
           <div className="relative z-10 mt-5 w-full">
-            <p className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/70">
+            <p className="mb-3 text-[0.72rem] font-semibold  tracking-[0.18em] text-white/70">
               Populaire steden
             </p>
             <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0">

@@ -160,3 +160,39 @@ export function makeIcsCalendar(events: CalendarEvent[]) {
   lines.push("END:VCALENDAR");
   return `${lines.map(foldIcsLine).join("\r\n")}\r\n`;
 }
+
+function calendarFilenamePart(value: string) {
+  const normalized = value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("nl-NL")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return normalized || "kalenderbestand";
+}
+
+/**
+ * Starts one browser calendar-file download. This must be called directly from
+ * a user interaction so mobile browsers can honour the action.
+ */
+export function downloadCalendarFile(events: CalendarEvent[], filenameSource?: string) {
+  const filename = `${calendarFilenamePart(filenameSource || events[0]?.title || "kalenderbestand")}.ics`;
+  const blob = new Blob([makeIcsCalendar(events)], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  link.type = "text/calendar";
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  // Keep the object URL available long enough for Safari and mobile browsers
+  // to open the calendar file after this synchronous user-gesture click.
+  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+
+  return filename;
+}

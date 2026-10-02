@@ -26,7 +26,7 @@ export default function CalendarWeekView({
               key={dateKey}
               className="min-h-[220px] border-r border-[#F0EBE4] p-4 last:border-r-0"
             >
-              <div className="text-[11px] uppercase tracking-[0.12em] text-[#918B83]">
+              <div className="text-[11px]  tracking-[0.12em] text-[#918B83]">
                 {WEEKDAY_NAMES[(date.getDay() + 6) % 7]}
               </div>
               <div className="mt-2 text-[24px] font-semibold text-[#171717]">

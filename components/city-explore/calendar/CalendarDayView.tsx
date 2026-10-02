@@ -17,7 +17,7 @@ export default function CalendarDayView({
   return (
     <div className="rounded-[2rem] border border-[#ECE6DD] bg-white p-6">
       <div className="mb-6">
-        <div className="text-[12px] uppercase tracking-[0.14em] text-[#918B83]">
+        <div className="text-[12px]  tracking-[0.14em] text-[#918B83]">
           Dagoverzicht
         </div>
         <div className="mt-2 text-[28px] font-semibold tracking-[-0.03em] text-[#171717]">
@@ -39,7 +39,7 @@ export default function CalendarDayView({
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-[#8A847C]">
+                  <div className="text-[11px]  tracking-[0.14em] text-[#8A847C]">
                     {event.category}
                   </div>
                   <h3 className="mt-2 text-[22px] font-semibold text-[#171717]">

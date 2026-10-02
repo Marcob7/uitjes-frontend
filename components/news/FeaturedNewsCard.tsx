@@ -37,9 +37,7 @@ export default function FeaturedNewsCard({ article }: { article: NewsArticle }) 
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(10,30,24,0.88)_0%,rgba(12,34,28,0.62)_43%,rgba(12,34,28,0.1)_84%),linear-gradient(0deg,rgba(8,23,18,0.76)_0%,transparent_55%)]" />
         <div className="mt-auto max-w-3xl">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold text-white/88">
-            <span className="rounded-full bg-[#E8F2D0] px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-[#28411D]">
-              {article.category}
-            </span>
+          
             <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time>
             {article.readingTime ? <span aria-hidden="true">·</span> : null}
             {article.readingTime ? <span>{article.readingTime} min. leestijd</span> : null}

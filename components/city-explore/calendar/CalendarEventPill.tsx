@@ -14,7 +14,7 @@ export default function CalendarEventPill({
         event.color
       )}`}
     >
-      <div className="mb-1 text-[9px] uppercase tracking-[0.12em] opacity-70">
+      <div className="mb-1 text-[9px]  tracking-[0.12em] opacity-70">
         {event.category}
       </div>
       <div className="font-medium">{event.title}</div>

@@ -27,9 +27,7 @@ export function AppErrorState({
         className
       )}
     >
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9b3c2e]">
-        Foutmelding
-      </p>
+   
       <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.04em] text-[#2f1713]">
         {title}
       </h3>

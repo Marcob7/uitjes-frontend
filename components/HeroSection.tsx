@@ -191,9 +191,7 @@ export default function HeroSection() {
 
           <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8d5b33]">
-                Snelle start
-              </p>
+           
               <div className="mt-3 flex flex-wrap gap-3">
                 {featuredCities.map((city) => (
                   <Link

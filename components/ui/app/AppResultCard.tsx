@@ -59,7 +59,7 @@ export function AppResultCard({
 
       <div className="min-w-0 flex-1">
         {badge ? (
-          <span className="inline-flex rounded-full bg-[#dff1c5] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#66873e]">
+          <span className="inline-flex rounded-full bg-[#dff1c5] px-3 py-1 text-[0.68rem] font-semibold  tracking-[0.16em] text-[#66873e]">
             {badge}
           </span>
         ) : null}

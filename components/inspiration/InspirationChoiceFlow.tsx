@@ -430,10 +430,11 @@ export function InspirationChoiceFlow({
     setCurrentStep(3);
   }
 
-  function viewAllFromIntroduction() {
+  function viewAllResults() {
     setSelectedAudience(undefined);
     setSelectedMoment(undefined);
     setSelectedVibe(undefined);
+    setResultFilters([]);
     finishFlow();
   }
 
@@ -505,8 +506,9 @@ export function InspirationChoiceFlow({
           currentStep={currentStep}
           onStepChange={setCurrentStep}
           onComplete={finishFlow}
+          onViewAllResults={viewAllResults}
           onEditChoices={() => setCurrentStep(1)}
-          secondaryAction={selectedCity ? { label: "Bekijk alle resultaten", onClick: finishFlow } : undefined}
+          secondaryAction={selectedCity ? { label: "Bekijk alle resultaten", onClick: viewAllResults } : undefined}
           showProgress={({ stepNumber }) => stepNumber > 1}
           showFooter={({ stepNumber }) => stepNumber > 1}
           exitHref="/"
@@ -550,7 +552,7 @@ export function InspirationChoiceFlow({
                   primaryAction={selectedCity ? (
                     <button
                       type="button"
-                      onClick={viewAllFromIntroduction}
+                      onClick={viewAllResults}
                       className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
                     >
                       Bekijk alle uitjes in {selectedCityLabel} <span className="ml-2" aria-hidden="true">→</span>

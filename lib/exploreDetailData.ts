@@ -155,9 +155,11 @@ function getFallbackImage(
   category?: string | null,
   kind?: string | null,
   title?: string | null,
-  tags?: string[] | null
+  tags?: string[] | null,
+  id?: string | number | null,
+  slug?: string | null
 ) {
-  return resolveActivityImage({ image, category, kind, title, tags });
+  return resolveActivityImage({ image, id, slug, category, kind, title, tags });
 }
 
 export function mapCityContentToExploreDetail(
@@ -168,7 +170,7 @@ export function mapCityContentToExploreDetail(
   const citySlug = normalizeCitySlug(item.city || item.cityName);
   const title = item.title || titleFromSlug(slug);
   const category = item.category || (item.kind === "food_drink" ? "Eten & drinken" : "Moment");
-  const image = getFallbackImage(item.imageUrl, category, item.kind, title, item.tags);
+  const image = getFallbackImage(item.imageUrl, category, item.kind, title, item.tags, item.id, item.slug);
   const pricing = formatCityContentPricing(item);
   const isFoodDrink = item.kind === "food_drink";
   const dateLabel =
@@ -249,13 +251,8 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
     category: "speciaal geselecteerd TIP",
     status: "VANDAAG OPEN",
     subtitle: "Culinair | Centrum Haarlem | Gratis | 4.8",
-    heroImage: "/images/fallback-market.webp",
-    gallery: [
-      "/images/fallback-market.webp",
-      "/images/fallback-market.webp",
-      "/images/fallback-market.webp",
-      "/images/fallback-market.webp",
-    ],
+    heroImage: getFallbackImage(null, "Markt", null, "Food Market Grote Markt", null, 203),
+    gallery: Array(4).fill(getFallbackImage(null, "Markt", null, "Food Market Grote Markt", null, 203)),
     reasons: [
       "Levendige sfeer op een centrale plek",
       "Perfect voor een middag met vrienden",
@@ -280,19 +277,19 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
       {
         title: "Lokale Makers Markt",
         subtitle: "Creatief en lokaal | 4.7",
-        image: "/images/fallback-market.webp",
+        image: getFallbackImage(null, "Markt", null, "Lokale Makers Markt"),
         badge: "HAARLEM CENTRUM",
       },
       {
         title: "Spaarne Bistro",
         subtitle: "Bistro | EUR 18 - EUR 36 | 4.6",
-        image: "/images/fallback-restaurant.webp",
+        image: getFallbackImage(null, "Restaurant", null, "Spaarne Bistro"),
         badge: "AAN HET WATER",
       },
       {
         title: "De Oude Stadskeuken",
         subtitle: "Modern lokaal | EUR 22 - EUR 40 | 4.8",
-        image: "/images/fallback-restaurant.webp",
+        image: getFallbackImage(null, "Restaurant", null, "De Oude Stadskeuken"),
         badge: "BINNENSTAD",
       },
     ],
@@ -304,13 +301,8 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
     category: "speciaal geselecteerd TIP",
     status: "VANDAAG OPEN",
     subtitle: "Cultuur | Centrum Apeldoorn | EUR 14,50 | 4.7",
-    heroImage: "/images/fallback-museum.webp",
-    gallery: [
-      "/images/fallback-museum.webp",
-      "/images/fallback-museum.webp",
-      "/images/fallback-museum.webp",
-      "/images/fallback-museum.webp",
-    ],
+    heroImage: getFallbackImage(null, "Museum", null, "Avond in CODA Museum", null, 201),
+    gallery: Array(4).fill(getFallbackImage(null, "Museum", null, "Avond in CODA Museum", null, 201)),
     reasons: [
       "Sterke culturele avondactiviteit",
       "Mooie mix van kunst en architectuur",
@@ -335,19 +327,19 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
       {
         title: "Live muziek in Gigant",
         subtitle: "Muziek | EUR 18 | 4.6",
-        image: "/images/fallback-live-music.webp",
+        image: getFallbackImage(null, "Live muziek", null, "Live muziek in Gigant", null, 202),
         badge: "APELDOORN",
       },
       {
         title: "Voorjaarsmarkt in het centrum",
         subtitle: "Lokaal | Gratis | 4.5",
-        image: "/images/fallback-market.webp",
+        image: getFallbackImage(null, "Markt", null, "Voorjaarsmarkt in het centrum", null, 206),
         badge: "CENTRUM",
       },
       {
         title: "Wandeling door Park Berg & Bos",
         subtitle: "Buiten | EUR 7,50 | 4.8",
-        image: "/images/fallback-walking.webp",
+        image: getFallbackImage(null, "Buiten", null, "Wandeling door Park Berg & Bos", null, 204),
         badge: "NATUUR",
       },
     ],
@@ -359,13 +351,8 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
     category: "speciaal geselecteerd TIP",
     status: "VANAVOND",
     subtitle: "Live muziek | Apeldoorn | EUR 18 | 4.6",
-    heroImage: "/images/fallback-live-music.webp",
-    gallery: [
-      "/images/fallback-live-music.webp",
-      "/images/fallback-live-music.webp",
-      "/images/fallback-live-music.webp",
-      "/images/fallback-live-music.webp",
-    ],
+    heroImage: getFallbackImage(null, "Live muziek", null, "Live muziek in Gigant", null, 202),
+    gallery: Array(4).fill(getFallbackImage(null, "Live muziek", null, "Live muziek in Gigant", null, 202)),
     reasons: [
       "Sterke avondsfeer",
       "Goed voor een spontane avond uit",
@@ -390,19 +377,19 @@ export const exploreDetailData: Record<string, ExploreDetailItem> = {
       {
         title: "Avond in CODA Museum",
         subtitle: "Cultuur | EUR 14,50 | 4.7",
-        image: "/images/fallback-museum.webp",
+        image: getFallbackImage(null, "Museum", null, "Avond in CODA Museum", null, 201),
         badge: "CENTRUM",
       },
       {
         title: "Filmavond in Vue Apeldoorn",
         subtitle: "Film | EUR 11 | 4.5",
-        image: "/images/fallback-cinema.webp",
+        image: getFallbackImage(null, "Film", null, "Filmavond in Vue Apeldoorn", null, 205),
         badge: "AVOND",
       },
       {
         title: "Food & Drinks op het Marktplein",
         subtitle: "Food | Gratis | 4.6",
-        image: "/images/fallback-market.webp",
+        image: getFallbackImage(null, "Markt", null, "Food & Drinks op het Marktplein", null, 203),
         badge: "MARKTPLEIN",
       },
     ],

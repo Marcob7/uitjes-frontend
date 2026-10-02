@@ -38,7 +38,7 @@ function ImageFallback({ category }: { category: string }) {
         className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(196,229,144,0.36),transparent_33%),radial-gradient(circle_at_82%_80%,rgba(245,209,139,0.23),transparent_36%)]"
       />
       <div className="relative">
-        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#d7e8b6]">
+        <p className="text-[0.68rem] font-semibold  tracking-[0.18em] text-[#d7e8b6]">
           {category}
         </p>
         <div className="mt-4 h-px w-14 bg-[#d7e8b6]/60" />

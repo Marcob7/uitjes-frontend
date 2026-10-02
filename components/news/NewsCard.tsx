@@ -29,9 +29,7 @@ function FallbackVisual({ category }: { category: string }) {
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1D5A46] text-lg text-white shadow-[0_10px_20px_rgba(29,90,70,0.2)]" aria-hidden="true">
           ↗
         </span>
-        <span className="max-w-[12ch] text-right text-[0.64rem] font-bold uppercase tracking-[0.18em] text-[#1D5A46]/80">
-          {category}
-        </span>
+      
       </div>
     </div>
   );
@@ -65,9 +63,7 @@ export default function NewsCard({ article, compact = false }: NewsCardProps) {
         ) : null}
 
         <div className={`min-w-0 ${compact ? "flex-1 py-0.5" : "flex flex-1 flex-col p-5"}`}>
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.17em] text-[#1D5A46]">
-            {article.category}
-          </p>
+       
           <h3
             className={`mt-2 max-w-none font-semibold leading-[1.04] tracking-[-0.042em] text-[#29342F] ${
               compact ? "text-lg" : "text-[1.45rem]"

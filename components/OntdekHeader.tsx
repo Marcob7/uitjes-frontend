@@ -98,7 +98,7 @@ export default function OntdekHeader({
         </div>
 
         <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+          <p className="text-xs font-semibold  tracking-[0.22em] text-stone-500">
             Prijs
           </p>
           <div className="mt-3 flex flex-wrap gap-2">

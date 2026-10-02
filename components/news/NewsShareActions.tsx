@@ -38,7 +38,7 @@ export default function NewsShareActions({ title }: { title: string }) {
 
   return (
     <section className="border-t border-[#DCE1DC] pt-6" aria-label={`Deel ${title}`}>
-      <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#65736C]">Deel dit verhaal</p>
+      <p className="text-[0.68rem] font-bold tracking-[0.16em] text-[#65736C]">Deel dit verhaal</p>
       <button
         type="button"
         onClick={copyLink}

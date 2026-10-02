@@ -80,7 +80,7 @@ export function NewsLetterSection({
           />
         </div>
 
-        <p className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-white px-2 py-0.5 text-[11px] font-semibold uppercase leading-none tracking-[-0.01em] text-[#242424]">
+        <p className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-white px-2 py-0.5 text-[11px] font-semibold  leading-none tracking-[-0.01em] text-[#242424]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#171717]" aria-hidden="true" />
           Nieuwe evenementen
         </p>

@@ -11,7 +11,7 @@ export default function ShowcaseSection() {
           <div className="flex flex-col items-center gap-4">
             <span className="text-2xl text-[#8a5a2b]">{`</>`}</span>
 
-            <span className="font-heading text-sm font-semibold uppercase tracking-[0.35em] text-[#8a5a2b]">
+            <span className="font-heading text-sm font-semibold  tracking-[0.35em] text-[#8a5a2b]">
               Voor uitjes
             </span>
           </div>

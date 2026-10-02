@@ -39,7 +39,7 @@ export default function NewMomentSection() {
 
           <Link
             href="/inspiratie"
-            className="group mt-16 inline-flex min-h-[54px] items-center justify-center gap-3 rounded-full bg-[#12182d] px-7 text-[0.78rem] font-semibold uppercase tracking-[0.24em] text-white shadow-[0_18px_36px_rgba(18,24,45,0.16)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1f2845] hover:shadow-[0_22px_42px_rgba(18,24,45,0.2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#12182d] active:translate-y-0 sm:px-8"
+            className="group mt-16 inline-flex min-h-[54px] items-center justify-center gap-3 rounded-full bg-[#12182d] px-7 text-[0.78rem] font-semibold  tracking-[0.24em] text-white shadow-[0_18px_36px_rgba(18,24,45,0.16)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1f2845] hover:shadow-[0_22px_42px_rgba(18,24,45,0.2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#12182d] active:translate-y-0 sm:px-8"
           >
             <span aria-hidden="true" className="flex h-4 w-4 items-center justify-center">
               <svg
@@ -62,7 +62,7 @@ export default function NewMomentSection() {
         </div>
 
         <div className="mt-24 w-full text-center sm:mt-24">
-          <p className="text-[0.67rem] font-medium uppercase tracking-[0.48em] text-[#b5b5c5]">
+          <p className="text-[0.67rem] font-medium  tracking-[0.48em] text-[#b5b5c5]">
             Kies wat nu past
           </p>
 

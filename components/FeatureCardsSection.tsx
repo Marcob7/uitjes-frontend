@@ -19,9 +19,7 @@ export default function FeatureCardsSection() {
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#5a6a52] text-sm text-[#5a6a52]">
                   &gt;_
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#39523b]">
-                  Voor ontdekkers
-                </span>
+              
               </div>
 
               <h2 className="font-heading mt-8 text-4xl leading-tight tracking-tight text-neutral-900 sm:text-5xl">
@@ -56,7 +54,7 @@ export default function FeatureCardsSection() {
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#6b5320] text-sm text-[#6b5320]">
                   ✉
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6b5320]">
+                <span className="text-xs font-semibold  tracking-[0.3em] text-[#6b5320]">
                   Voor planners
                 </span>
               </div>
@@ -91,7 +89,7 @@ export default function FeatureCardsSection() {
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#4a4f7b] text-sm text-[#4a4f7b]">
                   □
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#4a4f7b]">
+                <span className="text-xs font-semibold  tracking-[0.3em] text-[#4a4f7b]">
                   Voor iedereen
                 </span>
               </div>

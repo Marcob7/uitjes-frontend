@@ -24,7 +24,10 @@ type FullscreenChoiceFlowProps = {
   steps: readonly FullscreenChoiceFlowStep[];
   currentStep: number;
   onStepChange: (step: number) => void;
+  /** Continues to the results with the answers currently in the flow. */
   onComplete: () => void;
+  /** Removes the flow's personal filters before showing all city results. */
+  onViewAllResults?: () => void;
   onEditChoices?: () => void;
   secondaryAction?: {
     label: string;
@@ -58,6 +61,7 @@ export function FullscreenChoiceFlow({
   currentStep,
   onStepChange,
   onComplete,
+  onViewAllResults,
   onEditChoices,
   secondaryAction,
   showProgress,
@@ -187,7 +191,7 @@ export function FullscreenChoiceFlow({
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
             >
               <CloseIcon className="h-4 w-4" />
-              <span>Resultaten bekijken</span>
+              <span>Doorgaan met mijn keuzes</span>
             </button>
           ) : (
             <Link
@@ -239,7 +243,7 @@ export function FullscreenChoiceFlow({
               ) : null}
               <button
                 type="button"
-                onClick={onComplete}
+                onClick={onViewAllResults ?? onComplete}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
               >
                 Bekijk alle resultaten

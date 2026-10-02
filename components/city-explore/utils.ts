@@ -416,7 +416,7 @@ export function buildExploreCards(
       label: event.category_label || (event.is_free ? "Free event" : "Event"),
       time: formatTimeRange(event.start_at, event.end_at),
       location: formatVenue(event.venue, cityLabel),
-      image: resolveActivityImage({ image: event.image, category: event.category_label, kind: event.kind, title: event.title, tags: event.tags }),
+      image: resolveActivityImage({ image: event.image, id: event.id, slug: event.slug, category: event.category_label, kind: event.kind, title: event.title, tags: event.tags }),
       imageAlt: event.imageAlt,
       href: appendCityToExploreHref(
         `/ontdek/${event.slug || slugify(event.title || `event-${event.id}`)}`,

@@ -21,7 +21,7 @@ import type {
 } from "./types";
 
 type PlannerSelectionKey = keyof PlannerSelections;
-type PlannerSelectionValue = PlannerSelections[PlannerSelectionKey];
+type PlannerSelectionValue = NonNullable<PlannerSelections[PlannerSelectionKey]>;
 
 type FlowOption = {
   value: PlannerSelectionValue;
@@ -126,6 +126,7 @@ export default function DiscoverFlow({
       currentStep={currentStep}
       onStepChange={onStepChange}
       onComplete={onComplete}
+      onViewAllResults={onViewAllResults}
       onEditChoices={() => onStepChange(1)}
       secondaryAction={{ label: "Bekijk alle resultaten", onClick: onViewAllResults }}
       showProgress={({ stepNumber }) => stepNumber > 1}

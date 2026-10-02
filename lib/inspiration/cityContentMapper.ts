@@ -232,7 +232,7 @@ export function mapCityContentToInspirationResult(
     tags: item.tags,
     price: formatPrice(item),
     location,
-    image: toCssImageUrl(resolveActivityImage({ image: item.imageUrl, category: item.category, kind: item.kind, title: item.title, tags: item.tags })),
+    image: toCssImageUrl(resolveActivityImage({ image: item.imageUrl, id: item.id, slug: item.slug, category: item.category, kind: item.kind, title: item.title, tags: item.tags })),
     detail: item.description ?? description,
     badge: getBadge(item, primaryCategory),
     ratingValue: item.ratingValue,
@@ -249,7 +249,7 @@ export function mapCityContentToInspirationResult(
       item.summary,
       item.venue ? `Te vinden bij ${item.venue}` : null,
     ]).slice(0, 4),
-    gallery: [toCssImageUrl(resolveActivityImage({ image: item.imageUrl, category: item.category, kind: item.kind, title: item.title, tags: item.tags }))],
+    gallery: [toCssImageUrl(resolveActivityImage({ image: item.imageUrl, id: item.id, slug: item.slug, category: item.category, kind: item.kind, title: item.title, tags: item.tags }))],
     latitude: item.latitude,
     longitude: item.longitude,
   };

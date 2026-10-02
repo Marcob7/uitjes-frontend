@@ -100,9 +100,10 @@ export type PlannerMoment = "nu" | "vanavond" | "morgen" | "weekend";
 export type PlannerVibe = "cultureel" | "actief" | "eten-drinken" | "relaxed";
 
 export type PlannerSelections = {
-  companion: PlannerCompanion;
-  moment: PlannerMoment;
-  vibe: PlannerVibe;
+  /** Answers are collected progressively, so an unfinished planner is valid. */
+  companion?: PlannerCompanion;
+  moment?: PlannerMoment;
+  vibe?: PlannerVibe;
 };
 
 export type ResultFilterKey =

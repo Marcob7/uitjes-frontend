@@ -13,6 +13,7 @@ import type {
   PlannerVibe,
   ResultFilterKey,
 } from "./types";
+import type { DiscoverView } from "./discoverUrl";
 import { RESULT_FILTER_OPTIONS } from "./utils";
 
 const INITIAL_VISIBLE_RESULTS = 6;
@@ -23,6 +24,7 @@ type CityExploreResultsSectionProps = {
   filteredCards: ExploreCard[];
   selectedId: number | null;
   onSelectCard: (id: number) => void;
+  onMapSelectCard?: (id: number) => void;
   sectionRef: RefObject<HTMLElement | null>;
   plannerSelections?: PlannerSelections;
   completedStepCount?: number;
@@ -34,6 +36,9 @@ type CityExploreResultsSectionProps = {
   onToggleResultFilter: (filter: ResultFilterKey) => void;
   onClearResultFilters: () => void;
   onClearAllFilters: () => void;
+  view?: DiscoverView;
+  onViewChange?: (view: DiscoverView) => void;
+  getDetailHref?: (href: string) => string;
 };
 
 type ActiveFilter = {
@@ -220,7 +225,7 @@ function buildActiveFilters(
     },
   ];
 
-  if (completedStepCount >= 1) {
+  if (completedStepCount >= 1 && plannerSelections.companion) {
     filters.unshift({
       id: "companion",
       label: getCompanionLabel(plannerSelections.companion),
@@ -230,7 +235,7 @@ function buildActiveFilters(
     });
   }
 
-  if (completedStepCount >= 2) {
+  if (completedStepCount >= 2 && plannerSelections.moment) {
     filters.unshift({
       id: "moment",
       label: getMomentLabel(plannerSelections.moment),
@@ -240,7 +245,7 @@ function buildActiveFilters(
     });
   }
 
-  if (completedStepCount >= 3) {
+  if (completedStepCount >= 3 && plannerSelections.vibe) {
     filters.unshift({
       id: "vibe",
       label: getVibeLabel(plannerSelections.vibe),
@@ -258,6 +263,7 @@ export default function CityExploreResultsSection({
   filteredCards,
   selectedId,
   onSelectCard,
+  onMapSelectCard,
   sectionRef,
   plannerSelections = {} as PlannerSelections,
   completedStepCount = 0,
@@ -269,13 +275,16 @@ export default function CityExploreResultsSection({
   onToggleResultFilter,
   onClearResultFilters,
   onClearAllFilters,
+  view = "list",
+  onViewChange,
+  getDetailHref,
 }: CityExploreResultsSectionProps) {
   const [visibleState, setVisibleState] = useState({
     count: INITIAL_VISIBLE_RESULTS,
     resultSetKey: "",
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [isMobileMapOpen, setIsMobileMapOpen] = useState(false);
+  const [localView, setLocalView] = useState<DiscoverView>(view);
   const [draftResultFilters, setDraftResultFilters] =
     useState<ResultFilterKey[]>(resultFilters);
   const filterButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -295,6 +304,13 @@ export default function CityExploreResultsSection({
       ? visibleState.count
       : INITIAL_VISIBLE_RESULTS;
   const displayedCards = filteredCards.slice(0, visibleCount);
+  const contextualDisplayedCards = useMemo(
+    () =>
+      getDetailHref
+        ? displayedCards.map((card) => ({ ...card, href: getDetailHref(card.href) }))
+        : displayedCards,
+    [displayedCards, getDetailHref]
+  );
   const visibleResultCount = displayedCards.length;
   const hasMoreResults = visibleResultCount < filteredCards.length;
   const hasExpandableResults = filteredCards.length > INITIAL_VISIBLE_RESULTS;
@@ -338,6 +354,18 @@ export default function CityExploreResultsSection({
       document.body.style.overflow = previousOverflow;
     };
   }, [isFilterModalOpen]);
+
+  useEffect(() => {
+    setLocalView(view);
+  }, [view]);
+
+  const activeView = localView;
+  const isMobileMapOpen = activeView === "map";
+
+  function changeView(nextView: DiscoverView) {
+    setLocalView(nextView);
+    onViewChange?.(nextView);
+  }
 
   useEffect(() => {
     if (!isMobileMapOpen) return;
@@ -468,7 +496,7 @@ export default function CityExploreResultsSection({
 
         <button
           type="button"
-          onClick={() => setIsMobileMapOpen(true)}
+          onClick={() => changeView("map")}
           className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#9DBAAE] bg-[#DDEBE2] px-5 py-2.5 text-sm font-semibold text-[#1D5A46] lg:hidden"
         >
           <PinIcon className="h-4 w-4" /> Kaart bekijken
@@ -585,7 +613,7 @@ export default function CityExploreResultsSection({
               </div>
             ) : (
               <div className="grid gap-5 border-y border-[#DCE1DC] py-5 sm:grid-cols-2">
-                {displayedCards.map((card) => (
+                {contextualDisplayedCards.map((card) => (
                   <ExploreCardItem
                     key={card.id}
                     card={card}
@@ -620,9 +648,7 @@ export default function CityExploreResultsSection({
 
         {hasNoResults && !isLoadingResults ? (
           <div className="mt-8 rounded-[2rem] border border-[#d5e1bd] bg-white/78 p-6 text-[#171511] shadow-[0_18px_42px_rgba(75,92,52,0.08)] backdrop-blur-xl sm:p-8">
-            <div className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#667b36]">
-              Geen directe matches
-            </div>
+           
             <h3 className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#171511]">
               {hasActiveFilters
                 ? `Geen resultaten gevonden in ${cityLabel} met deze filters`
@@ -658,9 +684,9 @@ export default function CityExploreResultsSection({
             <div className="sticky top-40 h-[min(760px,calc(100dvh-10rem))] min-h-[560px]">
               <CityExploreMapSection
                 cityLabel={cityLabel}
-                events={displayedCards}
+                events={contextualDisplayedCards}
                 selectedId={selectedId}
-                setSelectedId={onSelectCard}
+                setSelectedId={onMapSelectCard ?? onSelectCard}
                 layout="embedded"
                 fullHeight
               />
@@ -678,7 +704,7 @@ export default function CityExploreResultsSection({
             <div className="mb-3 flex flex-col items-start gap-4 px-1">
               <button
                 type="button"
-                onClick={() => setIsMobileMapOpen(false)}
+                onClick={() => changeView("list")}
                 className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#B7C7BE] bg-[#FFFEFA] px-4 py-2.5 text-sm font-bold text-[#1D5A46] shadow-[0_8px_20px_rgba(29,90,70,0.18)] transition hover:bg-[#F1F7F2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
               >
                 <ArrowLeftIcon className="h-4 w-4 shrink-0" />
@@ -687,7 +713,7 @@ export default function CityExploreResultsSection({
               <h2 className="px-1 text-sm font-semibold text-[#526159]">{cityLabel} op de kaart</h2>
             </div>
             <div className="h-[calc(100dvh-7.25rem-max(0px,env(safe-area-inset-top)))]">
-              <CityExploreMapSection cityLabel={cityLabel} events={displayedCards} selectedId={selectedId} setSelectedId={(id) => { onSelectCard(id); }} layout="embedded" fullHeight />
+              <CityExploreMapSection cityLabel={cityLabel} events={contextualDisplayedCards} selectedId={selectedId} setSelectedId={onMapSelectCard ?? onSelectCard} layout="embedded" fullHeight />
             </div>
           </div>
         ) : null}

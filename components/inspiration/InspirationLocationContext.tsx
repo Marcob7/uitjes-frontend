@@ -202,7 +202,7 @@ export function InspirationLocationContext({
         <div>
           <p
             className={cn(
-              "text-[11px] font-semibold uppercase tracking-[0.2em]",
+              "text-[11px] font-semibold  tracking-[0.2em]",
               surface === "glass" ? "text-white/64" : "text-[#8b7a69]"
             )}
           >

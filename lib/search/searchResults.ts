@@ -6,7 +6,8 @@ import {
   searchCityContent,
   type CityContentItem,
 } from "@/lib/api/cityContent";
-import { cityOptions, getCityConfig, normalizeCitySlug } from "@/lib/cityConfig";
+import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { resolveActivityImage } from "@/lib/activityImages";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 
 export type GeneralSearchResult = {
@@ -262,7 +263,6 @@ function mapCityContentResult(
 
   const cityLabel = getCityDisplayLabel(item.cityName ?? item.city ?? "Nederland");
   const citySlug = normalizeCitySlug(item.city ?? item.cityName ?? "");
-  const cityFallbackImage = getCityConfig(citySlug).cardImage ?? getCityConfig(citySlug).fallbackImage;
   const location = compactStrings([item.venue ?? item.address, cityLabel]).join(" · ");
   const price = formatPrice(item);
 
@@ -274,7 +274,15 @@ function mapCityContentResult(
       item.description ??
       "Een resultaat uit de lokale city-content collectie.",
     href: getCityContentHref(item),
-    image: item.imageUrl ?? cityFallbackImage ?? undefined,
+    image: resolveActivityImage({
+      image: item.imageUrl,
+      id: item.id,
+      slug: item.slug,
+      category: item.category,
+      kind: item.kind,
+      title: item.title,
+      tags: item.tags,
+    }),
     imageAlt: item.imageAlt ?? `${cityLabel} · ${item.title}`,
     badge: item.category ?? (item.kind === "food_drink" ? "Eten & drinken" : "Uitje"),
     categorySlug: normalizeCitySlug(item.category ?? item.kind ?? "uitje"),

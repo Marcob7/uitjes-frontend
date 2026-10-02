@@ -254,9 +254,7 @@ export default function SavedFavoritesPage() {
 
             {filteredFavorites.length === 0 ? (
               <div className="rounded-[1.7rem] border border-white/70 bg-white/65 p-5 text-[#3f3429] shadow-[0_18px_42px_rgba(66,49,31,0.08)] backdrop-blur-xl sm:p-6">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7a6d60]">
-                  Geen match
-                </p>
+           
                 <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">Geen bewaarde uitjes gevonden</h2>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d6458]">
                   Pas je filter of zoekterm aan om weer meer van je lijst te zien.
@@ -311,7 +309,7 @@ export default function SavedFavoritesPage() {
                             {cleanText(favorite.title) || "Bewaard uitje"}
                           </div>
                           <FavoriteMeta favorite={favorite} />
-                          <div className="mt-3 inline-flex rounded-full border border-[#d6c9b8] bg-[#fffaf3] px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#7a6d60]">
+                          <div className="mt-3 inline-flex rounded-full border border-[#d6c9b8] bg-[#fffaf3] px-3 py-1 text-xs font-bold  tracking-[0.14em] text-[#7a6d60]">
                             Niet meer beschikbaar
                           </div>
                           <p className="mt-3 text-sm leading-6 text-[#6d6458]">

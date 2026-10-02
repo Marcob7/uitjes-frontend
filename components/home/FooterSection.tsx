@@ -22,7 +22,7 @@ export default function FooterSection() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-lime-400">
+            <h3 className="text-xs font-semibold  tracking-[0.2em] text-lime-400">
               Steden
             </h3>
 
@@ -38,7 +38,7 @@ export default function FooterSection() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-lime-400">
+            <h3 className="text-xs font-semibold  tracking-[0.2em] text-lime-400">
               Platform
             </h3>
 
@@ -62,7 +62,7 @@ export default function FooterSection() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-lime-400">
+            <h3 className="text-xs font-semibold  tracking-[0.2em] text-lime-400">
               Volg ons
             </h3>
 

@@ -2,17 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import CalendarActions from "@/components/calendar/CalendarActions";
 import type { CalendarEventInput } from "@/lib/calendarIntegration";
+import { getRelativeEventLabel, type EventDateRange } from "@/lib/eventDateLabels";
 
-type WeekendEvent = {
+type WeekendEvent = EventDateRange & {
   id: string;
   label: string;
   title: string;
   location: string;
-  date: string;
   price: string;
   image: string;
   featured?: boolean;
@@ -36,8 +36,8 @@ type Category = {
 };
 
 type UpcomingMoment = {
-  month: string;
-  date: string;
+  startAt: string;
+  endAt?: string;
   title: string;
   location: string;
   image: string;
@@ -50,7 +50,8 @@ const weekendEvents: WeekendEvent[] = [
     label: "Festival",
     title: "Festival STRAND",
     location: "Haarrijnse Plas · Utrecht",
-    date: "28–29 aug. 2026",
+    startAt: "2026-08-28",
+    endAt: "2026-08-29",
     price: "Vanaf €29,50",
     image:
       "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=88",
@@ -62,7 +63,7 @@ const weekendEvents: WeekendEvent[] = [
     label: "Dance",
     title: "ZeeZout Festival",
     location: "Tuinen van West · Amsterdam",
-    date: "29 aug. 2026",
+    startAt: "2026-08-29",
     price: "Vanaf €49,50",
     image:
       "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=88",
@@ -73,7 +74,8 @@ const weekendEvents: WeekendEvent[] = [
     label: "Muziek",
     title: "Festival Oude Muziek",
     location: "Binnenstad · Utrecht",
-    date: "28 aug.–6 sep. 2026",
+    startAt: "2026-08-28",
+    endAt: "2026-09-06",
     price: "Vanaf €12,50",
     image:
       "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1200&q=88",
@@ -84,7 +86,8 @@ const weekendEvents: WeekendEvent[] = [
     label: "Markt",
     title: "IJ-Hallen",
     location: "NDSM-werf · Amsterdam",
-    date: "29–30 aug. 2026",
+    startAt: "2026-08-29",
+    endAt: "2026-08-30",
     price: "€6,50",
     image:
       "https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1200&q=88",
@@ -95,13 +98,19 @@ const weekendEvents: WeekendEvent[] = [
     label: "Jazz",
     title: "South East Jazz",
     location: "Zuidoost · Amsterdam",
-    date: "29–30 aug. 2026",
+    startAt: "2026-08-29",
+    endAt: "2026-08-30",
     price: "Gratis",
     image:
       "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1200&q=88",
     tint: "bg-[#dfeadf]",
   },
 ];
+
+const weekendGuide: EventDateRange = {
+  startAt: "2026-08-28",
+  endAt: "2026-08-30",
+};
 
 const todayEvents: TodayEvent[] = [
   {
@@ -175,8 +184,8 @@ const categories: Category[] = [
 
 const upcomingMoments: UpcomingMoment[] = [
   {
-    month: "September",
-    date: "12–13 sep.",
+    startAt: "2026-09-12",
+    endAt: "2026-09-13",
     title: "Open Monumentendag",
     location: "Door heel Nederland",
     image:
@@ -192,8 +201,8 @@ const upcomingMoments: UpcomingMoment[] = [
     },
   },
   {
-    month: "September",
-    date: "25 sep.–2 okt.",
+    startAt: "2026-09-25",
+    endAt: "2026-10-02",
     title: "Nederlands Film Festival",
     location: "Utrecht",
     image:
@@ -209,8 +218,8 @@ const upcomingMoments: UpcomingMoment[] = [
     },
   },
   {
-    month: "Oktober",
-    date: "17–25 okt.",
+    startAt: "2026-10-17",
+    endAt: "2026-10-25",
     title: "Dutch Design Week",
     location: "Eindhoven",
     image:
@@ -226,8 +235,8 @@ const upcomingMoments: UpcomingMoment[] = [
     },
   },
   {
-    month: "Oktober",
-    date: "21–25 okt.",
+    startAt: "2026-10-21",
+    endAt: "2026-10-25",
     title: "Amsterdam Dance Event",
     location: "Amsterdam",
     image:
@@ -243,8 +252,7 @@ const upcomingMoments: UpcomingMoment[] = [
     },
   },
   {
-    month: "November",
-    date: "7 nov.",
+    startAt: "2026-11-07",
     title: "Museumnacht Amsterdam",
     location: "Amsterdam · 19:00–02:00",
     image:
@@ -259,8 +267,8 @@ const upcomingMoments: UpcomingMoment[] = [
     },
   },
   {
-    month: "November",
-    date: "26 nov.–17 jan.",
+    startAt: "2026-11-26",
+    endAt: "2027-01-17",
     title: "Amsterdam Light Festival",
     location: "Grachten · Amsterdam",
     image:
@@ -339,11 +347,13 @@ function CalendarIcon() {
     </svg>
   );
 }
-function WeekendCard({ event }: { event: WeekendEvent }) {
+function WeekendCard({ event, now }: { event: WeekendEvent; now?: Date }) {
+  const dateLabel = getRelativeEventLabel(event, now);
+
   if (event.featured) {
     return (
       <Link
-        href="#vandaag"
+        href="#events"
         className="group relative isolate col-span-12 flex min-h-[28rem] overflow-hidden rounded-[2rem] bg-[#c9d8c2] text-[#fdfcf7] shadow-[0_24px_60px_rgba(45,60,46,0.14)] md:col-span-7 md:row-span-2 md:min-h-[39rem]"
       >
         <Image
@@ -369,7 +379,7 @@ function WeekendCard({ event }: { event: WeekendEvent }) {
                 <PinIcon /> {event.location}
               </span>
               <span className="inline-flex items-center gap-2">
-                <CalendarIcon /> {event.date}
+                <CalendarIcon /> {dateLabel}
               </span>
             </div>
           </div>
@@ -386,7 +396,7 @@ function WeekendCard({ event }: { event: WeekendEvent }) {
 
   return (
     <Link
-      href="#vandaag"
+      href="#events"
       className={`group relative isolate col-span-12 flex min-h-[17rem] overflow-hidden rounded-[1.7rem] ${event.tint} md:col-span-5 md:min-h-[18.5rem]`}
     >
       <Image
@@ -407,7 +417,7 @@ function WeekendCard({ event }: { event: WeekendEvent }) {
         </h3>
         <div className="mt-4 flex items-center justify-between gap-3 text-xs text-white/80">
           <span>{event.location}</span>
-          <span className="shrink-0">{event.date}</span>
+          <span className="shrink-0">{dateLabel}</span>
         </div>
       </div>
     </Link>
@@ -440,7 +450,7 @@ function EventRail({ items, railRef }: { items: TodayEvent[]; railRef: RefObject
     <div
       ref={railRef}
       className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      aria-label="Events van vandaag"
+      aria-label="Uitgelichte events"
     >
       {items.map((event) => (
         <a
@@ -491,16 +501,17 @@ function CategoryTile({ category }: { category: Category }) {
   );
 }
 
-function TimelineCard({ moment }: { moment: UpcomingMoment }) {
+function TimelineCard({ moment, now }: { moment: UpcomingMoment; now?: Date }) {
+  const dateLabel = getRelativeEventLabel(moment, now);
+
   return (
     <article className="relative min-w-[17.5rem] snap-start overflow-hidden rounded-[1.6rem] border border-[#d7d8cc] bg-[#fbfaf4]/95 shadow-[0_16px_38px_rgba(45,53,42,0.09)] backdrop-blur-sm sm:min-w-[20rem]">
       <div className="relative h-44 overflow-hidden">
         <Image src={moment.image} alt="" fill unoptimized sizes="320px" className="object-cover" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,28,21,0.02),rgba(20,28,21,0.45))]" />
-        <span className="absolute left-4 top-4 text-sm font-medium leading-5 tracking-normal text-white/90">{moment.month}</span>
       </div>
       <div className="p-5">
-        <p className="text-sm font-medium leading-5 tracking-normal text-[#a05c3a]">{moment.date}</p>
+        <p className="text-sm font-medium leading-5 tracking-normal text-[#a05c3a]">{dateLabel}</p>
         <h3 className="mt-3 text-[1.45rem] font-medium leading-[0.98] tracking-[-0.045em] text-[#1e2b21]">{moment.title}</h3>
         <p className="mt-3 inline-flex items-center gap-2 text-sm text-[#6d776b]"><PinIcon /> {moment.location}</p>
         {moment.calendar ? <div className="mt-5"><CalendarActions event={moment.calendar} /></div> : null}
@@ -509,9 +520,32 @@ function TimelineCard({ moment }: { moment: UpcomingMoment }) {
   );
 }
 
+function useLocalNow() {
+  const [now, setNow] = useState<Date>();
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+
+    const updateAtNextMidnight = () => {
+      setNow(new Date());
+      const nextMidnight = new Date();
+      nextMidnight.setHours(24, 0, 1, 0);
+      timeout = setTimeout(updateAtNextMidnight, nextMidnight.getTime() - Date.now());
+    };
+
+    updateAtNextMidnight();
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return now;
+}
+
 export default function EventsPage() {
   const todayRailRef = useRef<HTMLDivElement>(null);
   const timelineRailRef = useRef<HTMLDivElement>(null);
+  const now = useLocalNow();
+  const guideDateLabel = getRelativeEventLabel(weekendGuide, now);
+  const guideIsThisWeekend = guideDateLabel === "Dit weekend";
 
   function scrollRail(ref: RefObject<HTMLDivElement | null>, direction: "left" | "right") {
     const rail = ref.current;
@@ -529,18 +563,20 @@ export default function EventsPage() {
         <div className="relative mx-auto grid max-w-[1440px] gap-10 px-5 pb-10 pt-12 sm:px-8 sm:pb-14 sm:pt-16 lg:grid-cols-[minmax(0,0.9fr)_minmax(28rem,1.1fr)] lg:items-center lg:gap-16 lg:px-12 lg:pb-20 lg:pt-20">
           <div className="max-w-[38rem]">
             <div className="flex flex-wrap items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.2em] text-[#536255]">
-              <span className="rounded-full border border-[#91a78f] bg-[#edf4e9] px-3 py-1.5">Weekendguide</span>
-              <span>28–30 augustus 2026</span>
+              <span className="rounded-full border border-[#91a78f] bg-[#edf4e9] px-3 py-1.5">Eventguide</span>
+              <span>{guideDateLabel}</span>
             </div>
             <h1 id="hero-title" className="mt-7 max-w-[9ch] text-[clamp(4.1rem,9vw,8.6rem)] font-medium leading-[0.82] tracking-[-0.078em] text-[#203327]">
               Ga naar buiten.
             </h1>
             <p className="mt-7 max-w-[30rem] text-[clamp(1.08rem,1.7vw,1.35rem)] leading-[1.42] tracking-[-0.025em] text-[#4d5c4f]">
-              De mooiste plannen van dit weekend, met zorg geselecteerd. Van live muziek aan het water tot nachten die je maandag nog voelt.
+              {guideIsThisWeekend
+                ? "De mooiste plannen van dit weekend, met zorg geselecteerd. Van live muziek aan het water tot nachten die je maandag nog voelt."
+                : "Een zorgvuldig geselecteerde reeks events. Van live muziek aan het water tot nachten die je maandag nog voelt."}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a href="#weekend" className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#223629] px-5 py-3 text-sm font-semibold text-[#f8f7ef] shadow-[0_12px_28px_rgba(34,54,41,0.18)] transition hover:-translate-y-0.5 hover:bg-[#304938] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a05c3a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#dce8d7]">
-                Bekijk dit weekend <ArrowIcon />
+                Bekijk events <ArrowIcon />
               </a>
               <span className="inline-flex items-center gap-2 px-2 py-3 text-sm font-medium text-[#5c6a5b]"><span className="h-2 w-2 rounded-full bg-[#b05f3a]" /> 5 redactionele tips</span>
             </div>
@@ -557,7 +593,7 @@ export default function EventsPage() {
               className="object-cover object-center"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,25,17,0.04)_30%,rgba(13,25,17,0.75)_100%)]" />
-            <div className="absolute left-5 top-5 rounded-full bg-[#f6f3ec]/90 px-3 py-1.5 text-[0.64rem] font-bold uppercase tracking-[0.17em] text-[#2b3c2d] backdrop-blur sm:left-7 sm:top-7">Nu te zien · Utrecht</div>
+            <div className="absolute left-5 top-5 rounded-full bg-[#f6f3ec]/90 px-3 py-1.5 text-[0.64rem] font-bold uppercase tracking-[0.17em] text-[#2b3c2d] backdrop-blur sm:left-7 sm:top-7">{guideDateLabel} · Utrecht</div>
             <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 text-[#fcfbf4] sm:bottom-7 sm:left-7 sm:right-7">
               <div>
                 <p className="text-[0.68rem] font-bold uppercase tracking-[0.19em] text-white/75">Hoofdhighlight</p>
@@ -574,27 +610,27 @@ export default function EventsPage() {
           <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
             <div>
             
-              <h2 id="weekend-title" className="mt-6 max-w-[12ch] text-[clamp(2.8rem,6vw,6rem)] font-medium leading-[0.86] tracking-[-0.07em] text-[#223327]">Dit weekend uitgelicht.</h2>
+              <h2 id="weekend-title" className="mt-6 max-w-[12ch] text-[clamp(2.8rem,6vw,6rem)] font-medium leading-[0.86] tracking-[-0.07em] text-[#223327]">{guideIsThisWeekend ? "Dit weekend uitgelicht." : "Uitgelichte events."}</h2>
             </div>
-            <p className="max-w-[22rem] text-sm leading-6 text-[#697568] md:pb-1">Een redactionele selectie voor 28–30 augustus. Grote publiekstrekkers, kleine ontdekkingen en alles ertussenin.</p>
+            <p className="max-w-[22rem] text-sm leading-6 text-[#697568] md:pb-1">Een redactionele selectie voor {guideDateLabel.toLowerCase()}. Grote publiekstrekkers, kleine ontdekkingen en alles ertussenin.</p>
           </div>
           <div className="mt-12 grid grid-cols-12 gap-3 sm:mt-16 sm:gap-5">
-            {weekendEvents.map((event) => <WeekendCard event={event} key={event.id} />)}
+            {weekendEvents.map((event) => <WeekendCard event={event} key={event.id} now={now} />)}
           </div>
         </div>
       </section>
 
-      <section id="vandaag" className="scroll-mt-24 border-b border-[#dfe2d8] bg-[#e8ebe2]" aria-labelledby="today-title">
+      <section id="events" className="scroll-mt-24 border-b border-[#dfe2d8] bg-[#e8ebe2]" aria-labelledby="today-title">
         <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end">
             <div>
           
               <h2 id="today-title" className="mt-5 max-w-[11ch] text-[clamp(2.5rem,5vw,5rem)] font-medium leading-[0.88] tracking-[-0.065em] text-[#223327]">Nog geen plannen?</h2>
-              <p className="mt-4 max-w-[33rem] text-[15px] leading-7 text-[#687366]">Deze events zijn vandaag nog te bezoeken. Kies een tijd, pak je jas en ga.</p>
+              <p className="mt-4 max-w-[33rem] text-[15px] leading-7 text-[#687366]">Een paar ideeën voor je volgende uitje. Kies een tijd die bij je past en bewaar je favoriet.</p>
             </div>
             <div className="flex gap-2 self-start sm:self-auto">
-              <RailButton label="Scroll vandaag terug" direction="left" onClick={() => scrollRail(todayRailRef, "left")} />
-              <RailButton label="Scroll vandaag vooruit" direction="right" onClick={() => scrollRail(todayRailRef, "right")} />
+              <RailButton label="Scroll events terug" direction="left" onClick={() => scrollRail(todayRailRef, "left")} />
+              <RailButton label="Scroll events vooruit" direction="right" onClick={() => scrollRail(todayRailRef, "right")} />
             </div>
           </div>
           <div className="mt-9 border-t border-[#cbd2c5] pt-4 sm:mt-12">
@@ -628,7 +664,7 @@ export default function EventsPage() {
          
               <h2 id="upcoming-title" className="mt-6 max-w-[11ch] text-[clamp(3rem,6vw,6rem)] font-medium leading-[0.84] tracking-[-0.073em] text-[#203327]">Zet deze alvast in je agenda.</h2>
             </div>
-            <p className="max-w-[25rem] text-sm leading-6 text-[#5e6d5e] md:pb-1">Een horizontale reis door de komende maanden. Sla een datum op en laat de voorpret beginnen.</p>
+            <p className="max-w-[25rem] text-sm leading-6 text-[#5e6d5e] md:pb-1">Een horizontale reis door de agenda. Sla een datum op en laat de voorpret beginnen.</p>
           </div>
           <div className="relative mt-12 sm:mt-16">
             <div ref={timelineRailRef} className="relative flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -640,7 +676,7 @@ export default function EventsPage() {
                   <div className="relative h-8">
                     <div className="absolute left-5 top-1/2 z-10 h-3 w-3 -translate-y-1/2 rounded-full border-2 border-[#dfe8d7] bg-[#a05c3a] shadow-[0_0_0_4px_rgba(160,92,58,0.16)] sm:left-7" />
                   </div>
-                  <TimelineCard moment={moment} />
+                  <TimelineCard moment={moment} now={now} />
                 </div>
               ))}
             </div>
