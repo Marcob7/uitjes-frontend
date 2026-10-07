@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { AppSearchInput } from "@/components/ui/app";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 
 type SearchFormProps = {
@@ -14,22 +15,23 @@ type SearchFormProps = {
 
 export default function SearchForm({ initialQuery, showEmptyFeedback = false, className }: SearchFormProps) {
   const router = useRouter();
+  const { t } = useLocale();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(initialQuery);
-  const [error, setError] = useState<string | null>(showEmptyFeedback ? "Vul eerst een zoekterm in." : null);
+  const [error, setError] = useState<string | null>(showEmptyFeedback ? t("search.emptyQuery") : null);
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
   const urlQuery = normalizeSearchQuery(searchParams.get("query") ?? searchParams.get("q"));
 
   useEffect(() => {
     setQuery(urlQuery);
-    setError(urlQuery ? null : showEmptyFeedback ? "Vul eerst een zoekterm in." : null);
-  }, [showEmptyFeedback, urlQuery]);
+    setError(urlQuery ? null : showEmptyFeedback ? t("search.emptyQuery") : null);
+  }, [showEmptyFeedback, t, urlQuery]);
 
   function submitSearch(value: string) {
     const normalizedQuery = normalizeSearchQuery(value);
     if (!normalizedQuery) {
-      setError("Vul eerst een zoekterm in.");
+      setError(t("search.emptyQuery"));
       inputRef.current?.focus();
       return;
     }
@@ -51,10 +53,10 @@ export default function SearchForm({ initialQuery, showEmptyFeedback = false, cl
         setError(null);
         startTransition(() => router.push("/zoeken"));
       }}
-      placeholder="Waar heb je zin in?"
-      submitLabel="Zoek"
+      placeholder={t("search.placeholder")}
+      submitLabel={t("search.submit")}
       errorMessage={error}
-      statusMessage={isPending ? "Zoeken…" : null}
+      statusMessage={isPending ? t("search.pending") : null}
       isSubmitting={isPending}
       disableSubmitWhileSubmitting={false}
       className={className}

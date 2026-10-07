@@ -29,13 +29,19 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
   if (!day) {
     return {
-      title: "Dagagenda | Uitjes NL",
+      title: "Dagagenda | Uitjes",
+      robots: { index: false, follow: true },
     };
   }
 
+  const canonical = `/jaarkalender/${encodeURIComponent(params.daySlug)}`;
+  const title = `${day.weekdayDisplay} ${day.dayNumber} ${day.monthDisplay} – uitjes & evenementen | Uitjes`;
+
   return {
-    title: `${day.weekdayDisplay} ${day.dayNumber} ${day.monthDisplay} | Uitjes NL`,
+    title,
     description: day.intro,
+    alternates: { canonical },
+    openGraph: { title, description: day.intro, url: canonical },
   };
 }
 

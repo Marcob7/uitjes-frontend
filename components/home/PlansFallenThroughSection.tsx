@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 type PlansFallenThroughSectionProps = {
   href?: string;
@@ -141,8 +143,10 @@ const MOSAIC_MORPH_EASE = [0.16, 1, 0.3, 1] as const;
 const MOSAIC_PLAYBACK_RATE = 1.28;
 
 export default function PlansFallenThroughSection({
-  href = "/inspiratie",
+  href,
 }: PlansFallenThroughSectionProps) {
+  const { locale, t } = useLocale();
+  const targetHref = href ? localePathname(href, locale) : localePathname("/inspiratie", locale);
   const reduceMotion = useReducedMotion();
   const mosaicRef = useRef<SVGSVGElement | null>(null);
   const isMosaicInView = useInView(mosaicRef, { amount: 0.25 });
@@ -277,7 +281,7 @@ export default function PlansFallenThroughSection({
             transition={{ ...transition, delay: reduceMotion ? 0 : 0.08 }}
             className="m-0 max-w-[12ch] text-[clamp(2.8rem,4.7vw,4.85rem)] font-medium leading-[0.96] tracking-[-0.055em] text-[#183328]"
           >
-           Wij stellen een plan voor je samen wat bij jou past.
+           {t("home.ideasTitle")}
           </motion.h2>
 
           <motion.p
@@ -287,7 +291,7 @@ export default function PlansFallenThroughSection({
             transition={{ ...transition, delay: reduceMotion ? 0 : 0.16 }}
             className="mt-6 max-w-[31rem] text-[1.02rem] leading-8 text-[#466153] sm:mt-7 sm:text-[1.125rem]"
           >
-           We helpen je snel aan een nieuw idee dat wél past bij jouw moment.
+           {t("home.ideasIntro")}
           </motion.p>
 
           <motion.div
@@ -298,10 +302,10 @@ export default function PlansFallenThroughSection({
             className="mt-9"
           >
             <Link
-              href={href}
+              href={targetHref}
               className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#224b34] px-7 py-3 text-[0.9rem] font-semibold tracking-[0.01em] text-[#f9fbf6] shadow-[0_14px_28px_rgba(28,69,45,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#183d2a] hover:shadow-[0_18px_34px_rgba(28,69,45,0.23)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#224b34] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3F1EB] active:translate-y-0 active:scale-[0.98] sm:w-auto"
             >
-         Vind nieuwe ideeën
+         {t("home.ideasAction")}
             </Link>
           </motion.div>
         </div>

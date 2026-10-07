@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
+import { withoutLocalePrefix } from "@/lib/i18n/config";
 
 type AppFrameProps = {
   children: ReactNode;
@@ -12,14 +13,15 @@ type AppFrameProps = {
 
 export default function AppFrame({ children }: AppFrameProps) {
   const pathname = usePathname();
+  const routePathname = withoutLocalePrefix(pathname);
   // These routes keep their visual layer full-bleed. Each provides an explicit
   // foreground safe zone using the same header-offset variables, so the
   // document shell must not shift the scenery or flow controls a second time.
   const hasImmersiveFlow =
-    pathname === "/" ||
-    pathname === "/ontdek" ||
-    pathname === "/inspiratie" ||
-    pathname === "/jaarkalender";
+    routePathname === "/" ||
+    routePathname === "/ontdek" ||
+    routePathname === "/inspiratie" ||
+    routePathname === "/jaarkalender";
 
   return (
     <div className="flex min-h-screen flex-col">

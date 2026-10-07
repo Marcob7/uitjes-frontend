@@ -140,7 +140,7 @@ export default function NewsDetailPage({ params }: NewsDetailPageProps) {
           <div className="mx-auto mt-10 grid max-w-[52rem] gap-8 sm:mt-12 lg:grid-cols-[10.5rem_minmax(0,1fr)] lg:gap-12">
             <NewsArticleContent sections={article.content} />
             <aside className="lg:order-first lg:pt-1">
-              <NewsShareActions title={article.title} />
+              <NewsShareActions title={article.title} url={`/nieuws/${article.slug}`} />
             </aside>
           </div>
         </article>

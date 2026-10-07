@@ -1,4 +1,5 @@
 export const SAVED_PLACES_STORAGE_KEY = "savedPlaceCards";
+export const SAVED_PLACES_CHANGE_EVENT = "savedplaceschange";
 
 export type SavedPlace = {
   id: string;
@@ -44,6 +45,15 @@ export function isPlaceSaved(id: string) {
   return getSavedPlaces().some((place) => place.id === id);
 }
 
+function storeSavedPlaces(places: SavedPlace[]) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem(SAVED_PLACES_STORAGE_KEY, JSON.stringify(places));
+    window.dispatchEvent(new Event(SAVED_PLACES_CHANGE_EVENT));
+  }
+
+  return places;
+}
+
 export function toggleSavedPlace(place: SavedPlace) {
   const current = getSavedPlaces();
   const exists = current.some((item) => item.id === place.id);
@@ -52,9 +62,9 @@ export function toggleSavedPlace(place: SavedPlace) {
     ? current.filter((item) => item.id !== place.id)
     : [{ ...place, savedAt: new Date().toISOString() }, ...current];
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem(SAVED_PLACES_STORAGE_KEY, JSON.stringify(next));
-  }
+  return storeSavedPlaces(next);
+}
 
-  return next;
+export function removeSavedPlace(id: string) {
+  return storeSavedPlaces(getSavedPlaces().filter((place) => place.id !== id));
 }

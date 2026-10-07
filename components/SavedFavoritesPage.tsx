@@ -1,15 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useFavorites } from "@/components/FavouritesProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { AppFilterChip } from "@/components/ui/app/AppFilterChip";
 import type { FavoriteItem } from "@/lib/favorites";
+import { localePathname, localeToIntl } from "@/lib/i18n/config";
+import {
+  getSavedPlaces,
+  removeSavedPlace,
+  SAVED_PLACES_CHANGE_EVENT,
+  type SavedPlace,
+} from "@/lib/savedPlaces";
 
-function getFavoriteHref(favorite: FavoriteItem) {
-  return favorite.slug ? `/ontdek/${favorite.slug}` : `/events/${favorite.event_id}`;
+function getFavoriteHref(favorite: FavoriteItem, locale: "nl" | "en") {
+  return favorite.slug ? localePathname(`/ontdek/${favorite.slug}`, locale) : localePathname(`/events/${favorite.event_id}`, locale);
 }
 
 function cleanText(value?: string | null) {
@@ -55,14 +63,69 @@ function matchesSearch(favorite: FavoriteItem, query: string) {
     .some((value) => value.includes(query));
 }
 
+function SavedPlaceCard({
+  place,
+  onRemove,
+}: {
+  place: SavedPlace;
+  onRemove: (id: string) => void;
+}) {
+  const { t } = useLocale();
+  return (
+    <article className="grid gap-4 rounded-[1.5rem] border border-[#e6e0d8] bg-[#fffdf9] p-4 text-[#3f3429] shadow-[0_10px_24px_rgba(57,43,27,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(57,43,27,0.08)] sm:grid-cols-[1fr_auto] sm:items-center sm:p-5">
+      <Link
+        href={place.href}
+        className="group min-w-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+      >
+        <div className="text-lg font-semibold tracking-[-0.02em] text-[#2f2218] transition group-hover:text-[#5f3d22]">
+          {place.title}
+        </div>
+        {cleanText(place.meta) ? (
+          <div className="mt-2 text-sm text-[#6d6458]">{cleanText(place.meta)}</div>
+        ) : null}
+        <span className="mt-3 inline-flex text-sm font-semibold text-[#6b4a2d] underline underline-offset-4">
+          {t("saved.viewDetail")}
+        </span>
+      </Link>
+      <div className="flex sm:justify-end">
+        <button
+          type="button"
+          onClick={() => onRemove(place.id)}
+          className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-[#d9cec1] bg-[#fbf8f3] px-4 text-sm font-semibold text-[#5b4c3e] transition hover:bg-[#efe4d7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 sm:w-auto"
+        >
+          {t("common.remove")}
+        </button>
+      </div>
+    </article>
+  );
+}
+
 export default function SavedFavoritesPage() {
   const { isAuthenticated, status } = useAuth();
+  const { locale, t } = useLocale();
   const { favorites, loading, remove } = useFavorites();
   const [removingId, setRemovingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [savedPlaces, setSavedPlaces] = useState<SavedPlace[]>([]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setSavedPlaces([]);
+      return;
+    }
+
+    function syncSavedPlaces() {
+      setSavedPlaces(getSavedPlaces());
+    }
+
+    syncSavedPlaces();
+    window.addEventListener(SAVED_PLACES_CHANGE_EVENT, syncSavedPlaces);
+
+    return () => window.removeEventListener(SAVED_PLACES_CHANGE_EVENT, syncSavedPlaces);
+  }, [isAuthenticated]);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const availableCount = favorites.filter(isFavoriteAvailable).length;
@@ -78,9 +141,9 @@ export default function SavedFavoritesPage() {
     });
 
     return Array.from(counts, ([label, count]) => ({ label, count })).sort((a, b) =>
-      a.label.localeCompare(b.label, "nl")
+      a.label.localeCompare(b.label, localeToIntl[locale])
     );
-  }, [favorites]);
+  }, [favorites, locale]);
 
   const filteredFavorites = useMemo(() => {
     return favorites.filter((favorite) => {
@@ -109,8 +172,8 @@ export default function SavedFavoritesPage() {
       if (!result.ok) {
         setError(
           result.reason === "not_logged_in"
-            ? "Je sessie is verlopen. Log opnieuw in om je bewaarde uitjes te beheren."
-            : "Verwijderen lukt nu niet. Probeer het straks nog eens."
+            ? t("saved.sessionExpired")
+            : t("saved.removeFailed")
         );
       }
     } finally {
@@ -118,51 +181,54 @@ export default function SavedFavoritesPage() {
     }
   }
 
+  function handleRemoveSavedPlace(id: string) {
+    setSavedPlaces(removeSavedPlace(id));
+  }
+
+  const hasSavedItems = favorites.length > 0 || savedPlaces.length > 0;
+
   return (
     <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-[#171717] sm:px-6 lg:px-8 mt-28">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 max-w-2xl">
-        
+
           <h1 className="mt-2 text-[clamp(2.2rem,6vw,3.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#171511]">
-            Bewaarde uitjes
+            {t("saved.title")}
           </h1>
           <p className="mt-3 text-sm leading-7 text-[#62594e] sm:text-base">
-            Verzamel plekken die je later wilt bekijken. Je kunt altijd doorklikken naar de detailpagina of een item weer uit je lijst halen.
+            {t("saved.intro")}
           </p>
         </div>
 
         {status !== "checking" && !isAuthenticated ? (
           <div className="rounded-[1.7rem] border border-white/70 bg-white/65 p-5 text-[#3f3429] shadow-[0_18px_42px_rgba(66,49,31,0.08)] backdrop-blur-xl sm:p-6">
-        
-            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">Log in om uitjes te bewaren</h2>
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">{t("saved.loginTitle")}</h2>
             <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d6458]">
-              Je lijst is gekoppeld aan je account, zodat je bewaarde uitjes later weer rustig terugvindt.
+              {t("saved.loginIntro")}
             </p>
             <Link
-              href="/login"
+              href={localePathname("/login", locale)}
               className="mt-5 inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
             >
-              Inloggen
+              {t("auth.login")}
             </Link>
           </div>
-        ) : loading ? (
+        ) : loading && savedPlaces.length === 0 ? (
           <div className="rounded-[1.7rem] border border-[#e6e0d8] bg-[#fffdf9] p-5 text-sm text-[#6d6458]">
-            Bewaarde uitjes laden...
+            {t("saved.loading")}
           </div>
-        ) : favorites.length === 0 ? (
+        ) : !hasSavedItems ? (
           <div className="rounded-[1.7rem] border border-white/70 bg-white/65 p-5 text-[#3f3429] shadow-[0_18px_42px_rgba(66,49,31,0.08)] backdrop-blur-xl sm:p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7a6d60]">
-              Lege lijst
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">Nog niets bewaard</h2>
+
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">{t("saved.emptyTitle")}</h2>
             <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d6458]">
-              Open een detailpagina en kies Bewaar. Je eerste plan verschijnt hier, klaar voor later.
+              {t("saved.emptyIntro")}
             </p>
             <Link
-              href="/ontdek"
+              href={localePathname("/ontdek", locale)}
               className="mt-5 inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
             >
-              Ontdek uitjes
+              {t("saved.explore")}
             </Link>
           </div>
         ) : (
@@ -173,30 +239,53 @@ export default function SavedFavoritesPage() {
               </p>
             ) : null}
 
+            {savedPlaces.length > 0 ? (
+              <section aria-labelledby="saved-places-heading" className="grid gap-3">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h2 id="saved-places-heading" className="text-xl font-semibold tracking-[-0.03em] text-[#2f2218]">
+                    {t("saved.places")}
+                  </h2>
+                  <p className="text-sm text-[#6d6458]">
+                    {savedPlaces.length === 1 ? t("saved.onePlace") : t("saved.placeCount", { count: savedPlaces.length })}
+                  </p>
+                </div>
+                <p className="text-sm leading-6 text-[#6d6458]">
+                  {t("saved.localIntro")}
+                </p>
+                <div className="grid gap-4">
+                  {savedPlaces.map((place) => (
+                    <SavedPlaceCard key={place.id} place={place} onRemove={handleRemoveSavedPlace} />
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            {favorites.length > 0 ? (
+              <>
             <section
-              aria-label="Filter bewaarde uitjes"
+              aria-label={t("saved.filterLabel")}
               className="rounded-[1.5rem] border border-white/70 bg-white/60 p-3 shadow-[0_14px_34px_rgba(52,38,25,0.06)] backdrop-blur-xl sm:p-4"
             >
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="flex flex-wrap gap-2">
                   <AppFilterChip active={statusFilter === "all"} onClick={() => setStatusFilter("all")}>
-                    Alles {favorites.length}
+                    {t("saved.all")} {favorites.length}
                   </AppFilterChip>
                   <AppFilterChip active={statusFilter === "available"} onClick={() => setStatusFilter("available")}>
-                    Beschikbaar {availableCount}
+                    {t("saved.available")} {availableCount}
                   </AppFilterChip>
                   <AppFilterChip
                     active={statusFilter === "unavailable"}
                     onClick={() => setStatusFilter("unavailable")}
                     disabled={unavailableCount === 0}
                   >
-                    Niet meer beschikbaar {unavailableCount}
+                    {t("saved.unavailable")} {unavailableCount}
                   </AppFilterChip>
                 </div>
 
                 <form role="search" className="relative w-full lg:max-w-xs">
                   <label htmlFor="saved-favorites-search" className="sr-only">
-                    Zoek binnen bewaarde uitjes
+                    {t("saved.searchLabel")}
                   </label>
                   <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7a6d60]" aria-hidden="true">
                     &#8981;
@@ -206,7 +295,7 @@ export default function SavedFavoritesPage() {
                     type="search"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Zoek in bewaard"
+                    placeholder={t("saved.searchPlaceholder")}
                     className="min-h-11 w-full rounded-full border border-[#ddd5c8] bg-[#fffdf9]/85 pl-11 pr-4 text-sm font-medium text-[#2f2218] outline-none transition placeholder:text-[#978c80] focus:border-[#b8df71] focus:ring-2 focus:ring-[#b8df71]/35"
                   />
                 </form>
@@ -215,7 +304,7 @@ export default function SavedFavoritesPage() {
               {typeOptions.length > 1 ? (
                 <div className="mt-3 flex flex-wrap gap-2 border-t border-[#e9e0d6]/80 pt-3">
                   <AppFilterChip active={typeFilter === "all"} onClick={() => setTypeFilter("all")} variant="subtle">
-                    Alle types
+                    {t("saved.allTypes")}
                   </AppFilterChip>
                   {typeOptions.map((option) => (
                     <AppFilterChip
@@ -234,8 +323,8 @@ export default function SavedFavoritesPage() {
             <div className="flex flex-col gap-1 text-sm text-[#6d6458] sm:flex-row sm:items-center sm:justify-between">
               <p>
                 {filteredFavorites.length === 1
-                  ? "1 bewaard uitje"
-                  : `${filteredFavorites.length} bewaarde uitjes`}
+                  ? t("saved.oneSaved")
+                  : t("saved.savedCount", { count: filteredFavorites.length })}
               </p>
               {hasActiveFilters ? (
                 <button
@@ -247,17 +336,17 @@ export default function SavedFavoritesPage() {
                   }}
                   className="self-start text-sm font-semibold text-[#5f3d22] underline underline-offset-4 transition hover:text-[#2f2218] sm:self-auto"
                 >
-                  Wis filters
+                  {t("saved.clearFilters")}
                 </button>
               ) : null}
             </div>
 
             {filteredFavorites.length === 0 ? (
               <div className="rounded-[1.7rem] border border-white/70 bg-white/65 p-5 text-[#3f3429] shadow-[0_18px_42px_rgba(66,49,31,0.08)] backdrop-blur-xl sm:p-6">
-           
-                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">Geen bewaarde uitjes gevonden</h2>
+
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">{t("saved.noResults")}</h2>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d6458]">
-                  Pas je filter of zoekterm aan om weer meer van je lijst te zien.
+                  {t("saved.noResultsIntro")}
                 </p>
                 <button
                   type="button"
@@ -268,7 +357,7 @@ export default function SavedFavoritesPage() {
                   }}
                   className="mt-5 inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
                 >
-                  Toon alles
+                  {t("saved.showAll")}
                 </button>
               </div>
             ) : (
@@ -287,11 +376,11 @@ export default function SavedFavoritesPage() {
                     >
                       {available ? (
                         <Link
-                          href={getFavoriteHref(favorite)}
+                          href={getFavoriteHref(favorite, locale)}
                           className="group min-w-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
                         >
                           <div className="text-lg font-semibold tracking-[-0.02em] text-[#2f2218] transition group-hover:text-[#5f3d22]">
-                            {cleanText(favorite.title) || "Bewaard uitje"}
+                            {cleanText(favorite.title) || t("saved.fallbackTitle")}
                           </div>
                           <FavoriteMeta favorite={favorite} />
                           {cleanText(favorite.summary) ? (
@@ -300,20 +389,20 @@ export default function SavedFavoritesPage() {
                             </p>
                           ) : null}
                           <span className="mt-3 inline-flex text-sm font-semibold text-[#6b4a2d] underline underline-offset-4">
-                            Bekijk detail
+                            {t("saved.viewDetail")}
                           </span>
                         </Link>
                       ) : (
                         <div className="min-w-0 rounded-xl">
                           <div className="text-lg font-semibold tracking-[-0.02em] text-[#5b5147]">
-                            {cleanText(favorite.title) || "Bewaard uitje"}
+                            {cleanText(favorite.title) || t("saved.fallbackTitle")}
                           </div>
                           <FavoriteMeta favorite={favorite} />
                           <div className="mt-3 inline-flex rounded-full border border-[#d6c9b8] bg-[#fffaf3] px-3 py-1 text-xs font-bold  tracking-[0.14em] text-[#7a6d60]">
-                            Niet meer beschikbaar
+                            {t("saved.unavailable")}
                           </div>
                           <p className="mt-3 text-sm leading-6 text-[#6d6458]">
-                            Dit uitje is verwijderd of niet meer beschikbaar.
+                            {t("saved.unavailableIntro")}
                           </p>
                         </div>
                       )}
@@ -325,7 +414,7 @@ export default function SavedFavoritesPage() {
                           disabled={removingId === favorite.event_id}
                           className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-[#d9cec1] bg-[#fbf8f3] px-4 text-sm font-semibold text-[#5b4c3e] transition hover:bg-[#efe4d7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                         >
-                          {removingId === favorite.event_id ? "Bezig..." : "Verwijder"}
+                          {removingId === favorite.event_id ? t("saved.removing") : t("common.remove")}
                         </button>
                       </div>
                     </article>
@@ -333,6 +422,8 @@ export default function SavedFavoritesPage() {
                 })}
               </div>
             )}
+              </>
+            ) : null}
           </div>
         )}
       </div>

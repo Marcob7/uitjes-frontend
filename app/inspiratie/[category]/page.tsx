@@ -93,20 +93,27 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: PageProps) {
   const routeCategory = getRouteCategory(params.category);
+  const canonical = `/inspiratie/${encodeURIComponent(params.category)}`;
 
   return routeCategory
     ? {
-        title: `${routeCategory.label} | Uitjes`,
+        title: `${routeCategory.label} – ideeën voor een uitje | Uitjes`,
         description: routeCategory.description,
         alternates: {
-          canonical: `/inspiratie/${encodeURIComponent(params.category)}`,
+          canonical,
+        },
+        openGraph: {
+          title: `${routeCategory.label} – ideeën voor een uitje | Uitjes`,
+          description: routeCategory.description,
+          url: canonical,
         },
       }
     : {
-        title: "Inspiratie | Uitjes",
+        title: "Inspiratie niet gevonden | Uitjes",
         alternates: {
-          canonical: `/inspiratie/${encodeURIComponent(params.category)}`,
+          canonical,
         },
+        robots: { index: false, follow: true },
       };
 }
 

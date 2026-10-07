@@ -3,14 +3,13 @@
 import Link from "next/link";
 
 import { useAuth } from "@/components/AuthProvider";
-
-function getDisplayName(user: ReturnType<typeof useAuth>["user"]) {
-  return user?.first_name || user?.username || user?.email || "Je account";
-}
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 export default function AccountPageClient() {
   const { isAuthenticated, logout, status, user } = useAuth();
-  const displayName = getDisplayName(user);
+  const { locale, t } = useLocale();
+  const displayName = user?.first_name || user?.username || user?.email || t("auth.account");
 
   return (
     <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-neutral-950 sm:px-6 lg:px-8">
@@ -18,20 +17,20 @@ export default function AccountPageClient() {
         <section className="pt-4 lg:pt-10">
          
           <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.5rem)] leading-[0.95] tracking-[-0.055em]">
-            Jouw profiel
+            {t("auth.profile")}
           </h1>
           <p className="mt-5 max-w-md text-base leading-7 text-neutral-700">
-            Bekijk je loginstatus en ga snel door naar de plekken die je voor later hebt bewaard.
+            {t("auth.profileIntro")}
           </p>
           <p
             className="mt-4 inline-flex rounded-full border border-emerald-900/10 bg-white/62 px-4 py-2 text-sm font-semibold text-neutral-700"
             role={status === "checking" ? "status" : undefined}
           >
             {status === "checking"
-              ? "Accountstatus controleren"
+              ? t("auth.checking")
               : isAuthenticated
-                ? "Ingelogd"
-                : "Niet ingelogd"}
+                ? t("auth.loggedIn")
+                : t("auth.notLoggedIn")}
           </p>
         </section>
 
@@ -40,28 +39,28 @@ export default function AccountPageClient() {
           <div className="relative">
             {status === "checking" ? (
               <p className="text-sm font-medium text-neutral-700" role="status">
-                Account laden...
+                {t("auth.loadingAccount")}
               </p>
             ) : isAuthenticated && user ? (
               <div className="grid gap-7">
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">
-                    Accountstatus
+                    {t("auth.accountStatus")}
                   </p>
                   <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-neutral-950">
-                    Ingelogd als {displayName}
+                    {t("auth.loggedInAs", { name: displayName })}
                   </h2>
                   <dl className="mt-5 grid gap-3 text-sm">
                     <div className="flex flex-col gap-1 border-t border-neutral-900/10 pt-3 sm:flex-row sm:items-baseline sm:justify-between">
-                      <dt className="font-semibold text-neutral-700">Naam</dt>
+                      <dt className="font-semibold text-neutral-700">{t("auth.name")}</dt>
                       <dd className="break-words text-neutral-950">
-                        {user.first_name || user.username || "Niet ingevuld"}
+                        {user.first_name || user.username || t("auth.notProvided")}
                       </dd>
                     </div>
                     <div className="flex flex-col gap-1 border-t border-neutral-900/10 pt-3 sm:flex-row sm:items-baseline sm:justify-between">
-                      <dt className="font-semibold text-neutral-700">E-mail</dt>
+                      <dt className="font-semibold text-neutral-700">{t("auth.email")}</dt>
                       <dd className="break-words text-neutral-950">
-                        {user.email || "Niet beschikbaar"}
+                        {user.email || t("auth.notAvailable")}
                       </dd>
                     </div>
                   </dl>
@@ -69,16 +68,16 @@ export default function AccountPageClient() {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Link
-                    href="/bewaard"
+                    href={localePathname("/saved", locale)}
                     className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-neutral-950 px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(23,23,23,0.18)] transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
                   >
-                    Bekijk bewaard
+                    {t("auth.viewSaved")}
                   </Link>
                   <Link
-                    href="/faq"
+                    href={localePathname("/faq", locale)}
                     className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-neutral-200 bg-white/72 px-5 text-sm font-semibold text-neutral-800 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
                   >
-                    Naar FAQ
+                    {t("auth.goToFaq")}
                   </Link>
                 </div>
 
@@ -87,27 +86,27 @@ export default function AccountPageClient() {
                   onClick={logout}
                   className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-neutral-200 bg-white/72 px-5 text-sm font-semibold text-neutral-800 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 sm:w-auto"
                 >
-                  Uitloggen
+                  {t("auth.logout")}
                 </button>
               </div>
             ) : (
               <div className="grid gap-5">
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">
-                    Niet ingelogd
+                    {t("auth.notLoggedIn")}
                   </p>
                   <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-neutral-950">
-                    Log in om je account te bekijken
+                    {t("auth.loginToView")}
                   </h2>
                   <p className="mt-3 max-w-xl text-sm leading-6 text-neutral-600">
-                    Daarna zie je hier je accountstatus en kun je direct naar je bewaarde uitjes.
+                    {t("auth.loginToViewIntro")}
                   </p>
                 </div>
                 <Link
-                  href="/login"
+                  href={localePathname("/login", locale)}
                   className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-neutral-950 px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(23,23,23,0.18)] transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 sm:w-auto"
                 >
-                  Inloggen
+                  {t("auth.login")}
                 </Link>
               </div>
             )}

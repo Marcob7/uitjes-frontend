@@ -8,11 +8,17 @@ const CALENDAR_HERO_POSTER =
   "/videos/year-round-adventure-calendar-hero-poster.jpg";
 
 export const metadata = {
-  title: "Jaarkalender van Nederland | Uitjes NL",
+  title: "Evenementenkalender Nederland | Uitjes",
   description:
-    "Ontdek culturele hoogtepunten, festivals en evenementen in de jaarkalender van Nederland.",
+    "Bekijk per dag welke festivals, culturele hoogtepunten en evenementen er in Nederland op de agenda staan.",
   alternates: {
     canonical: "/jaarkalender",
+  },
+  openGraph: {
+    title: "Evenementenkalender Nederland | Uitjes",
+    description:
+      "Bekijk per dag welke festivals, culturele hoogtepunten en evenementen er in Nederland op de agenda staan.",
+    url: "/jaarkalender",
   },
 };
 

@@ -1,8 +1,10 @@
 "use client";
 
 import { getApiBase } from "@/lib/api";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function LoginWithGoogle() {
+  const { t } = useLocale();
   function handleLogin() {
     window.location.href = `${getApiBase()}/accounts/google/login/?process=login`;
   }
@@ -13,7 +15,7 @@ export default function LoginWithGoogle() {
       onClick={handleLogin}
       className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-neutral-200 bg-white px-5 text-sm font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] transition hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
     >
-      Login met Google
+      {t("auth.googleButton")}
     </button>
   );
 }

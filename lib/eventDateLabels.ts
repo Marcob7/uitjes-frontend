@@ -3,11 +3,10 @@ export type EventDateRange = {
   endAt?: string | Date;
 };
 
-const dutchDateFormatter = new Intl.DateTimeFormat("nl-NL", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+import { formatDate } from "@/lib/i18n/format";
+import { getCommonMessages } from "@/lib/i18n/messages";
+import { localeToIntl, type Locale } from "@/lib/i18n/config";
+
 
 function toLocalCalendarDate(value: string | Date): Date | null {
   if (typeof value === "string") {
@@ -52,25 +51,25 @@ function dateRange(range: EventDateRange) {
   };
 }
 
-function formatDateRange(start: Date, end: Date) {
-  if (isSameCalendarDate(start, end)) return dutchDateFormatter.format(start);
+function formatDateRange(start: Date, end: Date, locale: Locale) {
+  if (isSameCalendarDate(start, end)) return formatDate(start, locale);
 
   const sameYear = start.getFullYear() === end.getFullYear();
   const sameMonth = sameYear && start.getMonth() === end.getMonth();
 
   if (sameMonth) {
-    return `${start.getDate()}–${dutchDateFormatter.format(end)}`;
+    return `${start.getDate()}–${formatDate(end, locale)}`;
   }
 
   if (sameYear) {
-    const startWithoutYear = new Intl.DateTimeFormat("nl-NL", {
+    const startWithoutYear = new Intl.DateTimeFormat(localeToIntl[locale], {
       day: "numeric",
       month: "long",
     }).format(start);
-    return `${startWithoutYear}–${dutchDateFormatter.format(end)}`;
+    return `${startWithoutYear}–${formatDate(end, locale)}`;
   }
 
-  return `${dutchDateFormatter.format(start)}–${dutchDateFormatter.format(end)}`;
+  return `${formatDate(start, locale)}–${formatDate(end, locale)}`;
 }
 
 /**
@@ -95,26 +94,28 @@ function getRelevantWeekend(today: Date) {
 export function getRelativeEventLabel(
   range: EventDateRange,
   now?: Date,
+  locale: Locale = "nl",
 ): string {
   const dates = dateRange(range);
-  if (!dates) return "Datum volgt";
+  const copy = getCommonMessages(locale).date;
+  if (!dates) return copy.pending;
 
   // Rendering without a browser-local clock (for example during SSR) stays
   // honest by using the concrete date until the client supplies `now`.
-  if (!now) return formatDateRange(dates.start, dates.end);
+  if (!now) return formatDateRange(dates.start, dates.end, locale);
 
   const today = toLocalCalendarDate(now);
-  if (!today) return formatDateRange(dates.start, dates.end);
+  if (!today) return formatDateRange(dates.start, dates.end, locale);
 
-  if (dates.start <= today && dates.end >= today) return "Vandaag";
+  if (dates.start <= today && dates.end >= today) return copy.today;
 
   const tomorrow = addCalendarDays(today, 1);
-  if (isSameCalendarDate(dates.start, tomorrow)) return "Morgen";
+  if (isSameCalendarDate(dates.start, tomorrow)) return copy.tomorrow;
 
   const weekend = getRelevantWeekend(today);
   if (dates.start <= weekend.end && dates.end >= weekend.start) {
-    return "Dit weekend";
+    return copy.thisWeekend;
   }
 
-  return formatDateRange(dates.start, dates.end);
+  return formatDateRange(dates.start, dates.end, locale);
 }

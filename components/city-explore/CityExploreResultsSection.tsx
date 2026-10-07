@@ -15,6 +15,8 @@ import type {
 } from "./types";
 import type { DiscoverView } from "./discoverUrl";
 import { RESULT_FILTER_OPTIONS } from "./utils";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 const INITIAL_VISIBLE_RESULTS = 6;
 const RESULTS_INCREMENT = 6;
@@ -172,49 +174,50 @@ function ArrowLeftIcon({ className }: { className?: string }) {
   );
 }
 
-function getCompanionLabel(value: PlannerCompanion) {
+function getCompanionLabel(value: PlannerCompanion, t: (key: string) => string) {
   switch (value) {
     case "solo":
-      return "Solo";
+      return t("discover.solo");
     case "gezin":
-      return "Gezin";
+      return t("discover.family");
     case "vrienden":
-      return "Vrienden";
+      return t("discover.friends");
     default:
-      return "Date";
+      return t("discover.date");
   }
 }
 
-function getMomentLabel(value: PlannerMoment) {
+function getMomentLabel(value: PlannerMoment, t: (key: string) => string) {
   switch (value) {
     case "nu":
-      return "Nu";
+      return t("discover.now");
     case "vanavond":
-      return "Vanavond";
+      return t("discover.tonight");
     case "morgen":
-      return "Morgen";
+      return t("discover.later");
     default:
-      return "Dit weekend";
+      return t("discover.weekend");
   }
 }
 
-function getVibeLabel(value: PlannerVibe) {
+function getVibeLabel(value: PlannerVibe, t: (key: string) => string) {
   switch (value) {
     case "cultureel":
-      return "Cultureel";
+      return t("discover.culture");
     case "actief":
-      return "Actief";
+      return t("discover.active");
     case "relaxed":
-      return "Relaxed";
+      return t("discover.relaxed");
     default:
-      return "Eten & drinken";
+      return t("discover.foodDrink");
   }
 }
 
 function buildActiveFilters(
   cityLabel: string,
   plannerSelections: PlannerSelections,
-  completedStepCount: number
+  completedStepCount: number,
+  t: (key: string) => string,
 ) {
   const filters: ActiveFilter[] = [
     {
@@ -228,7 +231,7 @@ function buildActiveFilters(
   if (completedStepCount >= 1 && plannerSelections.companion) {
     filters.unshift({
       id: "companion",
-      label: getCompanionLabel(plannerSelections.companion),
+      label: getCompanionLabel(plannerSelections.companion, t),
       tone: "border-[#e5b7aa]/70 bg-[rgba(246,217,210,0.48)] text-[#4b241f] shadow-[0_10px_24px_rgba(154,80,62,0.08)] backdrop-blur-md",
       icon: HeartIcon,
       editStep: 1,
@@ -238,7 +241,7 @@ function buildActiveFilters(
   if (completedStepCount >= 2 && plannerSelections.moment) {
     filters.unshift({
       id: "moment",
-      label: getMomentLabel(plannerSelections.moment),
+      label: getMomentLabel(plannerSelections.moment, t),
       tone: "border-[#a7cdb4]/70 bg-[rgba(223,240,214,0.52)] text-[#243f2b] shadow-[0_10px_24px_rgba(57,111,72,0.08)] backdrop-blur-md",
       icon: CalendarIcon,
       editStep: 2,
@@ -248,7 +251,7 @@ function buildActiveFilters(
   if (completedStepCount >= 3 && plannerSelections.vibe) {
     filters.unshift({
       id: "vibe",
-      label: getVibeLabel(plannerSelections.vibe),
+      label: getVibeLabel(plannerSelections.vibe, t),
       tone: "border-[#e2c47d]/70 bg-[rgba(247,231,200,0.56)] text-[#4b3718] shadow-[0_10px_24px_rgba(139,98,26,0.08)] backdrop-blur-md",
       icon: SparkIcon,
       editStep: 3,
@@ -279,6 +282,7 @@ export default function CityExploreResultsSection({
   onViewChange,
   getDetailHref,
 }: CityExploreResultsSectionProps) {
+  const { locale, t } = useLocale();
   const [visibleState, setVisibleState] = useState({
     count: INITIAL_VISIBLE_RESULTS,
     resultSetKey: "",
@@ -292,7 +296,8 @@ export default function CityExploreResultsSection({
   const activeFilters = buildActiveFilters(
     cityLabel,
     plannerSelections,
-    completedStepCount
+    completedStepCount,
+    t,
   );
   const hasNoResults = filteredCards.length === 0;
   const resultSetKey = useMemo(
@@ -319,10 +324,9 @@ export default function CityExploreResultsSection({
   const hasActiveFilters = hasResultFilters || hasPlannerFilters;
   const filterModalId = "explore-filter-modal";
   const filterTitleId = "explore-filter-title";
-  const resultsLabel =
-    filteredCards.length === 1
-      ? "1 resultaat"
-      : `${filteredCards.length} resultaten`;
+  const resultsLabel = filteredCards.length === 1
+    ? t("discover.oneResult")
+    : t("discover.resultCount", { count: filteredCards.length });
   const selectionLabels = selectionLabelsOverride ?? activeFilters
     .filter((filter) => filter.id !== "city")
     .map((filter) => filter.label);
@@ -455,7 +459,7 @@ export default function CityExploreResultsSection({
               tabIndex={-1}
               className="text-[clamp(2.25rem,3.2vw,3.5rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]"
             >
-              Uitjes in {cityLabel}
+              {t("discover.cityTitle", { city: cityLabel })}
             </h1>
             <p className="mt-2 text-sm font-medium text-[#65736C] sm:text-base">
               {resultsLabel}
@@ -469,7 +473,7 @@ export default function CityExploreResultsSection({
               onClick={() => onEditSelection(1)}
               className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#DCE1DC] bg-white px-5 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
             >
-              Keuzes aanpassen
+              {t("discover.editChoices")}
             </button>
             <button
               ref={filterButtonRef}
@@ -484,7 +488,7 @@ export default function CityExploreResultsSection({
               }`}
             >
               <FilterIcon className="h-4 w-4" />
-              <span>Filters</span>
+              <span>{t("search.filters")}</span>
               {hasResultFilters ? (
                 <span className="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#1D5A46] px-1.5 text-xs font-bold text-white">
                   {resultFilters.length}
@@ -499,7 +503,7 @@ export default function CityExploreResultsSection({
           onClick={() => changeView("map")}
           className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#9DBAAE] bg-[#DDEBE2] px-5 py-2.5 text-sm font-semibold text-[#1D5A46] lg:hidden"
         >
-          <PinIcon className="h-4 w-4" /> Kaart bekijken
+          <PinIcon className="h-4 w-4" /> {t("discover.mapView")}
         </button>
 
         {isFilterModalOpen ? (
@@ -509,7 +513,7 @@ export default function CityExploreResultsSection({
           >
             <button
               type="button"
-              aria-label="Filtervenster sluiten"
+              aria-label={t("discover.closeFilters")}
               className="absolute inset-0 bg-black/40"
               onClick={closeFilters}
             />
@@ -528,17 +532,17 @@ export default function CityExploreResultsSection({
                     id={filterTitleId}
                     className="text-2xl font-semibold leading-none tracking-[-0.03em] text-[#171511]"
                   >
-                    Filters
+                    {t("search.filters")}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-[#665d54]">
-                    Verfijn de resultaten voor {cityLabel}.
+                    {t("discover.filterIntro", { city: cityLabel })}
                   </p>
                 </div>
                 <button
                   ref={closeButtonRef}
                   type="button"
                   onClick={closeFilters}
-                  aria-label="Filtervenster sluiten"
+                  aria-label={t("discover.closeFilters")}
                   className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#dfd4c6] bg-white/72 text-[#4b3a28] shadow-[0_10px_22px_rgba(83,65,45,0.08)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449]"
                 >
                   <CloseIcon className="h-5 w-5" />
@@ -547,7 +551,7 @@ export default function CityExploreResultsSection({
 
               <fieldset className="mt-6 space-y-3">
                 <legend className="text-sm font-semibold text-[#4b3a28]">
-                  Filteropties
+                  {t("discover.filterOptions")}
                 </legend>
                 {RESULT_FILTER_OPTIONS.map((filter) => {
                   const checked = draftResultFilters.includes(filter.id);
@@ -572,7 +576,7 @@ export default function CityExploreResultsSection({
                           <span>{filter.label}</span>
                           {checked ? (
                             <span className="rounded-full bg-[#405028] px-2 py-0.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white">
-                              Actief
+                              {t("discover.active")}
                             </span>
                           ) : null}
                         </span>
@@ -591,14 +595,14 @@ export default function CityExploreResultsSection({
                   onClick={clearFilters}
                   className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#d6c9b8] bg-white/68 px-5 py-2.5 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
                 >
-                  Wissen
+                  {t("common.clear")}
                 </button>
                 <button
                   type="button"
                   onClick={applyFilters}
                   className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#cfe2a6] bg-[#e8f2d0] px-5 py-2.5 text-sm font-semibold text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
                 >
-                  Toepassen
+                  {t("discover.apply")}
                 </button>
               </div>
             </div>
@@ -609,7 +613,7 @@ export default function CityExploreResultsSection({
           <div>
             {isLoadingResults ? (
               <div className="border-y border-[#DCE1DC] py-10 text-sm leading-6 text-[#65736C]" role="status">
-                We vullen deze selectie met actuele stadssuggesties.
+                {t("discover.loadingResults")}
               </div>
             ) : (
               <div className="grid gap-5 border-y border-[#DCE1DC] py-5 sm:grid-cols-2">
@@ -628,7 +632,7 @@ export default function CityExploreResultsSection({
         {hasExpandableResults && !hasNoResults && !isLoadingResults ? (
           <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-medium text-[#786d63]">
-              {visibleResultCount} van {filteredCards.length} resultaten
+              {t("discover.visibleCount", { visible: visibleResultCount, total: filteredCards.length })}
             </p>
             {hasMoreResults ? (
               <button
@@ -636,11 +640,11 @@ export default function CityExploreResultsSection({
                 onClick={handleShowMoreResults}
                 className="inline-flex w-full items-center justify-center rounded-full border border-[#d6c9b8] bg-white/68 px-4 py-2.5 text-sm font-medium text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:w-auto"
               >
-                Meer resultaten tonen
+                {t("discover.showMore")}
               </button>
             ) : (
               <p className="text-sm font-medium text-[#786d63]">
-                Alle resultaten getoond
+                {t("discover.allShown")}
               </p>
             )}
           </div>
@@ -651,13 +655,13 @@ export default function CityExploreResultsSection({
            
             <h3 className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#171511]">
               {hasActiveFilters
-                ? `Geen resultaten gevonden in ${cityLabel} met deze filters`
-                : `Geen resultaten gevonden in ${cityLabel}`}
+                ? t("discover.noResultsFiltered", { city: cityLabel })
+                : t("discover.noResults", { city: cityLabel })}
             </h3>
             <p className="mt-3 max-w-[40rem] text-sm leading-7 text-[#665d54] sm:text-base">
               {hasActiveFilters
-                ? `Pas je filters aan of bekijk alle resultaten in ${cityLabel}.`
-                : `Kies een andere stad of probeer later opnieuw voor ${cityLabel}.`}
+                ? t("discover.noResultsFilteredIntro", { city: cityLabel })
+                : t("discover.noResultsIntro", { city: cityLabel })}
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               {hasActiveFilters ? (
@@ -666,14 +670,14 @@ export default function CityExploreResultsSection({
                   onClick={onClearAllFilters}
                   className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#cfe2a6] bg-[#e8f2d0] px-5 py-2.5 text-sm font-semibold text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
                 >
-                  Bekijk alle resultaten in {cityLabel}
+                  {t("discover.allCityResults", { city: cityLabel })}
                 </button>
               ) : null}
               <a
-                href="/ontdek"
+                href={localePathname("/ontdek", locale)}
                 className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#d6c9b8] bg-white/68 px-5 py-2.5 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
               >
-                Kies een andere stad
+                {t("discover.chooseCity")}
               </a>
             </div>
           </div>
@@ -699,7 +703,7 @@ export default function CityExploreResultsSection({
             className="fixed inset-0 z-[1200] bg-[#F6F5F0] px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:hidden"
             role="dialog"
             aria-modal="true"
-            aria-label={`Kaart van ${cityLabel}`}
+            aria-label={t("discover.mapOf", { city: cityLabel })}
           >
             <div className="mb-3 flex flex-col items-start gap-4 px-1">
               <button
@@ -708,9 +712,9 @@ export default function CityExploreResultsSection({
                 className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#B7C7BE] bg-[#FFFEFA] px-4 py-2.5 text-sm font-bold text-[#1D5A46] shadow-[0_8px_20px_rgba(29,90,70,0.18)] transition hover:bg-[#F1F7F2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
               >
                 <ArrowLeftIcon className="h-4 w-4 shrink-0" />
-                <span>Terug naar lijst</span>
+                <span>{t("discover.backToList")}</span>
               </button>
-              <h2 className="px-1 text-sm font-semibold text-[#526159]">{cityLabel} op de kaart</h2>
+              <h2 className="px-1 text-sm font-semibold text-[#526159]">{t("discover.onMap", { city: cityLabel })}</h2>
             </div>
             <div className="h-[calc(100dvh-7.25rem-max(0px,env(safe-area-inset-top)))]">
               <CityExploreMapSection cityLabel={cityLabel} events={contextualDisplayedCards} selectedId={selectedId} setSelectedId={onMapSelectCard ?? onSelectCard} layout="embedded" fullHeight />

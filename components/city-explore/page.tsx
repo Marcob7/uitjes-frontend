@@ -24,6 +24,8 @@ import {
   getDiscoverUrlState,
   type DiscoverView,
 } from "./discoverUrl";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 const PLANNER_STEP_COUNT = 3;
 
@@ -32,6 +34,7 @@ export default function CityExplorePage({
   events,
   useEventFallback = true,
 }: CityExploreViewProps) {
+  const { locale } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const discoverQuery = searchParams.toString();
@@ -273,14 +276,14 @@ export default function CityExplorePage({
           view={urlState.view}
           onViewChange={handleViewChange}
           getDetailHref={(href) =>
-            buildDiscoverDetailHref(href, {
+            localePathname(buildDiscoverDetailHref(href, {
               city,
               plannerSelections,
               resultFilters,
               isResultsOpen: true,
               view: urlState.view,
               selectedId,
-            })
+            }), locale)
           }
       />
       {isFlowOpen ? (

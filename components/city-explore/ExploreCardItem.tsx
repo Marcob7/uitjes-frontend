@@ -3,6 +3,9 @@
 import Link from "next/link";
 
 import FavouriteButton from "@/components/FavouriteButton";
+import SavePlaceButton from "@/components/SavePlaceButton";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localeToIntl } from "@/lib/i18n/config";
 
 import type { ExploreCard } from "./types";
 
@@ -89,7 +92,25 @@ function ArrowIcon() {
   return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h13M13 7l5 5-5 5" /></svg>;
 }
 
-function formatReviewSummary(card: ExploreCard) {
+function HeartIcon({ filled = false }: { filled?: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className={`h-3.5 w-3.5 ${filled ? "fill-current" : "fill-none"}`}
+    >
+      <path
+        d="M12 20.2c-.3 0-.6-.1-.8-.3C5.6 15 3 12.3 3 8.9 3 6.1 5.1 4 7.8 4c1.6 0 3.1.8 4.2 2.1C13.1 4.8 14.6 4 16.2 4 18.9 4 21 6.1 21 8.9c0 3.4-2.6 6.1-8.2 11-.2.2-.5.3-.8.3Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function formatReviewSummary(card: ExploreCard, locale: "nl" | "en", t: (key: string, values?: Record<string, string | number>) => string) {
   const value = card.ratingValue;
   const reviewCount = card.reviewCount;
   if (
@@ -100,16 +121,16 @@ function formatReviewSummary(card: ExploreCard) {
     reviewCount <= 0
   ) return null;
 
-  const rating = new Intl.NumberFormat("nl-NL", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
-  const reviews = `${new Intl.NumberFormat("nl-NL").format(reviewCount)} ${reviewCount === 1 ? "review" : "reviews"}`;
+  const rating = new Intl.NumberFormat(localeToIntl[locale], { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
+  const reviews = t("discover.reviews", { count: new Intl.NumberFormat(localeToIntl[locale]).format(reviewCount) });
   return { rating, reviews, reviewCount, title: card.ratingSource ? `${rating} · ${reviews} via ${card.ratingSource}` : `${rating} · ${reviews}` };
 }
 
-function getHighlightLabel(card: ExploreCard) {
-  if (card.editorsPick) return "Redactietip";
-  if (card.featured) return "Uitgelicht";
-  if (card.hiddenGem) return "Verborgen tip";
-  if ((card.priorityScore ?? 0) >= 80) return "Aanrader";
+function getHighlightLabel(card: ExploreCard, t: (key: string) => string) {
+  if (card.editorsPick) return t("discover.editorsPick");
+  if (card.featured) return t("discover.featured");
+  if (card.hiddenGem) return t("discover.hiddenGem");
+  if ((card.priorityScore ?? 0) >= 80) return t("discover.recommended");
   return null;
 }
 
@@ -119,14 +140,22 @@ export default function ExploreCardItem({
   onSelect,
   variant = "default",
 }: ExploreCardItemProps) {
-  const reviewSummary = formatReviewSummary(card);
-  const highlight = getHighlightLabel(card);
+  const { locale, t } = useLocale();
+  const reviewSummary = formatReviewSummary(card, locale, t);
+  const highlight = getHighlightLabel(card, t);
   const eventId = typeof card.eventId === "number" && card.eventId > 0 ? card.eventId : null;
   const activityIcon = getExploreActivityIcon(card);
   const metadata = [
     card.location,
     card.time && card.time !== "Tijd volgt" ? card.time : null,
   ].filter(Boolean);
+  const fallbackSaveItem = {
+    id: `ontdek:${card.id}`,
+    title: card.title,
+    href: card.href,
+    meta: metadata.join(" · "),
+    image: card.image ?? undefined,
+  };
 
   const isFlowVariant = variant === "flow";
 
@@ -153,7 +182,7 @@ export default function ExploreCardItem({
             href={card.href}
             onFocus={onSelect}
             onClick={onSelect}
-            aria-label={`Bekijk ${card.title}`}
+            aria-label={t("discover.viewItem", { title: card.title })}
             className="col-span-full grid min-w-0 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)] sm:gap-x-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC]"
           >
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DDEBE2] text-[#1D5A46]" aria-hidden="true">
@@ -198,7 +227,7 @@ export default function ExploreCardItem({
                 <Link
                   href={card.reviewsHref}
                   onFocus={onSelect}
-                  aria-label={`Bekijk ${reviewSummary.reviews} voor ${card.title}`}
+                  aria-label={t("discover.viewReviews", { reviews: reviewSummary.reviews, title: card.title })}
                   className="truncate underline decoration-[#AEB9B1] underline-offset-4 transition hover:text-[#1D5A46] hover:decoration-[#1D5A46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
                 >
                   {reviewSummary.reviews}
@@ -210,15 +239,27 @@ export default function ExploreCardItem({
           ) : null}
         </div>
         <div className="flex shrink-0 flex-col items-end gap-2">
-          {eventId ? <FavouriteButton eventId={eventId} variant="compact" /> : null}
+          {eventId ? (
+            <FavouriteButton eventId={eventId} variant="compact" />
+          ) : (
+            <SavePlaceButton
+              item={fallbackSaveItem}
+              className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-white/18 bg-[#f7f1e8]/94 px-3 text-xs font-semibold text-[#211a14] shadow-[0_10px_26px_rgba(0,0,0,0.16)] backdrop-blur-md transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8f2d0]/80 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-10 sm:px-3.5"
+              savedClassName="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#c8dc9a]/90 bg-[#e8f2d0] px-3 text-xs font-semibold text-[#162016] shadow-[0_10px_26px_rgba(0,0,0,0.16)] backdrop-blur-md transition hover:bg-[#f1f7df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8f2d0]/80 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-10 sm:px-3.5"
+              savedChildren={<><HeartIcon filled /><span>{t("discover.saved")}</span></>}
+            >
+              <HeartIcon />
+              <span>{t("discover.save")}</span>
+            </SavePlaceButton>
+          )}
           <Link
             href={card.href}
             onFocus={onSelect}
             onClick={onSelect}
-            aria-label={`Bekijk ${card.title}`}
+            aria-label={t("discover.viewItem", { title: card.title })}
             className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1D5A46] px-4 text-sm font-semibold text-white transition group-hover:bg-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
           >
-            Bekijk <ArrowIcon />
+            {t("discover.view")} <ArrowIcon />
           </Link>
         </div>
       </div>

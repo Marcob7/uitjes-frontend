@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import CalendarActions from "@/components/calendar/CalendarActions";
+import ShareAction from "@/components/ShareAction";
 import type { CalendarEventInput } from "@/lib/calendarIntegration";
 import { getRelativeEventLabel, type EventDateRange } from "@/lib/eventDateLabels";
 
@@ -514,7 +515,7 @@ function TimelineCard({ moment, now }: { moment: UpcomingMoment; now?: Date }) {
         <p className="text-sm font-medium leading-5 tracking-normal text-[#a05c3a]">{dateLabel}</p>
         <h3 className="mt-3 text-[1.45rem] font-medium leading-[0.98] tracking-[-0.045em] text-[#1e2b21]">{moment.title}</h3>
         <p className="mt-3 inline-flex items-center gap-2 text-sm text-[#6d776b]"><PinIcon /> {moment.location}</p>
-        {moment.calendar ? <div className="mt-5"><CalendarActions event={moment.calendar} /></div> : null}
+        {moment.calendar ? <div className="mt-5 flex flex-wrap gap-2"><CalendarActions event={moment.calendar} /><ShareAction title={moment.title} text={`Bekijk “${moment.title}” op Uitjes.`} url={moment.calendar.url || "/event-details"} /></div> : null}
       </div>
     </article>
   );

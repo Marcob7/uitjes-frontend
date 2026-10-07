@@ -1,8 +1,15 @@
 export const metadata = {
-  title: "Festival kalender Nederland | Uitjes",
-  description: "Bekijk festivals in Nederland op een kalender.",
+  title: "Festivalagenda Nederland | Uitjes",
+  description:
+    "Bekijk festivals in Nederland per datum en ontdek waar je de komende tijd naartoe kunt.",
   alternates: {
     canonical: "/festivals/kalender",
+  },
+  openGraph: {
+    title: "Festivalagenda Nederland | Uitjes",
+    description:
+      "Bekijk festivals in Nederland per datum en ontdek waar je de komende tijd naartoe kunt.",
+    url: "/festivals/kalender",
   },
 };
 

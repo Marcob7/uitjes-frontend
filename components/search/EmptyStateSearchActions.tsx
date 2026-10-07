@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { AppButton, AppSearchInput } from "@/components/ui/app";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 import { cityOptions } from "@/lib/cityConfig";
 import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
 
@@ -17,10 +19,11 @@ export default function EmptyStateSearchActions({
   showBackButton = true,
 }: EmptyStateSearchActionsProps) {
   const router = useRouter();
+  const { locale, t } = useLocale();
   const [query, setQuery] = useState(initialQuery);
 
   const citySuggestions = useMemo(() => {
-    const normalizedQuery = normalizeSearchQuery(query).toLocaleLowerCase("nl-NL");
+    const normalizedQuery = normalizeSearchQuery(query).toLowerCase();
 
     if (!normalizedQuery) {
       return [];
@@ -28,7 +31,7 @@ export default function EmptyStateSearchActions({
 
     return cityOptions
       .filter((city) =>
-        normalizeSearchQuery(city.label).toLocaleLowerCase("nl-NL").includes(normalizedQuery)
+        normalizeSearchQuery(city.label).toLowerCase().includes(normalizedQuery)
       )
       .slice(0, 3)
       .map((city) => ({ label: city.label, value: city.label }));
@@ -38,7 +41,7 @@ export default function EmptyStateSearchActions({
     const route = getSearchRoute(nextQuery);
 
     if (route) {
-      router.push(route);
+      router.push(localePathname(route, locale));
     }
   }
 
@@ -50,8 +53,8 @@ export default function EmptyStateSearchActions({
         onSubmit={submitSearch}
         suggestions={citySuggestions}
         onSuggestionSelect={(suggestion) => submitSearch(suggestion.value ?? suggestion.label)}
-        placeholder="Zoek opnieuw op stad, activiteit of festival"
-        submitLabel="Zoek"
+        placeholder={t("search.placeholder")}
+        submitLabel={t("search.submit")}
         className="text-left"
       />
 
@@ -64,17 +67,17 @@ export default function EmptyStateSearchActions({
             onClick={() => router.back()}
             className="w-full sm:w-auto"
           >
-            Terug
+            {t("common.back")}
           </AppButton>
         ) : null}
-        <AppButton href="/ontdek" variant="dark" size="sm" className="w-full sm:w-auto">
-          Zoek op een stad
+        <AppButton href={localePathname("/ontdek", locale)} variant="dark" size="sm" className="w-full sm:w-auto">
+          {t("search.linkCityTitle")}
         </AppButton>
-        <AppButton href="/inspiratie" variant="dark" size="sm" className="w-full sm:w-auto">
-          Bekijk inspiratie
+        <AppButton href={localePathname("/inspiratie", locale)} variant="dark" size="sm" className="w-full sm:w-auto">
+          {t("navigation.inspiration")}
         </AppButton>
-        <AppButton href="/uitjes" variant="dark" size="sm" className="w-full sm:w-auto">
-          Populaire categorieen
+        <AppButton href={localePathname("/uitjes", locale)} variant="dark" size="sm" className="w-full sm:w-auto">
+          {t("search.popular")}
         </AppButton>
       </div>
     </div>

@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 import {
   detectSearchIntent,
@@ -32,6 +34,7 @@ function SearchIcon() {
 
 export default function HomeVideoSection() {
   const router = useRouter();
+  const { locale, t } = useLocale();
   const inputRef = useRef<HTMLInputElement>(null);
   const isNavigatingRef = useRef(false);
   const [query, setQuery] = useState("");
@@ -46,7 +49,7 @@ export default function HomeVideoSection() {
     const normalizedQuery = normalizeSearchQuery(query);
 
     if (!normalizedQuery) {
-      setError("Vul een stad in.");
+      setError(t("home.cityRequired"));
       inputRef.current?.focus();
       return;
     }
@@ -55,7 +58,7 @@ export default function HomeVideoSection() {
     const intent = detectSearchIntent(normalizedQuery);
 
     if (!citySlug && intent === "onbekend") {
-      setError("Deze plaats ondersteunen we nog niet.");
+      setError(t("home.cityUnsupported"));
       inputRef.current?.focus();
       return;
     }
@@ -70,7 +73,7 @@ export default function HomeVideoSection() {
     setQuery(normalizedQuery);
     isNavigatingRef.current = true;
     setIsNavigating(true);
-    router.push(route);
+    router.push(localePathname(route, locale));
   }
 
   return (
@@ -109,13 +112,12 @@ export default function HomeVideoSection() {
           style={{ maxInlineSize: "none" }}
           className="m-0 max-w-none !text-[clamp(3.15rem,5.2vw,4.125rem)] font-medium !leading-[0.985] tracking-[-0.058em] text-white [text-shadow:0_3px_24px_rgba(0,0,0,0.22)]"
         >
-          <span className="block">Vind jouw volgende</span>
-          <span className="block">avontuur in Nederland.</span>
+          <span className="block">{t("home.heroTitleFirst")}</span>
+          <span className="block">{t("home.heroTitleSecond")}</span>
         </h1>
 
         <p className="mt-5 max-w-[35rem] text-[15px] leading-[1.55] tracking-[-0.01em] text-white/78 sm:mt-[22px] sm:text-[15.5px]">
-          Vind activiteiten, festivals en bijzondere plekken die passen bij jouw
-          moment — dichtbij of net daarbuiten.
+          {t("home.heroIntro")}
         </p>
 
         <form
@@ -127,7 +129,7 @@ export default function HomeVideoSection() {
           <div className="flex h-[58px] w-full items-center rounded-full bg-[#f0f1f3] p-2 pl-5 text-[#171b1c] shadow-[0_16px_42px_rgba(0,0,0,0.22)] sm:pl-6">
             <SearchIcon />
             <label htmlFor="home-video-search" className="sr-only">
-              Zoek een locatie, festival of activiteit
+              {t("home.heroSearchLabel")}
             </label>
             <input
               ref={inputRef}
@@ -138,7 +140,7 @@ export default function HomeVideoSection() {
                 setQuery(event.target.value);
                 setError(null);
               }}
-              placeholder="Zoek op stad, festival of activiteit"
+              placeholder={t("home.heroSearchPlaceholder")}
               autoComplete="off"
               enterKeyHint="search"
               spellCheck={false}
@@ -152,7 +154,7 @@ export default function HomeVideoSection() {
               disabled={isNavigating}
               className="inline-flex h-[42px] shrink-0 items-center justify-center rounded-full bg-[#111516] px-[19px] text-[13px] font-semibold text-white outline-none transition duration-200 hover:bg-[#252c2d] focus-visible:ring-2 focus-visible:ring-[#111516] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f0f1f3] active:scale-[0.98] disabled:cursor-wait disabled:opacity-75 sm:px-[21px]"
             >
-              Zoek nu
+              {t("home.searchNow")}
             </button>
           </div>
           {error ? (

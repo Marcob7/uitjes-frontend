@@ -1,9 +1,11 @@
 "use client";
 
 import SearchForm from "@/components/search/SearchForm";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 
 export default function SearchError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const { t } = useLocale();
   const params = new URLSearchParams(window.location.search);
   const query = normalizeSearchQuery(params.get("query") ?? params.get("q"));
 
@@ -13,7 +15,7 @@ export default function SearchError({ reset }: { error: Error & { digest?: strin
         <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-28 sm:px-6 sm:pb-12 sm:pt-32 lg:px-8">
           <div className="max-w-4xl">
       
-            <h1 className="mt-3 font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">Zoeken</h1>
+            <h1 className="mt-3 font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">{t("search.title")}</h1>
             <div className="mt-7 max-w-3xl">
               <SearchForm initialQuery={query} />
             </div>
@@ -25,17 +27,17 @@ export default function SearchError({ reset }: { error: Error & { digest?: strin
         <div className="search-empty-state max-w-2xl" role="alert" aria-labelledby="search-error-heading">
       
           <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">
-            Zoeken lukt op dit moment niet
+            {t("search.errorTitle")}
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">
-            Er ging iets mis bij het ophalen van de resultaten. Probeer het opnieuw.
+            {t("search.errorIntro")}
           </p>
           <button
             type="button"
             onClick={reset}
             className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#1d5a46] px-5 text-sm font-semibold text-white outline-none transition hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc]"
           >
-            Opnieuw proberen
+            {t("common.retry")}
           </button>
         </div>
       </section>

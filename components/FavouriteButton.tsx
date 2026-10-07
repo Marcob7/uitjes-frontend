@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useState, type MouseEvent } from "react";
 
-import { useAuth } from "@/components/AuthProvider";
 import { useFavorites } from "@/components/FavouritesProvider";
+import { useSaveAuthentication } from "@/components/useSaveAuthentication";
+import { useSaveFeedback } from "@/components/SaveFeedbackProvider";
 import { getCommonMessages } from "@/lib/i18n/messages";
 
 type FavouriteButtonProps = {
@@ -52,22 +52,23 @@ export default function FavouriteButton({
   className,
   savedClassName,
 }: FavouriteButtonProps) {
-  const { isAuthenticated, status } = useAuth();
+  const {
+    isAuthenticated,
+    isChecking,
+    redirectToLogin,
+    stopCardNavigation,
+  } = useSaveAuthentication();
   const { loading, isFavorite, add, remove } = useFavorites();
+  const { showSaveFeedback } = useSaveFeedback();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const saved = isFavorite(eventId);
+  const saved = isAuthenticated && isFavorite(eventId);
+  const isLoading = isChecking || (isAuthenticated && loading);
   const isCompact = variant === "compact";
   const buttonClassName =
     className ?? (isCompact ? compactClassName : defaultClassName);
   const savedButtonClassName =
     savedClassName ?? (isCompact ? compactSavedClassName : defaultSavedClassName);
-
-  function stopCardNavigation(event: MouseEvent<HTMLElement>) {
-    if (!isCompact) return;
-
-    event.stopPropagation();
-  }
 
   async function toggleFavorite(event: MouseEvent<HTMLButtonElement>) {
     stopCardNavigation(event);
@@ -83,70 +84,60 @@ export default function FavouriteButton({
             ? copy.sessionExpired
             : copy.saveFailed
         );
+      } else {
+        showSaveFeedback(saved ? "removed" : "added");
       }
     } finally {
       setBusy(false);
     }
   }
 
-  if (status === "checking" || loading) {
-    return (
-      <button type="button" className={buttonClassName} disabled>
-        {isCompact ? (
-          <>
-            <HeartIcon />
-            <span>...</span>
-          </>
-        ) : (
-          copy.loading
-        )}
-      </button>
-    );
+  function handleClick(event: MouseEvent<HTMLButtonElement>) {
+    if (isLoading || busy) {
+      stopCardNavigation(event);
+      return;
+    }
+
+    if (!isAuthenticated) {
+      redirectToLogin(event);
+      return;
+    }
+
+    void toggleFavorite(event);
   }
 
-  if (!isAuthenticated) {
-    return (
-      <Link href="/login" className={buttonClassName} onClick={stopCardNavigation}>
-        {isCompact ? (
-          <>
-            <HeartIcon />
-            <span>{copy.save}</span>
-          </>
-        ) : (
-          copy.loginToSave
-        )}
-      </Link>
-    );
-  }
-
-  return (
-    <div className="grid gap-2">
-      <button
-        type="button"
-        onClick={toggleFavorite}
-        disabled={busy}
-        aria-pressed={saved}
-        aria-label={saved ? copy.ariaRemove : copy.ariaSave}
-        className={saved ? savedButtonClassName : buttonClassName}
-      >
-        {isCompact ? (
-          <>
-            <HeartIcon filled={saved} />
-            <span>{busy ? "..." : saved ? copy.saved : copy.save}</span>
-          </>
-        ) : busy ? (
-          copy.loading
-        ) : saved ? (
-          copy.saved
-        ) : (
-          copy.save
-        )}
-      </button>
-      {message ? (
-        <p role="status" aria-live="polite" className="rounded-2xl bg-[#fff7f0] px-3 py-2 text-xs leading-5 text-[#8a3f2d]">
-          {message}
-        </p>
-      ) : null}
-    </div>
+  const button = (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={isLoading || busy}
+      aria-pressed={saved}
+      aria-label={saved ? copy.ariaRemove : copy.ariaSave}
+      className={saved ? savedButtonClassName : buttonClassName}
+    >
+      {isCompact ? (
+        <>
+          <HeartIcon filled={saved} />
+          <span>{busy ? "..." : saved ? copy.saved : copy.save}</span>
+        </>
+      ) : isLoading || busy ? (
+        isAuthenticated ? copy.loading : copy.loginToSave
+      ) : !isAuthenticated ? (
+        copy.loginToSave
+      ) : saved ? (
+        copy.saved
+      ) : (
+        copy.save
+      )}
+    </button>
   );
+
+  return message ? (
+    <div className="grid gap-2">
+      {button}
+      <p role="status" aria-live="polite" className="rounded-2xl bg-[#fff7f0] px-3 py-2 text-xs leading-5 text-[#8a3f2d]">
+        {message}
+      </p>
+    </div>
+  ) : button;
 }

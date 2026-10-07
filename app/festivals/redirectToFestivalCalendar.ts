@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { localePathname, type Locale } from "@/lib/i18n/config";
 
 export type FestivalRedirectSearchParams = Record<
   string,
@@ -6,7 +7,8 @@ export type FestivalRedirectSearchParams = Record<
 >;
 
 export function redirectToFestivalCalendar(
-  searchParams: FestivalRedirectSearchParams = {}
+  searchParams: FestivalRedirectSearchParams = {},
+  locale: Locale = "nl",
 ) {
   const params = new URLSearchParams();
 
@@ -20,9 +22,6 @@ export function redirectToFestivalCalendar(
 
   const queryString = params.toString();
 
-  redirect(
-    queryString
-      ? `/festivals/kalender?${queryString}`
-      : "/festivals/kalender"
-  );
+  const pathname = localePathname("/festivals/kalender", locale);
+  redirect(queryString ? `${pathname}?${queryString}` : pathname);
 }

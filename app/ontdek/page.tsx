@@ -12,6 +12,9 @@ import {
 } from "@/lib/api/cityContent";
 import { isCityContentCity } from "@/lib/cityContentCities";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
+import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
+import { localePathname } from "@/lib/i18n/config";
 
 type OntdekPageProps = {
   searchParams?: {
@@ -28,6 +31,8 @@ function getDisplayCity(city: string) {
 }
 
 export function generateMetadata({ searchParams }: OntdekPageProps): Metadata {
+  const locale = getRequestLocale();
+  const pathname = getRequestPathname();
   const cityFromQuery = getCitySlugFromQuery(searchParams?.query);
   const city = searchParams?.city
     ? normalizeCity(searchParams.city)
@@ -37,21 +42,28 @@ export function generateMetadata({ searchParams }: OntdekPageProps): Metadata {
 
   if (city) {
     const cityLabel = getDisplayCity(city);
+    const localizedPathname = `${pathname}?city=${encodeURIComponent(city)}`;
 
     return {
-      title: `Wat te doen in ${cityLabel} | Uitjes en activiteiten`,
-      description: `Ontdek uitjes, activiteiten, evenementen en restaurants in ${cityLabel}.`,
-      alternates: {
-        canonical: `/ontdek?city=${encodeURIComponent(city)}`,
+      title: `Uitjes in ${cityLabel} | Activiteiten en evenementen`,
+      description: `Ontdek activiteiten, evenementen en plekken om uit te gaan in ${cityLabel}. Bekijk wat er vandaag en binnenkort te doen is.`,
+      alternates: getLocaleAlternates(localizedPathname, locale),
+      openGraph: {
+        title: `Uitjes in ${cityLabel} | Activiteiten en evenementen`,
+        description: `Ontdek activiteiten, evenementen en plekken om uit te gaan in ${cityLabel}.`,
+        ...getLocaleOpenGraph(locale, localizedPathname),
       },
     };
   }
 
   return {
-    title: "Ontdek uitjes in Nederland",
-    description: "Zoek leuke activiteiten, evenementen en restaurants per stad.",
-    alternates: {
-      canonical: "/ontdek",
+    title: "Uitjes en activiteiten per stad | Uitjes",
+    description: "Ontdek leuke activiteiten, evenementen en adressen in Nederlandse steden. Kies een stad en bekijk wat er te doen is.",
+    alternates: getLocaleAlternates(pathname, locale),
+    openGraph: {
+      title: "Uitjes en activiteiten per stad | Uitjes",
+      description: "Ontdek leuke activiteiten, evenementen en adressen in Nederlandse steden.",
+      ...getLocaleOpenGraph(locale, pathname),
     },
   };
 }
@@ -156,7 +168,7 @@ export default function OntdekPage({ searchParams }: OntdekPageProps) {
   const cityFromQuery = getCitySlugFromQuery(query);
 
   if (query && !searchParams?.city && !cityFromQuery) {
-    redirect(`/zoeken?query=${encodeURIComponent(query)}`);
+    redirect(`${localePathname("/zoeken", getRequestLocale())}?query=${encodeURIComponent(query)}`);
   }
 
   const city = normalizeCity(searchParams?.city ?? cityFromQuery ?? undefined);

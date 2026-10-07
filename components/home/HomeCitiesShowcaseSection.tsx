@@ -8,6 +8,8 @@ import {
   useRef,
 } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 type ShowcaseCity = {
   name: string;
@@ -112,6 +114,7 @@ function MunicipalityLogo({ city }: { city: ShowcaseCity }) {
 }
 
 export default function HomeCitiesShowcaseSection() {
+  const { locale, t } = useLocale();
   const carouselRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -177,10 +180,10 @@ export default function HomeCitiesShowcaseSection() {
       >
         <div className="mb-14 lg:mb-16">
           <h2 id="cities-showcase-title" className="sr-only">
-            Steden en gemeenten ontdekken
+            {t("home.citiesTitle")}
           </h2>
           <p className="text-[0.8rem] font-semibold tracking-[-0.018em] text-[#6a2a2a] sm:text-sm">
-            Ontdek uitjes in samenwerking met gemeentes door heel Nederland
+            {t("home.citiesIntro")}
           </p>
         </div>
 
@@ -194,7 +197,7 @@ export default function HomeCitiesShowcaseSection() {
             <div
               ref={carouselRef}
               className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-[26px]"
-              aria-label="Steden en gemeenten"
+              aria-label={t("home.citiesLabel")}
             >
               {showcaseCities.map((city, index) => (
                 <motion.div
@@ -210,8 +213,8 @@ export default function HomeCitiesShowcaseSection() {
                   className="flex-none snap-start basis-[84vw] sm:basis-[65vw] lg:basis-[460px]"
                 >
                   <Link
-                    href={`/ontdek?city=${city.slug}`}
-                    aria-label={`Ontdek uitjes in ${city.name}`}
+                    href={`${localePathname("/ontdek", locale)}?city=${city.slug}`}
+                    aria-label={t("home.cityLink", { city: city.name })}
                     className="group flex aspect-[3/2] w-full items-center justify-center rounded-[0.65rem] bg-[#F3F0E9] px-6 transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-[#ebe8e0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.99]"
                   >
                     <MunicipalityLogo city={city} />
@@ -227,7 +230,7 @@ export default function HomeCitiesShowcaseSection() {
             type="button"
             onClick={() => scrollCarousel("previous")}
             className="inline-flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-[0.6rem] border border-[#ece8e5] bg-white text-[#5a4c47] transition-[transform,background-color,border-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-[#6a2a2a] hover:text-[#6a2a2a] hover:shadow-[0_8px_18px_rgba(100,48,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.96]"
-            aria-label="Toon vorige steden"
+            aria-label={t("home.previousCities")}
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-4 w-4">
               <path d="m14.5 6.5-5.25 5.5 5.25 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -238,7 +241,7 @@ export default function HomeCitiesShowcaseSection() {
             type="button"
             onClick={() => scrollCarousel("next")}
             className="inline-flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-[0.6rem] border border-[#ece8e5] bg-white text-[#5a4c47] transition-[transform,background-color,border-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-[#6a2a2a] hover:text-[#6a2a2a] hover:shadow-[0_8px_18px_rgba(100,48,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6a2a2a] focus-visible:ring-offset-4 focus-visible:ring-offset-white active:translate-y-0 active:scale-[0.96]"
-            aria-label="Toon volgende steden"
+            aria-label={t("home.nextCities")}
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-4 w-4">
               <path d="m9.5 6.5 5.25 5.5-5.25 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

@@ -4,6 +4,7 @@ import {
   redirectToFestivalCalendar,
   type FestivalRedirectSearchParams,
 } from "./redirectToFestivalCalendar";
+import { getRequestLocale } from "@/lib/i18n/request";
 
 type FestivalsIndexPageProps = {
   searchParams?: FestivalRedirectSearchParams;
@@ -12,5 +13,5 @@ type FestivalsIndexPageProps = {
 export default function FestivalsIndexPage({
   searchParams = {},
 }: FestivalsIndexPageProps) {
-  redirectToFestivalCalendar(searchParams);
+  redirectToFestivalCalendar(searchParams, getRequestLocale());
 }

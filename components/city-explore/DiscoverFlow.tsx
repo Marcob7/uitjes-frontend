@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { ReactElement } from "react";
 
 import ExploreCardItem from "./ExploreCardItem";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 import { InspirationFlowScenery } from "../inspiration/InspirationFlowScenery";
 import {
   FullscreenChoiceFlow,
@@ -52,45 +54,47 @@ type DiscoverFlowProps = {
   onViewAllResults: () => void;
 };
 
-const FLOW_STEPS: FlowStep[] = [
+function getFlowSteps(t: (key: string, values?: Record<string, string | number>) => string): FlowStep[] {
+  return [
   {
     type: "question",
     id: "companion",
-    title: "Vind iets leuks in {city}",
-    description: "We kunnen je helpen kiezen. Vertel met wie je op pad gaat voor suggesties die beter bij je passen.",
+    title: t("discover.companionTitle"),
+    description: t("discover.companionDescription"),
     options: [
-      { value: "solo" satisfies PlannerCompanion, label: "Alleen op pad", description: "Ontdek plekken en activiteiten die je makkelijk zelf kunt doen.", icon: SoloIcon },
-      { value: "date" satisfies PlannerCompanion, label: "Date", description: "Vind iets dat leuk voelt om samen te doen in deze stad.", icon: HeartIcon },
-      { value: "gezin" satisfies PlannerCompanion, label: "Met gezin", description: "Activiteiten die passen bij kinderen, gemak en samen op pad.", icon: FamilyIcon },
-      { value: "vrienden" satisfies PlannerCompanion, label: "Met vrienden", description: "Ideeën voor een gezellige middag of avond samen.", icon: FriendsIcon },
+      { value: "solo" satisfies PlannerCompanion, label: t("discover.solo"), description: t("discover.soloDescription"), icon: SoloIcon },
+      { value: "date" satisfies PlannerCompanion, label: t("discover.date"), description: t("discover.dateDescription"), icon: HeartIcon },
+      { value: "gezin" satisfies PlannerCompanion, label: t("discover.family"), description: t("discover.familyDescription"), icon: FamilyIcon },
+      { value: "vrienden" satisfies PlannerCompanion, label: t("discover.friends"), description: t("discover.friendsDescription"), icon: FriendsIcon },
     ],
   },
   {
     type: "question",
     id: "moment",
-    title: "Wanneer wil je iets doen?",
-    description: "Zoeken we iets voor nu, later vandaag of een moment om naar uit te kijken?",
+    title: t("discover.momentTitle"),
+    description: t("discover.momentDescription"),
     options: [
-      { value: "nu" satisfies PlannerMoment, label: "Nu", description: "Suggesties die nu of op korte termijn interessant zijn.", icon: LightningIcon },
-      { value: "vanavond" satisfies PlannerMoment, label: "Vanavond", description: "Ideeën voor een spontane avond in deze stad.", icon: MoonIcon },
-      { value: "morgen" satisfies PlannerMoment, label: "Later plannen", description: "Bewaar inspiratie voor een later moment.", icon: SunIcon },
-      { value: "weekend" satisfies PlannerMoment, label: "Dit weekend", description: "Dingen om dit weekend te doen.", icon: CalendarIcon },
+      { value: "nu" satisfies PlannerMoment, label: t("discover.now"), description: t("discover.nowDescription"), icon: LightningIcon },
+      { value: "vanavond" satisfies PlannerMoment, label: t("discover.tonight"), description: t("discover.tonightDescription"), icon: MoonIcon },
+      { value: "morgen" satisfies PlannerMoment, label: t("discover.later"), description: t("discover.laterDescription"), icon: SunIcon },
+      { value: "weekend" satisfies PlannerMoment, label: t("discover.weekend"), description: t("discover.weekendDescription"), icon: CalendarIcon },
     ],
   },
   {
     type: "question",
     id: "vibe",
-    title: "Waar heb je zin in?",
-    description: "Kies de richting die vandaag het beste voelt. Daarna zetten we je selectie klaar.",
+    title: t("discover.vibeTitle"),
+    description: t("discover.vibeDescription"),
     options: [
-      { value: "cultureel" satisfies PlannerVibe, label: "Cultureel", description: "Musea, theater, erfgoed en bijzondere plekken in deze stad.", icon: SparkIcon },
-      { value: "actief" satisfies PlannerVibe, label: "Actief", description: "Buiten, bewegen, ontdekken of iets doen met energie.", icon: RouteIcon },
-      { value: "eten-drinken" satisfies PlannerVibe, label: "Eten & drinken", description: "Terrassen, restaurants, proeverijen of foodspots.", icon: ForkKnifeIcon },
-      { value: "relaxed" satisfies PlannerVibe, label: "Relaxed", description: "Rustige plekken, wandelen, rondkijken of laagdrempelig genieten.", icon: LeafIcon },
+      { value: "cultureel" satisfies PlannerVibe, label: t("discover.culture"), description: t("discover.cultureDescription"), icon: SparkIcon },
+      { value: "actief" satisfies PlannerVibe, label: t("discover.active"), description: t("discover.activeDescription"), icon: RouteIcon },
+      { value: "eten-drinken" satisfies PlannerVibe, label: t("discover.foodDrink"), description: t("discover.foodDrinkDescription"), icon: ForkKnifeIcon },
+      { value: "relaxed" satisfies PlannerVibe, label: t("discover.relaxed"), description: t("discover.relaxedDescription"), icon: LeafIcon },
     ],
   },
   { type: "results", id: "results" },
-];
+  ];
+}
 
 /** Fullscreen UI for the existing three-field city planner. No answers live here. */
 export default function DiscoverFlow({
@@ -103,10 +107,12 @@ export default function DiscoverFlow({
   onComplete,
   onViewAllResults,
 }: DiscoverFlowProps) {
+  const { locale, t } = useLocale();
+  const flowSteps = useMemo(() => getFlowSteps(t), [t]);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const totalSteps = FLOW_STEPS.length;
+  const totalSteps = flowSteps.length;
   const safeStep = Math.min(Math.max(currentStep, 1), totalSteps);
-  const step = FLOW_STEPS[safeStep - 1];
+  const step = flowSteps[safeStep - 1];
   const visiblePreviewCards = useMemo(() => previewCards.slice(0, 6), [previewCards]);
   const isIntroductionStep = safeStep === 1;
 
@@ -122,17 +128,17 @@ export default function DiscoverFlow({
 
   return (
     <FullscreenChoiceFlow
-      steps={FLOW_STEPS}
+      steps={flowSteps}
       currentStep={currentStep}
       onStepChange={onStepChange}
       onComplete={onComplete}
       onViewAllResults={onViewAllResults}
       onEditChoices={() => onStepChange(1)}
-      secondaryAction={{ label: "Bekijk alle resultaten", onClick: onViewAllResults }}
+      secondaryAction={{ label: t("discover.allResults"), onClick: onViewAllResults }}
       showProgress={({ stepNumber }) => stepNumber > 1}
       showFooter={({ stepNumber }) => stepNumber > 1}
-      exitHref="/"
-      exitLabel="Terug naar Home"
+      exitHref={localePathname("/", locale)}
+      exitLabel={t("discover.backHome")}
       decorativeLayer={({ isResultsStep }) => (
         <InspirationFlowScenery variant={isResultsStep ? "subtle" : "default"} />
       )}
@@ -140,7 +146,7 @@ export default function DiscoverFlow({
       {({ isResultsStep }) =>
         isResultsStep ? (
           <FullscreenChoiceResults
-            description={`${visiblePreviewCards.length} ${visiblePreviewCards.length === 1 ? "resultaat" : "resultaten"} in ${cityLabel}`}
+            description={visiblePreviewCards.length === 1 ? t("discover.resultInCity", { city: cityLabel }) : t("discover.resultsInCity", { count: visiblePreviewCards.length, city: cityLabel })}
           >
             {visiblePreviewCards.length ? (
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -150,16 +156,16 @@ export default function DiscoverFlow({
               </div>
             ) : (
               <div className="mt-8 max-w-2xl border-y border-[#DCE1DC] py-8 sm:py-10">
-                <p className="text-lg font-semibold tracking-[-0.025em] text-[#29342F]">We vonden nog geen perfecte match</p>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-[#65736C] sm:text-base">Pas je keuzes aan of bekijk alle activiteiten in {cityLabel}.</p>
+                <p className="text-lg font-semibold tracking-[-0.025em] text-[#29342F]">{t("discover.noMatchTitle")}</p>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-[#65736C] sm:text-base">{t("discover.noMatchIntro", { city: cityLabel })}</p>
               </div>
             )}
           </FullscreenChoiceResults>
         ) : step.type === "question" ? (
           <FullscreenChoiceQuestion
             title={step.title.replace("{city}", cityLabel)}
-            description={isIntroductionStep ? step.description : `Je hebt gekozen voor ${cityLabel}`}
-            introNote={isIntroductionStep ? "Maak het persoonlijker, of bekijk meteen alle uitjes." : undefined}
+            description={isIntroductionStep ? step.description : t("discover.selectedCity", { city: cityLabel })}
+            introNote={isIntroductionStep ? t("discover.personalize") : undefined}
             showPrimaryActionBeforeChoicesOnMobile={isIntroductionStep}
             primaryAction={isIntroductionStep ? (
               <button
@@ -167,12 +173,12 @@ export default function DiscoverFlow({
                 onClick={onViewAllResults}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
               >
-                Bekijk alle uitjes in {cityLabel} <span className="ml-2" aria-hidden="true">→</span>
+                {t("discover.allCityResults", { city: cityLabel })} <span className="ml-2" aria-hidden="true">→</span>
               </button>
             ) : undefined}
           >
             <FullscreenChoiceGrid
-              title={step.title}
+              title={step.title.replace("{city}", cityLabel)}
               selectedValue={selections[step.id]}
               disabled={isTransitioning}
               onChoose={chooseOption}

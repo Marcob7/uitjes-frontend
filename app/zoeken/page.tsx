@@ -5,6 +5,10 @@ import SearchForm from "@/components/search/SearchForm";
 import SearchResultsExperience from "@/components/search/SearchResultsExperience";
 import { getGeneralSearchResults } from "@/lib/search/searchResults";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
+import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
+import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
+import { localePathname } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 
 export const runtime = "edge";
 
@@ -15,53 +19,40 @@ type SearchPageProps = {
   };
 };
 
-const popularSearches = [
-  { label: "vandaag", query: "vandaag" },
-  { label: "dit weekend", query: "weekend" },
-  { label: "met kinderen", query: "kinderen" },
-  { label: "gratis", query: "gratis" },
-  { label: "buiten", query: "buiten" },
-];
-
-const discoveryLinks = [
-  {
-    eyebrow: "Vandaag",
-    title: "Spontaan op pad",
-    description: "Vind iets leuks voor vandaag, dichtbij huis.",
-    href: "/zoeken?query=vandaag&when=today",
-  },
-  {
-    eyebrow: "Voor samen",
-    title: "Met kinderen",
-    description: "Ideeën voor een vrije middag of een heel weekend.",
-    href: "/zoeken?query=kinderen&category=met-kinderen",
-  },
-  {
-    eyebrow: "Op ontdekking",
-    title: "Kies een stad",
-    description: "Bekijk lokale tips en uitjes per stad.",
-    href: "/ontdek",
-  },
-];
-
 export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
+  const locale = getRequestLocale();
+  const pathname = getRequestPathname();
   const query = normalizeSearchQuery(searchParams?.query ?? searchParams?.q);
+  const title = query
+    ? `${translate(locale, "search.title")} ${query} | Uitjes`
+    : `${translate(locale, "search.title")} | Uitjes`;
+  const description = translate(locale, "search.intro");
 
-  return query
-    ? {
-        title: `Zoeken naar ${query} | Uitjes`,
-        description: `Bekijk zoekresultaten voor ${query}.`,
-        alternates: { canonical: "/zoeken" },
-      }
-    : {
-        title: "Zoeken | Uitjes",
-        description: "Vind inspiratie, activiteiten en lokale tips die bij je passen.",
-        alternates: { canonical: "/zoeken" },
-      };
+  return {
+    title,
+    description,
+    alternates: getLocaleAlternates(pathname, locale),
+    openGraph: { title, description, ...getLocaleOpenGraph(locale, pathname) },
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const locale = getRequestLocale();
+  const t = (key: string, values?: Record<string, string | number>) => translate(locale, key, values);
   const query = normalizeSearchQuery(searchParams?.query ?? searchParams?.q);
+  const popularSearches = [
+    { label: t("search.popularToday"), query: "vandaag" },
+    { label: t("search.popularWeekend"), query: "weekend" },
+    { label: t("search.popularChildren"), query: "kinderen" },
+    { label: t("search.popularFree"), query: "gratis" },
+    { label: t("search.popularOutdoor"), query: "buiten" },
+  ];
+  const discoveryLinks = [
+    { eyebrow: t("search.linkTodayEyebrow"), title: t("search.linkTodayTitle"), description: t("search.linkTodayDescription"), href: `${localePathname("/zoeken", locale)}?query=vandaag&when=today` },
+    { eyebrow: t("search.linkFamilyEyebrow"), title: t("search.linkFamilyTitle"), description: t("search.linkFamilyDescription"), href: `${localePathname("/zoeken", locale)}?query=kinderen&category=met-kinderen` },
+    { eyebrow: t("search.linkCityEyebrow"), title: t("search.linkCityTitle"), description: t("search.linkCityDescription"), href: localePathname("/ontdek", locale) },
+  ];
   const searchState = query
     ? await getGeneralSearchResults(query)
     : { status: "empty" as const, results: [] };
@@ -73,10 +64,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           <div className="max-w-4xl">
           
             <h1 className="mt-3 max-w-[10ch] font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">
-              Zoeken
+              {t("search.title")}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[#68746d] sm:text-lg">
-              Vind inspiratie, activiteiten en lokale tips die bij je passen.
+              {t("search.intro")}
             </p>
 
             <SearchForm
@@ -86,11 +77,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             />
 
             <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#68746d]">
-              <span className="font-semibold text-[#3d5146]">Populair:</span>
+              <span className="font-semibold text-[#3d5146]">{t("search.popular")}</span>
               {popularSearches.map((item) => (
                 <Link
                   key={item.query}
-                  href={`/zoeken?query=${encodeURIComponent(item.query)}`}
+                  href={`${localePathname("/zoeken", locale)}?query=${encodeURIComponent(item.query)}`}
                   className="rounded-full border border-[#d7e0d7] bg-white/75 px-3 py-1.5 transition hover:border-[#1d5a46] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc]"
                 >
                   {item.label}
@@ -113,10 +104,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <div className="max-w-2xl">
     
               <h2 className="mt-3 font-heading text-[clamp(2.25rem,4.5vw,3.7rem)] leading-[0.94] tracking-[-0.06em] text-[#22312a]">
-                Waar heb je zin in?
+                {t("search.startingPoint")}
               </h2>
               <p className="mt-4 text-sm leading-6 text-[#68746d] sm:text-base">
-                Zoek op een activiteit, stad of moment. Of kies een vertrekpunt hieronder.
+                {t("search.startingPointIntro")}
               </p>
             </div>
 
@@ -135,7 +126,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     {item.description}
                   </p>
                   <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#1d5a46]">
-                    Ontdek meer
+                    {t("search.discoverMore")}
                     <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </span>
                 </Link>

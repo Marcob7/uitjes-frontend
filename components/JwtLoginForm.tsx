@@ -3,9 +3,11 @@
 import { useState, type FormEvent } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function JwtLoginForm() {
   const { login } = useAuth();
+  const { t } = useLocale();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,7 +34,7 @@ export default function JwtLoginForm() {
           htmlFor="jwt-identifier"
           className="text-sm font-semibold text-neutral-900"
         >
-          E-mail of gebruikersnaam
+          {t("auth.identifier")}
         </label>
         <input
           id="jwt-identifier"
@@ -52,7 +54,7 @@ export default function JwtLoginForm() {
           htmlFor="jwt-password"
           className="text-sm font-semibold text-neutral-900"
         >
-          Wachtwoord
+          {t("auth.password")}
         </label>
         <input
           id="jwt-password"
@@ -81,7 +83,7 @@ export default function JwtLoginForm() {
         disabled={loading || !identifier.trim() || !password}
         className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-neutral-950 px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(23,23,23,0.18)] transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 disabled:opacity-55"
       >
-        {loading ? "Inloggen..." : "Inloggen"}
+        {loading ? t("common.loading") : t("auth.login")}
       </button>
     </form>
   );

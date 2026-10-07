@@ -11,8 +11,8 @@ export default function Loading() {
       <Image
         src="/images/uitjesplatform_logo_transparent.svg"
         alt=""
-        width={64}
-        height={50}
+        width={732}
+        height={565}
         priority
         className="h-auto w-16 animate-pulse opacity-70 grayscale brightness-0 motion-reduce:animate-none"
       />

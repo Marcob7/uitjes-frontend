@@ -74,9 +74,9 @@ export function NewsLetterSection({
             src="/images/uitjesplatform_logo_transparent.svg"
             alt=""
             aria-hidden="true"
-            width={30}
-            height={30}
-            className="h-[30px] w-[30px] object-contain brightness-0 invert"
+            width={732}
+            height={565}
+            className="h-auto w-[30px] brightness-0 invert"
           />
         </div>
 

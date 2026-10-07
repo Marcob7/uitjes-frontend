@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 import { AppButton } from "./AppButton";
 
@@ -37,11 +38,11 @@ export function AppSearchInput({
   value,
   onChange,
   onSubmit,
-  placeholder = "Zoek op stad, festival of activiteit",
+  placeholder,
   suggestions = [],
   onSuggestionSelect,
   showSubmitButton = true,
-  submitLabel = "Zoek",
+  submitLabel,
   className,
   inputClassName,
   submitButtonClassName,
@@ -54,6 +55,9 @@ export function AppSearchInput({
   onClear,
   inputRef,
 }: AppSearchInputProps) {
+  const { t } = useLocale();
+  const resolvedPlaceholder = placeholder ?? t("home.heroSearchPlaceholder");
+  const resolvedSubmitLabel = submitLabel ?? t("search.submit");
   const hasSuggestions = suggestions.length > 0;
   const feedbackId = `${inputId}-feedback`;
 
@@ -78,14 +82,14 @@ export function AppSearchInput({
             <path d="m13 13 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
           <label htmlFor={inputId} className="sr-only">
-            Zoeken
+            {t("search.title")}
           </label>
           <input
             id={inputId}
             ref={inputRef}
             value={value}
             onChange={(event) => onChange(event.target.value)}
-            placeholder={placeholder}
+            placeholder={resolvedPlaceholder}
             autoComplete="off"
             autoFocus={autoFocus}
             type="search"
@@ -101,7 +105,7 @@ export function AppSearchInput({
               type="button"
               onClick={() => onClear?.() ?? onChange("")}
               className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg text-[#756b61] transition hover:bg-[#f7f3ef] hover:text-[#211d19] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005fcc]"
-              aria-label="Zoekopdracht wissen"
+              aria-label={t("common.clear")}
             >
               <span aria-hidden="true">×</span>
             </button>
@@ -110,7 +114,7 @@ export function AppSearchInput({
 
         {showSubmitButton ? (
           <AppButton type="submit" variant="primary" size="md" disabled={isSubmitting && disableSubmitWhileSubmitting} className={cn("md:min-w-[6.5rem]", submitButtonClassName)}>
-            {isSubmitting ? "Zoeken…" : submitLabel}
+            {isSubmitting ? t("search.pending") : resolvedSubmitLabel}
           </AppButton>
         ) : null}
       </div>

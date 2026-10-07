@@ -1,11 +1,17 @@
 import { InspirationChoiceFlow } from "@/components/inspiration/InspirationChoiceFlow";
 
 export const metadata = {
-  title: "Inspiratie voor je volgende uitje | Uitjes",
+  title: "Ideeën voor je volgende uitje | Uitjes",
   description:
-    "Beantwoord een paar keuzes en ontdek ideeën voor je volgende uitje.",
+    "Vind ideeën voor een dagje uit. Kies wat bij je moment past en ontdek activiteiten in de buurt.",
   alternates: {
     canonical: "/inspiratie",
+  },
+  openGraph: {
+    title: "Ideeën voor je volgende uitje | Uitjes",
+    description:
+      "Vind ideeën voor een dagje uit en ontdek activiteiten die bij je moment passen.",
+    url: "/inspiratie",
   },
 };
 

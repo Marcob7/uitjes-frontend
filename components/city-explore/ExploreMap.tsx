@@ -5,6 +5,7 @@ import type { MouseEvent, PointerEvent } from "react";
 import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
 import Link from "next/link";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 import type { BackendEvent } from "./types";
 
@@ -158,6 +159,7 @@ export default function ExploreMap({
   variant = "city",
   fullHeight = false,
 }: ExploreMapProps) {
+  const { t } = useLocale();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const maplibreRef = useRef<typeof import("maplibre-gl") | null>(null);
@@ -266,7 +268,7 @@ export default function ExploreMap({
 
       markerElement.type = "button";
       markerElement.dataset.markerKind = markerKind;
-      markerElement.setAttribute("aria-label", `Toon ${place.title} op kaart`);
+      markerElement.setAttribute("aria-label", t("discover.showOnMap", { title: place.title }));
 
       applyMarkerState(markerElement, markerKind, false, variant);
 
@@ -282,7 +284,7 @@ export default function ExploreMap({
 
       markersRef.current[place.id] = marker;
     });
-  }, [mapPlaces, mapReadyToken, setSelectedId]);
+  }, [mapPlaces, mapReadyToken, setSelectedId, t, variant]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -343,10 +345,10 @@ export default function ExploreMap({
         <div className="flex min-h-[320px] items-center justify-center px-6 py-10 text-center">
           <div className="max-w-[28rem] rounded-[2rem] bg-white/88 px-7 py-8 text-[#5d5148] shadow-[0_28px_60px_rgba(51,35,21,0.15)]">
             <h3 className="text-[1.9rem] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151515]">
-              Nog geen locaties beschikbaar
+              {t("discover.noLocations")}
             </h3>
             <p className="mt-3 text-sm leading-7">
-              Voor {cityLabel} zijn nog geen resultaten om op de kaart te tonen.
+              {t("discover.noMapResults", { city: cityLabel })}
             </p>
           </div>
         </div>
@@ -368,7 +370,7 @@ export default function ExploreMap({
 
       <div className="pointer-events-none absolute left-3 right-3 top-3 flex flex-col gap-2 sm:left-5 sm:right-5 sm:top-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <div className="w-fit rounded-2xl bg-white/92 px-4 py-2 text-sm font-medium text-[#2a231f] shadow-[0_10px_24px_rgba(51,35,21,0.12)] ring-1 ring-black/5 backdrop-blur sm:rounded-full">
-          {cityLabel} kaart
+          {t("discover.mapTitle", { city: cityLabel })}
         </div>
 
         {hasDummyLocations ? (
@@ -402,10 +404,10 @@ export default function ExploreMap({
             {selectedPlace.href ? (
               <Link
                 href={selectedPlace.href}
-                aria-label={`Bekijk ${selectedPlace.title}`}
+                aria-label={t("discover.viewItem", { title: selectedPlace.title })}
                 className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#2e4a14] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(44,67,18,0.18)] transition hover:-translate-y-0.5 hover:bg-[#233b10] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
               >
-                Bekijk uitje
+                {t("discover.viewOuting")}
               </Link>
             ) : null}
 
@@ -414,7 +416,7 @@ export default function ExploreMap({
               onClick={focusSelectedPlace}
               className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#181615] px-5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(24,22,21,0.18)] transition hover:-translate-y-0.5 hover:bg-[#2a241e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:rounded-full"
             >
-              {variant === "festival" ? "Centreer selectie" : "Kaart openen"}
+              {variant === "festival" ? t("discover.centerSelection") : t("discover.openMap")}
             </button> : null}
           </div>
         </div>

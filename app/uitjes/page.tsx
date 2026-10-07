@@ -6,6 +6,12 @@ import {
 } from "@/lib/dummy/inspirationResults";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 
+export const metadata = {
+  title: "Voorbeeldresultaten | Uitjes",
+  description: "Een tijdelijke voorbeeldweergave van zoekresultaten.",
+  robots: { index: false, follow: true },
+};
+
 export const runtime = "edge";
 
 type UitjesPageProps = {

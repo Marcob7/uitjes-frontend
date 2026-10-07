@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localeToIntl } from "@/lib/i18n/config";
 
 type ResultCardProps = {
   href: string;
@@ -21,17 +23,17 @@ type ResultCardProps = {
   priority?: boolean;
 };
 
-function formatReviewSummary(rating?: number | null, reviewCount?: number | null) {
+function formatReviewSummary(rating: number | null | undefined, reviewCount: number | null | undefined, locale: "nl" | "en", t: (key: string, values?: Record<string, string | number>) => string) {
   if (
     typeof rating !== "number" || !Number.isFinite(rating) ||
     typeof reviewCount !== "number" || !Number.isFinite(reviewCount) || reviewCount <= 0
   ) return null;
-  const value = new Intl.NumberFormat("nl-NL", {
+  const value = new Intl.NumberFormat(localeToIntl[locale], {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   }).format(rating);
-  const reviews = new Intl.NumberFormat("nl-NL").format(reviewCount);
-  return { value, reviews: `${reviews} ${reviewCount === 1 ? "review" : "reviews"}` };
+  const reviews = new Intl.NumberFormat(localeToIntl[locale]).format(reviewCount);
+  return { value, reviews: t("search.reviews", { count: reviews }) };
 }
 
 /** Canonical result/listing card for activities, events and search results. */
@@ -51,7 +53,8 @@ export default function ResultCard({
   className = "",
   priority = false,
 }: ResultCardProps) {
-  const reviewSummary = formatReviewSummary(rating, reviewCount);
+  const { locale, t } = useLocale();
+  const reviewSummary = formatReviewSummary(rating, reviewCount, locale, t);
   const metadata = [location, date].filter(Boolean).join(" · ");
 
   return (
@@ -80,7 +83,7 @@ export default function ResultCard({
             {reviewSummary ? <span className="font-medium text-[#53645a]"><span className="text-[#b77929]" aria-hidden="true">★</span> {reviewSummary.value} · {reviewSummary.reviews}</span> : null}
             {price ? <span className="font-medium text-[#334d3d]">{price}</span> : null}
           </div>
-          <span className="mt-auto pt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#1d5a46]">Bekijk <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
+          <span className="mt-auto pt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#1d5a46]">{t("search.view")} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
         </div>
       </Link>
       {favoriteAction ? <div className="absolute right-3 top-3">{favoriteAction}</div> : null}

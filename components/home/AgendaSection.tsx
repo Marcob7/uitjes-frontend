@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 
 type AgendaSectionProps = {
   imageSrc?: string;
@@ -15,10 +17,13 @@ const existingAgendaImage =
 
 export default function AgendaSection({
   imageSrc = existingAgendaImage,
-  title = "Evenementen Kalender",
-  buttonText = "Bekijk agenda",
+  title,
+  buttonText,
   className = "",
 }: AgendaSectionProps) {
+  const { locale, t } = useLocale();
+  const resolvedTitle = title ?? t("home.calendarTitle");
+  const resolvedButtonText = buttonText ?? t("home.calendarAction");
   const sectionRef = useRef<HTMLElement | null>(null);
   const [progress, setProgress] = useState(0);
   const [contentTravel, setContentTravel] = useState(136);
@@ -80,7 +85,7 @@ export default function AgendaSection({
           >
             <img
               src={imageSrc}
-              alt={title}
+              alt={resolvedTitle}
               draggable={false}
               className="absolute inset-0 h-full w-full object-cover sm:static"
             />
@@ -94,19 +99,19 @@ export default function AgendaSection({
               }}
             >
               <h2
-                aria-label={title}
+                aria-label={resolvedTitle}
                 className="mx-auto max-w-[12ch] text-center text-[clamp(2.35rem,10vw,3.5rem)] font-medium leading-[0.94] tracking-[-0.045em] text-white drop-shadow-[0_5px_20px_rgba(1,6,16,0.45)] sm:max-w-none sm:whitespace-nowrap sm:text-[clamp(2.25rem,4vw,3.75rem)]"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
-                <span className="sm:hidden">Evenementen Kalender</span>
-                <span className="hidden sm:inline">Evenementen&nbsp;Kalender</span>
+                <span className="sm:hidden">{resolvedTitle}</span>
+                <span className="hidden sm:inline">{resolvedTitle}</span>
               </h2>
 
               <Link
-                href="/jaarkalender"
+                href={localePathname("/jaarkalender", locale)}
                 className="inline-flex min-h-[46px] items-center justify-center self-center rounded-full bg-[#010610] px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_14px_32px_rgba(1,6,16,0.38)] transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:px-8 md:py-4"
               >
-                {buttonText}
+                {resolvedButtonText}
               </Link>
             </div>
           </article>

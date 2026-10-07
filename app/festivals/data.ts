@@ -4,6 +4,8 @@ export type FestivalOverviewItem = {
   slug: string;
   name: string;
   dateLabel: string;
+  startDate: string;
+  endDate: string;
   locationLabel: string;
   latitude: number;
   longitude: number;
@@ -21,7 +23,7 @@ export type FestivalAct = {
 
 export type FestivalLineupDay = {
   label: string;
-  dateLabel: string;
+  date: string;
   featured?: boolean;
   acts: FestivalAct[];
 };
@@ -53,15 +55,53 @@ export type FestivalDetail = FestivalOverviewItem & {
   infoCards: FestivalInfoCard[];
 };
 
+const festivalDateFormatter = new Intl.DateTimeFormat("nl-NL", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const festivalDayMonthFormatter = new Intl.DateTimeFormat("nl-NL", {
+  day: "numeric",
+  month: "long",
+  timeZone: "UTC",
+});
+
+function toFestivalDate(value: string) {
+  return new Date(`${value}T12:00:00Z`);
+}
+
+export function formatFestivalDate(value: string) {
+  return festivalDateFormatter.format(toFestivalDate(value));
+}
+
+export function formatFestivalDateRange(startDate: string, endDate: string) {
+  const start = toFestivalDate(startDate);
+  const end = toFestivalDate(endDate);
+
+  if (startDate === endDate) return festivalDateFormatter.format(start);
+  if (start.getUTCFullYear() === end.getUTCFullYear() && start.getUTCMonth() === end.getUTCMonth()) {
+    return `${start.getUTCDate()}–${festivalDateFormatter.format(end)}`;
+  }
+  if (start.getUTCFullYear() === end.getUTCFullYear()) {
+    return `${festivalDayMonthFormatter.format(start)} t/m ${festivalDateFormatter.format(end)}`;
+  }
+
+  return `${festivalDateFormatter.format(start)} t/m ${festivalDateFormatter.format(end)}`;
+}
+
 export const festivalDetails: FestivalDetail[] = [
   {
     slug: "dekmantel-festival",
     name: "Dekmantel Festival",
-    dateLabel: "12 - 14 juli",
+    startDate: "2026-07-12",
+    endDate: "2026-07-14",
+    dateLabel: formatFestivalDateRange("2026-07-12", "2026-07-14"),
     locationLabel: "Amsterdamse Bos",
     latitude: 52.3276,
     longitude: 4.8259,
-    genres: ["Techno", "Electronic"],
+    genres: ["Techno", "Elektronisch"],
     vibe: "amsterdam techno electronic curated",
     matchScore: 95,
     icon: "bars",
@@ -70,96 +110,96 @@ export const festivalDetails: FestivalDetail[] = [
       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
     sideImage:
       "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
-    benchmarkPrefix: "A benchmark for",
-    benchmarkHighlight: "electronic",
-    benchmarkSuffix: "music.",
+    benchmarkPrefix: "Een toonaangevend festival voor",
+    benchmarkHighlight: "elektronische",
+    benchmarkSuffix: "muziek.",
     introParagraphs: [
-      "Dekmantel has long established itself as the global epicenter for electronic music connoisseurs. Located in the verdant embrace of the Amsterdamse Bos, it serves as a carefully curated showcase of the sonic vanguard.",
-      "From the industrial weight of peak-time techno to the soulful nuances of classic house and the avant-garde textures of experimental rhythms, Dekmantel is an editorial exploration of sound.",
+      "Dekmantel geldt al jaren als een internationaal ijkpunt voor liefhebbers van elektronische muziek. In het groene Amsterdamse Bos presenteert het festival een zorgvuldig samengesteld programma van vernieuwende artiesten.",
+      "Van de industriële kracht van peak-time techno tot de soulvolle nuances van classic house en experimentele ritmes: Dekmantel is een ontdekkingsreis door geluid.",
     ],
     lineupDays: [
       {
-        label: "Friday",
-        dateLabel: "July 12",
+        label: "Vrijdag",
+        date: "2026-07-12",
         acts: [
           { name: "Jeff Mills", genre: "Techno / Detroit" },
-          { name: "Helena Hauff", genre: "Electro / Wave" },
-          { name: "Young Marco", genre: "Eclectic Selector" },
+          { name: "Helena Hauff", genre: "Electro / wave" },
+          { name: "Young Marco", genre: "Eclectische selectie" },
         ],
       },
       {
-        label: "Saturday",
-        dateLabel: "July 13",
+        label: "Zaterdag",
+        date: "2026-07-13",
         featured: true,
         acts: [
-          { name: "Floating Points", genre: "Live set / Main stage" },
-          { name: "Ben UFO", genre: "Left-field / UK" },
-          { name: "Shanti Celeste", genre: "House / Selector" },
+          { name: "Floating Points", genre: "Live-set / hoofdpodium" },
+          { name: "Ben UFO", genre: "Experimenteel / VK" },
+          { name: "Shanti Celeste", genre: "House / selectie" },
         ],
       },
       {
-        label: "Sunday",
-        dateLabel: "July 14",
+        label: "Zondag",
+        date: "2026-07-14",
         acts: [
           { name: "Marcel Dettmann", genre: "Berghain / Techno" },
           { name: "Joy Orbison", genre: "Garage / Techno" },
-          { name: "Objekt", genre: "Experimental / UK" },
+          { name: "Objekt", genre: "Experimenteel / VK" },
         ],
       },
     ],
     ticketTiers: [
       {
-        name: "Day Ticket",
+        name: "Dagticket",
         priceLabel: "EUR79",
         bullets: [
-          "Single day access",
-          "All stage access",
-          "Camping excluded",
+          "Toegang voor één dag",
+          "Toegang tot alle podia",
+          "Exclusief camping",
         ],
         tone: "sand",
       },
       {
-        name: "Weekend Pass",
+        name: "Weekendticket",
         priceLabel: "EUR195",
-        badge: "Popular",
+        badge: "Populair",
         bullets: [
-          "Full 3-day festival access",
-          "Priority entry lane",
-          "Digital festival guide",
+          "Toegang voor alle drie de dagen",
+          "Versnelde entree",
+          "Digitale festivalgids",
         ],
         tone: "mist",
       },
       {
-        name: "Pro Pass",
+        name: "Pro-ticket",
         priceLabel: "EUR350",
         bullets: [
-          "Backstage access",
-          "Private lounge bar",
-          "Artist meet and greet",
+          "Toegang backstage",
+          "Privélounge",
+          "Meet-and-greet met artiesten",
         ],
         tone: "lime",
       },
     ],
     infoCards: [
       {
-        title: "Accessibility",
+        title: "Bereikbaarheid",
         description:
-          "Shuttle buses run every 15 minutes from RAI station. Dedicated ride pickup is available on-site.",
-        cta: "Event shuttle",
+          "Vanaf station RAI rijdt elke 15 minuten een pendelbus. Op het terrein is een aparte ophaalplek beschikbaar.",
+        cta: "Pendelbus",
         tone: "sand",
       },
       {
-        title: "Facilities",
+        title: "Faciliteiten",
         description:
-          "The terrain is fully accessible with water refill points, lockers and shaded seating areas.",
-        cta: "Terrain details",
+          "Het terrein is goed toegankelijk, met watertappunten, kluisjes en zitplekken in de schaduw.",
+        cta: "Terreininformatie",
         tone: "mint",
       },
       {
-        title: "Lockers",
+        title: "Kluisjes",
         description:
-          "On-site lockers are available in small and large sizes. Digital codes are provided at check-in.",
-        cta: "Locker info",
+          "Op het terrein zijn kleine en grote kluisjes beschikbaar. Bij het inchecken ontvang je een digitale code.",
+        cta: "Informatie over kluisjes",
         tone: "rose",
       },
     ],
@@ -167,7 +207,9 @@ export const festivalDetails: FestivalDetail[] = [
   {
     slug: "lowlands",
     name: "Lowlands",
-    dateLabel: "15 - 18 augustus",
+    startDate: "2026-08-15",
+    endDate: "2026-08-18",
+    dateLabel: formatFestivalDateRange("2026-08-15", "2026-08-18"),
     locationLabel: "Biddinghuizen",
     latitude: 52.4398,
     longitude: 5.7651,
@@ -180,84 +222,84 @@ export const festivalDetails: FestivalDetail[] = [
       "https://images.unsplash.com/photo-1506157786151-b8491531f063",
     sideImage:
       "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
-    benchmarkPrefix: "A playful collision of",
-    benchmarkHighlight: "music",
-    benchmarkSuffix: "and culture.",
+    benchmarkPrefix: "Een speelse botsing van",
+    benchmarkHighlight: "muziek",
+    benchmarkSuffix: "en cultuur.",
     introParagraphs: [
-      "Lowlands blends major live acts with talks, theatre and visual culture, creating a festival that feels more like a temporary city than a standard weekender.",
-      "The best days here come from switching pace: a huge set at dusk, an installation after midnight, and a slow breakfast before doing it again.",
+      "Lowlands brengt grote live-acts, lezingen, theater en beeldende kunst samen in een festival dat meer voelt als een tijdelijke stad dan als een gewoon weekendje weg.",
+      "De beste dagen ontstaan door steeds van tempo te wisselen: een grote show bij zonsondergang, een installatie na middernacht en een rustig ontbijt voordat je weer verdergaat.",
     ],
     lineupDays: [
       {
-        label: "Friday",
-        dateLabel: "August 16",
+        label: "Vrijdag",
+        date: "2026-08-16",
         acts: [
-          { name: "The National", genre: "Indie / Main stage" },
-          { name: "Peggy Gou", genre: "House / Night program" },
-          { name: "Jungle", genre: "Live / Groove" },
+          { name: "The National", genre: "Indie / hoofdpodium" },
+          { name: "Peggy Gou", genre: "House / nachtprogramma" },
+          { name: "Jungle", genre: "Live / groove" },
         ],
       },
       {
-        label: "Saturday",
-        dateLabel: "August 17",
+        label: "Zaterdag",
+        date: "2026-08-17",
         featured: true,
         acts: [
-          { name: "Fred again..", genre: "Live / Headline" },
-          { name: "Bicep", genre: "Electronic / Visual" },
-          { name: "Sevdaliza", genre: "Avant-pop / Stage two" },
+          { name: "Fred again..", genre: "Live / hoofdact" },
+          { name: "Bicep", genre: "Elektronisch / visueel" },
+          { name: "Sevdaliza", genre: "Avant-pop / tweede podium" },
         ],
       },
       {
-        label: "Sunday",
-        dateLabel: "August 18",
+        label: "Zondag",
+        date: "2026-08-18",
         acts: [
-          { name: "Bonobo", genre: "Live band / Sunset" },
-          { name: "Little Simz", genre: "Hip-hop / Main stage" },
-          { name: "Overmono", genre: "UK / Night close" },
+          { name: "Bonobo", genre: "Liveband / zonsondergang" },
+          { name: "Little Simz", genre: "Hip-hop / hoofdpodium" },
+          { name: "Overmono", genre: "VK / afsluiting van de nacht" },
         ],
       },
     ],
     ticketTiers: [
       {
-        name: "Day Ticket",
+        name: "Dagticket",
         priceLabel: "EUR89",
-        bullets: ["Single day access", "Main fields and tents", "Camping excluded"],
+        bullets: ["Toegang voor één dag", "Hoofdterreinen en tenten", "Exclusief camping"],
         tone: "sand",
       },
       {
-        name: "Weekend Pass",
+        name: "Weekendticket",
         priceLabel: "EUR235",
-        badge: "Popular",
-        bullets: ["Full weekend access", "Priority entrance", "Festival map included"],
+        badge: "Populair",
+        bullets: ["Toegang voor het hele weekend", "Versnelde entree", "Festivalplattegrond inbegrepen"],
         tone: "mist",
       },
       {
-        name: "Comfort Pass",
+        name: "Comfortticket",
         priceLabel: "EUR390",
-        bullets: ["Fast lane entry", "Premium camping zone", "Exclusive lounge access"],
+        bullets: ["Versnelde entree", "Premium kampeerzone", "Toegang tot exclusieve lounge"],
         tone: "lime",
       },
     ],
     infoCards: [
       {
-        title: "Accessibility",
+        title: "Toegankelijkheid",
         description:
-          "Accessible viewing decks, transport support and route assistance are available across the site.",
-        cta: "Accessibility guide",
+          "Over het hele terrein zijn toegankelijke kijkplatforms, vervoerondersteuning en routehulp beschikbaar.",
+        cta: "Toegankelijkheidsinformatie",
         tone: "sand",
       },
       {
-        title: "Facilities",
+        title: "Faciliteiten",
         description:
-          "Food courts, water stations and covered rest zones are distributed across every major field.",
-        cta: "Site map",
+          "Eetpleinen, watertappunten en overdekte rustplekken vind je op alle grote velden.",
+        cta: "Terreinplattegrond",
         tone: "mint",
       },
       {
         title: "Camping",
         description:
-          "Comfort and regular camping are both available, with separate entrances and dedicated info points.",
-        cta: "Camping details",
+          "Er zijn zowel comfort- als reguliere kampeerplekken, met aparte ingangen en informatiepunten.",
+        cta: "Campinginformatie",
         tone: "rose",
       },
     ],
@@ -265,7 +307,9 @@ export const festivalDetails: FestivalDetail[] = [
   {
     slug: "north-sea-jazz",
     name: "North Sea Jazz",
-    dateLabel: "11 - 13 juli",
+    startDate: "2026-07-11",
+    endDate: "2026-07-13",
+    dateLabel: formatFestivalDateRange("2026-07-11", "2026-07-13"),
     locationLabel: "Rotterdam",
     latitude: 51.8827,
     longitude: 4.4886,
@@ -278,84 +322,84 @@ export const festivalDetails: FestivalDetail[] = [
       "https://images.unsplash.com/photo-1511192336575-5a79af67a629",
     sideImage:
       "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212",
-    benchmarkPrefix: "An institution for",
+    benchmarkPrefix: "Een instituut voor",
     benchmarkHighlight: "jazz",
-    benchmarkSuffix: "and beyond.",
+    benchmarkSuffix: "en meer.",
     introParagraphs: [
-      "North Sea Jazz is where heritage, improvisation and contemporary crossover meet. The programming stretches across legends, future icons and unexpected collaborations.",
-      "It is less about a single headline and more about the density of quality across every room, every slot and every late-night decision.",
+      "North Sea Jazz is waar erfgoed, improvisatie en eigentijdse crossovers samenkomen. Het programma reikt van legendes en toekomstige iconen tot onverwachte samenwerkingen.",
+      "Het draait minder om één grote hoofdact en meer om de hoge kwaliteit in elke zaal, elk tijdslot en iedere late-nightkeuze.",
     ],
     lineupDays: [
       {
-        label: "Friday",
-        dateLabel: "July 11",
+        label: "Vrijdag",
+        date: "2026-07-11",
         acts: [
-          { name: "Herbie Hancock", genre: "Jazz / Piano" },
-          { name: "Kamasi Washington", genre: "Spiritual jazz" },
-          { name: "Nubya Garcia", genre: "Modern jazz" },
+          { name: "Herbie Hancock", genre: "Jazz / piano" },
+          { name: "Kamasi Washington", genre: "Spirituele jazz" },
+          { name: "Nubya Garcia", genre: "Moderne jazz" },
         ],
       },
       {
-        label: "Saturday",
-        dateLabel: "July 12",
+        label: "Zaterdag",
+        date: "2026-07-12",
         featured: true,
         acts: [
-          { name: "Anderson .Paak", genre: "Soul / Headline" },
-          { name: "Robert Glasper", genre: "Crossover / Keys" },
-          { name: "Yussef Dayes", genre: "Rhythm / Fusion" },
+          { name: "Anderson .Paak", genre: "Soul / hoofdact" },
+          { name: "Robert Glasper", genre: "Crossover / toetsen" },
+          { name: "Yussef Dayes", genre: "Ritme / fusion" },
         ],
       },
       {
-        label: "Sunday",
-        dateLabel: "July 13",
+        label: "Zondag",
+        date: "2026-07-13",
         acts: [
-          { name: "Esperanza Spalding", genre: "Bass / Vocal" },
+          { name: "Esperanza Spalding", genre: "Bas / zang" },
           { name: "Thundercat", genre: "Jazz-funk" },
-          { name: "Cecile McLorin Salvant", genre: "Vocal jazz" },
+          { name: "Cecile McLorin Salvant", genre: "Vocale jazz" },
         ],
       },
     ],
     ticketTiers: [
       {
-        name: "Day Ticket",
+        name: "Dagticket",
         priceLabel: "EUR109",
-        bullets: ["Single day access", "All indoor stages", "Reserved seating excluded"],
+        bullets: ["Toegang voor één dag", "Toegang tot alle binnenpodia", "Exclusief gereserveerde zitplaatsen"],
         tone: "sand",
       },
       {
-        name: "Weekend Pass",
+        name: "Weekendticket",
         priceLabel: "EUR279",
-        badge: "Popular",
-        bullets: ["Three day access", "Priority entry", "Digital schedule access"],
+        badge: "Populair",
+        bullets: ["Toegang voor drie dagen", "Versnelde entree", "Toegang tot het digitale programma"],
         tone: "mist",
       },
       {
         name: "Artist Circle",
         priceLabel: "EUR420",
-        bullets: ["Hospitality entry", "Premium lounge", "Front section access"],
+        bullets: ["Gastvrije ontvangst", "Premium lounge", "Toegang tot voorste vak"],
         tone: "lime",
       },
     ],
     infoCards: [
       {
-        title: "Accessibility",
+        title: "Toegankelijkheid",
         description:
-          "Indoor navigation support and seated assistance are available at every entrance zone.",
-        cta: "Venue support",
+          "Bij elke entree is hulp beschikbaar met navigatie binnen en ondersteuning voor bezoekers die willen zitten.",
+        cta: "Hulp in Ahoy",
         tone: "sand",
       },
       {
-        title: "Facilities",
+        title: "Faciliteiten",
         description:
-          "Multiple food courts, premium bars and quiet seating pockets are integrated throughout Ahoy.",
-        cta: "Venue map",
+          "Verspreid door Ahoy vind je meerdere eetpleinen, premium bars en rustige zitplekken.",
+        cta: "Plattegrond van Ahoy",
         tone: "mint",
       },
       {
-        title: "Lockers",
+        title: "Kluisjes",
         description:
-          "Secure cloakroom and lockers are available near each main concourse entrance.",
-        cta: "Storage options",
+          "Bij elke hoofdingang zijn een bewaakte garderobe en kluisjes beschikbaar.",
+        cta: "Opbergmogelijkheden",
         tone: "rose",
       },
     ],
@@ -367,6 +411,8 @@ export const festivalOverviewItems: FestivalOverviewItem[] = festivalDetails.map
     slug,
     name,
     dateLabel,
+    startDate,
+    endDate,
     locationLabel,
     latitude,
     longitude,
@@ -379,6 +425,8 @@ export const festivalOverviewItems: FestivalOverviewItem[] = festivalDetails.map
     slug,
     name,
     dateLabel,
+    startDate,
+    endDate,
     locationLabel,
     latitude,
     longitude,

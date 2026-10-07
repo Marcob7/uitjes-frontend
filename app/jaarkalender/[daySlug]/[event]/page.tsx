@@ -57,7 +57,17 @@ export const dynamicParams = false;
 export function generateStaticParams() { return generateJaarkalenderEventStaticParams(); }
 export function generateMetadata({ params }: PageProps): Metadata {
   const eventEntry = getJaarkalenderEventBySlug(params.daySlug, params.event);
-  return eventEntry ? { title: `${eventEntry.card.title} | Uitjes NL`, description: eventEntry.card.description } : { title: "Evenement | Uitjes NL" };
+  if (!eventEntry) return { title: "Evenement niet gevonden | Uitjes", robots: { index: false, follow: true } };
+
+  const canonical = `/jaarkalender/${encodeURIComponent(params.daySlug)}/${encodeURIComponent(params.event)}`;
+  const title = `${eventEntry.card.title} – ${eventEntry.day.weekdayDisplay} ${eventEntry.day.dayNumber} ${eventEntry.day.monthDisplay} | Uitjes`;
+
+  return {
+    title,
+    description: eventEntry.card.description,
+    alternates: { canonical },
+    openGraph: { title, description: eventEntry.card.description, url: canonical },
+  };
 }
 
 function ArrowIcon() { return <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.333 8h9.334M8.667 3.333 13.333 8l-4.666 4.667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>; }

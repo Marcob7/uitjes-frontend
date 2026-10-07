@@ -1,15 +1,15 @@
 import { newsArticles } from "@/lib/newsArticles";
+import { CITY_CONTENT_CITY_SLUGS } from "@/lib/cityContentCities";
+import { localePathname, locales } from "@/lib/i18n/config";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 const routes = [
   "/",
   "/ontdek",
-  "/zoeken",
   "/faq",
   "/inspiratie",
   "/jaarkalender",
-  "/festivals",
   "/festivals/kalender",
   "/inspiratie/snel-ontdekken",
   "/inspiratie/buiten-genieten",
@@ -18,28 +18,38 @@ const routes = [
 ];
 
 export default function sitemap() {
-  const staticRoutes = routes.map((route) => ({
-    url: `${siteUrl}${route}`,
+  const localized = (route: string, priority: number, changeFrequency: "daily" | "weekly" | "monthly") =>
+    locales.map((locale) => ({
+    url: `${siteUrl}${localePathname(route, locale)}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: route === "/" ? 1 : 0.7,
+    changeFrequency,
+    priority,
+    alternates: { languages: Object.fromEntries(locales.map((candidate) => [candidate, `${siteUrl}${localePathname(route, candidate)}`])) },
   }));
 
-  const articleRoutes = newsArticles.map((article) => ({
-    url: `${siteUrl}/nieuws/${article.slug}`,
+  const staticRoutes = routes.flatMap((route) => localized(route, route === "/" ? 1 : 0.7, "weekly"));
+
+  const articleRoutes = newsArticles.flatMap((article) => locales.map((locale) => ({
+    url: `${siteUrl}${localePathname(`/nieuws/${article.slug}`, locale)}`,
     lastModified: new Date(article.updatedAt ?? article.publishedAt),
     changeFrequency: "monthly" as const,
     priority: 0.6,
-  }));
+  })));
+
+  // These are the city pages that are backed by the city-content API.  Their
+  // query parameter is intentional: it is part of the canonical URL and the
+  // page content changes by city.
+  const cityRoutes = CITY_CONTENT_CITY_SLUGS.flatMap((city) => locales.map((locale) => ({
+    url: `${siteUrl}${localePathname("/ontdek", locale)}?city=${encodeURIComponent(city)}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+  })));
 
   return [
     ...staticRoutes,
-    {
-      url: `${siteUrl}/nieuws`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    },
+    ...localized("/nieuws", 0.7, "weekly"),
     ...articleRoutes,
+    ...cityRoutes,
   ];
 }

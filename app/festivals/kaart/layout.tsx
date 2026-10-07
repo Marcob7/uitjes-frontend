@@ -1,9 +1,11 @@
 export const metadata = {
-  title: "Festival kalender Nederland | Uitjes",
-  description: "Bekijk festivals in Nederland op een kalender.",
+  title: "Festivals op de kaart | Uitjes",
+  description:
+    "Verken festivals in Nederland op de kaart en bekijk wat er in de buurt speelt.",
   alternates: {
-    canonical: "/festivals/kalender",
+    canonical: "/festivals/kaart",
   },
+  robots: { index: false, follow: true },
 };
 
 export default function FestivalsMapLayout({

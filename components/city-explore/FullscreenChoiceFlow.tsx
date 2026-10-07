@@ -4,6 +4,7 @@ import * as React from "react";
 import { useEffect, useId, useLayoutEffect, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 const useInitialFlowLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -71,6 +72,7 @@ export function FullscreenChoiceFlow({
   decorativeLayer,
   children,
 }: FullscreenChoiceFlowProps) {
+  const { t } = useLocale();
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const previousStepRef = useRef(currentStep);
   const isResultsStepRef = useRef(false);
@@ -191,7 +193,7 @@ export function FullscreenChoiceFlow({
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
             >
               <CloseIcon className="h-4 w-4" />
-              <span>Doorgaan met mijn keuzes</span>
+              <span>{t("discover.continueChoices")}</span>
             </button>
           ) : (
             <Link
@@ -205,7 +207,7 @@ export function FullscreenChoiceFlow({
           {shouldShowProgress ? (
             <p
               className="text-sm font-medium text-[#65736C]"
-              aria-label={`Stap ${safeStep} van ${totalSteps}${isResultsStep ? ": resultaten" : ""}`}
+              aria-label={isResultsStep ? t("discover.stepOfResults", { step: safeStep, total: totalSteps }) : t("discover.stepOf", { step: safeStep, total: totalSteps })}
             >
               <span aria-hidden="true">{progress}</span>
             </p>
@@ -220,7 +222,7 @@ export function FullscreenChoiceFlow({
 
         {shouldShowFooter ? <footer className="flex flex-col gap-3 border-t border-[#DCE1DC] py-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:py-5">
           <div className="hidden min-w-32 sm:block">
-            <p className="text-xs font-semibold tracking-[0.12em] text-[#65736C]">Voortgang</p>
+            <p className="text-xs font-semibold tracking-[0.12em] text-[#65736C]">{t("discover.progress")}</p>
             <div className="mt-2 flex gap-1.5" aria-hidden="true">
               {steps.map((flowStep, index) => (
                 <span
@@ -238,7 +240,7 @@ export function FullscreenChoiceFlow({
                   onClick={onEditChoices}
                   className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#DCE1DC] bg-white/80 px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
                 >
-                  Keuzes aanpassen
+                  {t("discover.editChoices")}
                 </button>
               ) : null}
               <button
@@ -246,7 +248,7 @@ export function FullscreenChoiceFlow({
                 onClick={onViewAllResults ?? onComplete}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
               >
-                Bekijk alle resultaten
+                {t("discover.allResults")}
               </button>
             </div>
           ) : (
@@ -258,7 +260,7 @@ export function FullscreenChoiceFlow({
                   className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[#DCE1DC] bg-white/80 px-3 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] sm:flex-none sm:px-4"
                 >
                   <ArrowLeftIcon className="h-4 w-4" />
-                  Vorige
+                  {t("discover.previous")}
                 </button>
               ) : null}
               {secondaryAction ? (
@@ -270,7 +272,7 @@ export function FullscreenChoiceFlow({
                   {secondaryAction.label}
                 </button>
               ) : safeStep === 1 ? (
-                <p className="hidden text-sm text-[#65736C] sm:block">Kies een kaart om verder te gaan.</p>
+                <p className="hidden text-sm text-[#65736C] sm:block">{t("discover.chooseToContinue")}</p>
               ) : null}
             </div>
           )}
@@ -384,7 +386,7 @@ export function FullscreenChoiceGrid({
 }
 
 export function FullscreenChoiceResults({
-  title = "Dit past bij jouw keuzes",
+  title,
   description,
   children,
 }: {
@@ -393,12 +395,14 @@ export function FullscreenChoiceResults({
   children: ReactNode;
 }) {
   const ids = React.useContext(FlowHeadingIdsContext);
+  const { t } = useLocale();
+  const resolvedTitle = title ?? t("discover.resultTitle");
 
   return (
     <section className="mx-auto w-full max-w-[72rem] motion-safe:animate-[wizardIn_240ms_cubic-bezier(0.16,1,0.3,1)_both]">
       <div className="max-w-2xl">
         <h1 id={ids?.labelId} data-flow-heading tabIndex={-1} className="max-w-[14ch] text-[clamp(2.7rem,6vw,5.25rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]">
-          {title}
+          {resolvedTitle}
         </h1>
         <p id={ids?.descriptionId} className="mt-4 text-base leading-7 text-[#65736C] sm:text-lg">{description}</p>
       </div>

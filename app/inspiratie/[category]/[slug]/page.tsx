@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
+import ShareAction from "@/components/ShareAction";
 import { buildActionSearchHref, buildMapsSearchHref } from "@/lib/actionLinks";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import {
@@ -52,17 +53,27 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: PageProps) {
   const result = getInspirationResultBySlug(params.category, params.slug);
+  const canonical = `/inspiratie/${encodeURIComponent(params.category)}/${encodeURIComponent(params.slug)}`;
 
   return result
     ? {
-        title: `${result.title} | Uitjes`,
+        title: `${result.title} in ${result.city} | Uitjes`,
         description: result.description,
         alternates: {
-          canonical: `/inspiratie/${params.category}/${params.slug}`,
+          canonical,
         },
+        openGraph: {
+          title: `${result.title} in ${result.city} | Uitjes`,
+          description: result.description,
+          url: canonical,
+          type: "website",
+          images: [{ url: result.image, alt: result.title }],
+        },
+        twitter: { card: "summary_large_image" },
       }
     : {
-        title: "Inspiratie | Uitjes",
+        title: "Inspiratie niet gevonden | Uitjes",
+        robots: { index: false, follow: true },
       };
 }
 
@@ -277,6 +288,10 @@ export default function InspirationDetailPage({
 
   const query = buildContextQuery(searchParams);
 
+  // Context parameters tailor the surrounding inspiration journey, but they
+  // are not part of the public detail URL someone should receive when sharing.
+  const canonicalDetailPath = `/inspiratie/${encodeURIComponent(params.category)}/${encodeURIComponent(params.slug)}`;
+
   const categoryLabel =
     inspirationCategoryLabels[activeCategory];
 
@@ -411,6 +426,12 @@ export default function InspirationDetailPage({
                   <PinIcon />
                   Bekijk route
                 </a>
+
+                <ShareAction
+                  title={result.title}
+                  text={`Bekijk “${result.title}” op Uitjes.`}
+                  url={canonicalDetailPath}
+                />
               </div>
             </div>
           </div>

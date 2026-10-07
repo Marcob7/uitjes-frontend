@@ -1,8 +1,14 @@
 import "./globals.css";
 import localFont from "next/font/local";
+import type { Metadata } from "next";
+
 import AppFrame from "@/components/AppFrame";
 import { AuthProvider } from "@/components/AuthProvider";
 import { FavoritesProvider } from "@/components/FavouritesProvider";
+import { SaveFeedbackProvider } from "@/components/SaveFeedbackProvider";
+import { LocaleProvider } from "@/components/i18n/LocaleProvider";
+import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
+import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const metadataBase = siteUrl.startsWith("http") ? siteUrl : `https://${siteUrl}`;
@@ -63,25 +69,53 @@ const plusJakartaSans = localFont({
   fallback: ["Plus Jakarta Sans", "ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-export const metadata = {
+export function generateMetadata(): Metadata {
+  const locale = getRequestLocale();
+  const pathname = getRequestPathname();
+  const english = locale === "en";
+
+  return {
   metadataBase: new URL(metadataBase),
-  title: "Uitjes NL",
-  description: "Ontdek leuke uitjes, evenementen en activiteiten bij jou in de buurt.",
-};
+  applicationName: "Uitjes",
+  title: english ? "Things to do in the Netherlands | Uitjes" : "Uitjes in Nederland | Uitjes",
+  description: english
+    ? "Discover things to do, activities, festivals and events in cities across the Netherlands."
+    : "Ontdek uitjes, activiteiten, festivals en evenementen in steden door heel Nederland.",
+  alternates: getLocaleAlternates(pathname, locale),
+  openGraph: {
+    type: "website",
+    ...getLocaleOpenGraph(locale, pathname),
+    siteName: "Uitjes",
+    title: english ? "Things to do in the Netherlands | Uitjes" : "Uitjes in Nederland | Uitjes",
+    description: english
+      ? "Discover things to do, activities, festivals and events in cities across the Netherlands."
+      : "Ontdek uitjes, activiteiten, festivals en evenementen in steden door heel Nederland.",
+    images: [{ url: "/images/homepage-festival-background.webp", alt: "Uitjes in Nederland" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  };
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = getRequestLocale();
   return (
-    <html lang="nl" className={`${editorialNew.variable} ${plusJakartaSans.variable}`}>
+    <html lang={locale} className={`${editorialNew.variable} ${plusJakartaSans.variable}`}>
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
-        <AuthProvider>
-          <FavoritesProvider>
-            <AppFrame>{children}</AppFrame>
-          </FavoritesProvider>
-        </AuthProvider>
+        <LocaleProvider locale={locale}>
+          <AuthProvider>
+            <FavoritesProvider>
+              <SaveFeedbackProvider>
+                <AppFrame>{children}</AppFrame>
+              </SaveFeedbackProvider>
+            </FavoritesProvider>
+          </AuthProvider>
+        </LocaleProvider>
       </body>
     </html>
   );
