@@ -10,6 +10,10 @@ import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
 import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
 
+// Cloudflare Pages only supports dynamic Next.js routes on the Edge Runtime.
+// Declaring this at the root makes it the default for every route in the app.
+export const runtime = "edge";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const metadataBase = siteUrl.startsWith("http") ? siteUrl : `https://${siteUrl}`;
 
