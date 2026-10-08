@@ -25,6 +25,7 @@ import {
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
 import { getInspirationFlowResults } from "@/lib/inspiration/cityContentMapper";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { InspirationFlowScenery } from "./InspirationFlowScenery";
 
 type AudienceChoice = "solo" | "date" | "gezin" | "vrienden";
@@ -230,6 +231,7 @@ export function InspirationChoiceFlow({
   initialLocation,
   initialNearbyCity,
 }: InspirationChoiceFlowProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -281,10 +283,10 @@ export function InspirationChoiceFlow({
   const selectedCityLabel = supportedInspirationCities.find((city) => city.value === selectedCity)?.label ?? selectedCity;
   const cityIntroTitle = selectedCityLabel
     ? `Leuke ideeën in ${selectedCityLabel}`
-    : citySelectionTitle;
+    : t("inspiration.introTitle");
   const cityIntroDescription = selectedCityLabel
-    ? "Maak het persoonlijker of bekijk meteen alle uitjes."
-    : citySelectionDescription;
+    ? t("inspiration.introHelp")
+    : t("inspiration.introDescription");
   const totalPreviewCount = Math.min(filteredResults.length, 6);
   const selectionLabels = [
     selectedAudience ? audienceOptions.find((option) => option.value === selectedAudience)?.label : null,
@@ -549,6 +551,7 @@ export function InspirationChoiceFlow({
                 <FullscreenChoiceQuestion
                   title={cityIntroTitle}
                   description={cityIntroDescription}
+                  introNote={selectedCity ? undefined : t("inspiration.citySelectionIntro")}
                   primaryAction={selectedCity ? (
                     <button
                       type="button"
@@ -561,7 +564,7 @@ export function InspirationChoiceFlow({
                 >
                   <div className={`w-full max-w-2xl ${selectedCity ? "border-0 bg-transparent p-0 shadow-none sm:rounded-[1.4rem] sm:border sm:border-[#DCE1DC] sm:bg-white/[0.96] sm:p-5 sm:shadow-[0_14px_30px_rgba(41,52,47,0.06)]" : "rounded-[1.4rem] border border-[#DCE1DC] bg-white/[0.96] p-4 shadow-[0_14px_30px_rgba(41,52,47,0.06)] sm:p-5"}`}>
                     <div className={selectedCity ? "hidden sm:block" : undefined}>
-                    <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">Zoek een stad</label>
+                    <label htmlFor="inspiration-city-search" className="text-sm font-semibold text-[#29342F]">{selectedCity ? t("inspiration.searchCity") : t("inspiration.cityQuestion")}</label>
                     <div className="relative mt-2">
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <div className="flex min-h-12 min-w-0 flex-1 items-center rounded-xl border border-[#B8C5BE] bg-white transition focus-within:border-[#005FCC] focus-within:ring-2 focus-within:ring-[#005FCC]">

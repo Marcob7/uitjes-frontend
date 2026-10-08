@@ -7,6 +7,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import CalendarActions from "@/components/calendar/CalendarActions";
 import SavePlaceButton from "@/components/SavePlaceButton";
 import { buildMapsSearchHref, buildTicketSearchHref } from "@/lib/actionLinks";
+import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import {
   generateJaarkalenderEventStaticParams,
@@ -35,22 +36,6 @@ type EventViewModel = {
   nearbyIntro: string;
 };
 
-const fallbackEventImages = [
-  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-  "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
-  "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-  "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
-  "https://images.unsplash.com/photo-1506157786151-b8491531f063",
-  "https://images.unsplash.com/photo-1459749411175-04bf5292ceea",
-  "https://images.unsplash.com/photo-1511192336575-5a79af67a629",
-  "https://images.unsplash.com/photo-1503095396549-807759245b35",
-];
-const galleryFallbackImages = [
-  "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
-  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-  "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-  "https://images.unsplash.com/photo-1459749411175-04bf5292ceea",
-];
 const DUTCH_MONTH_INDEX: Record<string, number> = { januari: 0, februari: 1, maart: 2, april: 3, mei: 4, juni: 5, juli: 6, augustus: 7, september: 8, oktober: 9, november: 10, december: 11 };
 
 export const dynamicParams = false;
@@ -89,7 +74,23 @@ function getCategoryKey(card: TimelineCard): JaarkalenderCategoryKey {
   if (text.includes("sport") || text.includes("run") || text.includes("wandel")) return "natuur";
   return "cultuur";
 }
-function getEventImage(card: TimelineCard, seed: number) { return card.image ?? fallbackEventImages[seed % fallbackEventImages.length]; }
+function getEventImage(card: TimelineCard) {
+  return resolveActivityImage({
+    image: card.image,
+    category: card.category,
+    title: card.title,
+    tags: [card.description],
+  });
+}
+
+function getEventFallbackImage(card: TimelineCard, variant: string) {
+  return resolveActivityImage({
+    slug: `${card.title}-${variant}`,
+    category: card.category,
+    title: card.title,
+    tags: [card.description],
+  });
+}
 function getCityLabel(card: TimelineCard) {
   if (card.location.includes(", ") || card.location.includes(" - ")) return card.location;
   if (card.location.includes("by night")) return card.location.replace("by night", "centrum").trim();
@@ -133,7 +134,7 @@ function ImageSurface({ image, className, priority = false, children }: { image:
 }
 function SimilarEventCard({ entry }: { entry: JaarkalenderEventEntry }) {
   const category = jaarkalenderCategoryMeta[getCategoryKey(entry.card)];
-  const image = getEventImage(entry.card, entry.eventIndex + 2);
+  const image = getEventImage(entry.card);
   const href = getJaarkalenderEventHref(entry.day.slug, entry.eventSlug);
   const saveItem = { id: `jaarkalender:${entry.day.slug}/${entry.eventSlug}`, title: entry.card.title, href, meta: `${getCityLabel(entry.card)} · ${category.label}`, image };
   return <article className="group min-w-0"><Link href={href} className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1f5c43]"><ImageSurface image={image} className="relative aspect-[1.06] overflow-hidden rounded-[1.35rem] bg-[#e5e7df] transition duration-500 group-hover:scale-[0.985]"><span className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.13em] ${category.badgeClass}`}>{category.label}</span></ImageSurface></Link><div className="mt-4 flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs font-medium text-[#74766e]">{getCityLabel(entry.card)}</p><Link href={href} className="mt-1 block text-[1.12rem] font-semibold leading-tight tracking-[-0.035em] text-[#203329] transition group-hover:text-[#1f5c43] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]">{entry.card.title}</Link><p className="mt-2 text-sm font-semibold text-[#345846]">{getCategoryKey(entry.card) === "festival" ? "Vanaf € 12" : "Vanaf € 15"}</p></div><SavePlaceButton item={saveItem} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d9dfd6] bg-white text-[#345846] transition hover:border-[#345846] hover:bg-[#edf4e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]" savedClassName="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#345846] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]" savedChildren={<><HeartIcon filled /><span className="sr-only">Verwijder uit bewaard</span></>}><HeartIcon /><span className="sr-only">Bewaar {entry.card.title}</span></SavePlaceButton></div></article>;
@@ -148,7 +149,7 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
   const viewModel = buildEventViewModel(eventEntry);
   const categoryKey = getCategoryKey(eventEntry.card);
   const categoryMeta = jaarkalenderCategoryMeta[categoryKey];
-  const heroImage = getEventImage(eventEntry.card, eventEntry.eventIndex);
+  const heroImage = getEventImage(eventEntry.card);
   const nearbyEvents = getJaarkalenderEventEntriesForDay(eventEntry.day).filter((entry) => entry.eventSlug !== eventEntry.eventSlug).slice(0, 4);
   const calendarStart = buildJaarkalenderDate(eventEntry);
   const calendarEnd = new Date(calendarStart.getTime() + 3 * 60 * 60 * 1000);
@@ -170,7 +171,12 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
     { icon: "pin", title: "De plek", description: viewModel.practicalInfo.find((item) => item.icon === "pin")?.value ?? viewModel.locationLabel },
     { icon: "group", title: "Samen of solo", description: viewModel.practicalInfo.find((item) => item.icon === "group")?.value ?? "Een fijne stop, alleen of samen." },
   ];
-  const galleryImages = [heroImage, ...galleryFallbackImages];
+  const galleryImages = [
+    heroImage,
+    ...["gallery-1", "gallery-2", "gallery-3"].map((variant) =>
+      getEventFallbackImage(eventEntry.card, variant)
+    ),
+  ];
 
   return <main className="min-h-screen bg-[#fbfaf6] text-[#203329]"><div className="mx-auto max-w-[1420px] px-4 pb-20 pt-5 sm:px-6 sm:pt-8 lg:px-10 lg:pb-28 lg:mt-28">
     <Breadcrumbs className="mb-7 sm:mb-9" items={[{ label: "Home", href: "/" }, { label: "Jaarkalender", href: "/jaarkalender" }, { label: `${eventEntry.day.weekdayDisplay} ${eventEntry.day.dayNumber} ${eventEntry.day.monthDisplay}`, href: `/jaarkalender/${eventEntry.day.slug}` }, { label: eventEntry.card.title }]} />

@@ -1,3 +1,7 @@
+"use client";
+
+import { useLocale } from "@/components/i18n/LocaleProvider";
+
 type DateSearchInputProps = {
   value?: string;
   onChange?: (value: string) => void;
@@ -13,12 +17,13 @@ export default function DateSearchInput({
   value = "",
   onChange,
   onSearch,
-  placeholder = "Zoek op stad, festival of activiteit",
+  placeholder,
   errorMessage,
   isSearching = false,
   variant = "default",
   align = "center",
 }: DateSearchInputProps) {
+  const { t } = useLocale();
   const isInk = variant === "ink";
 
   return (
@@ -35,7 +40,7 @@ export default function DateSearchInput({
                 onSearch?.();
               }
             }}
-            placeholder={placeholder}
+            placeholder={placeholder ?? t("home.heroSearchPlaceholder")}
             aria-invalid={Boolean(errorMessage)}
             aria-describedby={errorMessage ? "home-search-error" : undefined}
             enterKeyHint="search"
@@ -48,7 +53,7 @@ export default function DateSearchInput({
           <button
             type="button"
             onClick={onSearch}
-            aria-label="Search"
+            aria-label={t("search.submit")}
             disabled={isSearching}
             className={`mr-[4px] flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full text-white transition-transform duration-150 hover:scale-[1.03] active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 ${isInk ? "bg-[#18343A]" : "bg-[#00652c]"}`}
           >

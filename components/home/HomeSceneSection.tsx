@@ -8,6 +8,8 @@ import {
 } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localePathname } from "@/lib/i18n/config";
 import {
   CSSProperties,
   memo,
@@ -141,6 +143,7 @@ export default function HomeSceneSection({
   description = "Van verborgen lokale plekken tot festivals, restaurants en spontane plannen. Ontdek activiteiten die passen bij jouw stemming, locatie en moment.", playKey, className,
 }: HomeSceneSectionProps) {
   const router = useRouter();
+  const { locale, t } = useLocale();
   const rootRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
   const prefersReducedMotion = useReducedMotion();
@@ -218,17 +221,14 @@ export default function HomeSceneSection({
   const handleSearch = () => {
     const normalizedQuery = normalizeSearchQuery(searchQuery);
     if (!normalizedQuery) {
-      setSearchError("Vul eerst een stad, activiteit of festival in.");
+      setSearchError(t("search.emptyQuery"));
       return;
     }
     const route = getSearchRoute(normalizedQuery);
-    if (!route) {
-      setSearchError(`We konden geen resultaten vinden voor "${normalizedQuery}". Controleer de spelling of probeer een andere stad, activiteit of festival.`);
-      return;
-    }
+    if (!route) return;
     setSearchError(null);
     setSearchQuery(normalizedQuery);
-    router.push(route);
+    router.push(localePathname(route, locale));
   };
   const gradient = `linear-gradient(180deg, ${currentTheme.skyFrom} 0%, ${currentTheme.skyVia} 52%, ${currentTheme.skyTo} 100%)`;
 

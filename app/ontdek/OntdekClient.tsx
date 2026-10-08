@@ -32,7 +32,9 @@ export default function OntdekClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const city = searchParams.get("city") || "apeldoorn";
+  // Keep this legacy client URL-led as well: an omitted city must not silently
+  // turn into Apeldoorn if this view is used again.
+  const city = searchParams.get("city") ?? "";
   const free = searchParams.get("free") || "0";
   const when = searchParams.get("when") || "";
   const qFromUrl = searchParams.get("q") || "";
@@ -71,7 +73,7 @@ export default function OntdekClient() {
   }
 
   function resetFilters() {
-    router.push("/ontdek?city=apeldoorn");
+    router.push("/ontdek");
   }
 
   useEffect(() => {

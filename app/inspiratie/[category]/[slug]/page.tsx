@@ -5,6 +5,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
 import ShareAction from "@/components/ShareAction";
 import { buildActionSearchHref, buildMapsSearchHref } from "@/lib/actionLinks";
+import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 import {
   getInspirationDetailStaticParams,
@@ -154,10 +155,12 @@ function SparkIcon() {
 
 function ImagePanel({
   image,
+  fallbackImage,
   className,
   children,
 }: {
   image: string;
+  fallbackImage: string;
   className: string;
   children?: React.ReactNode;
 }) {
@@ -165,13 +168,7 @@ function ImagePanel({
     <div
       className={className}
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(25,45,33,0.02), rgba(25,45,33,0.24)), ${optimizeCssBackground(
-          image,
-          {
-            width: 1200,
-            quality: 68,
-          }
-        )}`,
+        backgroundImage: `linear-gradient(180deg, rgba(25,45,33,0.02), rgba(25,45,33,0.24)), ${optimizeCssBackground(image, { width: 1200, quality: 68 })}, ${optimizeCssBackground(fallbackImage, { width: 1200, quality: 68 })}`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -179,6 +176,16 @@ function ImagePanel({
       {children}
     </div>
   );
+}
+
+function fallbackImageFor(result: InspirationResult) {
+  return resolveActivityImage({
+    id: result.slug,
+    slug: result.slug,
+    category: `${result.categoryLabel} ${result.category} ${result.type}`,
+    title: result.title,
+    tags: result.tags,
+  });
 }
 
 function SimilarItem({
@@ -196,6 +203,7 @@ function SimilarItem({
       >
         <ImagePanel
           image={item.image}
+          fallbackImage={fallbackImageFor(item)}
           className="aspect-[1.08] overflow-hidden rounded-[1.35rem] bg-[#e1e6dd] transition duration-500 group-hover:scale-[0.985]"
         >
           <span className="m-3 inline-flex rounded-full bg-white/88 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#315c43]">
@@ -438,6 +446,7 @@ export default function InspirationDetailPage({
 
           <ImagePanel
             image={result.image}
+            fallbackImage={fallbackImageFor(result)}
             className="relative z-0 min-h-[23rem] overflow-hidden bg-[#cad5c9] sm:min-h-[31rem] lg:min-h-full"
           >
             <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(24,39,30,0.6))] p-5 sm:p-7">
@@ -620,6 +629,7 @@ export default function InspirationDetailPage({
           <div className="mt-9 grid gap-3 md:grid-cols-12 md:grid-rows-2">
             <ImagePanel
               image={result.gallery[0] || result.image}
+              fallbackImage={fallbackImageFor(result)}
               className="relative min-h-[17rem] overflow-hidden rounded-[1.45rem] bg-[#d9e2d7] md:col-span-5 md:row-span-2 md:min-h-[34.5rem]"
             >
               <span className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#294634]">
@@ -629,16 +639,19 @@ export default function InspirationDetailPage({
 
             <ImagePanel
               image={result.gallery[1] || result.image}
+              fallbackImage={fallbackImageFor(result)}
               className="min-h-[15rem] overflow-hidden rounded-[1.45rem] bg-[#e8e3d7] md:col-span-7 md:min-h-0"
             />
 
             <ImagePanel
               image={result.gallery[2] || result.image}
+              fallbackImage={fallbackImageFor(result)}
               className="min-h-[15rem] overflow-hidden rounded-[1.45rem] bg-[#dfe7df] md:col-span-3 md:min-h-0"
             />
 
             <ImagePanel
               image={result.gallery[3] || result.image}
+              fallbackImage={fallbackImageFor(result)}
               className="min-h-[15rem] overflow-hidden rounded-[1.45rem] bg-[#e8e3d7] md:col-span-4 md:min-h-0"
             />
           </div>

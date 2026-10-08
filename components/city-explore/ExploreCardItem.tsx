@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
-
 import FavouriteButton from "@/components/FavouriteButton";
 import SavePlaceButton from "@/components/SavePlaceButton";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { localeToIntl } from "@/lib/i18n/config";
+import ResultCard from "@/components/ui/ResultCard";
 
 import type { ExploreCard } from "./types";
 
@@ -16,89 +14,9 @@ type ExploreCardItemProps = {
   variant?: "default" | "flow";
 };
 
-type ActivityIconName =
-  | "utensils"
-  | "landmark"
-  | "trees"
-  | "family"
-  | "active"
-  | "water"
-  | "music"
-  | "theater"
-  | "market"
-  | "paw"
-  | "calendar"
-  | "sparkles"
-  | "home"
-  | "compass";
-
-/** Chooses a presentational icon from the same card data used throughout /ontdek. */
-function getExploreActivityIcon(card: ExploreCard): ActivityIconName {
-  const text = [card.label, card.kind, ...(card.tags ?? []), card.title]
-    .filter(Boolean)
-    .join(" ")
-    .toLocaleLowerCase("nl-NL");
-
-  if (/eten|restaurant|cafe|café|food|drank|diner|lunch|borrel/.test(text)) return "utensils";
-  if (/museum|cultuur|kunst|expositie|galerie|histor/.test(text)) return "landmark";
-  if (/wandeling|natuur|park|bos|tuin|route/.test(text)) return "trees";
-  if (/kind|gezin|familie|speel/.test(text)) return "family";
-  if (/sport|actief|fitness|klim|fiets/.test(text)) return "active";
-  if (/zwem|water|boot|safari|vaart/.test(text)) return "water";
-  if (/muziek|concert|live.?set|jazz/.test(text)) return "music";
-  if (/theater|voorstelling|toneel|film|bioscoop/.test(text)) return "theater";
-  if (/markt|winkel|shop/.test(text)) return "market";
-  if (/dier|zoo|zoö/.test(text)) return "paw";
-  if (/festival|evenement|event/.test(text)) return "calendar";
-  if (/wellness|ontspan|relax|spa/.test(text)) return "sparkles";
-  if (/binnen|indoor/.test(text)) return "home";
-  return "compass";
-}
-
-function ActivityIcon({ name }: { name: ActivityIconName }) {
-  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  const paths: Record<ActivityIconName, React.ReactNode> = {
-    utensils: <><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M16.5 3v18M16.5 3c3 1 3 6 0 7" /></>,
-    landmark: <><path d="m3 9 9-5 9 5M5 10h14M6 20h12M8 10v7M12 10v7M16 10v7" /></>,
-    trees: <><path d="M12 21v-7M7 21v-5M17 21v-5M12 3 7 12h10L12 3ZM7 7l-4 8h8L7 7Zm10 0-4 8h8l-4-8Z" /></>,
-    family: <><circle cx="9" cy="8" r="2.5" /><circle cx="16" cy="9" r="2" /><path d="M4.5 20c.3-4 2.1-6 4.5-6s4.2 2 4.5 6M13 20c.2-3 1.4-4.5 3.2-4.5 1.7 0 3 1.5 3.3 4.5" /></>,
-    active: <><path d="M4 8v8M7 6v12M17 6v12M20 8v8M4 10h3M17 10h3M4 14h3M17 14h3M7 12h10" /></>,
-    water: <><path d="M3 8c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2M3 14c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2" /></>,
-    music: <><path d="M9 18V6l10-2v12M9 18a2.5 2.5 0 1 1-2-2.4M19 16a2.5 2.5 0 1 1-2-2.4M9 10l10-2" /></>,
-    theater: <><path d="M5 4h14v13H5zM8 9c1 1 2 1 3 0M13 9c1 1 2 1 3 0M8 13c2 2 6 2 8 0M7 20h10" /></>,
-    market: <><path d="M4 9h16l-1-5H5L4 9ZM5 9v10h14V9M9 19v-6h6v6" /></>,
-    paw: <><circle cx="8" cy="8" r="1.5" /><circle cx="16" cy="8" r="1.5" /><circle cx="6" cy="12" r="1.5" /><circle cx="18" cy="12" r="1.5" /><path d="M12 12c-3 0-4.5 2.4-4.5 4.5 0 1.2 1 2 2.2 1.7l2.3-.8 2.3.8c1.2.3 2.2-.5 2.2-1.7C16.5 14.4 15 12 12 12Z" /></>,
-    calendar: <><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M8 3v4M16 3v4M4 10h16M9 14h.01M15 14h.01M9 17h.01M15 17h.01" /></>,
-    sparkles: <><path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3ZM19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15Z" /></>,
-    home: <><path d="m3 11 9-7 9 7v9H3v-9ZM9 20v-5h6v5" /></>,
-    compass: <><circle cx="12" cy="12" r="8.5" /><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z" /></>,
-  };
-  return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6" {...common}>{paths[name]}</svg>;
-}
-
-function StarIcon() {
-  return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current"><path d="m12 3.6 2.44 4.94 5.45.79-3.94 3.84.93 5.43L12 16.03 7.12 18.6l.93-5.43L4.11 9.33l5.45-.79L12 3.6Z" /></svg>;
-}
-
-function PinIcon() {
-  return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s7-5.7 7-12a7 7 0 1 0-14 0c0 6.3 7 12 7 12Z" /><circle cx="12" cy="9" r="2.2" /></svg>;
-}
-
-function ClockIcon() {
-  return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.5 2" /></svg>;
-}
-
-function ArrowIcon() {
-  return <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h13M13 7l5 5-5 5" /></svg>;
-}
-
 function HeartIcon({ filled = false }: { filled?: boolean }) {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className={`h-3.5 w-3.5 ${filled ? "fill-current" : "fill-none"}`}
-    >
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={`h-3.5 w-3.5 ${filled ? "fill-current" : "fill-none"}`}>
       <path
         d="M12 20.2c-.3 0-.6-.1-.8-.3C5.6 15 3 12.3 3 8.9 3 6.1 5.1 4 7.8 4c1.6 0 3.1.8 4.2 2.1C13.1 4.8 14.6 4 16.2 4 18.9 4 21 6.1 21 8.9c0 3.4-2.6 6.1-8.2 11-.2.2-.5.3-.8.3Z"
         stroke="currentColor"
@@ -110,159 +28,66 @@ function HeartIcon({ filled = false }: { filled?: boolean }) {
   );
 }
 
-function formatReviewSummary(card: ExploreCard, locale: "nl" | "en", t: (key: string, values?: Record<string, string | number>) => string) {
-  const value = card.ratingValue;
-  const reviewCount = card.reviewCount;
-  if (
-    typeof value !== "number" ||
-    !Number.isFinite(value) ||
-    typeof reviewCount !== "number" ||
-    !Number.isFinite(reviewCount) ||
-    reviewCount <= 0
-  ) return null;
+const saveButtonClassName =
+  "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#D5DED6] bg-white px-3 text-xs font-semibold text-[#31483A] transition hover:border-[#8FAA94] hover:bg-[#F7FAF6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70";
 
-  const rating = new Intl.NumberFormat(localeToIntl[locale], { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
-  const reviews = t("discover.reviews", { count: new Intl.NumberFormat(localeToIntl[locale]).format(reviewCount) });
-  return { rating, reviews, reviewCount, title: card.ratingSource ? `${rating} · ${reviews} via ${card.ratingSource}` : `${rating} · ${reviews}` };
-}
+const savedButtonClassName =
+  "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#B9D7B7] bg-[#EEF6EA] px-3 text-xs font-semibold text-[#285239] transition hover:bg-[#E5F0E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70";
 
-function getHighlightLabel(card: ExploreCard, t: (key: string) => string) {
-  if (card.editorsPick) return t("discover.editorsPick");
-  if (card.featured) return t("discover.featured");
-  if (card.hiddenGem) return t("discover.hiddenGem");
-  if ((card.priorityScore ?? 0) >= 80) return t("discover.recommended");
-  return null;
-}
-
-export default function ExploreCardItem({
-  card,
-  isSelected,
-  onSelect,
-  variant = "default",
-}: ExploreCardItemProps) {
-  const { locale, t } = useLocale();
-  const reviewSummary = formatReviewSummary(card, locale, t);
-  const highlight = getHighlightLabel(card, t);
+/** The /ontdek adapter for the shared, scan-first result-card family. */
+export default function ExploreCardItem({ card, isSelected, onSelect }: ExploreCardItemProps) {
+  const { t } = useLocale();
   const eventId = typeof card.eventId === "number" && card.eventId > 0 ? card.eventId : null;
-  const activityIcon = getExploreActivityIcon(card);
-  const metadata = [
-    card.location,
-    card.time && card.time !== "Tijd volgt" ? card.time : null,
-  ].filter(Boolean);
   const fallbackSaveItem = {
     id: `ontdek:${card.id}`,
     title: card.title,
     href: card.href,
-    meta: metadata.join(" · "),
+    meta: [card.label, card.location].filter(Boolean).join(" · "),
     image: card.image ?? undefined,
   };
-
-  const isFlowVariant = variant === "flow";
+  const favoriteAction = eventId ? (
+    <FavouriteButton
+      eventId={eventId}
+      variant="compact"
+      className={saveButtonClassName}
+      savedClassName={savedButtonClassName}
+    />
+  ) : (
+    <SavePlaceButton
+      item={fallbackSaveItem}
+      className={saveButtonClassName}
+      savedClassName={savedButtonClassName}
+      savedChildren={<><HeartIcon filled /><span>{t("discover.saved")}</span></>}
+    >
+      <HeartIcon />
+      <span>{t("discover.save")}</span>
+    </SavePlaceButton>
+  );
 
   return (
-    <article
+    <ResultCard
+      href={card.href}
+      title={card.title}
+      image={card.image}
+      imageAlt={card.imageAlt ?? card.title}
+      category={card.label}
+      location={card.location}
+      date={card.time && card.time !== "Tijd volgt" ? card.time : null}
+      price={card.price}
+      rating={card.ratingValue}
+      reviewCount={card.reviewCount}
+      reviewsHref={card.reviewsHref}
+      reviewsAriaLabel={t("discover.viewReviews", {
+        reviews: t("discover.reviews", { count: card.reviewCount ?? 0 }),
+        title: card.title,
+      })}
+      favoriteAction={favoriteAction}
+      onSelect={onSelect}
       onMouseEnter={onSelect}
-      className={`group relative ${
-        isFlowVariant
-          ? "overflow-hidden rounded-[1.5rem] border border-[#DCE1DC] bg-white/82 shadow-[0_14px_30px_rgba(41,52,47,0.06)]"
-          : `border-b border-[#DCE1DC] last:border-b-0 ${
-              isSelected ? "bg-white/72" : "bg-transparent"
-            }`
-      }`}
-    >
-      <div
-        className={`grid min-h-30 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-5 transition sm:min-h-28 sm:gap-x-5 ${
-          isFlowVariant
-            ? "min-h-36 px-5 py-6 hover:bg-[#F7FAF6] sm:px-6"
-            : "sm:px-3 sm:hover:bg-white/70"
-        }`}
-      >
-        <div className="grid min-w-0 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)] sm:gap-x-5">
-          <Link
-            href={card.href}
-            onFocus={onSelect}
-            onClick={onSelect}
-            aria-label={t("discover.viewItem", { title: card.title })}
-            className="col-span-full grid min-w-0 grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(6rem,auto)] sm:gap-x-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC]"
-          >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DDEBE2] text-[#1D5A46]" aria-hidden="true">
-            <ActivityIcon name={activityIcon} />
-          </span>
-          <span className="min-w-0">
-            <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="min-w-0 truncate text-sm font-medium leading-5 tracking-normal text-[#1D5A46]">
-                {card.label}
-              </span>
-              {highlight ? (
-                <span className="rounded-full bg-[#DDEBE2] px-2 py-0.5 text-[0.65rem] font-semibold text-[#1D5A46]">
-                  {highlight}
-                </span>
-              ) : null}
-            </span>
-            <span className="mt-1 block line-clamp-2 text-lg font-semibold leading-6 tracking-[-0.025em] text-[#29342F] sm:text-xl">
-              {card.title}
-            </span>
-            {metadata.length ? (
-              <span
-                className="mt-1 block truncate text-sm text-[#65736C]"
-              >
-                {metadata.join(" · ")}
-              </span>
-            ) : null}
-          </span>
-          {card.price ? (
-            <span className="col-start-2 text-sm font-semibold text-[#1D5A46] sm:col-start-auto sm:text-right">
-              {card.price}
-            </span>
-          ) : null}
-          </Link>
-          {reviewSummary ? (
-            <div className="col-start-2 flex min-w-0 items-center gap-1.5 text-sm leading-5 text-[#65736C] sm:col-start-2">
-              <span className="inline-flex shrink-0 items-center gap-1 font-medium text-[#53645B]" title={reviewSummary.title}>
-                <span className="text-[#B7791F]"><StarIcon /></span>
-                {reviewSummary.rating}
-              </span>
-              <span aria-hidden="true">·</span>
-              {card.reviewsHref ? (
-                <Link
-                  href={card.reviewsHref}
-                  onFocus={onSelect}
-                  aria-label={t("discover.viewReviews", { reviews: reviewSummary.reviews, title: card.title })}
-                  className="truncate underline decoration-[#AEB9B1] underline-offset-4 transition hover:text-[#1D5A46] hover:decoration-[#1D5A46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
-                >
-                  {reviewSummary.reviews}
-                </Link>
-              ) : (
-                <span className="truncate">{reviewSummary.reviews}</span>
-              )}
-            </div>
-          ) : null}
-        </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          {eventId ? (
-            <FavouriteButton eventId={eventId} variant="compact" />
-          ) : (
-            <SavePlaceButton
-              item={fallbackSaveItem}
-              className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-white/18 bg-[#f7f1e8]/94 px-3 text-xs font-semibold text-[#211a14] shadow-[0_10px_26px_rgba(0,0,0,0.16)] backdrop-blur-md transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8f2d0]/80 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-10 sm:px-3.5"
-              savedClassName="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#c8dc9a]/90 bg-[#e8f2d0] px-3 text-xs font-semibold text-[#162016] shadow-[0_10px_26px_rgba(0,0,0,0.16)] backdrop-blur-md transition hover:bg-[#f1f7df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8f2d0]/80 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-10 sm:px-3.5"
-              savedChildren={<><HeartIcon filled /><span>{t("discover.saved")}</span></>}
-            >
-              <HeartIcon />
-              <span>{t("discover.save")}</span>
-            </SavePlaceButton>
-          )}
-          <Link
-            href={card.href}
-            onFocus={onSelect}
-            onClick={onSelect}
-            aria-label={t("discover.viewItem", { title: card.title })}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1D5A46] px-4 text-sm font-semibold text-white transition group-hover:bg-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
-          >
-            {t("discover.view")} <ArrowIcon />
-          </Link>
-        </div>
-      </div>
-    </article>
+      isSelected={isSelected}
+      variant="compact"
+      viewLabel={t("discover.view")}
+      viewAriaLabel={t("discover.viewItem", { title: card.title })}
+    />
   );
 }

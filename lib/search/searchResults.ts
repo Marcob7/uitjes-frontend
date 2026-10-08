@@ -9,6 +9,7 @@ import {
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
+import { festivalDetails, getFestivalDetailHref, type FestivalDetail } from "@/app/festivals/data";
 
 export type GeneralSearchResult = {
   id: string;
@@ -33,7 +34,7 @@ export type GeneralSearchResult = {
   kind?: string | null;
   tags: string[];
   meta: string;
-  source: "inspiration" | "city-content";
+  source: "inspiration" | "city-content" | "festival";
   score: number;
 };
 
@@ -63,6 +64,11 @@ const queryAliases: Record<string, string[]> = {
   regen: ["binnen", "slecht weer", "overdekt", "museum", "workshop"],
   wandelen: ["wandeling", "wandelroute", "route", "buiten", "natuur", "park"],
   wandeling: ["wandelen", "wandelroute", "route", "buiten", "natuur", "park"],
+  mountainbike: ["mountainbiken", "mtb"],
+  mountainbiken: ["mountainbike", "mtb"],
+  mtb: ["mountainbike", "mountainbiken"],
+  padel: ["padelbaan"],
+  padelbaan: ["padel"],
   buiten: ["wandelen", "wandeling", "wandelroute", "route", "natuur", "park"],
   gratis: ["budget", "free", "vrij entree"],
   bowlen: ["bowling", "actief", "binnen"],
@@ -239,6 +245,8 @@ function mapCityContentResult(
   const categoryText = compactStrings([
     item.category,
     item.kind,
+    item.cityName,
+    item.city,
   ]).join(" ");
   const descriptionText = compactStrings([
     item.summary,
@@ -305,6 +313,54 @@ function mapCityContentResult(
   };
 }
 
+function mapFestivalResult(
+  festival: FestivalDetail,
+  terms: SearchTerms,
+): GeneralSearchResult | null {
+  const description = festival.introParagraphs.join(" ");
+  const tags = ["festival", "event", "evenement", ...festival.genres, festival.vibe];
+  const score = scoreFields(
+    {
+      title: festival.name,
+      category: ["festival", "event", "evenement", ...festival.genres].join(" "),
+      tags: tags.join(" "),
+      slug: festival.slug,
+      description,
+    },
+    terms,
+  );
+
+  if (score < 500) return null;
+
+  const firstTicket = festival.ticketTiers[0]?.priceLabel;
+  return {
+    id: `festival:${festival.slug}`,
+    title: festival.name,
+    description: festival.introParagraphs[0] ?? "",
+    href: getFestivalDetailHref(festival.slug),
+    image: festival.heroImage,
+    imageAlt: festival.name,
+    badge: "Festival",
+    categorySlug: "festival",
+    city: festival.locationLabel,
+    citySlug: normalizeCitySlug(festival.locationLabel),
+    location: festival.locationLabel,
+    priceLabel: firstTicket,
+    priceMin: null,
+    isFree: false,
+    ratingValue: null,
+    reviewCount: null,
+    reviewsHref: null,
+    startAt: festival.startDate,
+    dateLabel: festival.dateLabel,
+    kind: "festival",
+    tags,
+    meta: `festival - ${festival.locationLabel}`,
+    source: "festival",
+    score,
+  };
+}
+
 function sortResults(a: GeneralSearchResult, b: GeneralSearchResult) {
   if (a.score !== b.score) return b.score - a.score;
   if ((a.ratingValue ?? 0) !== (b.ratingValue ?? 0)) return (b.ratingValue ?? 0) - (a.ratingValue ?? 0);
@@ -332,6 +388,9 @@ export async function getGeneralSearchResults(
   const dummyMatches = inspirationResults
     .map((result) => mapInspirationResult(result, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
+  const festivalMatches = festivalDetails
+    .map((festival) => mapFestivalResult(festival, terms))
+    .filter((result): result is GeneralSearchResult => Boolean(result));
 
   let cityContent: CityContentItem[];
 
@@ -344,10 +403,11 @@ export async function getGeneralSearchResults(
 
     // The inspiration collection is local and independent from city-content.
     // Do not hide useful matches merely because the remote source timed out.
-    if (dummyMatches.length > 0) {
+    const localMatches = uniqueResults([...festivalMatches, ...dummyMatches]).sort(sortResults);
+    if (localMatches.length > 0) {
       return {
         status: "partial",
-        results: uniqueResults(dummyMatches).sort(sortResults),
+        results: localMatches,
       };
     }
 
@@ -358,7 +418,7 @@ export async function getGeneralSearchResults(
     .map((item) => mapCityContentResult(item, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
 
-  const results = uniqueResults([...cityContentMatches, ...dummyMatches]).sort(sortResults);
+  const results = uniqueResults([...festivalMatches, ...cityContentMatches, ...dummyMatches]).sort(sortResults);
 
   return results.length > 0
     ? { status: "success", results }

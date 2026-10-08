@@ -49,6 +49,7 @@
    */
   --site-header-offset-mobile: calc(max(1rem, env(safe-area-inset-top)) + 3.25rem);
   --site-header-offset-tablet: calc(max(1.125rem, env(safe-area-inset-top)) + 3.25rem);
+  --site-header-content-safe-offset-desktop: 8rem;
   --mobile-flow-top-offset: var(--site-header-offset-mobile);
 }
 
@@ -219,6 +220,15 @@ button:disabled {
   #app-shell-content:not(.app-shell-content--immersive) > main {
     padding-top: 0;
   }
+
+  /*
+   * A full-bleed page can place the shared foreground-safe class on its
+   * root. Keep that foreground clear of the fixed desktop header without
+   * requiring a route-specific spacing utility.
+   */
+  #app-shell-content:not(.app-shell-content--immersive) > main.site-header-content-safe {
+    padding-top: var(--site-header-content-safe-offset-desktop);
+  }
 }
 
 /*
@@ -238,7 +248,7 @@ button:disabled {
 
 @media (min-width: 1024px) {
   .site-header-content-safe {
-    padding-top: 8rem;
+    padding-top: var(--site-header-content-safe-offset-desktop);
   }
 }
 

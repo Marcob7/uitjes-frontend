@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import CityExplorePage from "@/components/city-explore/page";
+import DiscoverCityChoiceFlow from "@/components/city-explore/DiscoverCityChoiceFlow";
 import type { BackendEvent } from "@/components/city-explore/types";
 import { getEventsWithFallback } from "@/components/city-explore/utils";
 import {
@@ -69,7 +70,7 @@ export function generateMetadata({ searchParams }: OntdekPageProps): Metadata {
 }
 
 function normalizeCity(value: string | undefined) {
-  if (!value) return "apeldoorn";
+  if (!value) return null;
 
   return normalizeCitySlug(value);
 }
@@ -172,6 +173,13 @@ export default function OntdekPage({ searchParams }: OntdekPageProps) {
   }
 
   const city = normalizeCity(searchParams?.city ?? cityFromQuery ?? undefined);
+
+  // A city is only selected when it was supplied by the URL (or resolved from
+  // the legacy `query` city link). Do not turn a bare /ontdek visit into a
+  // city context: the choice flow is the intended starting point.
+  if (!city) {
+    return <DiscoverCityChoiceFlow />;
+  }
 
   if (isCityContentCity(city)) {
     return <BackendCityExplorePage city={city} />;

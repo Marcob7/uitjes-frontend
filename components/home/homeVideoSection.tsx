@@ -6,9 +6,7 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname } from "@/lib/i18n/config";
 
 import {
-  detectSearchIntent,
   getSearchRoute,
-  getSupportedCitySlug,
   normalizeSearchQuery,
 } from "@/lib/searchIntent";
 
@@ -49,23 +47,15 @@ export default function HomeVideoSection() {
     const normalizedQuery = normalizeSearchQuery(query);
 
     if (!normalizedQuery) {
-      setError(t("home.cityRequired"));
+      setError(t("search.emptyQuery"));
       inputRef.current?.focus();
       return;
     }
 
-    const citySlug = getSupportedCitySlug(normalizedQuery);
-    const intent = detectSearchIntent(normalizedQuery);
-
-    if (!citySlug && intent === "onbekend") {
-      setError(t("home.cityUnsupported"));
-      inputRef.current?.focus();
-      return;
-    }
-
-    const route = citySlug
-      ? `/ontdek?city=${encodeURIComponent(citySlug)}`
-      : getSearchRoute(normalizedQuery);
+    // Only a known city receives the direct discovery route. Every other
+    // non-empty term belongs to general search, including activities and
+    // festivals that are not listed as a city suggestion.
+    const route = getSearchRoute(normalizedQuery);
 
     if (!route) return;
 

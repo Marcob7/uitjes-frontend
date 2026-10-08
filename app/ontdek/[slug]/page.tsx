@@ -11,7 +11,7 @@ import { buildActionSearchHref, buildMapsSearchHref } from "@/lib/actionLinks";
 import { getCityContentBySlug } from "@/lib/api/cityContent";
 import { normalizeCitySlug } from "@/lib/cityConfig";
 import { getAllExploreDetailSlugs, getExploreDetailBySlug, getFallbackExploreTitle, mapCityContentToExploreDetail } from "@/lib/exploreDetailData";
-import { optimizeCssBackground } from "@/lib/remoteImage";
+import { unwrapCssImageUrl } from "@/lib/remoteImage";
 
 type PageProps = { params: { slug: string }; searchParams?: { city?: string } };
 export const dynamicParams = true;
@@ -76,7 +76,17 @@ function ReasonIcon({ reason }: { reason: string }) {
   if (/(ontdek|zoeken|kijken|uitzicht|kunst|cultuur|muziek|smaak|horeca|combin)/.test(text)) return <CompassIcon />;
   return <SparkIcon />;
 }
-function ImageSurface({ image, className, children }: { image?: string | null; className: string; children?: React.ReactNode }) { return <div className={className} style={image ? { backgroundImage: `linear-gradient(180deg, rgba(25,45,33,0.02), rgba(25,45,33,0.24)), ${optimizeCssBackground(image, { width: 1400, quality: 68 })}`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>{children}</div>; }
+function ImageSurface({ image, className, children }: { image?: string | null; className: string; children?: React.ReactNode }) {
+  const src = image ? unwrapCssImageUrl(image) : null;
+
+  return (
+    <div className={`relative ${className}`}>
+      {src ? <img src={src} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" /> : null}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(25,45,33,0.02),rgba(25,45,33,0.24))]" aria-hidden="true" />
+      {children}
+    </div>
+  );
+}
 function InfoGroup({ title, rows }: { title: string; rows: Array<[string, string | null | undefined]> }) { const valid = rows.filter((row): row is [string, string] => Boolean(row[1])); if (!valid.length) return null; return <details open className="group overflow-hidden rounded-[1.05rem] border border-[#dce1d9] bg-[#fdfdf9] [&_summary::-webkit-details-marker]:hidden"><summary className="flex min-h-[4.5rem] cursor-pointer list-none items-center justify-between gap-4 px-5 text-[1.02rem] font-semibold tracking-[-0.025em] text-[#25382e]"><span>{title}</span><svg className="h-4 w-4 text-[#59685d] transition group-open:rotate-180" viewBox="0 0 16 16" fill="none"><path d="m4 9.5 4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><dl className="border-t border-[#e2e5df]">{valid.map(([label, value]) => <div key={label} className="grid gap-1 border-b border-[#e2e5df] px-5 py-3.5 last:border-0 sm:grid-cols-[9rem_1fr] sm:gap-6"><dt className="text-sm text-[#70776f]">{label}</dt><dd className="text-sm font-semibold leading-6 text-[#25382e]">{value}</dd></div>)}</dl></details>; }
 
 export default async function ExploreDetailPage({ params, searchParams }: PageProps) {

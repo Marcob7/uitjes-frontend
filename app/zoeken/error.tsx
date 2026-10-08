@@ -12,18 +12,17 @@ export default function SearchError({ reset }: { error: Error & { digest?: strin
   return (
     <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
       <section className="search-hero">
-        <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-28 sm:px-6 sm:pb-12 sm:pt-32 lg:px-8">
-          <div className="max-w-4xl">
-      
-            <h1 className="mt-3 font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">{t("search.title")}</h1>
-            <div className="mt-7 max-w-3xl">
+        <div className="mx-auto max-w-[1180px] px-4 pb-7 pt-5 sm:px-6 sm:pb-9 sm:pt-7 lg:px-8 lg:pb-10 lg:pt-24">
+          <div className="max-w-5xl">
+            <h1 className="font-heading text-[clamp(2.3rem,4vw,3.75rem)] leading-[0.92] tracking-[-0.06em] text-[#22312a]">{t("search.title")}</h1>
+            <div className="mt-5 max-w-4xl">
               <SearchForm initialQuery={query} />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <section className="mx-auto max-w-[1180px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8">
         <div className="search-empty-state max-w-2xl" role="alert" aria-labelledby="search-error-heading">
       
           <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">

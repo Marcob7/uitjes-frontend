@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { TimelineCard, TimelineSlot } from "@/app/jaarkalender/data";
 import { getJaarkalenderEventHrefForCard } from "@/app/jaarkalender/data";
+import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
 
 type FeaturedActivityProps = {
@@ -30,30 +31,18 @@ function ArrowRightIcon() {
   );
 }
 
-function ImageFallback({ category }: { category: string }) {
-  return (
-    <div className="relative flex h-full min-h-[18rem] items-end overflow-hidden bg-[#27352c] p-7 text-[#f7f5ed] sm:p-9">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(196,229,144,0.36),transparent_33%),radial-gradient(circle_at_82%_80%,rgba(245,209,139,0.23),transparent_36%)]"
-      />
-      <div className="relative">
-        <p className="text-[0.68rem] font-semibold  tracking-[0.18em] text-[#d7e8b6]">
-          {category}
-        </p>
-        <div className="mt-4 h-px w-14 bg-[#d7e8b6]/60" />
-      </div>
-    </div>
-  );
-}
-
 export default function FeaturedActivity({
   daySlug,
   slot,
   card,
 }: FeaturedActivityProps) {
   const href = getJaarkalenderEventHrefForCard(daySlug, slot, card);
-  const category = card.category.toUpperCase();
+  const image = resolveActivityImage({
+    image: card.image,
+    category: card.category,
+    title: card.title,
+    tags: [card.description],
+  });
 
   return (
     <section aria-labelledby="featured-activity-title">
@@ -76,19 +65,15 @@ export default function FeaturedActivity({
         className="group mt-9 grid overflow-hidden rounded-[1.65rem] border border-[#e6ded4] bg-[#fffdf9] shadow-[0_18px_48px_rgba(61,40,22,0.045)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(61,40,22,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#83aa50] lg:grid-cols-[1.15fr_0.85fr]"
       >
         <div className="min-h-[18rem] bg-[#dfe5dc] sm:min-h-[22rem] lg:min-h-[28rem]">
-          {card.image ? (
-            <div
-              className="h-full min-h-[18rem] bg-cover bg-center transition duration-500 group-hover:scale-[1.025] sm:min-h-[22rem] lg:min-h-[28rem]"
-              style={{
-                backgroundImage: `linear-gradient(180deg, rgba(18, 24, 20, 0.02), rgba(18, 24, 20, 0.18)), ${optimizeCssBackground(
-                  card.image,
-                  { width: 1400, quality: 68 }
-                )}`,
-              }}
-            />
-          ) : (
-            <ImageFallback category={category} />
-          )}
+          <div
+            className="h-full min-h-[18rem] bg-cover bg-center transition duration-500 group-hover:scale-[1.025] sm:min-h-[22rem] lg:min-h-[28rem]"
+            style={{
+              backgroundImage: `linear-gradient(180deg, rgba(18, 24, 20, 0.02), rgba(18, 24, 20, 0.18)), ${optimizeCssBackground(
+                image,
+                { width: 1400, quality: 68 }
+              )}`,
+            }}
+          />
         </div>
 
         <div className="flex min-w-0 flex-col items-start px-6 py-7 sm:px-9 sm:py-9 lg:px-10 lg:py-11">

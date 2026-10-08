@@ -45,7 +45,6 @@ export default function CityExplorePage({
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [completedStepCount, setCompletedStepCount] = useState(0);
-  const [isFlowOpen, setIsFlowOpen] = useState(true);
   const [plannerSelections, setPlannerSelections] = useState<PlannerSelections>(
     () => urlState.plannerSelections
   );
@@ -53,6 +52,9 @@ export default function CityExplorePage({
     () => urlState.resultFilters
   );
   const resultsRef = useRef<HTMLElement | null>(null);
+  // The URL is the only authority for results mode. A city or a partial
+  // planner selection never closes the fullscreen wizard by itself.
+  const isFlowOpen = !urlState.isResultsOpen;
 
   const cityTheme = useMemo(() => getSafeCityTheme(city), [city]);
   const cityLabel = cityTheme.label;
@@ -106,11 +108,19 @@ export default function CityExplorePage({
   // state in lockstep also makes browser back/forward restore the exact result
   // set and its labels, instead of leaving stale answers behind.
   useLayoutEffect(() => {
+    const completedSteps = getDiscoverPlannerStepCount(
+      urlState.plannerSelections
+    );
+
     setPlannerSelections(urlState.plannerSelections);
-    setCompletedStepCount(getDiscoverPlannerStepCount(urlState.plannerSelections));
+    setCompletedStepCount(completedSteps);
     setResultFilters(urlState.resultFilters);
-    if (urlState.selectedId) setSelectedId(urlState.selectedId);
-    if (urlState.isResultsOpen) setIsFlowOpen(false);
+    setSelectedId(urlState.selectedId);
+    setCurrentStep(
+      urlState.isResultsOpen
+        ? 1
+        : Math.min(completedSteps + 1, PLANNER_STEP_COUNT + 1)
+    );
   }, [urlState]);
 
   function scrollToSection(target: HTMLElement | null, block: ScrollLogicalPosition) {
@@ -140,7 +150,6 @@ export default function CityExplorePage({
 
   function openPlannerAtStep(step = 1) {
     setCurrentStep(step);
-    setIsFlowOpen(true);
     router.replace(buildDiscoverUrl(city, plannerSelections), { scroll: false });
   }
 
@@ -156,7 +165,6 @@ export default function CityExplorePage({
   function handleFlowComplete() {
     setCompletedStepCount(PLANNER_STEP_COUNT);
     setCurrentStep(PLANNER_STEP_COUNT);
-    setIsFlowOpen(false);
     router.replace(
       buildDiscoverUrl(city, plannerSelections, {
         resultFilters,
@@ -176,7 +184,6 @@ export default function CityExplorePage({
     setCompletedStepCount(0);
     setResultFilters([]);
     setCurrentStep(1);
-    setIsFlowOpen(false);
     router.push(
       buildDiscoverUrl(city, {}, { isResultsOpen: true, view: "list" }),
       { scroll: false }
@@ -259,7 +266,8 @@ export default function CityExplorePage({
       className="min-h-screen bg-[#F6F5F0] pt-32 text-[#171717] lg:pt-48"
       style={{ backgroundColor: "#f8f5f3" }}
     >
-      <CityExploreResultsSection
+      {!isFlowOpen ? (
+        <CityExploreResultsSection
           cityLabel={cityLabel}
           filteredCards={filteredCards}
           selectedId={selectedId}
@@ -285,7 +293,8 @@ export default function CityExplorePage({
               selectedId,
             }), locale)
           }
-      />
+        />
+      ) : null}
       {isFlowOpen ? (
         <DiscoverFlow
           cityLabel={cityLabel}

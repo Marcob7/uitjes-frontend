@@ -26,6 +26,7 @@ type SearchResultsExperienceProps = {
   query: string;
   results: GeneralSearchResult[];
   error?: boolean;
+  partial?: boolean;
 };
 
 type SearchParamsLike = {
@@ -172,7 +173,8 @@ function SearchResultCard({ result, index }: { result: GeneralSearchResult; inde
       reviewCount={result.reviewCount}
       reviewsHref={result.reviewsHref}
       priority={index < 3}
-      favoriteAction={<SavePlaceButton item={{ id: result.id, title: result.title, href: localePathname(result.href, locale), meta: result.location, image: result.image }} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 text-[#33493b] shadow-[0_6px_18px_rgba(29,52,39,0.1)] backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2" savedClassName="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d5a46] bg-[#1d5a46] text-white shadow-[0_6px_18px_rgba(29,52,39,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2" savedChildren={<><HeartIcon filled /><span className="sr-only">{t("search.removeSaved")}</span></>}><HeartIcon /><span className="sr-only">{t("search.save", { title: result.title })}</span></SavePlaceButton>}
+      variant="compact"
+      favoriteAction={<SavePlaceButton item={{ id: result.id, title: result.title, href: localePathname(result.href, locale), meta: result.location, image: result.image }} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#D5DED6] bg-white px-3 text-xs font-semibold text-[#31483A] transition hover:border-[#8FAA94] hover:bg-[#F7FAF6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70" savedClassName="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#B9D7B7] bg-[#EEF6EA] px-3 text-xs font-semibold text-[#285239] transition hover:bg-[#E5F0E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70" savedChildren={<><HeartIcon filled /><span aria-hidden="true">{t("discover.saved")}</span><span className="sr-only">{t("search.removeSaved")}</span></>}><HeartIcon /><span aria-hidden="true">{t("discover.save")}</span><span className="sr-only">{t("search.save", { title: result.title })}</span></SavePlaceButton>}
     />
   );
 }
@@ -203,7 +205,7 @@ function FilterOption({
   );
 }
 
-export default function SearchResultsExperience({ query, results, error = false }: SearchResultsExperienceProps) {
+export default function SearchResultsExperience({ query, results, error = false, partial = false }: SearchResultsExperienceProps) {
   const { locale, t } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -341,7 +343,7 @@ export default function SearchResultsExperience({ query, results, error = false 
 
   if (error) {
     return (
-      <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 lg:px-8" aria-labelledby="search-error-heading">
+      <section className="mx-auto max-w-[1180px] px-4 pb-20 pt-7 sm:px-6 sm:pt-9 lg:px-8" aria-labelledby="search-error-heading">
         <div className="search-empty-state max-w-2xl" role="alert">
         
           <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">{t("search.errorTitle")}</h2>
@@ -353,18 +355,30 @@ export default function SearchResultsExperience({ query, results, error = false 
   }
 
   return (
-    <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-3 sm:px-6 sm:pt-5 lg:px-8" aria-labelledby="search-results-heading">
-      <div className="search-results-toolbar border-y border-[#dce1dc] py-5 sm:py-6">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-         
-            <h2 id="search-results-heading" className="mt-2 font-heading text-[clamp(1.8rem,3.5vw,2.75rem)] leading-[1] tracking-[-0.055em] text-[#22312a]">
+    <section className="mx-auto max-w-[1180px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8" aria-labelledby="search-results-heading">
+      <div className="rounded-[1.45rem] border border-[#d7e2d8] bg-[#fdfefd] p-4 shadow-[0_14px_34px_rgba(33,54,43,0.045)] sm:p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0">
+            <h2 id="search-results-heading" className="font-heading text-[clamp(1.85rem,3vw,2.65rem)] leading-[1] tracking-[-0.055em] text-[#22312a]">
               {filteredResults.length === 1 ? t("search.resultFor", { count: 1, query }) : t("search.resultsFor", { count: filteredResults.length, query })}
             </h2>
           </div>
 
-          <label className="relative flex min-h-11 shrink-0 items-center gap-3 text-sm text-[#68746d]">
-            <span className="whitespace-nowrap">{t("search.sort")}</span>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <button
+              ref={filterButtonRef}
+              type="button"
+              onClick={() => { setDraftFilters(filters); setSheetOpen(true); }}
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#1d5a46] px-4 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(29,90,70,0.12)] outline-none transition hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2"
+            >
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="h-4 w-4">
+                <path d="M2.5 4.25h11M4.5 8h7m-5 3.75h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+              {t("search.filters")}
+              {hasAnyFilters ? <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#dcebdc] px-1 text-[0.68rem] text-[#1d5a46]">{activeFilters.length}</span> : null}
+            </button>
+            <label className="relative flex min-h-11 shrink-0 items-center gap-2 text-sm text-[#68746d]">
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">{t("search.sort")}</span>
             <span className="relative">
               <select
                 value={sort}
@@ -379,11 +393,12 @@ export default function SearchResultsExperience({ query, results, error = false 
               </select>
               <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#53645a]"><ChevronDownIcon /></span>
             </span>
-          </label>
+            </label>
+          </div>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="search-active-filters flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0" aria-label={t("search.activeFilters")}>
+        <div className="mt-4 border-t border-[#e5ece5] pt-3">
+          <div className="search-active-filters flex min-w-0 items-center gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0" aria-label={t("search.activeFilters")}>
             {activeFilters.length > 0 ? activeFilters.map((filter) => (
               <button
                 key={`${filter.key}-${filter.label}`}
@@ -397,25 +412,18 @@ export default function SearchResultsExperience({ query, results, error = false 
               </button>
             )) : <span className="text-sm text-[#7a857d]">{t("search.refine")}</span>}
           </div>
-
-          <button
-            ref={filterButtonRef}
-            type="button"
-            onClick={() => { setDraftFilters(filters); setSheetOpen(true); }}
-            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-[#1d5a46] bg-[#1d5a46] px-5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(29,90,70,0.12)] outline-none transition hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2"
-          >
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="h-4 w-4">
-              <path d="M2.5 4.25h11M4.5 8h7m-5 3.75h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-            {t("search.filters")}
-            {hasAnyFilters ? <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#dcebdc] px-1 text-[0.68rem] text-[#1d5a46]">{activeFilters.length}</span> : null}
-          </button>
         </div>
       </div>
 
+      {partial ? (
+        <p role="status" className="mt-4 rounded-xl border border-[#e2d7a8] bg-[#fffbea] px-4 py-3 text-sm leading-5 text-[#685b2a]">
+          {t("search.partialNotice")}
+        </p>
+      ) : null}
+
       {sortedResults.length > 0 ? (
         <>
-          <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:gap-5 lg:grid-cols-2">
             {visibleResults.map((result, index) => <SearchResultCard key={result.id} result={result} index={index} />)}
           </div>
 
@@ -433,7 +441,7 @@ export default function SearchResultsExperience({ query, results, error = false 
           ) : null}
         </>
       ) : (
-        <div className="search-empty-state mt-7" aria-live="polite">
+        <div className="search-empty-state mt-6" aria-live="polite">
           <span className="search-empty-mark" aria-hidden="true">⌕</span>
           <div className="max-w-2xl">
         
@@ -447,7 +455,7 @@ export default function SearchResultsExperience({ query, results, error = false 
         </div>
       )}
 
-      <div className="mt-14 grid gap-4 rounded-[1.7rem] border border-[#cbdacc] bg-[#e7f0e4] p-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-8">
+      <div className="mt-12 grid gap-4 rounded-[1.7rem] border border-[#cbdacc] bg-[#e7f0e4] p-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-8">
         <div>
     
           <h3 className="mt-3 max-w-[22ch] font-heading text-[clamp(1.75rem,3vw,2.55rem)] leading-[1] tracking-[-0.05em] text-[#1e3e2e]">{t("search.inspireTitle")}</h3>
@@ -456,7 +464,7 @@ export default function SearchResultsExperience({ query, results, error = false 
         <Link href={localePathname("/inspiratie", locale)} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#1d5a46] px-5 text-sm font-semibold text-white outline-none transition hover:-translate-y-0.5 hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e7f0e4]">{t("search.inspireAction")} <span aria-hidden="true">→</span></Link>
       </div>
 
-      <div className="mt-14 border-t border-[#dce1dc] pt-7">
+      <div className="mt-12 border-t border-[#dce1dc] pt-7">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
          

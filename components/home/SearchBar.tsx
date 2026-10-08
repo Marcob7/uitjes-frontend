@@ -1,9 +1,11 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppButton } from "@/components/ui/app";
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { cityOptions } from "@/lib/cityConfig";
+import { localePathname } from "@/lib/i18n/config";
 import { getSearchRoute, normalizeSearchQuery } from "@/lib/searchIntent";
 import { cn } from "@/lib/utils";
 
@@ -31,8 +33,8 @@ const cityOptionsList: CityOption[] = cityOptions.map((city) => ({
 }));
 
 export default function SearchBar({
-  placeholder = "Zoek op stad, festival of activiteit",
-  buttonLabel = "Zoek",
+  placeholder,
+  buttonLabel,
   rootClassName,
   formClassName,
   inputWrapperClassName,
@@ -43,9 +45,12 @@ export default function SearchBar({
   submitButtonClassName,
 }: SearchBarProps) {
   const router = useRouter();
+  const { locale, t } = useLocale();
   const searchInputId = useId();
   const suggestionsListId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
 
@@ -60,34 +65,28 @@ export default function SearchBar({
     );
   }, [query]);
 
-  // Deze functie behoudt de bestaande stadssuggestie-flow.
+  // City suggestions and free-text submits deliberately share the same
+  // resolver, so cities are the only terms that use the discovery route.
   function goToCity(cityValue: string): void {
-    const trimmedValue = normalizeSearchQuery(cityValue);
-
-    if (!trimmedValue) return;
-
-    const matchedCity = cityOptionsList.find(
-      (city) =>
-        normalizeSearchQuery(city.label).toLocaleLowerCase("nl-NL") ===
-          trimmedValue.toLocaleLowerCase("nl-NL") ||
-        city.slug === normalizeCitySlug(trimmedValue),
-    );
-
-    const citySlug = matchedCity
-      ? matchedCity.slug
-      : normalizeCitySlug(trimmedValue);
-
-    if (!citySlug) return;
-
-    router.push(`/ontdek?city=${encodeURIComponent(citySlug)}`);
+    const route = getSearchRoute(cityValue);
+    if (route) router.push(localePathname(route, locale));
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    const route = getSearchRoute(query);
+    const normalizedQuery = normalizeSearchQuery(query);
+    if (!normalizedQuery) {
+      setError(t("search.emptyQuery"));
+      inputRef.current?.focus();
+      return;
+    }
+
+    const route = getSearchRoute(normalizedQuery);
 
     if (route) {
-      router.push(route);
+      setError(null);
+      setQuery(normalizedQuery);
+      router.push(localePathname(route, locale));
     }
   }
 
@@ -138,7 +137,7 @@ export default function SearchBar({
       <form
         onSubmit={handleSubmit}
         role="search"
-        aria-label="Zoek een stad"
+        aria-label={t("home.heroSearchLabel")}
         className={cn(
           "rounded-[26px] bg-white/95 p-2 shadow-lg backdrop-blur sm:rounded-full",
           formClassName,
@@ -156,11 +155,12 @@ export default function SearchBar({
             </span>
 
             <label htmlFor={searchInputId} className="sr-only">
-              Zoek een stad
+              {t("home.heroSearchLabel")}
             </label>
 
             <input
               id={searchInputId}
+              ref={inputRef}
               type="search"
               role="combobox"
               aria-autocomplete="list"
@@ -170,6 +170,7 @@ export default function SearchBar({
               value={query}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setQuery(event.target.value);
+                setError(null);
                 setShowSuggestions(true);
                 setActiveSuggestionIndex(-1);
               }}
@@ -181,7 +182,9 @@ export default function SearchBar({
                   setActiveSuggestionIndex(-1);
                 }, 150);
               }}
-              placeholder={placeholder}
+              placeholder={placeholder ?? t("home.heroSearchPlaceholder")}
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? `${searchInputId}-error` : undefined}
               autoComplete="off"
               enterKeyHint="search"
               inputMode="search"
@@ -204,10 +207,21 @@ export default function SearchBar({
               submitButtonClassName,
             )}
           >
-            {buttonLabel}
+            {buttonLabel ?? t("search.submit")}
           </AppButton>
         </div>
       </form>
+
+      {error ? (
+        <p
+          id={`${searchInputId}-error`}
+          role="status"
+          aria-live="polite"
+          className="mt-2 rounded-xl bg-white/95 px-4 py-2 text-center text-sm font-medium text-slate-700 shadow-sm"
+        >
+          {error}
+        </p>
+      ) : null}
 
       {showSuggestions && suggestions.length > 0 ? (
         <div

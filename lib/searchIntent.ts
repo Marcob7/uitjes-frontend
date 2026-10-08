@@ -100,17 +100,13 @@ export function detectSearchIntent(query: string | null | undefined): SearchInte
 
 export function getSearchRoute(query: string | null | undefined) {
   const trimmedQuery = normalizeSearchQuery(query);
-  const intent = detectSearchIntent(trimmedQuery);
   const encodedQuery = encodeURIComponent(trimmedQuery);
 
   if (!trimmedQuery) return null;
 
-  if (intent === "festival") return `/festivals/kalender?query=${encodedQuery}`;
-  if (intent === "zoeken") return `/zoeken?query=${encodedQuery}`;
-  if (intent === "stad") {
-    const citySlug = getSupportedCitySlug(trimmedQuery);
-    return citySlug ? `/ontdek?city=${encodeURIComponent(citySlug)}` : null;
-  }
+  // City detection is an optimization, never a prerequisite for search.
+  const citySlug = getSupportedCitySlug(trimmedQuery);
+  if (citySlug) return `/ontdek?city=${encodeURIComponent(citySlug)}`;
 
   return `/zoeken?query=${encodedQuery}`;
 }

@@ -22,6 +22,7 @@ export type AppSearchInputProps = {
   showSubmitButton?: boolean;
   submitLabel?: string;
   className?: string;
+  contentClassName?: string;
   inputClassName?: string;
   submitButtonClassName?: string;
   autoFocus?: boolean;
@@ -44,6 +45,7 @@ export function AppSearchInput({
   showSubmitButton = true,
   submitLabel,
   className,
+  contentClassName,
   inputClassName,
   submitButtonClassName,
   autoFocus,
@@ -75,7 +77,7 @@ export function AppSearchInput({
         className
       )}
     >
-      <div className="flex flex-col gap-2 md:flex-row md:items-center">
+      <div className={cn("flex gap-2 md:items-center", contentClassName ?? "flex-col md:flex-row")}>
         <div className="relative flex min-h-12 flex-1 items-center rounded-2xl px-4 sm:rounded-full">
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mr-3 h-5 w-5 shrink-0 text-[#68746d]">
             <circle cx="8.75" cy="8.75" r="5.75" stroke="currentColor" strokeWidth="1.5" />

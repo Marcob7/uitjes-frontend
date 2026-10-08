@@ -56,27 +56,26 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const searchState = query
     ? await getGeneralSearchResults(query)
     : { status: "empty" as const, results: [] };
+  const isResultsPage = Boolean(query);
 
   return (
     <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
       <section className="search-hero" data-navbar-contrast="on-light">
-        <div className="mx-auto max-w-[1280px] px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-8 lg:px-8 lg:pb-14 lg:pt-28">
-          <div className="max-w-4xl">
-          
-            <h1 className="mt-3 max-w-[10ch] font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]">
+        <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isResultsPage ? "max-w-[1180px] pb-7 pt-5 sm:pb-9 sm:pt-7 lg:pb-10 lg:pt-24" : "max-w-[1280px] pb-10 pt-6 sm:pb-12 sm:pt-8 lg:pb-14 lg:pt-28"}`}>
+          <div className={isResultsPage ? "max-w-5xl" : "max-w-4xl"}>
+            <h1 className={isResultsPage ? "font-heading text-[clamp(2.3rem,4vw,3.75rem)] leading-[0.92] tracking-[-0.06em] text-[#22312a]" : "mt-3 max-w-[10ch] font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]"}>
               {t("search.title")}
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#68746d] sm:text-lg">
+            <p className={isResultsPage ? "mt-2 max-w-2xl text-sm leading-6 text-[#68746d] sm:text-base" : "mt-5 max-w-2xl text-base leading-7 text-[#68746d] sm:text-lg"}>
               {t("search.intro")}
             </p>
 
             <SearchForm
               initialQuery={query}
-              showEmptyFeedback={!query}
-              className="mt-7 max-w-3xl"
+              className={isResultsPage ? "mt-5 max-w-4xl" : "mt-7 max-w-3xl"}
             />
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#68746d]">
+            <div className={isResultsPage ? "mt-4 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[#68746d]" : "mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#68746d]"}>
               <span className="font-semibold text-[#3d5146]">{t("search.popular")}</span>
               {popularSearches.map((item) => (
                 <Link
@@ -97,6 +96,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           query={query}
           results={searchState.status === "success" || searchState.status === "partial" ? searchState.results : []}
           error={searchState.status === "error"}
+          partial={searchState.status === "partial"}
         />
       ) : (
         <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-10 lg:px-8">

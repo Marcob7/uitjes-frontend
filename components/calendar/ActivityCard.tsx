@@ -1,6 +1,7 @@
 import type { TimelineCard, TimelineSlot } from "@/app/jaarkalender/data";
 import { getJaarkalenderEventHrefForCard } from "@/app/jaarkalender/data";
 import ResultCard from "@/components/ui/ResultCard";
+import { resolveActivityImage } from "@/lib/activityImages";
 
 type ActivityCardProps = {
   daySlug: string;
@@ -10,12 +11,18 @@ type ActivityCardProps = {
 
 export default function ActivityCard({ daySlug, slot, card }: ActivityCardProps) {
   const href = getJaarkalenderEventHrefForCard(daySlug, slot, card);
+  const image = resolveActivityImage({
+    image: card.image,
+    category: card.category,
+    title: card.title,
+    tags: [card.description],
+  });
 
   return (
     <ResultCard
       href={href}
       title={card.title}
-      image={card.image}
+      image={image}
       imageAlt={card.title}
       category={card.category}
       location={card.location}

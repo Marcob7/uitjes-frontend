@@ -9,24 +9,25 @@ import { normalizeSearchQuery } from "@/lib/searchIntent";
 
 type SearchFormProps = {
   initialQuery: string;
-  showEmptyFeedback?: boolean;
   className?: string;
 };
 
-export default function SearchForm({ initialQuery, showEmptyFeedback = false, className }: SearchFormProps) {
+export default function SearchForm({ initialQuery, className }: SearchFormProps) {
   const router = useRouter();
   const { t } = useLocale();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(initialQuery);
-  const [error, setError] = useState<string | null>(showEmptyFeedback ? t("search.emptyQuery") : null);
+  // An empty URL is an initial state, not a failed search.  Only a submit of
+  // an empty value should make the validation message visible.
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
   const urlQuery = normalizeSearchQuery(searchParams.get("query") ?? searchParams.get("q"));
 
   useEffect(() => {
     setQuery(urlQuery);
-    setError(urlQuery ? null : showEmptyFeedback ? t("search.emptyQuery") : null);
-  }, [showEmptyFeedback, t, urlQuery]);
+    setError(null);
+  }, [urlQuery]);
 
   function submitSearch(value: string) {
     const normalizedQuery = normalizeSearchQuery(value);
@@ -60,6 +61,7 @@ export default function SearchForm({ initialQuery, showEmptyFeedback = false, cl
       isSubmitting={isPending}
       disableSubmitWhileSubmitting={false}
       className={className}
+      contentClassName="flex-row items-center"
       inputClassName="min-h-12"
       submitButtonClassName="!border-[#1d5a46] !bg-[#1d5a46] !text-white hover:!bg-[#164a3a]"
     />
