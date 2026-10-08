@@ -79,26 +79,27 @@ export function generateMetadata(): Metadata {
   const english = locale === "en";
 
   return {
-  metadataBase: new URL(metadataBase),
-  applicationName: "Uitjes",
-  title: english ? "Things to do in the Netherlands | Uitjes" : "Uitjes in Nederland | Uitjes",
-  description: english
-    ? "Discover things to do, activities, festivals and events in cities across the Netherlands."
-    : "Ontdek uitjes, activiteiten, festivals en evenementen in steden door heel Nederland.",
-  alternates: getLocaleAlternates(pathname, locale),
-  openGraph: {
-    type: "website",
-    ...getLocaleOpenGraph(locale, pathname),
-    siteName: "Uitjes",
+    metadataBase: new URL(metadataBase),
+    applicationName: "Uitjes",
     title: english ? "Things to do in the Netherlands | Uitjes" : "Uitjes in Nederland | Uitjes",
     description: english
       ? "Discover things to do, activities, festivals and events in cities across the Netherlands."
       : "Ontdek uitjes, activiteiten, festivals en evenementen in steden door heel Nederland.",
-    images: [{ url: "/images/homepage-festival-background.webp", alt: "Uitjes in Nederland" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
+    icons: { icon: "/favicon.ico" },
+    alternates: getLocaleAlternates(pathname, locale),
+    openGraph: {
+      type: "website",
+      ...getLocaleOpenGraph(locale, pathname),
+      siteName: "Uitjes",
+      title: english ? "Things to do in the Netherlands | Uitjes" : "Uitjes in Nederland | Uitjes",
+      description: english
+        ? "Discover things to do, activities, festivals and events in cities across the Netherlands."
+        : "Ontdek uitjes, activiteiten, festivals en evenementen in steden door heel Nederland.",
+      images: [{ url: "/images/homepage-festival-background.webp", alt: "Uitjes in Nederland" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
   };
 }
 
