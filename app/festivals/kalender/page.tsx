@@ -16,6 +16,8 @@ import FestivalGenreFilters, {
   type FestivalGenreFilter,
 } from "../FestivalGenreFilters";
 import { getFestivalDetailHref } from "../data";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { formatDate } from "@/lib/i18n/format";
 
 type CalendarTone = "lime" | "pink" | "blue" | "amber" | "violet";
 
@@ -227,6 +229,7 @@ function toneClass(tone: CalendarTone) {
 }
 
 function CalendarPill({ event }: { event: CalendarEvent }) {
+  const { t } = useLocale();
   const classes = `block truncate rounded-full px-3 py-1 text-[11px] font-semibold ${toneClass(
     event.tone
   )}`;
@@ -235,7 +238,7 @@ function CalendarPill({ event }: { event: CalendarEvent }) {
     return (
       <Link
         href={event.href}
-        aria-label={`Open festivaldetailpagina: ${event.label}`}
+        aria-label={t("festival.openDetail", { title: event.label })}
         className={`${classes} transition hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]`}
       >
         {event.label}
@@ -285,6 +288,7 @@ function serializeFestivalSearchParams(params: URLSearchParams) {
 }
 
 function FestivalsCalendarContent() {
+  const { locale, t } = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -320,9 +324,8 @@ function FestivalsCalendarContent() {
   const mobileCalendarDays = calendarCells.filter(
     (cell) => !cell.muted && (cell.events?.length ?? 0) > 0
   );
-  const monthTitle = `${
-    MONTH_NAMES[currentMonth.getMonth()]
-  } ${currentMonth.getFullYear()}`;
+  const monthTitle = formatDate(currentMonth, locale, { month: "long", year: "numeric" });
+  const monthName = formatDate(currentMonth, locale, { month: "long" });
 
   useEffect(() => {
     setSearchValue(new URLSearchParams(searchParamString).get("query") ?? "");
@@ -345,7 +348,7 @@ function FestivalsCalendarContent() {
     const normalizedQuery = normalizeSearchQuery(searchValue);
 
     if (!normalizedQuery) {
-      setSearchError("Vul eerst een festival, genre of zoekterm in.");
+      setSearchError(t("search.emptyQuery"));
       return;
     }
 
@@ -383,10 +386,10 @@ function FestivalsCalendarContent() {
       <div className="relative z-10">
       <div className="mx-auto mt-0 w-full max-w-7xl px-4 py-8 sm:px-6 lg:mt-18 lg:px-8 lg:py-10">
         <FestivalHero
-          title="Festival kalender Nederland"
+          title={t("festival.calendarTitle")}
           description={
             <>
-        Op zoek naar je volgende festival? Check wat er binnenkort door heel Nederland losgaat.
+        {t("festival.calendarIntro")}
             </>
           }
           search={
@@ -399,7 +402,7 @@ function FestivalsCalendarContent() {
                   className="min-w-0"
                 >
                   <label htmlFor="festival-search" className="sr-only">
-                    Zoek naar festivals
+                    {t("festival.searchLabel")}
                   </label>
                   <div className="flex min-h-11 items-center gap-2 rounded-full border border-white/34 bg-white/14 px-3 text-white shadow-[0_18px_46px_rgba(3,10,14,0.16)] backdrop-blur-xl">
                     <SearchIcon />
@@ -413,7 +416,7 @@ function FestivalsCalendarContent() {
                         setSearchValue(event.target.value);
                         setSearchError(null);
                       }}
-                      placeholder="Zoek naar festivals..."
+                      placeholder={t("festival.searchPlaceholder")}
                       aria-invalid={Boolean(searchError)}
                       aria-describedby={searchError ? searchErrorId : undefined}
                       enterKeyHint="search"
@@ -427,7 +430,7 @@ function FestivalsCalendarContent() {
                         type="button"
                         onClick={clearSearchQuery}
                         className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white/88 transition hover:bg-white/14 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
-                        aria-label={`Zoekopdracht ${searchValue} wissen`}
+                        aria-label={t("festival.clearSearch", { query: searchValue })}
                       >
                         <XIcon />
                       </button>
@@ -436,7 +439,7 @@ function FestivalsCalendarContent() {
                       type="submit"
                       disabled={isPending}
                       className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e8f2d0] text-[#324d17] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0] disabled:cursor-not-allowed disabled:opacity-70"
-                      aria-label="Festivals zoeken"
+                      aria-label={t("festival.searchLabel")}
                     >
                       <SearchIcon />
                     </button>
@@ -468,7 +471,7 @@ function FestivalsCalendarContent() {
                 type="button"
                 onClick={() => setCurrentMonth((month) => addMonths(month, -1))}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
-                aria-label="Vorige maand"
+                aria-label={t("festival.previousMonth")}
               >
                 <ArrowLeftIcon />
               </button>
@@ -477,7 +480,7 @@ function FestivalsCalendarContent() {
                 type="button"
                 onClick={() => setCurrentMonth((month) => addMonths(month, 1))}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
-                aria-label="Volgende maand"
+                aria-label={t("festival.nextMonth")}
               >
                 <ArrowRightIcon />
               </button>
@@ -507,14 +510,14 @@ function FestivalsCalendarContent() {
                     <div>
                       <div className="text-lg font-medium text-[#171511]">
                         {cell.dayNumber}{" "}
-                        {MONTH_NAMES[currentMonth.getMonth()].toLowerCase()}
+                        {monthName}
                       </div>
                       <p className="mt-1 text-sm text-[#7e7366]">
-                        {cell.events?.length} festivalmomenten
+                        {t("festival.eventMoments", { count: cell.events?.length ?? 0 })}
                       </p>
                     </div>
                     <span className="rounded-2xl bg-[#f7ede2] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#7a7065]">
-                      Dag {cell.dayNumber}
+                      {t("festival.day", { day: cell.dayNumber })}
                     </span>
                   </div>
 
@@ -531,15 +534,15 @@ function FestivalsCalendarContent() {
             ) : (
               <div className="border-t border-[#e6dfd3] px-4 py-6 text-sm text-[#66594e] first:border-t-0">
                 {activeQuery
-                  ? `Geen festivals gevonden voor "${activeQuery}".`
-                  : `Geen festivals gevonden voor ${monthTitle.toLowerCase()}.`}
+                  ? t("festival.emptyQuery", { query: activeQuery })
+                  : t("festival.emptyMonth", { month: monthTitle })}
                 {activeQuery ? (
                   <button
                     type="button"
                     onClick={clearSearchQuery}
                     className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-[#d7cfbf] bg-white px-4 text-sm font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
                   >
-                    Zoekterm wissen
+                    {t("festival.clearSearchAction")}
                   </button>
                 ) : null}
               </div>
@@ -569,15 +572,15 @@ function FestivalsCalendarContent() {
           {mobileCalendarDays.length === 0 ? (
             <div className="hidden border-t border-[#e6dfd3] bg-[#fffaf3] px-5 py-6 text-sm text-[#66594e] sm:block sm:px-8">
               {activeQuery
-                ? `Geen festivals gevonden voor "${activeQuery}".`
-                : `Geen festivals gevonden voor ${monthTitle.toLowerCase()}.`}
+                ? t("festival.emptyQuery", { query: activeQuery })
+                : t("festival.emptyMonth", { month: monthTitle })}
               {activeQuery ? (
                 <button
                   type="button"
                   onClick={clearSearchQuery}
                   className="ml-0 mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-[#d7cfbf] bg-white px-4 text-sm font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e] sm:ml-3 sm:mt-0"
                 >
-                  Zoekterm wissen
+                  {t("festival.clearSearchAction")}
                 </button>
               ) : null}
             </div>

@@ -1,5 +1,6 @@
 export { AppButton, type AppButtonProps } from "./AppButton";
 export { AppInput, type AppInputProps } from "./AppInput";
+export { AppSelect, type AppSelectOption, type AppSelectProps } from "./AppSelect";
 export {
   AppSearchInput,
   type AppSearchInputProps,

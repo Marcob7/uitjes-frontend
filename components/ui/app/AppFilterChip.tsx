@@ -13,6 +13,7 @@ export type AppFilterChipProps = {
   disabled?: boolean;
   removable?: boolean;
   onRemove?: () => void;
+  removeLabel?: string;
   className?: string;
   variant?: AppFilterChipVariant;
   style?: React.CSSProperties;
@@ -31,6 +32,7 @@ export function AppFilterChip({
   disabled = false,
   removable = false,
   onRemove,
+  removeLabel,
   className,
   variant = "default",
   style,
@@ -45,7 +47,7 @@ export function AppFilterChip({
         <span
           role="button"
           tabIndex={disabled ? -1 : 0}
-          aria-label="Verwijder filter"
+          aria-label={removeLabel}
           onClick={(event) => {
             event.stopPropagation();
             onRemove?.();

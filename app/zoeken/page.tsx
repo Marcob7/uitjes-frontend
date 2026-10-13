@@ -56,26 +56,24 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const searchState = query
     ? await getGeneralSearchResults(query)
     : { status: "empty" as const, results: [] };
-  const isResultsPage = Boolean(query);
-
   return (
     <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
       <section className="search-hero" data-navbar-contrast="on-light">
-        <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isResultsPage ? "max-w-[1180px] pb-7 pt-5 sm:pb-9 sm:pt-7 lg:pb-10 lg:pt-24" : "max-w-[1280px] pb-10 pt-6 sm:pb-12 sm:pt-8 lg:pb-14 lg:pt-28"}`}>
-          <div className={isResultsPage ? "max-w-5xl" : "max-w-4xl"}>
-            <h1 className={isResultsPage ? "font-heading text-[clamp(2.3rem,4vw,3.75rem)] leading-[0.92] tracking-[-0.06em] text-[#22312a]" : "mt-3 max-w-[10ch] font-heading text-[clamp(3.5rem,8vw,6.8rem)] leading-[0.84] tracking-[-0.07em] text-[#22312a]"}>
+        <div className="mx-auto max-w-[1214px] px-4 pb-7 pt-5 sm:px-6 sm:pb-9 sm:pt-7 lg:px-8 lg:pb-10 lg:pt-24">
+          <div className="max-w-5xl">
+            <h1 className="font-heading text-[clamp(2.3rem,4vw,3.75rem)] leading-[0.92] tracking-[-0.06em] text-[#22312a]">
               {t("search.title")}
             </h1>
-            <p className={isResultsPage ? "mt-2 max-w-2xl text-sm leading-6 text-[#68746d] sm:text-base" : "mt-5 max-w-2xl text-base leading-7 text-[#68746d] sm:text-lg"}>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#68746d] sm:text-base">
               {t("search.intro")}
             </p>
 
             <SearchForm
               initialQuery={query}
-              className={isResultsPage ? "mt-5 max-w-4xl" : "mt-7 max-w-3xl"}
+              className="mt-5 max-w-4xl"
             />
 
-            <div className={isResultsPage ? "mt-4 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[#68746d]" : "mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#68746d]"}>
+            <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[#68746d]">
               <span className="font-semibold text-[#3d5146]">{t("search.popular")}</span>
               {popularSearches.map((item) => (
                 <Link
@@ -99,7 +97,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           partial={searchState.status === "partial"}
         />
       ) : (
-        <section className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-10 lg:px-8">
+        <section className="mx-auto max-w-[1214px] px-4 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-10 lg:px-8">
           <div className="border-t border-[#dce1dc] pt-7 sm:pt-9">
             <div className="max-w-2xl">
     
@@ -111,12 +109,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </p>
             </div>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="mt-8 grid divide-y divide-[#dce1dc] md:grid-cols-3 md:divide-x md:divide-y-0">
               {discoveryLinks.map((item) => (
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="group rounded-[1.45rem] border border-[#dce1dc] bg-white p-5 shadow-[0_12px_30px_rgba(33,54,43,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#b8d2bd] hover:shadow-[0_18px_36px_rgba(33,54,43,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] sm:p-6"
+                  className="group py-6 transition duration-300 first:pt-0 hover:pl-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] md:px-6 md:py-0 md:first:pl-0 md:hover:pl-8"
                 >
                 
                   <h3 className="mt-3 font-heading text-[clamp(1.65rem,3vw,2.2rem)] leading-none tracking-[-0.05em] text-[#22312a]">

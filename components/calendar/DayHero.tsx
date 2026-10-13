@@ -5,6 +5,7 @@ import {
   formatJaarkalenderDate,
   type JaarkalenderDay,
 } from "@/app/jaarkalender/data";
+import { ActionGroup } from "@/components/ui";
 
 type DayHeroProps = {
   day: JaarkalenderDay;
@@ -140,7 +141,7 @@ export default function DayHero({
             {activityCount} activiteiten door heel Nederland
           </p>
 
-          <div className="mt-7 flex max-w-full flex-wrap justify-center gap-2 sm:mt-8">
+          <ActionGroup align="center" className="mt-7 max-w-full gap-2 sm:mt-8">
             <Link
               href={previousDayHref}
               className="inline-flex min-h-10 items-center gap-2 rounded-full border border-black/[0.08] bg-white/72 px-4 text-[13px] font-medium text-[#36342f] shadow-[0_5px_18px_rgba(46,42,36,0.045)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#81a84e]"
@@ -168,7 +169,7 @@ export default function DayHero({
               Volgende dag
               <ArrowRightIcon />
             </Link>
-          </div>
+          </ActionGroup>
 
           <div className="mt-3 flex max-w-full flex-wrap justify-center gap-2">
             <FilterControl icon={<MapPinIcon />} label="Stad" value="Alle steden" />

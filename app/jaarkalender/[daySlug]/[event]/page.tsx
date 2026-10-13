@@ -9,6 +9,10 @@ import SavePlaceButton from "@/components/SavePlaceButton";
 import { buildMapsSearchHref, buildTicketSearchHref } from "@/lib/actionLinks";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
+import { getRequestLocale } from "@/lib/i18n/request";
+import { translate } from "@/lib/i18n/messages";
+import { formatDate } from "@/lib/i18n/format";
+import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
 import {
   generateJaarkalenderEventStaticParams,
   getJaarkalenderEventBySlug,
@@ -41,17 +45,18 @@ const DUTCH_MONTH_INDEX: Record<string, number> = { januari: 0, februari: 1, maa
 export const dynamicParams = false;
 export function generateStaticParams() { return generateJaarkalenderEventStaticParams(); }
 export function generateMetadata({ params }: PageProps): Metadata {
+  const locale = getRequestLocale();
   const eventEntry = getJaarkalenderEventBySlug(params.daySlug, params.event);
-  if (!eventEntry) return { title: "Evenement niet gevonden | Uitjes", robots: { index: false, follow: true } };
+  if (!eventEntry) return { title: translate(locale, "eventDetail.notFound"), robots: { index: false, follow: true } };
 
   const canonical = `/jaarkalender/${encodeURIComponent(params.daySlug)}/${encodeURIComponent(params.event)}`;
-  const title = `${eventEntry.card.title} – ${eventEntry.day.weekdayDisplay} ${eventEntry.day.dayNumber} ${eventEntry.day.monthDisplay} | Uitjes`;
+  const title = translate(locale, "eventDetail.metaTitle", { title: eventEntry.card.title, date: formatDate(new Date(eventEntry.day.year, DUTCH_MONTH_INDEX[eventEntry.day.monthDisplay.toLowerCase()] ?? 0, eventEntry.day.dayNumber), locale, { weekday: "long", day: "numeric", month: "long" }) });
 
   return {
     title,
     description: eventEntry.card.description,
-    alternates: { canonical },
-    openGraph: { title, description: eventEntry.card.description, url: canonical },
+    alternates: getLocaleAlternates(canonical, locale),
+    openGraph: { title, description: eventEntry.card.description, ...getLocaleOpenGraph(locale, canonical) },
   };
 }
 

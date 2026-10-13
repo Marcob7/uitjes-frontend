@@ -3,6 +3,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
+import { AppSelect } from "@/components/ui";
 
 // CitySelect laat de gebruiker een stad kiezen.
 // Bij kiezen updaten we de URL query params, en behouden we:
@@ -56,26 +57,15 @@ export default function CitySelect({
   }
 
   return (
-    <label className="grid w-full gap-2 sm:max-w-[320px]">
-      <div className="text-sm font-semibold text-stone-900">{label}</div>
-
-      <select
-        id="city-select"
-        value={currentCity}
-        onChange={(e) => onChangeCity(e.target.value)}
-        className="min-h-12 rounded-2xl border border-stone-200 bg-white px-4 text-base text-stone-900 outline-none transition focus:border-stone-400"
-      >
-        {!currentCity ? (
-          <option value="" disabled>
-            {placeholder}
-          </option>
-        ) : null}
-        {cities.map((c) => (
-          <option key={c.value} value={c.value}>
-            {c.label}
-          </option>
-        ))}
-      </select>
-    </label>
+    <AppSelect
+      id="city-select"
+      label={label}
+      value={currentCity}
+      onChange={(event) => onChangeCity(event.target.value)}
+      placeholder={!currentCity ? placeholder : undefined}
+      options={cities}
+      wrapperClassName="w-full sm:max-w-[320px]"
+      className="border-stone-200 bg-white text-stone-900 shadow-none focus:border-stone-400 focus:ring-0"
+    />
   );
 }

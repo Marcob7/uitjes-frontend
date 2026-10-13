@@ -67,26 +67,24 @@ type QuestionFlowStep = FullscreenChoiceFlowStep & {
 type ResultsFlowStep = FullscreenChoiceFlowStep & { type: "results"; id: "results" };
 type InspirationFlowStep = CityFlowStep | QuestionFlowStep | ResultsFlowStep;
 
-const audienceOptions: Array<ChoiceOption<AudienceChoice>> = [
-  { value: "solo", label: "Alleen op pad", helper: "Vrij en flexibel", icon: <PersonIcon /> },
-  { value: "date", label: "Date", helper: "Samen iets bijzonders", icon: <HeartIcon /> },
-  { value: "gezin", label: "Met gezin", helper: "Praktisch met kinderen", icon: <PeopleIcon /> },
-  { value: "vrienden", label: "Met vrienden", helper: "Gezellig samen", icon: <PeopleIcon /> },
-];
-
-const momentOptions: Array<ChoiceOption<MomentChoice>> = [
-  { value: "nu", label: "Nu", helper: "Snel te plannen", icon: <BoltIcon /> },
-  { value: "vanavond", label: "Vanavond", helper: "Avondgevoel", icon: <MoonIcon /> },
-  { value: "weekend", label: "Dit weekend", helper: "Voor een vrije dag", icon: <CalendarIcon /> },
-  { value: "later", label: "Later plannen", helper: "Bewaar inspiratie", icon: <ClockIcon /> },
-];
-
-const vibeOptions: Array<ChoiceOption<VibeChoice>> = [
-  { value: "cultureel", label: "Cultureel", helper: "Kijken en ontdekken", icon: <MuseumIcon /> },
-  { value: "actief", label: "Actief / buiten", helper: "Lucht en beweging", icon: <LocationArrowIcon /> },
-  { value: "eten-drinken", label: "Eten & drinken", helper: "Lunch, borrel, diner", icon: <CupIcon /> },
-  { value: "relaxed", label: "Relaxed", helper: "Rustig en laagdrempelig", icon: <SmileIcon /> },
-];
+function getAudienceOptions(t: (key: string, values?: Record<string, string | number>) => string): Array<ChoiceOption<AudienceChoice>> { return [
+  { value: "solo", label: t("inspiration.solo"), helper: t("inspiration.soloHelper"), icon: <PersonIcon /> },
+  { value: "date", label: t("inspiration.date"), helper: t("inspiration.dateHelper"), icon: <HeartIcon /> },
+  { value: "gezin", label: t("inspiration.family"), helper: t("inspiration.familyHelper"), icon: <PeopleIcon /> },
+  { value: "vrienden", label: t("inspiration.friends"), helper: t("inspiration.friendsHelper"), icon: <PeopleIcon /> },
+]; }
+function getMomentOptions(t: (key: string, values?: Record<string, string | number>) => string): Array<ChoiceOption<MomentChoice>> { return [
+  { value: "nu", label: t("inspiration.now"), helper: t("inspiration.nowHelper"), icon: <BoltIcon /> },
+  { value: "vanavond", label: t("inspiration.tonight"), helper: t("inspiration.tonightHelper"), icon: <MoonIcon /> },
+  { value: "weekend", label: t("inspiration.weekend"), helper: t("inspiration.weekendHelper"), icon: <CalendarIcon /> },
+  { value: "later", label: t("inspiration.later"), helper: t("inspiration.laterHelper"), icon: <ClockIcon /> },
+]; }
+function getVibeOptions(t: (key: string, values?: Record<string, string | number>) => string): Array<ChoiceOption<VibeChoice>> { return [
+  { value: "cultureel", label: t("inspiration.culture"), helper: t("inspiration.cultureHelper"), icon: <MuseumIcon /> },
+  { value: "actief", label: t("inspiration.active"), helper: t("inspiration.activeHelper"), icon: <LocationArrowIcon /> },
+  { value: "eten-drinken", label: t("inspiration.food"), helper: t("inspiration.foodHelper"), icon: <CupIcon /> },
+  { value: "relaxed", label: t("inspiration.relaxed"), helper: t("inspiration.relaxedHelper"), icon: <SmileIcon /> },
+]; }
 
 const supportedCitySlugs = new Set<string>([
   ...featuredInspirationCities.map((city) => city.value),
@@ -103,39 +101,30 @@ const supportedInspirationCities: CityOption[] = Array.from(supportedCitySlugs)
   .filter((city): city is CityOption => Boolean(city))
   .sort((a, b) => a.label.localeCompare(b.label, "nl"));
 
-const citySelectionTitle = "Waar wil je iets leuks doen?";
-const citySelectionDescription = "We kunnen je helpen kiezen. Kies een stad en vertel wat bij je past voor persoonlijkere suggesties.";
-
-const inspirationFlowSteps: InspirationFlowStep[] = [
+function getInspirationFlowSteps(t: (key: string, values?: Record<string, string | number>) => string): InspirationFlowStep[] { return [
   {
     type: "custom",
     id: "city",
-    title: citySelectionTitle,
-    description: citySelectionDescription,
+    title: t("inspiration.cityQuestion"),
+    description: t("inspiration.cityDescription"),
   },
   {
     type: "question",
     id: "audience",
-    title: "Met wie ga je op pad?",
-    description: "Stem de suggesties af op het gezelschap waarmee je eropuit gaat.",
-    options: audienceOptions,
+    title: t("inspiration.audienceTitle"), description: t("inspiration.audienceDescription"), options: getAudienceOptions(t),
   },
   {
     type: "question",
     id: "moment",
-    title: "Wanneer wil je iets doen?",
-    description: "Kies het moment dat past bij je plan in de stad.",
-    options: momentOptions,
+    title: t("inspiration.momentTitle"), description: t("inspiration.momentDescription"), options: getMomentOptions(t),
   },
   {
     type: "question",
     id: "vibe",
-    title: "Waar heb je zin in?",
-    description: "Kies de richting die vandaag het beste voelt. Daarna zetten we je selectie klaar.",
-    options: vibeOptions,
+    title: t("inspiration.vibeTitle"), description: t("inspiration.vibeDescription"), options: getVibeOptions(t),
   },
   { type: "results", id: "results" },
-];
+]; }
 
 function findSupportedCity(input?: string | null) {
   const normalized = normalizeCitySlug(input ?? "");
@@ -232,6 +221,10 @@ export function InspirationChoiceFlow({
   initialNearbyCity,
 }: InspirationChoiceFlowProps) {
   const { t } = useLocale();
+  const audienceOptions = getAudienceOptions(t);
+  const momentOptions = getMomentOptions(t);
+  const vibeOptions = getVibeOptions(t);
+  const inspirationFlowSteps = getInspirationFlowSteps(t);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -282,7 +275,7 @@ export function InspirationChoiceFlow({
   );
   const selectedCityLabel = supportedInspirationCities.find((city) => city.value === selectedCity)?.label ?? selectedCity;
   const cityIntroTitle = selectedCityLabel
-    ? `Leuke ideeën in ${selectedCityLabel}`
+    ? t("inspiration.cityTitle", { city: selectedCityLabel })
     : t("inspiration.introTitle");
   const cityIntroDescription = selectedCityLabel
     ? t("inspiration.introHelp")
@@ -375,7 +368,7 @@ export function InspirationChoiceFlow({
   function selectCityFromInput(preferredIndex = activeCityIndex) {
     const city = findSupportedCity(cityInput) ?? matchingCities[preferredIndex] ?? matchingCities[0];
     if (!city) {
-      if (cityInput.trim()) setCityError("Kies een stad uit de getoonde lijst.");
+      if (cityInput.trim()) setCityError(t("inspiration.chooseListedCity"));
       return;
     }
     selectCity(city);
@@ -394,7 +387,7 @@ export function InspirationChoiceFlow({
   function requestLocation() {
     setCityError(null);
     if (!("geolocation" in navigator)) {
-      setCityError("We konden je locatie niet bepalen. Kies zelf een stad.");
+      setCityError(t("inspiration.locationUnavailable"));
       return;
     }
 
@@ -410,7 +403,7 @@ export function InspirationChoiceFlow({
       },
       () => {
         setIsResolvingLocation(false);
-        setCityError("We konden je locatie niet bepalen. Kies zelf een stad.");
+        setCityError(t("inspiration.locationUnavailable"));
       },
       { enableHighAccuracy: false, maximumAge: 5 * 60 * 1000, timeout: 10000 }
     );
@@ -510,11 +503,11 @@ export function InspirationChoiceFlow({
           onComplete={finishFlow}
           onViewAllResults={viewAllResults}
           onEditChoices={() => setCurrentStep(1)}
-          secondaryAction={selectedCity ? { label: "Bekijk alle resultaten", onClick: viewAllResults } : undefined}
+          secondaryAction={selectedCity ? { label: t("inspiration.allResults"), onClick: viewAllResults } : undefined}
           showProgress={({ stepNumber }) => stepNumber > 1}
           showFooter={({ stepNumber }) => stepNumber > 1}
           exitHref="/"
-          exitLabel="Terug naar Home"
+          exitLabel={t("inspiration.backHome")}
           decorativeLayer={({ isResultsStep }) => (
             <InspirationFlowScenery
               variant={isResultsStep ? "subtle" : "default"}
@@ -525,21 +518,21 @@ export function InspirationChoiceFlow({
             const step = inspirationFlowSteps[stepNumber - 1];
             if (isResultsStep) {
               const description = isLoadingCity
-                ? "We vullen je selectie met actuele city-content."
-                : `${totalPreviewCount} ${totalPreviewCount === 1 ? "idee" : "ideeën"} in ${selectedCityLabel}`;
+                ? t("inspiration.loadingResults")
+                : totalPreviewCount === 1 ? t("inspiration.ideaInCity", { city: selectedCityLabel ?? "" }) : t("inspiration.ideasInCity", { count: totalPreviewCount, city: selectedCityLabel ?? "" });
               return (
                 <FullscreenChoiceResults description={description}>
                   {isLoadingCity ? (
-                    <p className="mt-8 max-w-2xl border-y border-[#DCE1DC] py-8 text-sm leading-6 text-[#65736C] sm:text-base" role="status">Een momentje: we verwerken de actuele stadssuggesties.</p>
+                    <p className="mt-8 max-w-2xl border-y border-[#DCE1DC] py-8 text-sm leading-6 text-[#65736C] sm:text-base" role="status">{t("inspiration.loadingStatus")}</p>
                   ) : previewCards.length ? (
                     <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
                       {previewCards.map((card) => <ExploreCardItem key={card.href} card={card} variant="flow" isSelected={false} onSelect={() => undefined} />)}
                     </div>
                   ) : (
                     <div className="mt-8 max-w-2xl border-y border-[#DCE1DC] py-8 sm:py-10">
-                      <p className="text-lg font-semibold tracking-[-0.025em]">We vonden nog geen perfecte match in {selectedCityLabel}.</p>
-                      <p className="mt-2 max-w-xl text-sm leading-6 text-[#65736C] sm:text-base">Pas je keuzes aan of bekijk alle inspiratie voor deze stad.</p>
-                      <button type="button" onClick={() => setCurrentStep(1)} className="mt-5 inline-flex min-h-11 items-center rounded-full border border-[#DCE1DC] bg-white px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Keuzes aanpassen</button>
+                      <p className="text-lg font-semibold tracking-[-0.025em]">{t("inspiration.noMatch", { city: selectedCityLabel ?? "" })}</p>
+                      <p className="mt-2 max-w-xl text-sm leading-6 text-[#65736C] sm:text-base">{t("inspiration.noMatchIntro")}</p>
+                      <button type="button" onClick={() => setCurrentStep(1)} className="mt-5 inline-flex min-h-11 items-center rounded-full border border-[#DCE1DC] bg-white px-4 py-2 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">{t("inspiration.editChoices")}</button>
                     </div>
                   )}
                 </FullscreenChoiceResults>
@@ -558,7 +551,7 @@ export function InspirationChoiceFlow({
                       onClick={viewAllResults}
                       className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1D5A46] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
                     >
-                      Bekijk alle uitjes in {selectedCityLabel} <span className="ml-2" aria-hidden="true">→</span>
+                      {t("inspiration.allOutings", { city: selectedCityLabel ?? "" })} <span className="ml-2" aria-hidden="true">→</span>
                     </button>
                   ) : undefined}
                 >
@@ -607,19 +600,19 @@ export function InspirationChoiceFlow({
                               setActiveCityIndex(-1);
                             }
                           }}
-                          placeholder="Bijvoorbeeld Nijmegen"
+                          placeholder={t("inspiration.cityPlaceholder")}
                           autoComplete="off"
                           inputMode="search"
                           spellCheck={false}
                           className="min-h-12 min-w-0 flex-1 rounded-xl bg-transparent px-4 text-base text-[#29342F] outline-none placeholder:text-[#65736C]"
                           />
-                          {cityInput ? <button type="button" onClick={clearCity} aria-label="Geselecteerde stad wissen" className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#65736C] transition hover:bg-[#F1F4F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">×</button> : null}
-                          <button type="button" onClick={() => { setIsCityListOpen((open) => !open); setActiveCityIndex(-1); cityInputRef.current?.focus(); }} aria-label={isCityListOpen ? "Steden sluiten" : "Steden tonen"} aria-expanded={isCityListOpen} aria-controls="inspiration-city-listbox" className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#29342F] transition hover:bg-[#F1F4F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"><ChevronIcon /></button>
+                          {cityInput ? <button type="button" onClick={clearCity} aria-label={t("inspiration.clearCity")} className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#65736C] transition hover:bg-[#F1F4F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">×</button> : null}
+                          <button type="button" onClick={() => { setIsCityListOpen((open) => !open); setActiveCityIndex(-1); cityInputRef.current?.focus(); }} aria-label={isCityListOpen ? t("inspiration.closeCities") : t("inspiration.showCities")} aria-expanded={isCityListOpen} aria-controls="inspiration-city-listbox" className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#29342F] transition hover:bg-[#F1F4F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"><ChevronIcon /></button>
                         </div>
-                        <button type="button" onClick={() => selectCityFromInput()} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#1D5A46] px-5 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">Selecteer stad</button>
+                        <button type="button" onClick={() => selectCityFromInput()} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#1D5A46] px-5 text-sm font-semibold text-white transition hover:bg-[#174936] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]">{t("inspiration.selectCity")}</button>
                       </div>
                       {isCityListOpen ? (
-                        <div id="inspiration-city-listbox" role="listbox" aria-label="Beschikbare steden" className="absolute z-20 mt-2 max-h-[min(18rem,45vh)] w-full overflow-y-auto rounded-xl border border-[#DCE1DC] bg-white p-1.5 shadow-[0_20px_45px_rgba(41,52,47,0.16)]">
+                        <div id="inspiration-city-listbox" role="listbox" aria-label={t("inspiration.availableCities")} className="absolute z-20 mt-2 max-h-[min(18rem,45vh)] w-full overflow-y-auto rounded-xl border border-[#DCE1DC] bg-white p-1.5 shadow-[0_20px_45px_rgba(41,52,47,0.16)]">
                           {matchingCities.map((city, index) => (
                             <button
                               key={city.value}
@@ -632,20 +625,20 @@ export function InspirationChoiceFlow({
                               className={`flex min-h-11 w-full items-center justify-between rounded-lg px-3 text-left text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#005FCC] ${index === activeCityIndex ? "bg-[#EEF5F0] text-[#173F31]" : "text-[#29342F] hover:bg-[#F4F6F4]"}`}
                             ><span>{city.label}</span>{city.value === selectedCity ? <CheckIcon /> : null}</button>
                           ))}
-                          {matchingCities.length === 0 ? <p className="px-3 py-3 text-sm leading-6 text-[#65736C]">Deze stad wordt nog niet ondersteund. Kies een andere stad.</p> : null}
+                          {matchingCities.length === 0 ? <p className="px-3 py-3 text-sm leading-6 text-[#65736C]">{t("inspiration.unsupportedCity")}</p> : null}
                         </div>
                       ) : null}
                     </div>
-                    <p className="sr-only" aria-live="polite">{matchingCities.length} {matchingCities.length === 1 ? "stad gevonden" : "steden gevonden"}.</p>
+                    <p className="sr-only" aria-live="polite">{matchingCities.length === 1 ? t("inspiration.cityFound", { count: matchingCities.length }) : t("inspiration.citiesFound", { count: matchingCities.length })}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <button type="button" onClick={requestLocation} disabled={isResolvingLocation} className="min-h-11 text-sm font-semibold text-[#355E7A] underline decoration-[#B8C5BE] underline-offset-4 transition hover:text-[#173F31] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] disabled:cursor-wait disabled:opacity-70">{isResolvingLocation ? "Locatie bepalen…" : "Gebruik mijn locatie"}</button>
+                      <button type="button" onClick={requestLocation} disabled={isResolvingLocation} className="min-h-11 text-sm font-semibold text-[#355E7A] underline decoration-[#B8C5BE] underline-offset-4 transition hover:text-[#173F31] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] disabled:cursor-wait disabled:opacity-70">{isResolvingLocation ? t("inspiration.locating") : t("inspiration.useLocation")}</button>
                       {cityError ? <p className="text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
                     </div>
                     </div>
                     {selectedCity ? (
                       <div className="mt-0 border-t-0 pt-0 sm:mt-5 sm:border-t sm:border-[#DCE1DC] sm:pt-4">
                         <FullscreenChoiceGrid
-                          title="Met wie ga je op pad?"
+                          title={t("inspiration.audienceTitle")}
                           selectedValue={selectedAudience}
                           onChoose={chooseAudienceFromIntroduction}
                           options={audienceOptions.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))}
@@ -659,7 +652,7 @@ export function InspirationChoiceFlow({
 
             if (step.type === "question") {
               const selectedValue = step.id === "audience" ? selectedAudience : step.id === "moment" ? selectedMoment : selectedVibe;
-              return <FullscreenChoiceQuestion contextLabel={selectedCityLabel ? `In ${selectedCityLabel}` : undefined} title={step.title} description={step.description}><FullscreenChoiceGrid title={step.title} selectedValue={selectedValue} onChoose={chooseQuestion} options={step.options.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))} /></FullscreenChoiceQuestion>;
+              return <FullscreenChoiceQuestion contextLabel={selectedCityLabel ? t("inspiration.inCity", { city: selectedCityLabel }) : undefined} title={step.title} description={step.description}><FullscreenChoiceGrid title={step.title} selectedValue={selectedValue} onChoose={chooseQuestion} options={step.options.map(({ value, label, helper, icon }) => ({ value, label, description: helper, icon }))} /></FullscreenChoiceQuestion>;
             }
 
             return null;

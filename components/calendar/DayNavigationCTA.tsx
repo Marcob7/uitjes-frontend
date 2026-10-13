@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { JaarkalenderDay } from "@/app/jaarkalender/data";
+import { SectionHeader } from "@/components/ui";
 
 type DayNavigationCTAProps = {
   day: JaarkalenderDay;
@@ -57,15 +58,15 @@ export default function DayNavigationCTA({
       <div aria-hidden="true" className="absolute left-0 right-0 top-0 h-16 border-b border-[#d7ddd1]/75" />
 
       <div className="relative mx-auto max-w-[1280px] px-5 sm:px-7 lg:px-8">
-        <div className="mx-auto max-w-[46rem] text-center">
-        
-          <h2 id="day-navigation-title" className="mt-4 text-[clamp(2.15rem,4.2vw,4rem)] font-medium leading-[0.94] tracking-[-0.065em] text-[#1c251d]">
-            Meer ontdekken rond deze dag.
-          </h2>
-          <p className="mx-auto mt-4 max-w-[35rem] text-[15px] leading-6 text-[#5c6659]">
-            Bekijk een andere dag of ga terug naar het maandoverzicht.
-          </p>
-        </div>
+        <SectionHeader
+          id="day-navigation-title"
+          align="center"
+          title="Meer ontdekken rond deze dag."
+          description="Bekijk een andere dag of ga terug naar het maandoverzicht."
+          className="mx-auto max-w-[46rem]"
+          titleClassName="mt-4 text-[clamp(2.15rem,4.2vw,4rem)] font-medium leading-[0.94] tracking-[-0.065em] text-[#1c251d]"
+          descriptionClassName="mx-auto mt-4 max-w-[35rem] text-[15px] leading-6 text-[#5c6659]"
+        />
 
         <div className="mx-auto mt-9 grid max-w-[67rem] gap-3 sm:grid-cols-2 lg:mt-11 lg:grid-cols-3 lg:gap-4">
           <Link href={previousDayHref} className="group flex min-h-[10.25rem] flex-col justify-between rounded-[1.25rem] border border-[#d5dacf] bg-[#f8f8f3]/80 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#b8c6aa] hover:bg-[#fbfbf7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6d9145] sm:p-6">

@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
 
-import ExploreCardItem from "./ExploreCardItem";
-import CityExploreMapSection from "./CityExploreMapSection";
+import DiscoverResultsList from "./DiscoverResultsList";
+import DiscoverResultsMap from "./DiscoverResultsMap";
+import DiscoverResultsToolbar from "./DiscoverResultsToolbar";
 import type {
   ExploreCard,
   PlannerCompanion,
@@ -50,25 +51,6 @@ type ActiveFilter = {
   icon: (props: { className?: string }) => ReactElement;
   editStep?: number;
 };
-
-function FilterIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 7h16" />
-      <path d="M7 12h10" />
-      <path d="M10 17h4" />
-    </svg>
-  );
-}
 
 function CloseIcon({ className }: { className?: string }) {
   return (
@@ -452,59 +434,18 @@ export default function CityExploreResultsSection({
   return (
     <section ref={sectionRef} className="relative mt-3 scroll-mt-32 bg-[#F6F5F0] sm:mt-4 lg:scroll-mt-48">
       <div className="mx-auto max-w-[1800px] px-4 pb-20 pt-4 sm:px-6 lg:px-8 xl:px-10">
-        <div className="flex flex-col gap-4 border-b border-[#DCE1DC] pb-5 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1
-              id="explore-results-heading"
-              tabIndex={-1}
-              className="text-[clamp(2.25rem,3.2vw,3.5rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#29342F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#005FCC]"
-            >
-              {t("discover.cityTitle", { city: cityLabel })}
-            </h1>
-            <p className="mt-2 text-sm font-medium text-[#65736C] sm:text-base">
-              {resultsLabel}
-              {selectionLabels.length ? ` · ${selectionLabels.join(" · ")}` : ""}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 md:justify-end">
-            <button
-              type="button"
-              onClick={() => onEditSelection(1)}
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#DCE1DC] bg-white px-5 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
-            >
-              {t("discover.editChoices")}
-            </button>
-            <button
-              ref={filterButtonRef}
-              type="button"
-              onClick={openFilters}
-              aria-expanded={isFilterModalOpen}
-              aria-controls={filterModalId}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] ${
-                hasResultFilters
-                  ? "border-[#9DBAAE] bg-[#DDEBE2] text-[#1D5A46] hover:bg-[#EAF2EC]"
-                  : "border-[#DCE1DC] bg-white text-[#355E7A] hover:border-[#355E7A]"
-              }`}
-            >
-              <FilterIcon className="h-4 w-4" />
-              <span>{t("search.filters")}</span>
-              {hasResultFilters ? (
-                <span className="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#1D5A46] px-1.5 text-xs font-bold text-white">
-                  {resultFilters.length}
-                </span>
-              ) : null}
-            </button>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => changeView("map")}
-          className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#9DBAAE] bg-[#DDEBE2] px-5 py-2.5 text-sm font-semibold text-[#1D5A46] lg:hidden"
-        >
-          <PinIcon className="h-4 w-4" /> {t("discover.mapView")}
-        </button>
+        <DiscoverResultsToolbar
+          cityLabel={cityLabel}
+          resultsLabel={resultsLabel}
+          selectionLabels={selectionLabels}
+          activeFilterCount={resultFilters.length}
+          filterButtonRef={filterButtonRef}
+          filterModalId={filterModalId}
+          isFilterModalOpen={isFilterModalOpen}
+          onEditChoices={() => onEditSelection(1)}
+          onOpenFilters={openFilters}
+          onOpenMap={() => changeView("map")}
+        />
 
         {isFilterModalOpen ? (
           <div
@@ -611,23 +552,13 @@ export default function CityExploreResultsSection({
 
         <div className="mt-5 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(470px,0.82fr)] lg:items-start lg:gap-8 xl:gap-10">
           <div>
-            {isLoadingResults ? (
-              <div className="border-y border-[#DCE1DC] py-10 text-sm leading-6 text-[#65736C]" role="status">
-                {t("discover.loadingResults")}
-              </div>
-            ) : (
-              <div className="grid gap-5 border-y border-[#DCE1DC] py-5 sm:grid-cols-2">
-                {contextualDisplayedCards.map((card) => (
-                  <ExploreCardItem
-                    key={card.id}
-                    card={card}
-                    isSelected={selectedId === card.id}
-                    onSelect={() => onSelectCard(card.id)}
-                    variant="flow"
-                  />
-                ))}
-              </div>
-            )}
+            <DiscoverResultsList
+              cards={contextualDisplayedCards}
+              selectedId={selectedId}
+              isLoading={isLoadingResults}
+              onSelectCard={onSelectCard}
+              loadingLabel={t("discover.loadingResults")}
+            />
 
         {hasExpandableResults && !hasNoResults && !isLoadingResults ? (
           <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -686,13 +617,11 @@ export default function CityExploreResultsSection({
 
           <aside className="hidden lg:block">
             <div className="sticky top-40 h-[min(760px,calc(100dvh-10rem))] min-h-[560px]">
-              <CityExploreMapSection
+              <DiscoverResultsMap
                 cityLabel={cityLabel}
-                events={contextualDisplayedCards}
+                cards={contextualDisplayedCards}
                 selectedId={selectedId}
-                setSelectedId={onMapSelectCard ?? onSelectCard}
-                layout="embedded"
-                fullHeight
+                onSelectCard={onMapSelectCard ?? onSelectCard}
               />
             </div>
           </aside>
@@ -717,7 +646,12 @@ export default function CityExploreResultsSection({
               <h2 className="px-1 text-sm font-semibold text-[#526159]">{t("discover.onMap", { city: cityLabel })}</h2>
             </div>
             <div className="h-[calc(100dvh-7.25rem-max(0px,env(safe-area-inset-top)))]">
-              <CityExploreMapSection cityLabel={cityLabel} events={contextualDisplayedCards} selectedId={selectedId} setSelectedId={onMapSelectCard ?? onSelectCard} layout="embedded" fullHeight />
+              <DiscoverResultsMap
+                cityLabel={cityLabel}
+                cards={contextualDisplayedCards}
+                selectedId={selectedId}
+                onSelectCard={onMapSelectCard ?? onSelectCard}
+              />
             </div>
           </div>
         ) : null}

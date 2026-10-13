@@ -1,6 +1,7 @@
 import type { TimelineCard, TimelineSlot } from "@/app/jaarkalender/data";
 
 import ActivityCard from "./ActivityCard";
+import { SectionHeader } from "@/components/ui";
 
 type ActivityItem = {
   slot: TimelineSlot;
@@ -22,18 +23,15 @@ export default function ActivitiesSection({
     <section aria-labelledby="activities-title">
       <div className="border-t border-[#e4ddd3] pt-10 sm:pt-12">
       
-        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <h2
-            id="activities-title"
-            style={{ fontFamily: "var(--font-body)" }}
-            className="max-w-none text-[clamp(2.15rem,4vw,3.35rem)] font-semibold leading-[0.96] tracking-[-0.065em] text-[#171511]"
-          >
-            Alle activiteiten.
-          </h2>
-          <p className="pb-1 text-[15px] leading-6 text-[#71675c]">
-            {activities.length} {activities.length === 1 ? "evenement" : "evenementen"} op {dayLabel}
-          </p>
-        </div>
+        <SectionHeader
+          id="activities-title"
+          title="Alle activiteiten."
+          description={`${activities.length} ${activities.length === 1 ? "evenement" : "evenementen"} op ${dayLabel}`}
+          className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+          titleStyle={{ fontFamily: "var(--font-body)" }}
+          titleClassName="max-w-none text-[clamp(2.15rem,4vw,3.35rem)] font-semibold leading-[0.96] tracking-[-0.065em] text-[#171511]"
+          descriptionClassName="pb-1 text-[15px] leading-6 text-[#71675c]"
+        />
       </div>
 
       {activities.length ? (

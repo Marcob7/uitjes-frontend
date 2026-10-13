@@ -3,6 +3,7 @@ import {
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
 import {
+  getCityContentByCity,
   searchCityContent,
   type CityContentItem,
 } from "@/lib/api/cityContent";
@@ -10,6 +11,7 @@ import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 import { festivalDetails, getFestivalDetailHref, type FestivalDetail } from "@/app/festivals/data";
+import { getSupportedCitySlug } from "@/lib/searchIntent";
 
 export type GeneralSearchResult = {
   id: string;
@@ -379,6 +381,31 @@ function uniqueResults(results: GeneralSearchResult[]) {
   });
 }
 
+function classifyCompletedSearch({
+  localMatches,
+  cityContentMatches,
+  cityContentFailed,
+}: {
+  localMatches: GeneralSearchResult[];
+  cityContentMatches: GeneralSearchResult[];
+  cityContentFailed: boolean;
+}): GeneralSearchResultState {
+  const results = uniqueResults([...localMatches, ...cityContentMatches]).sort(sortResults);
+
+  // A failed source must never be translated into "empty". When at least one
+  // independent local match is still usable, expose it as a partial result;
+  // otherwise make the failure retryable.
+  if (cityContentFailed) {
+    return results.length > 0
+      ? { status: "partial", results }
+      : { status: "error" };
+  }
+
+  return results.length > 0
+    ? { status: "success", results }
+    : { status: "empty", results: [] };
+}
+
 export async function getGeneralSearchResults(
   query: string
 ): Promise<GeneralSearchResultState> {
@@ -391,36 +418,37 @@ export async function getGeneralSearchResults(
   const festivalMatches = festivalDetails
     .map((festival) => mapFestivalResult(festival, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
+  const localMatches = [...festivalMatches, ...dummyMatches];
+  const citySlug = getSupportedCitySlug(query);
 
-  let cityContent: CityContentItem[];
+  // City names are not merely free-text candidates: an exact city query has
+  // an authoritative city-content source. This request returns every item in
+  // that city, including records whose title or tags do not repeat the city
+  // name. For all other searches, retain the normal candidate search.
+  const cityContentRequest: Promise<CityContentItem[]> = citySlug
+    ? getCityContentByCity(citySlug, { throwOnError: true })
+    : searchCityContent(query, terms.all, { throwOnError: true });
+  const [cityContentOutcome] = await Promise.allSettled([cityContentRequest]);
 
-  try {
-    cityContent = await searchCityContent(query, terms.all, { throwOnError: true });
-  } catch (error) {
+  if (cityContentOutcome.status === "rejected") {
     if (process.env.NODE_ENV !== "production") {
-      console.warn("Search city-content request failed:", error);
+      console.warn("Search city-content request failed:", cityContentOutcome.reason);
     }
 
-    // The inspiration collection is local and independent from city-content.
-    // Do not hide useful matches merely because the remote source timed out.
-    const localMatches = uniqueResults([...festivalMatches, ...dummyMatches]).sort(sortResults);
-    if (localMatches.length > 0) {
-      return {
-        status: "partial",
-        results: localMatches,
-      };
-    }
-
-    return { status: "error" };
+    return classifyCompletedSearch({
+      localMatches,
+      cityContentMatches: [],
+      cityContentFailed: true,
+    });
   }
 
-  const cityContentMatches = cityContent
+  const cityContentMatches = cityContentOutcome.value
     .map((item) => mapCityContentResult(item, terms))
     .filter((result): result is GeneralSearchResult => Boolean(result));
 
-  const results = uniqueResults([...festivalMatches, ...cityContentMatches, ...dummyMatches]).sort(sortResults);
-
-  return results.length > 0
-    ? { status: "success", results }
-    : { status: "empty", results: [] };
+  return classifyCompletedSearch({
+    localMatches,
+    cityContentMatches,
+    cityContentFailed: false,
+  });
 }

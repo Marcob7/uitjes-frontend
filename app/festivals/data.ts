@@ -72,8 +72,9 @@ function toFestivalDate(value: string) {
   return new Date(`${value}T12:00:00Z`);
 }
 
-export function formatFestivalDate(value: string) {
-  return festivalDateFormatter.format(toFestivalDate(value));
+export function formatFestivalDate(value: string, locale: "nl" | "en" = "nl") {
+  if (locale === "nl") return festivalDateFormatter.format(toFestivalDate(value));
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(toFestivalDate(value));
 }
 
 export function formatFestivalDateRange(startDate: string, endDate: string) {

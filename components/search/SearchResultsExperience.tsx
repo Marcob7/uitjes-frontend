@@ -10,6 +10,7 @@ import ResultCard from "@/components/ui/ResultCard";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname, localeToIntl } from "@/lib/i18n/config";
 import type { GeneralSearchResult } from "@/lib/search/searchResults";
+import { normalizeSearchQuery } from "@/lib/searchIntent";
 
 type SortOption = "match" | "rating" | "price" | "recent";
 type FilterKey = "city" | "when" | "category" | "free" | "rating";
@@ -216,6 +217,8 @@ export default function SearchResultsExperience({ query, results, error = false,
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const filterButtonRef = useRef<HTMLButtonElement>(null);
   const filterSignature = searchParams.toString();
+  const activeQuery = normalizeSearchQuery(searchParams.get("query") ?? searchParams.get("q"));
+  const resultsMatchActiveQuery = activeQuery === query;
   const filters = readFilters(searchParams);
   const sort = getSort(searchParams);
   const categoryOptions = CATEGORY_OPTIONS.map((option) => ({
@@ -343,7 +346,7 @@ export default function SearchResultsExperience({ query, results, error = false,
 
   if (error) {
     return (
-      <section className="mx-auto max-w-[1180px] px-4 pb-20 pt-7 sm:px-6 sm:pt-9 lg:px-8" aria-labelledby="search-error-heading">
+      <section className="mx-auto max-w-[1214px] px-4 pb-20 pt-7 sm:px-6 sm:pt-9 lg:px-8" aria-labelledby="search-error-heading">
         <div className="search-empty-state max-w-2xl" role="alert">
         
           <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">{t("search.errorTitle")}</h2>
@@ -355,8 +358,8 @@ export default function SearchResultsExperience({ query, results, error = false,
   }
 
   return (
-    <section className="mx-auto max-w-[1180px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8" aria-labelledby="search-results-heading">
-      <div className="rounded-[1.45rem] border border-[#d7e2d8] bg-[#fdfefd] p-4 shadow-[0_14px_34px_rgba(33,54,43,0.045)] sm:p-5">
+    <section className="mx-auto max-w-[1214px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8" aria-busy={!resultsMatchActiveQuery} aria-labelledby="search-results-heading">
+      <div className="border-y border-[#d7e2d8] py-5 sm:py-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <h2 id="search-results-heading" className="font-heading text-[clamp(1.85rem,3vw,2.65rem)] leading-[1] tracking-[-0.055em] text-[#22312a]">
@@ -416,14 +419,14 @@ export default function SearchResultsExperience({ query, results, error = false,
       </div>
 
       {partial ? (
-        <p role="status" className="mt-4 rounded-xl border border-[#e2d7a8] bg-[#fffbea] px-4 py-3 text-sm leading-5 text-[#685b2a]">
+        <p role="status" className="mt-5 border-l-2 border-[#d7c16a] bg-[#fffbea]/70 px-4 py-3 text-sm leading-5 text-[#685b2a]">
           {t("search.partialNotice")}
         </p>
       ) : null}
 
       {sortedResults.length > 0 ? (
         <>
-          <div className="mt-6 grid gap-4 sm:gap-5 lg:grid-cols-2">
+          <div className="mt-8 grid gap-4 sm:gap-5 lg:grid-cols-2">
             {visibleResults.map((result, index) => <SearchResultCard key={result.id} result={result} index={index} />)}
           </div>
 
@@ -455,7 +458,7 @@ export default function SearchResultsExperience({ query, results, error = false,
         </div>
       )}
 
-      <div className="mt-12 grid gap-4 rounded-[1.7rem] border border-[#cbdacc] bg-[#e7f0e4] p-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-8">
+      <div className="mt-12 grid gap-4 border-y border-[#cbdacc] bg-[#e7f0e4]/55 py-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:py-9">
         <div>
     
           <h3 className="mt-3 max-w-[22ch] font-heading text-[clamp(1.75rem,3vw,2.55rem)] leading-[1] tracking-[-0.05em] text-[#1e3e2e]">{t("search.inspireTitle")}</h3>

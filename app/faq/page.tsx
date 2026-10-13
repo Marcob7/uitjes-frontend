@@ -1,29 +1,22 @@
 import FaqPageClient from "./FaqPageClient";
-import { faqItems } from "@/lib/faq";
+import { getFaqContent } from "@/lib/faq";
+import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
+import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
+import { translate } from "@/lib/i18n/messages";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Veelgestelde vragen | UitjesNL",
-  description:
-    "Lees hoe UitjesNL werkt, hoe je zoekt, steden kiest, favorieten bewaart en waar informatie over uitjes en evenementen vandaan komt.",
-  alternates: {
-    canonical: "/faq",
-  },
-};
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqItems.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-};
+export function generateMetadata(): Metadata {
+  const locale = getRequestLocale();
+  const pathname = getRequestPathname();
+  const title = translate(locale, "faq.metaTitle");
+  const description = translate(locale, "faq.metaDescription");
+  return { title, description, alternates: getLocaleAlternates(pathname, locale), openGraph: { title, description, ...getLocaleOpenGraph(locale, pathname) } };
+}
 
 export default function FaqPage() {
+  const locale = getRequestLocale();
+  const { items } = getFaqContent(locale);
+  const faqJsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map((item) => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) };
   return (
     <>
       <script

@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type ShareActionProps = {
   /** The name that is shown by the device share sheet and in accessible labels. */
@@ -85,11 +86,14 @@ async function copyText(value: string) {
  */
 export default function ShareAction({
   title,
-  text = `Dit lijkt me leuk: ${title}`,
+  text,
   url,
   className,
-  label = "Delen",
+  label,
 }: ShareActionProps) {
+  const { t } = useLocale();
+  const resolvedLabel = label ?? t("share.label");
+  const resolvedText = text ?? t("share.defaultText", { title });
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [position, setPosition] = useState<PopoverPosition | null>(null);
@@ -127,7 +131,7 @@ export default function ShareAction({
     }
 
     try {
-      await navigator.share({ title, text, url: shareUrl });
+    await navigator.share({ title, text: resolvedText, url: shareUrl });
     } catch (error) {
       // Closing the native sheet is an expected user choice, not an error that
       // should unexpectedly open a second menu.
@@ -170,7 +174,7 @@ export default function ShareAction({
   }, [isOpen]);
 
   const shareUrl = isMounted ? canonicalShareUrl(url) : "";
-  const whatsappHref = `https://wa.me/?text=${encodeURIComponent(`${text} ${shareUrl}`.trim())}`;
+  const whatsappHref = `https://wa.me/?text=${encodeURIComponent(`${resolvedText} ${shareUrl}`.trim())}`;
   const triggerClassName = className ?? "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#c9d3c7] bg-white px-5 text-sm font-semibold text-[#294634] transition hover:bg-[#f2f6ef] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]";
 
   return <>
@@ -178,12 +182,12 @@ export default function ShareAction({
       ref={triggerRef}
       type="button"
       onClick={share}
-      aria-label={`${label}: ${title}`}
+      aria-label={t("share.aria", { label: resolvedLabel, title })}
       aria-haspopup="dialog"
       aria-expanded={isOpen}
       className={triggerClassName}
     >
-      <ShareIcon /> {label}
+      <ShareIcon /> {resolvedLabel}
     </button>
     {isOpen && isMounted && position ? createPortal(
       <div
@@ -194,7 +198,7 @@ export default function ShareAction({
         className="fixed z-[1250] rounded-[1.15rem] border border-[#d9ded5] bg-[#fffefa] p-2 shadow-[0_16px_46px_rgba(28,43,33,0.2)]"
         style={{ top: position.top, left: position.left, width: position.width }}
       >
-        <p id={headingId} className="px-3 pb-2 pt-2 text-xs font-semibold text-[#536357]">Deel {title}</p>
+        <p id={headingId} className="px-3 pb-2 pt-2 text-xs font-semibold text-[#536357]">{t("share.heading", { title })}</p>
         <a
           href={whatsappHref}
           target="_blank"
@@ -202,17 +206,17 @@ export default function ShareAction({
           onClick={() => close(false)}
           className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold text-[#253a2d] transition hover:bg-[#eef4eb] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#286e43]"
         >
-          <WhatsAppIcon /> Deel via WhatsApp
+          <WhatsAppIcon /> {t("share.whatsapp")}
         </a>
         <button
           type="button"
           onClick={copyLink}
           className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold text-[#253a2d] transition hover:bg-[#eef4eb] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#286e43]"
         >
-          <CopyIcon /> {copyStatus === "success" ? "Link gekopieerd" : "Kopieer link"}
+          <CopyIcon /> {copyStatus === "success" ? t("share.copied") : t("share.copy")}
         </button>
-        {copyStatus === "success" ? <p role="status" className="px-3 pb-2 pt-1 text-xs leading-5 text-[#346246]">De link naar {title} staat nu op je klembord.</p> : null}
-        {copyStatus === "error" ? <p role="status" className="px-3 pb-2 pt-1 text-xs leading-5 text-[#994126]">Kopiëren lukt niet automatisch. Kopieer de link uit je adresbalk.</p> : null}
+        {copyStatus === "success" ? <p role="status" className="px-3 pb-2 pt-1 text-xs leading-5 text-[#346246]">{t("share.success", { title })}</p> : null}
+        {copyStatus === "error" ? <p role="status" className="px-3 pb-2 pt-1 text-xs leading-5 text-[#994126]">{t("share.error")}</p> : null}
       </div>,
       document.body,
     ) : null}

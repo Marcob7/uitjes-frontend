@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { DialogShell, IconButton } from "@/components/ui";
 
 export const FESTIVAL_GENRES = [
   { value: "all", label: "Alle genres" },
@@ -65,11 +67,13 @@ export default function FestivalGenreFilters({
   activeGenre,
   onChange,
 }: FestivalGenreFiltersProps) {
+  const { t } = useLocale();
   const dialogId = useId();
   const [filterOpen, setFilterOpen] = useState(false);
   const [draftGenre, setDraftGenre] =
     useState<FestivalGenreFilter>(activeGenre);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const activeFilterCount = activeGenre === DEFAULT_FESTIVAL_GENRE ? 0 : 1;
   const activeGenreLabel = getGenreLabel(activeGenre);
 
@@ -82,12 +86,37 @@ export default function FestivalGenreFilters({
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeFilters();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = Array.from(
+        modalRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ) ?? []
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+
+      if (!firstElement || !lastElement) {
+        event.preventDefault();
+        modalRef.current?.focus();
+      } else if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     }
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKeyDown);
+    window.setTimeout(() => {
+      modalRef.current?.querySelector<HTMLElement>("button, input")?.focus();
+    }, 0);
 
     return () => {
       document.body.style.overflow = previousOverflow;
@@ -123,7 +152,7 @@ export default function FestivalGenreFilters({
       >
         <FilterIcon />
         <span>
-          Filters
+          {t("festival.filters")}
           {activeFilterCount > 0 ? (
             <span className="hidden sm:inline"> · {activeGenreLabel}</span>
           ) : null}
@@ -131,7 +160,7 @@ export default function FestivalGenreFilters({
         {activeFilterCount > 0 ? (
           <span
             className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#e8f2d0] px-1.5 text-[11px] font-bold text-[#324d17]"
-            aria-label="1 actief filter"
+            aria-label={t("festival.activeFilter")}
           >
             {activeFilterCount}
           </span>
@@ -142,15 +171,14 @@ export default function FestivalGenreFilters({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <button
             type="button"
-            aria-label="Filtervenster sluiten"
+            aria-label={t("festival.closeFilters")}
             className="absolute inset-0 bg-[#171511]/48 backdrop-blur-sm"
             onClick={closeFilters}
           />
-          <div
+          <DialogShell
             id={dialogId}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={`${dialogId}-title`}
+            ref={modalRef}
+            labelledBy={`${dialogId}-title`}
             className="relative z-10 max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-[1.55rem] border border-[#efe4d4] bg-[#fffaf3] p-4 text-[#171511] shadow-[0_26px_80px_rgba(23,21,17,0.24)] sm:p-5"
           >
             <div className="flex items-center justify-between gap-4">
@@ -158,19 +186,19 @@ export default function FestivalGenreFilters({
                 id={`${dialogId}-title`}
                 className="text-lg font-semibold tracking-[-0.03em]"
               >
-                Filters
+                {t("festival.filters")}
               </h2>
-              <button
-                type="button"
+              <IconButton
                 onClick={closeFilters}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ded4c7] bg-white text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
-                aria-label="Filters sluiten"
+                size="sm"
+                className="h-10 w-10 rounded-full border border-[#ded4c7] bg-white text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline-[#9cc84e]"
+                aria-label={t("festival.closeFilters")}
               >
                 <CloseIcon />
-              </button>
+              </IconButton>
             </div>
 
-            <div className="mt-4 grid gap-2" role="radiogroup" aria-label="Genre">
+            <div className="mt-4 grid gap-2" role="radiogroup" aria-label={t("festival.genre")}>
               {FESTIVAL_GENRES.map((genre) => {
                 const active = draftGenre === genre.value;
 
@@ -203,17 +231,17 @@ export default function FestivalGenreFilters({
                 onClick={applyFilters}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#171511] px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(23,21,17,0.18)] transition hover:bg-[#2b271f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
               >
-                Toepassen
+                {t("festival.apply")}
               </button>
               <button
                 type="button"
                 onClick={clearFilters}
                 className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#d7cfbf] bg-white px-5 text-sm font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9cc84e]"
               >
-                Wissen
+                {t("festival.clear")}
               </button>
             </div>
-          </div>
+          </DialogShell>
         </div>
       ) : null}
     </>

@@ -1,26 +1,20 @@
 import { NewsLetterSection } from "@/components/NewsLetterSection";
 import { JaarkalenderInteractiveCalendar } from "./JaarkalenderFilterControls";
-import { JaarkalenderScrollButton } from "./JaarkalenderScrollButton";
+import { JaarkalenderHeroCopy } from "./JaarkalenderHeroCopy";
+import { getRequestLocale } from "@/lib/i18n/request";
+import { translate } from "@/lib/i18n/messages";
+import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
 
 const CALENDAR_HERO_VIDEO =
   "/videos/year-round-adventure-calendar-hero.mp4";
 const CALENDAR_HERO_POSTER =
   "/videos/year-round-adventure-calendar-hero-poster.jpg";
 
-export const metadata = {
-  title: "Evenementenkalender Nederland | Uitjes",
-  description:
-    "Bekijk per dag welke festivals, culturele hoogtepunten en evenementen er in Nederland op de agenda staan.",
-  alternates: {
-    canonical: "/jaarkalender",
-  },
-  openGraph: {
-    title: "Evenementenkalender Nederland | Uitjes",
-    description:
-      "Bekijk per dag welke festivals, culturele hoogtepunten en evenementen er in Nederland op de agenda staan.",
-    url: "/jaarkalender",
-  },
-};
+export function generateMetadata() {
+  const locale = getRequestLocale(); const pathname = "/jaarkalender";
+  const title = translate(locale, "yearCalendar.metaTitle"); const description = translate(locale, "yearCalendar.metaDescription");
+  return { title, description, alternates: getLocaleAlternates(pathname, locale), openGraph: { title, description, ...getLocaleOpenGraph(locale, pathname) } };
+}
 
 // The calendar's initial state comes from the query string, so render this
 // route per request instead of serving a default-month shell first.
@@ -73,34 +67,7 @@ export default function JaarkalenderPage({ searchParams }: JaarkalenderPageProps
         />
 
         <div className="site-header-content-safe mx-auto grid w-full max-w-[1280px] gap-8 px-5 pb-16 sm:px-7 sm:pb-20 lg:grid-cols-[minmax(0,1.32fr)_minmax(18rem,0.68fr)] lg:items-end lg:gap-16 lg:px-8 lg:pb-20 lg:pt-32">
-          <div>
-         
-            <h1
-              id="jaarkalender-hero-title"
-              style={{ maxInlineSize: "none" }}
-              className="mt-5 max-w-[11.5ch] text-[clamp(3.35rem,7.2vw,6.75rem)] font-medium leading-[0.9] tracking-[-0.064em] text-[#f5f5ef] [text-shadow:0_4px_28px_rgba(0,0,0,0.22)]"
-            >
-              Er is altijd iets om naar uit te kijken.
-            </h1>
-          </div>
-
-          <div className="max-w-[32rem] pb-1 lg:justify-self-end">
-            <p className="text-[15px] leading-7 text-white/78 sm:text-base sm:leading-7">
-              Van festivals en stadsfeesten tot markten en bijzondere
-              weekenden. Ontdek wat er deze maand in Nederland gebeurt.
-            </p>
-            <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <JaarkalenderScrollButton
-                targetId="jaarkalender-kalender"
-                label="Bekijk deze maand"
-              />
-              <JaarkalenderScrollButton
-                targetId="jaarkalender-overzicht"
-                label="Bekijk het hele jaar"
-                variant="secondary"
-              />
-            </div>
-          </div>
+          <JaarkalenderHeroCopy />
         </div>
       </section>
 

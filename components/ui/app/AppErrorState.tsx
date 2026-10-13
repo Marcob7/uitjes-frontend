@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { AppButton } from "./AppButton";
 
 export type AppErrorStateProps = {
-  title?: string;
+  title: string;
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
@@ -13,8 +13,8 @@ export type AppErrorStateProps = {
 };
 
 export function AppErrorState({
-  title = "Er ging iets mis",
-  description = "Probeer het opnieuw of kom later terug.",
+  title,
+  description,
   actionLabel,
   onAction,
   className,

@@ -10,22 +10,17 @@ import {
 } from "react";
 
 import {
-  faqCategories,
-  faqItems,
+  getFaqContent,
   type FaqCategoryIcon,
   type FaqCategorySlug,
 } from "@/lib/faq";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type ActiveCategory = "alle" | FaqCategorySlug;
 
-const tabOptions: Array<{ slug: ActiveCategory; label: string }> = [
-  { slug: "alle", label: "Alle vragen" },
-  ...faqCategories.map(({ slug, label }) => ({ slug, label })),
-];
-
-function normalizeText(value: string) {
+function normalizeText(value: string, locale: string) {
   return value
-    .toLocaleLowerCase("nl-NL")
+    .toLocaleLowerCase(locale)
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 }
@@ -165,6 +160,15 @@ function PlusIcon({ open }: { open: boolean }) {
 }
 
 export default function FaqPageClient() {
+  const { locale, t } = useLocale();
+  const { categories: faqCategories, items: faqItems } = useMemo(
+    () => getFaqContent(locale),
+    [locale],
+  );
+  const tabOptions = useMemo(
+    () => [{ slug: "alle" as const, label: t("faq.allQuestions") }, ...faqCategories.map(({ slug, label }) => ({ slug, label }))],
+    [faqCategories, t],
+  );
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ActiveCategory>("alle");
   const [openQuestionId, setOpenQuestionId] = useState<string | null>(null);
@@ -172,17 +176,17 @@ export default function FaqPageClient() {
   const faqSectionRef = useRef<HTMLElement>(null);
 
   const filteredItems = useMemo(() => {
-    const normalizedQuery = normalizeText(query.trim());
+    const normalizedQuery = normalizeText(query.trim(), locale);
 
     return faqItems.filter((item) => {
       const matchesCategory =
         activeCategory === "alle" || item.category === activeCategory;
-      const searchableText = normalizeText(`${item.question} ${item.answer}`);
+      const searchableText = normalizeText(`${item.question} ${item.answer}`, locale);
       const matchesQuery = !normalizedQuery || searchableText.includes(normalizedQuery);
 
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, faqItems, locale, query]);
 
   useEffect(() => {
     if (
@@ -239,7 +243,7 @@ export default function FaqPageClient() {
     setOpenQuestionId(null);
   }
 
-  const resultLabel = filteredItems.length === 1 ? "antwoord" : "antwoorden";
+  const resultLabel = filteredItems.length === 1 ? t("faq.answer") : t("faq.answers");
 
   return (
     <main className="overflow-hidden bg-[#f7f5ec] text-[#202d29]">
@@ -258,11 +262,10 @@ export default function FaqPageClient() {
         <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
      
           <h1 className="mx-auto max-w-[12ch] text-[clamp(3rem,8vw,6rem)] font-semibold leading-[0.92] tracking-[-0.065em] text-[#202d29]">
-            Waar kunnen we je mee <span className="text-[#1d5a46] italic">helpen?</span>
+            {t("faq.heroTitle")} <span className="text-[#1d5a46] italic">{t("faq.heroEmphasis")}</span>
           </h1>
           <p className="mt-6 max-w-[39rem] text-sm leading-7 text-[#65736c] sm:text-base sm:leading-8">
-            Vind snel het juiste antwoord over ontdekken, plannen en bewaren in
-            UitjesNL.
+            {t("faq.heroIntro")}
           </p>
 
           <form
@@ -276,14 +279,14 @@ export default function FaqPageClient() {
             <div className="flex min-h-12 min-w-0 flex-1 items-center gap-3 rounded-full px-3 sm:px-4">
               <SearchIcon className="h-5 w-5 shrink-0 text-[#557d5d]" />
               <label htmlFor="faq-search" className="sr-only">
-                Zoek in vragen en antwoorden
+                {t("faq.searchLabel")}
               </label>
               <input
                 id="faq-search"
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Zoek in vragen en antwoorden"
+                placeholder={t("faq.searchPlaceholder")}
                 autoComplete="off"
                 className="min-w-0 flex-1 bg-transparent text-base text-[#202d29] outline-none placeholder:text-[#8b958e]"
               />
@@ -291,7 +294,7 @@ export default function FaqPageClient() {
                 <button
                   type="button"
                   onClick={clearSearch}
-                  aria-label="Zoekopdracht wissen"
+                  aria-label={t("faq.clearSearch")}
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl text-[#637169] transition hover:bg-[#f1f5ec] hover:text-[#202d29] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc]"
                 >
                   <span aria-hidden="true">×</span>
@@ -302,12 +305,12 @@ export default function FaqPageClient() {
               type="submit"
               className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#1d5a46] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(29,90,70,0.2)] transition hover:bg-[#164c3b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2 sm:w-auto sm:px-8"
             >
-              Zoek
+              {t("common.search")}
               <ArrowUpRightIcon />
             </button>
           </form>
           <p className="mt-4 text-xs font-medium text-[#718078]">
-            Zoek op onderwerp, vraag of woord uit een antwoord.
+            {t("faq.searchHint")}
           </p>
         </div>
       </section>
@@ -321,12 +324,11 @@ export default function FaqPageClient() {
             <div>
       
               <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
-                Waar gaat je vraag over?
+                {t("faq.categoryTitle")}
               </h2>
             </div>
             <p className="max-w-[28rem] text-sm leading-7 text-[#65736c] sm:text-right">
-              Kies een onderwerp om meteen de bijbehorende antwoorden te zien.
-              Je kunt daarna altijd verder zoeken.
+              {t("faq.categoryIntro")}
             </p>
           </div>
 
@@ -382,7 +384,7 @@ export default function FaqPageClient() {
             <div>
             
               <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
-                Antwoorden zonder omwegen.
+                {t("faq.answersTitle")}
               </h2>
             </div>
             <p
@@ -395,7 +397,7 @@ export default function FaqPageClient() {
 
           <div
             role="tablist"
-            aria-label="Filter FAQ op categorie"
+            aria-label={t("faq.filterCategories")}
             className="mt-9 flex max-w-full gap-2 overflow-x-auto rounded-[1.35rem] bg-[#f1f4ec] p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {tabOptions.map((tab, index) => {
@@ -479,10 +481,10 @@ export default function FaqPageClient() {
                   <SearchIcon className="h-5 w-5" />
                 </span>
                 <h3 className="mx-auto mt-5 max-w-[18ch] text-2xl font-semibold tracking-[-0.04em] text-[#202d29]">
-                  Geen antwoord gevonden
+                  {t("faq.emptyTitle")}
                 </h3>
                 <p className="mx-auto mt-3 max-w-[32rem] text-sm leading-7 text-[#65736c] sm:text-base">
-                  Probeer een andere zoekterm of neem contact met ons op.
+                  {t("faq.emptyIntro")}
                 </p>
                 <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
                   <button
@@ -490,13 +492,13 @@ export default function FaqPageClient() {
                     onClick={clearSearch}
                     className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cbd9c0] bg-white px-5 text-sm font-bold text-[#1d5a46] transition hover:bg-[#f1f7e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2"
                   >
-                    Wis zoekopdracht
+                    {t("faq.clearSearch")}
                   </button>
                   <Link
                     href="/contact"
                     className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#1d5a46] px-5 text-sm font-bold text-white transition hover:bg-[#164c3b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc] focus-visible:ring-offset-2"
                   >
-                    Neem contact op
+                    {t("faq.contact")}
                     <ArrowUpRightIcon />
                   </Link>
                 </div>
@@ -511,23 +513,23 @@ export default function FaqPageClient() {
           <div className="max-w-2xl">
           
             <h2 className="max-w-[15ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
-              We denken graag met je mee.
+              {t("faq.helpTitle")}
             </h2>
           </div>
 
           <div className="mt-9 grid gap-4 lg:grid-cols-2">
             <CtaCard
               dark
-              eyebrow="Vraag of probleem?"
-              description="Kom je ergens niet uit of klopt er iets niet? Stuur ons een bericht, dan kijken we met je mee."
+              eyebrow={t("faq.contactEyebrow")}
+              description={t("faq.contactDescription")}
               href="/contact"
-              label="Neem contact op"
+              label={t("faq.contact")}
             />
             <CtaCard
-              eyebrow="Idee of feedback?"
-              description="Heb je een suggestie voor UitjesNL? Deel je idee en help ons de app steeds beter te maken."
+              eyebrow={t("faq.feedbackEyebrow")}
+              description={t("faq.feedbackDescription")}
               href="/feedback"
-              label="Geef feedback"
+              label={t("faq.feedback")}
             />
           </div>
         </div>

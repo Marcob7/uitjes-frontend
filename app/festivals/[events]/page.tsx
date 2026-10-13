@@ -6,6 +6,8 @@ import CalendarActions from "@/components/calendar/CalendarActions";
 import ShareAction from "@/components/ShareAction";
 import { buildTicketSearchHref } from "@/lib/actionLinks";
 import { optimizeCssBackground } from "@/lib/remoteImage";
+import { getRequestLocale } from "@/lib/i18n/request";
+import { translate } from "@/lib/i18n/messages";
 import { formatFestivalDate, generateFestivalStaticParams, getDiscoverMoreFestivals, getFestivalBySlug, getFestivalDetailHref, type FestivalDetail } from "../data";
 
 type PageProps = { params: { events: string } };
@@ -13,18 +15,19 @@ type PageProps = { params: { events: string } };
 export const dynamicParams = false;
 export function generateStaticParams() { return generateFestivalStaticParams(); }
 export function generateMetadata({ params }: PageProps): Metadata {
+  const locale = getRequestLocale();
   const festival = getFestivalBySlug(params.events);
-  if (!festival) return { title: "Festival niet gevonden | Uitjes" };
+  if (!festival) return { title: translate(locale, "festival.notFound") };
 
   const canonical = `/festivals/${encodeURIComponent(params.events)}`;
-  const description = `${festival.name} vindt plaats op ${festival.dateLabel} in ${festival.locationLabel}. Bekijk programma, praktische informatie en tickets.`;
+  const description = translate(locale, "festival.metaDescription", { title: festival.name, date: formatFestivalDate(festival.startDate, locale), location: festival.locationLabel });
 
   return {
-    title: `${festival.name} – programma, locatie & tickets | Uitjes`,
+    title: translate(locale, "festival.metaTitle", { title: festival.name }),
     description,
     alternates: { canonical },
     openGraph: {
-      title: `${festival.name} – programma, locatie & tickets | Uitjes`,
+      title: translate(locale, "festival.metaTitle", { title: festival.name }),
       description,
       url: canonical,
       type: "website",

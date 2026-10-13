@@ -167,3 +167,38 @@ export const faqItems: FaqItem[] = [
       "Je kunt feedback geven via de feedbackpagina of contact opnemen via de contactpagina als die voor jouw route beschikbaar is. Een korte tip met de link of naam van het uitje is vaak al genoeg.",
   },
 ];
+
+const englishFaqCategories: FaqCategory[] = [
+  { slug: "ontdekken", label: "Discover", description: "How to find an outing that suits your city and plans.", icon: "compass" },
+  { slug: "inspiratie", label: "Inspiration", description: "Help choosing when you do not know exactly what you want yet.", icon: "sparkles" },
+  { slug: "agenda-festivals", label: "Calendar & festivals", description: "Everything about planning, the calendar and ticket information.", icon: "calendar" },
+  { slug: "favorieten", label: "Saved items", description: "Save places and plans to find again later.", icon: "bookmark" },
+  { slug: "account", label: "Account", description: "Signing in and managing your personal preferences.", icon: "user" },
+  { slug: "over-uitjesnl", label: "About UitjesNL", description: "Sources, accuracy, reliability and contact.", icon: "info" },
+];
+
+const englishFaqItems: FaqItem[] = [
+  { id: "wat-is-uitjesnl", category: "over-uitjesnl", question: "What is UitjesNL?", answer: "UitjesNL is a web app for discovering fun outings, activities, events, festivals and places to eat or drink in the Netherlands. It helps you choose based on city, timing, atmosphere and interests." },
+  { id: "hoe-werkt-zoeken", category: "ontdekken", question: "How does search work?", answer: "You can search for an activity, event, category or city. When your search matches a city, we direct you to that city’s discovery page where possible. Otherwise, we show general results that match your query." },
+  { id: "hoe-kies-ik-een-stad", category: "ontdekken", question: "How do I choose a city?", answer: "On discovery pages, choose a city using the city selector or a search query. You will then see outings and places for that city. The amount of information can vary by city and available sources." },
+  { id: "wat-is-ontdek", category: "ontdekken", question: "What is /ontdek?", answer: "/ontdek is where you can browse outings, events, restaurants and other locations by city. You can filter, search and open details when they are available." },
+  { id: "wat-is-inspiratie", category: "inspiratie", question: "What is /inspiratie?", answer: "/inspiratie helps you choose when you are not sure what to do yet. Answer a few short questions and UitjesNL suggests fitting ideas and routes to relevant content." },
+  { id: "wat-is-de-jaarkalender", category: "agenda-festivals", question: "What is the year calendar?", answer: "The year calendar brings together larger events, festivals and cultural highlights throughout the year. It is a calm starting point for planning by date, season or period." },
+  { id: "hoe-werken-favorieten", category: "favorieten", question: "How do saved items work?", answer: "For many outings, you can save an item. This creates your own list of places and plans you would like to find again later." },
+  { id: "moet-ik-inloggen", category: "account", question: "Do I need to sign in to save something?", answer: "The app can remember saved items locally for a while. Signing in may be needed when you want to keep them more reliably and view them at another time or on another device." },
+  { id: "hoe-werkt-de-nieuwsbrief", category: "agenda-festivals", question: "How does the newsletter work?", answer: "Newsletter sign-ups can provide updates about festivals or new outings. Where possible, you choose your own preferences. Newsletters are sent only when relevant content and a valid subscription are available." },
+  { id: "kan-ik-tickets-kopen", category: "agenda-festivals", question: "Can I buy tickets through UitjesNL?", answer: "UitjesNL is primarily for discovering and planning. When ticket information or a source link is available, we refer you to the provider or organiser. Purchases and terms are handled by that external party." },
+  { id: "waar-komen-uitjes-vandaan", category: "over-uitjesnl", question: "Where do outings and events come from?", answer: "Information can come from public sources, supplied data, editorial additions and details from organisers or venues. The source can differ per outing." },
+  { id: "hoe-actueel-is-de-informatie", category: "over-uitjesnl", question: "How current and reliable is the information?", answer: "We aim to present information clearly and usefully, but data can change and depends on available sources. For important plans, always check the organiser’s or venue’s website for the latest details." },
+  { id: "wat-als-informatie-niet-klopt", category: "over-uitjesnl", question: "What if information is incorrect?", answer: "If you see an error, expired date, incorrect price or missing information, let us know through the available feedback or contact options. We can then review the report and update information where needed." },
+  { id: "contact-of-feedback", category: "over-uitjesnl", question: "How can I contact you or give feedback?", answer: "You can give feedback via the feedback page or contact us through the contact page when it is available for your route. A short tip with a link or the name of the outing is often enough." },
+];
+
+const faqContentByLocale = {
+  nl: { categories: faqCategories, items: faqItems },
+  en: { categories: englishFaqCategories, items: englishFaqItems },
+} as const;
+
+export function getFaqContent(locale: "nl" | "en") {
+  return faqContentByLocale[locale];
+}

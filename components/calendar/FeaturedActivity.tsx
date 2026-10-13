@@ -4,6 +4,7 @@ import type { TimelineCard, TimelineSlot } from "@/app/jaarkalender/data";
 import { getJaarkalenderEventHrefForCard } from "@/app/jaarkalender/data";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
+import { SectionHeader } from "@/components/ui";
 
 type FeaturedActivityProps = {
   daySlug: string;
@@ -46,19 +47,16 @@ export default function FeaturedActivity({
 
   return (
     <section aria-labelledby="featured-activity-title">
-      <div className="mx-auto max-w-[42rem] text-center">
-      
-        <h2
-          id="featured-activity-title"
-          style={{ fontFamily: "var(--font-body)" }}
-          className="mt-4 max-w-none text-[clamp(2rem,4vw,3.05rem)] font-semibold leading-[0.98] tracking-[-0.06em] text-[#181612]"
-        >
-          Uitgelicht op deze dag
-        </h2>
-        <p className="mt-3 text-[15px] leading-6 text-[#71665a]">
-          Een activiteit die vandaag direct de moeite waard is.
-        </p>
-      </div>
+      <SectionHeader
+        id="featured-activity-title"
+        align="center"
+        title="Uitgelicht op deze dag"
+        description="Een activiteit die vandaag direct de moeite waard is."
+        className="mx-auto max-w-[42rem]"
+        titleStyle={{ fontFamily: "var(--font-body)" }}
+        titleClassName="mt-4 max-w-none text-[clamp(2rem,4vw,3.05rem)] font-semibold leading-[0.98] tracking-[-0.06em] text-[#181612]"
+        descriptionClassName="mt-3 text-[15px] leading-6 text-[#71665a]"
+      />
 
       <Link
         href={href}

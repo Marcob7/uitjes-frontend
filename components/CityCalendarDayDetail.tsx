@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { ActionGroup, IconButton } from "@/components/ui";
 
 type DayDetailEvent = {
   id: number;
@@ -153,7 +154,7 @@ function TopBar({
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <ActionGroup className="gap-3">
         {onBack ? (
           <button
             type="button"
@@ -164,22 +165,20 @@ function TopBar({
           </button>
         ) : null}
 
-        <button
-          type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#111111] transition hover:bg-black hover:text-white"
+        <IconButton
+          className="rounded-full border border-black/10 bg-white text-[#111111] transition hover:bg-black hover:text-white"
           aria-label="Vorige dag"
         >
           ‹
-        </button>
+        </IconButton>
 
-        <button
-          type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#111111] transition hover:bg-black hover:text-white"
+        <IconButton
+          className="rounded-full border border-black/10 bg-white text-[#111111] transition hover:bg-black hover:text-white"
           aria-label="Volgende dag"
         >
           ›
-        </button>
-      </div>
+        </IconButton>
+      </ActionGroup>
     </div>
   );
 }
