@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import SavePlaceButton from "@/components/SavePlaceButton";
 import SearchRetryButton from "@/components/search/SearchRetryButton";
@@ -10,29 +9,19 @@ import ResultCard from "@/components/ui/ResultCard";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname, localeToIntl } from "@/lib/i18n/config";
 import type { GeneralSearchResult } from "@/lib/search/searchResults";
-import { normalizeSearchQuery } from "@/lib/searchIntent";
+import {
+  type SearchResultsFilterKey,
+  type SearchResultsFilterState,
+  type SearchResultsSortOption,
+  useSearchResultsUrlState,
+} from "./useSearchResultsUrlState";
 
-type SortOption = "match" | "rating" | "price" | "recent";
-type FilterKey = "city" | "when" | "category" | "free" | "rating";
-
-type FilterState = {
-  city: string;
-  when: string;
-  category: string;
-  free: boolean;
-  rating: string;
-};
 
 type SearchResultsExperienceProps = {
   query: string;
   results: GeneralSearchResult[];
   error?: boolean;
   partial?: boolean;
-};
-
-type SearchParamsLike = {
-  get: (name: string) => string | null;
-  toString: () => string;
 };
 
 const CATEGORY_OPTIONS = [
@@ -55,21 +44,6 @@ function normalize(value: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-function readFilters(params: SearchParamsLike): FilterState {
-  return {
-    city: params.get("city") ?? "",
-    when: params.get("when") ?? "",
-    category: params.get("category") ?? "",
-    free: params.get("free") === "1",
-    rating: params.get("rating") ?? "",
-  };
-}
-
-function getSort(params: SearchParamsLike): SortOption {
-  const value = params.get("sort");
-  return value === "rating" || value === "price" || value === "recent" ? value : "match";
-}
-
 function resultSearchText(result: GeneralSearchResult) {
   return normalize(
     [
@@ -88,7 +62,10 @@ function resultSearchText(result: GeneralSearchResult) {
   );
 }
 
-function matchesFilterState(result: GeneralSearchResult, filters: FilterState) {
+function matchesFilterState(
+  result: GeneralSearchResult,
+  filters: SearchResultsFilterState
+) {
   const text = resultSearchText(result);
   if (filters.city && result.citySlug !== filters.city) return false;
   if (filters.free && !result.isFree && !text.includes("gratis")) return false;
@@ -208,19 +185,22 @@ function FilterOption({
 
 export default function SearchResultsExperience({ query, results, error = false, partial = false }: SearchResultsExperienceProps) {
   const { locale, t } = useLocale();
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [draftFilters, setDraftFilters] = useState<FilterState>(() => readFilters(searchParams));
+  const {
+    activeQuery,
+    filterSignature,
+    filters,
+    isPending,
+    sort,
+    updateUrl,
+  } = useSearchResultsUrlState(locale);
+  const [draftFilters, setDraftFilters] = useState<SearchResultsFilterState>(
+    () => filters
+  );
   const [visibleCount, setVisibleCount] = useState(12);
-  const [isPending, startTransition] = useTransition();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const filterButtonRef = useRef<HTMLButtonElement>(null);
-  const filterSignature = searchParams.toString();
-  const activeQuery = normalizeSearchQuery(searchParams.get("query") ?? searchParams.get("q"));
   const resultsMatchActiveQuery = activeQuery === query;
-  const filters = readFilters(searchParams);
-  const sort = getSort(searchParams);
   const categoryOptions = CATEGORY_OPTIONS.map((option) => ({
     ...option,
     label: getCategoryLabel(option.value, t),
@@ -244,7 +224,7 @@ export default function SearchResultsExperience({ query, results, error = false,
   }, [locale, results]);
 
   const activeFilters = useMemo(() => {
-    const active: Array<{ key: FilterKey; label: string }> = [];
+    const active: Array<{ key: SearchResultsFilterKey; label: string }> = [];
     if (filters.city) active.push({ key: "city", label: getCityLabel(filters.city, results) });
     if (filters.when) active.push({ key: "when", label: getWhenLabel(filters.when, t) });
     if (filters.category) active.push({ key: "category", label: getCategoryLabel(filters.category, t) });
@@ -308,30 +288,7 @@ export default function SearchResultsExperience({ query, results, error = false,
     setVisibleCount(12);
   }, [filterSignature, sort]);
 
-  function updateUrl(nextFilters: Partial<FilterState>, nextSort?: SortOption) {
-    const next = new URLSearchParams(searchParams.toString());
-    const merged = { ...filters, ...nextFilters };
-
-    if (merged.city) next.set("city", merged.city);
-    else next.delete("city");
-    if (merged.when) next.set("when", merged.when);
-    else next.delete("when");
-    if (merged.category) next.set("category", merged.category);
-    else next.delete("category");
-    if (merged.free) next.set("free", "1");
-    else next.delete("free");
-    if (merged.rating) next.set("rating", merged.rating);
-    else next.delete("rating");
-
-    if (nextSort && nextSort !== "match") next.set("sort", nextSort);
-    else if (nextSort === "match") next.delete("sort");
-
-    const queryString = next.toString();
-    const searchPath = localePathname("/zoeken", locale);
-    startTransition(() => router.replace(queryString ? `${searchPath}?${queryString}` : searchPath, { scroll: false }));
-  }
-
-  function removeFilter(key: FilterKey) {
+  function removeFilter(key: SearchResultsFilterKey) {
     updateUrl(key === "free" ? { free: false } : { [key]: "" });
   }
 
@@ -385,7 +342,9 @@ export default function SearchResultsExperience({ query, results, error = false,
             <span className="relative">
               <select
                 value={sort}
-                onChange={(event) => updateUrl({}, event.target.value as SortOption)}
+                onChange={(event) =>
+                  updateUrl({}, event.target.value as SearchResultsSortOption)
+                }
                 className="min-h-11 min-w-[10.5rem] appearance-none rounded-full border border-[#d4ddd5] bg-white py-2 pl-4 pr-10 text-sm font-semibold text-[#31483a] outline-none transition hover:border-[#9eb9a5] focus-visible:ring-2 focus-visible:ring-[#005fcc]"
                 aria-label={t("search.sort")}
               >

@@ -3,38 +3,31 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { DialogShell, IconButton } from "@/components/ui";
+import {
+  DEFAULT_FESTIVAL_GENRE,
+  FESTIVAL_GENRES,
+  getFestivalGenreDefinition,
+  type FestivalGenreFilter,
+} from "./festivalFilterConfig";
 
-export const FESTIVAL_GENRES = [
-  { value: "all", label: "Alle genres" },
-  { value: "techno", label: "Techno" },
-  { value: "jazz", label: "Jazz" },
-  { value: "culinair", label: "Culinair" },
-  { value: "kunst", label: "Kunst" },
-] as const;
-
-export type FestivalGenreFilter = (typeof FESTIVAL_GENRES)[number]["value"];
-
-export const DEFAULT_FESTIVAL_GENRE: FestivalGenreFilter = "all";
+export {
+  DEFAULT_FESTIVAL_GENRE,
+  FESTIVAL_GENRES,
+  type FestivalGenreFilter,
+} from "./festivalFilterConfig";
 
 type FestivalGenreFiltersProps = {
   activeGenre: FestivalGenreFilter;
   onChange: (genre: FestivalGenreFilter) => void;
 };
 
-function getGenreLabel(genreValue: FestivalGenreFilter) {
-  return (
-    FESTIVAL_GENRES.find((genre) => genre.value === genreValue)?.label ??
-    "Alle genres"
-  );
-}
-
 export function matchesFestivalGenre(
   genres: readonly string[],
   activeGenre: FestivalGenreFilter
 ) {
-  if (activeGenre === DEFAULT_FESTIVAL_GENRE) return true;
+  const { eventGenre } = getFestivalGenreDefinition(activeGenre);
 
-  return genres.includes(getGenreLabel(activeGenre));
+  return eventGenre === null || genres.includes(eventGenre);
 }
 
 function FilterIcon() {
@@ -75,7 +68,7 @@ export default function FestivalGenreFilters({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const activeFilterCount = activeGenre === DEFAULT_FESTIVAL_GENRE ? 0 : 1;
-  const activeGenreLabel = getGenreLabel(activeGenre);
+  const activeGenreLabel = t(getFestivalGenreDefinition(activeGenre).labelKey);
 
   useEffect(() => {
     if (!filterOpen) {
@@ -211,7 +204,7 @@ export default function FestivalGenreFilters({
                         : "border-[#e6dfd3] bg-white text-[#3f362f] hover:border-[#d7cfbf] hover:bg-[#f8f5f3]"
                     }`}
                   >
-                    <span>{genre.label}</span>
+                    <span>{t(genre.labelKey)}</span>
                     <input
                       type="radio"
                       name="festival-genre"

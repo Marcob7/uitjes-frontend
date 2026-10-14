@@ -32,6 +32,33 @@ type FlowOption = {
   icon: (props: { className?: string }) => ReactElement;
 };
 
+type DiscoverChoiceOptionDefinition = {
+  value: PlannerSelectionValue;
+  labelKey: string;
+  descriptionKey: string;
+  icon: FlowOption["icon"];
+};
+
+type DiscoverQuestionDefinition =
+  | {
+      id: "companion";
+      titleKey: string;
+      descriptionKey: string;
+      options: ReadonlyArray<DiscoverChoiceOptionDefinition & { value: PlannerCompanion }>;
+    }
+  | {
+      id: "moment";
+      titleKey: string;
+      descriptionKey: string;
+      options: ReadonlyArray<DiscoverChoiceOptionDefinition & { value: PlannerMoment }>;
+    }
+  | {
+      id: "vibe";
+      titleKey: string;
+      descriptionKey: string;
+      options: ReadonlyArray<DiscoverChoiceOptionDefinition & { value: PlannerVibe }>;
+    };
+
 type QuestionFlowStep = FullscreenChoiceFlowStep & {
   type: "question";
   id: PlannerSelectionKey;
@@ -54,45 +81,59 @@ type DiscoverFlowProps = {
   onViewAllResults: () => void;
 };
 
-function getFlowSteps(t: (key: string, values?: Record<string, string | number>) => string): FlowStep[] {
-  return [
+const DISCOVER_QUESTION_DEFINITIONS = [
   {
-    type: "question",
     id: "companion",
-    title: t("discover.companionTitle"),
-    description: t("discover.companionDescription"),
+    titleKey: "discover.companionTitle",
+    descriptionKey: "discover.companionDescription",
     options: [
-      { value: "solo" satisfies PlannerCompanion, label: t("discover.solo"), description: t("discover.soloDescription"), icon: SoloIcon },
-      { value: "date" satisfies PlannerCompanion, label: t("discover.date"), description: t("discover.dateDescription"), icon: HeartIcon },
-      { value: "gezin" satisfies PlannerCompanion, label: t("discover.family"), description: t("discover.familyDescription"), icon: FamilyIcon },
-      { value: "vrienden" satisfies PlannerCompanion, label: t("discover.friends"), description: t("discover.friendsDescription"), icon: FriendsIcon },
+      { value: "solo", labelKey: "discover.solo", descriptionKey: "discover.soloDescription", icon: SoloIcon },
+      { value: "date", labelKey: "discover.date", descriptionKey: "discover.dateDescription", icon: HeartIcon },
+      { value: "gezin", labelKey: "discover.family", descriptionKey: "discover.familyDescription", icon: FamilyIcon },
+      { value: "vrienden", labelKey: "discover.friends", descriptionKey: "discover.friendsDescription", icon: FriendsIcon },
     ],
   },
   {
-    type: "question",
     id: "moment",
-    title: t("discover.momentTitle"),
-    description: t("discover.momentDescription"),
+    titleKey: "discover.momentTitle",
+    descriptionKey: "discover.momentDescription",
     options: [
-      { value: "nu" satisfies PlannerMoment, label: t("discover.now"), description: t("discover.nowDescription"), icon: LightningIcon },
-      { value: "vanavond" satisfies PlannerMoment, label: t("discover.tonight"), description: t("discover.tonightDescription"), icon: MoonIcon },
-      { value: "morgen" satisfies PlannerMoment, label: t("discover.later"), description: t("discover.laterDescription"), icon: SunIcon },
-      { value: "weekend" satisfies PlannerMoment, label: t("discover.weekend"), description: t("discover.weekendDescription"), icon: CalendarIcon },
+      { value: "nu", labelKey: "discover.now", descriptionKey: "discover.nowDescription", icon: LightningIcon },
+      { value: "vanavond", labelKey: "discover.tonight", descriptionKey: "discover.tonightDescription", icon: MoonIcon },
+      { value: "morgen", labelKey: "discover.later", descriptionKey: "discover.laterDescription", icon: SunIcon },
+      { value: "weekend", labelKey: "discover.weekend", descriptionKey: "discover.weekendDescription", icon: CalendarIcon },
     ],
   },
   {
-    type: "question",
     id: "vibe",
-    title: t("discover.vibeTitle"),
-    description: t("discover.vibeDescription"),
+    titleKey: "discover.vibeTitle",
+    descriptionKey: "discover.vibeDescription",
     options: [
-      { value: "cultureel" satisfies PlannerVibe, label: t("discover.culture"), description: t("discover.cultureDescription"), icon: SparkIcon },
-      { value: "actief" satisfies PlannerVibe, label: t("discover.active"), description: t("discover.activeDescription"), icon: RouteIcon },
-      { value: "eten-drinken" satisfies PlannerVibe, label: t("discover.foodDrink"), description: t("discover.foodDrinkDescription"), icon: ForkKnifeIcon },
-      { value: "relaxed" satisfies PlannerVibe, label: t("discover.relaxed"), description: t("discover.relaxedDescription"), icon: LeafIcon },
+      { value: "cultureel", labelKey: "discover.culture", descriptionKey: "discover.cultureDescription", icon: SparkIcon },
+      { value: "actief", labelKey: "discover.active", descriptionKey: "discover.activeDescription", icon: RouteIcon },
+      { value: "eten-drinken", labelKey: "discover.foodDrink", descriptionKey: "discover.foodDrinkDescription", icon: ForkKnifeIcon },
+      { value: "relaxed", labelKey: "discover.relaxed", descriptionKey: "discover.relaxedDescription", icon: LeafIcon },
     ],
   },
-  { type: "results", id: "results" },
+] as const satisfies ReadonlyArray<DiscoverQuestionDefinition>;
+
+function getFlowSteps(
+  t: (key: string, values?: Record<string, string | number>) => string
+): FlowStep[] {
+  return [
+    ...DISCOVER_QUESTION_DEFINITIONS.map((definition) => ({
+      type: "question" as const,
+      id: definition.id,
+      title: t(definition.titleKey),
+      description: t(definition.descriptionKey),
+      options: definition.options.map(({ value, labelKey, descriptionKey, icon }) => ({
+        value,
+        label: t(labelKey),
+        description: t(descriptionKey),
+        icon,
+      })),
+    })),
+    { type: "results", id: "results" },
   ];
 }
 

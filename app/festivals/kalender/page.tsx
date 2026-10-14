@@ -11,148 +11,25 @@ import { NewsLetterSection } from "@/components/NewsLetterSection";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 import FestivalGenreFilters, {
   DEFAULT_FESTIVAL_GENRE,
-  FESTIVAL_GENRES,
   matchesFestivalGenre,
-  type FestivalGenreFilter,
 } from "../FestivalGenreFilters";
-import { getFestivalDetailHref } from "../data";
+import {
+  parseFestivalGenre,
+  type FestivalGenreFilter,
+} from "../festivalFilterConfig";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { formatDate } from "@/lib/i18n/format";
-
-type CalendarTone = "lime" | "pink" | "blue" | "amber" | "violet";
-
-type CalendarEvent = {
-  label: string;
-  tone: CalendarTone;
-  date: string;
-  genres: string[];
-  href?: string;
-};
-
-type CalendarCell = {
-  key: string;
-  dayNumber: string;
-  muted?: boolean;
-  events?: CalendarEvent[];
-};
-
-const weekdayLabels = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
-
-const MONTH_NAMES = [
-  "Januari",
-  "Februari",
-  "Maart",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Augustus",
-  "September",
-  "Oktober",
-  "November",
-  "December",
-];
-
-const FESTIVAL_CALENDAR_EVENTS: CalendarEvent[] = [
-  {
-    label: "North Sea Jazz",
-    tone: "lime",
-    date: "2024-07-01",
-    genres: ["Jazz"],
-    href: getFestivalDetailHref("north-sea-jazz"),
-  },
-  { label: "Vondelpark Openlucht", tone: "pink", date: "2024-07-03", genres: [] },
-  { label: "Down The Rabbit Hole", tone: "violet", date: "2024-07-05", genres: [] },
-  { label: "Gentle Giant Expo", tone: "blue", date: "2024-07-05", genres: ["Kunst"] },
-  { label: "Awakenings Summer", tone: "pink", date: "2024-07-06", genres: ["Techno"] },
-  { label: "Bospop Week", tone: "pink", date: "2024-07-06", genres: [] },
-  { label: "+4 more", tone: "lime", date: "2024-07-06", genres: [] },
-  { label: "Awakenings Final", tone: "pink", date: "2024-07-07", genres: ["Techno"] },
-  { label: "Gouden Carolus Food", tone: "amber", date: "2024-07-09", genres: ["Culinair"] },
-  {
-    label: "Dekmantel Festival",
-    tone: "pink",
-    date: "2024-07-12",
-    genres: ["Techno"],
-    href: getFestivalDetailHref("dekmantel-festival"),
-  },
-  { label: "Wildeburg Day 2", tone: "pink", date: "2024-07-13", genres: [] },
-  { label: "Theater aan Zee", tone: "violet", date: "2024-07-13", genres: ["Kunst"] },
-  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-16", genres: [] },
-  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-17", genres: [] },
-  { label: "Zwarte Cross", tone: "pink", date: "2024-07-18", genres: [] },
-  { label: "Vierdaagsefeesten", tone: "lime", date: "2024-07-18", genres: [] },
-  { label: "Zwarte Cross", tone: "pink", date: "2024-07-19", genres: [] },
-  { label: "Welcome to the Village", tone: "pink", date: "2024-07-19", genres: [] },
-  { label: "Zwarte Cross Final", tone: "pink", date: "2024-07-20", genres: [] },
-  { label: "+2 more", tone: "lime", date: "2024-07-20", genres: [] },
-];
-
-function formatDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function isSameMonth(date: Date, monthDate: Date) {
-  return (
-    date.getFullYear() === monthDate.getFullYear() &&
-    date.getMonth() === monthDate.getMonth()
-  );
-}
-
-function getMonthGrid(monthDate: Date) {
-  const year = monthDate.getFullYear();
-  const month = monthDate.getMonth();
-  const firstDayOfMonth = new Date(year, month, 1);
-  const lastDayOfMonth = new Date(year, month + 1, 0);
-  const startDay = (firstDayOfMonth.getDay() + 6) % 7;
-  const totalDays = lastDayOfMonth.getDate();
-  const dates: Date[] = [];
-
-  for (let index = startDay; index > 0; index -= 1) {
-    dates.push(new Date(year, month, 1 - index));
-  }
-
-  for (let day = 1; day <= totalDays; day += 1) {
-    dates.push(new Date(year, month, day));
-  }
-
-  while (dates.length % 7 !== 0) {
-    const nextDay = dates.length - (startDay + totalDays) + 1;
-    dates.push(new Date(year, month + 1, nextDay));
-  }
-
-  return dates;
-}
-
-function addMonths(date: Date, amount: number) {
-  return new Date(date.getFullYear(), date.getMonth() + amount, 1);
-}
-
-function buildCalendarCells(currentMonth: Date, events: CalendarEvent[]) {
-  const eventsByDate = new Map<string, CalendarEvent[]>();
-
-  for (const event of events) {
-    const dateEvents = eventsByDate.get(event.date) ?? [];
-    dateEvents.push(event);
-    eventsByDate.set(event.date, dateEvents);
-  }
-
-  return getMonthGrid(currentMonth).map<CalendarCell>((date) => {
-    const dateKey = formatDateKey(date);
-    const isCurrentMonth = isSameMonth(date, currentMonth);
-
-    return {
-      key: dateKey,
-      dayNumber: String(date.getDate()),
-      muted: !isCurrentMonth,
-      events: isCurrentMonth ? eventsByDate.get(dateKey) : undefined,
-    };
-  });
-}
+import {
+  FESTIVAL_CALENDAR_EVENTS,
+  FESTIVAL_CALENDAR_TONE_CLASSES,
+  FESTIVAL_CALENDAR_WEEKDAY_LABELS,
+  type FestivalCalendarEvent,
+} from "./festivalCalendarData";
+import {
+  addMonths,
+  buildFestivalCalendarCells,
+  matchesFestivalCalendarSearch,
+} from "./festivalCalendarUtils";
 
 function SearchIcon() {
   return (
@@ -208,31 +85,9 @@ function ArrowRightIcon() {
   );
 }
 
-function toneClass(tone: CalendarTone) {
-  if (tone === "lime") {
-    return "bg-[#e8f2d0] text-[#344c18]";
-  }
-
-  if (tone === "pink") {
-    return "bg-[#f7d8de] text-[#7a213a]";
-  }
-
-  if (tone === "blue") {
-    return "bg-[#d9e6ff] text-[#294987]";
-  }
-
-  if (tone === "amber") {
-    return "bg-[#ffe9b6] text-[#704800]";
-  }
-
-  return "bg-[#e6ddff] text-[#4b2e91]";
-}
-
-function CalendarPill({ event }: { event: CalendarEvent }) {
+function CalendarPill({ event }: { event: FestivalCalendarEvent }) {
   const { t } = useLocale();
-  const classes = `block truncate rounded-full px-3 py-1 text-[11px] font-semibold ${toneClass(
-    event.tone
-  )}`;
+  const classes = `block truncate rounded-full px-3 py-1 text-[11px] font-semibold ${FESTIVAL_CALENDAR_TONE_CLASSES[event.tone]}`;
 
   if (event.href) {
     return (
@@ -252,33 +107,7 @@ function CalendarPill({ event }: { event: CalendarEvent }) {
 function getFestivalGenreFromSearchParams(
   searchParams: URLSearchParams
 ): FestivalGenreFilter {
-  const genreParam = searchParams.get("genre")?.toLowerCase();
-  const selectedGenre = FESTIVAL_GENRES.find(
-    (genre) => genre.value === genreParam
-  );
-
-  return selectedGenre?.value ?? DEFAULT_FESTIVAL_GENRE;
-}
-
-function getFestivalSearchTerms(query: string) {
-  return normalizeSearchQuery(query)
-    .toLowerCase()
-    .replace(/muziekfestival/g, "")
-    .replace(/food festival/g, "food")
-    .replace(/festivals?/g, "")
-    .split(" ")
-    .map((term) => term.trim())
-    .filter(Boolean);
-}
-
-function matchesFestivalSearch(event: CalendarEvent, query: string) {
-  const searchTerms = getFestivalSearchTerms(query);
-
-  if (searchTerms.length === 0) return true;
-
-  const searchableEvent = [event.label, ...event.genres].join(" ").toLowerCase();
-
-  return searchTerms.some((term) => searchableEvent.includes(term));
+  return parseFestivalGenre(searchParams.get("genre"));
 }
 
 function serializeFestivalSearchParams(params: URLSearchParams) {
@@ -313,12 +142,12 @@ function FestivalsCalendarContent() {
       FESTIVAL_CALENDAR_EVENTS.filter((event) =>
         matchesFestivalGenre(event.genres, activeGenre)
       ).filter((event) =>
-        matchesFestivalSearch(event, activeQuery)
+        matchesFestivalCalendarSearch(event, activeQuery)
       ),
     [activeGenre, activeQuery]
   );
   const calendarCells = useMemo(
-    () => buildCalendarCells(currentMonth, filteredCalendarEvents),
+    () => buildFestivalCalendarCells(currentMonth, filteredCalendarEvents),
     [currentMonth, filteredCalendarEvents]
   );
   const mobileCalendarDays = calendarCells.filter(
@@ -489,7 +318,7 @@ function FestivalsCalendarContent() {
         />
         <section className="mt-8 overflow-hidden rounded-[2.2rem] border border-white/70 bg-white/55 shadow-[0_20px_60px_rgba(66,49,31,0.08)] backdrop-blur-xl">
           <div className="hidden grid-cols-7 bg-[#fffaf3] sm:grid">
-            {weekdayLabels.map((label) => (
+            {FESTIVAL_CALENDAR_WEEKDAY_LABELS.map((label) => (
               <div
                 key={label}
                 className="border-r border-[#e6dfd3] px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7e7366] last:border-r-0"

@@ -19,10 +19,7 @@ import {
   addMonths,
   filterCalendarItems,
   getCityFromLocation,
-  getCurrentLocalMonth,
   getJaarkalenderDayForDate,
-  getMonthFromInputValue,
-  getMonthFromUrl,
   getMonthGrid,
   getMonthInputValue,
   hasJaarkalenderDataForMonth,
@@ -41,6 +38,10 @@ import {
   type JaarkalenderDay,
   type JaarkalenderCategoryKey,
 } from "./data";
+import {
+  useJaarkalenderFilterUrlState,
+  type JaarkalenderInitialFilters,
+} from "./useJaarkalenderFilterUrlState";
 
 type FilterModalMode = "city" | "category";
 
@@ -48,12 +49,6 @@ type JaarkalenderCityOption = {
   label: string;
   hasCalendarItems: boolean;
   hasBackendContent: boolean;
-};
-
-type JaarkalenderInitialFilters = {
-  category?: string;
-  city?: string;
-  date?: string;
 };
 
 const MONTH_SHORT_NAMES = [
@@ -70,19 +65,6 @@ const MONTH_SHORT_NAMES = [
   "nov",
   "dec",
 ];
-
-function getCityLabelFromUrl(value: string | null) {
-  if (!value) return null;
-
-  const normalizedValue = normalizeCitySlug(value);
-  return (
-    sharedCityOptions.find(
-      (city) =>
-        city.value === normalizedValue ||
-        normalizeCitySlug(city.label) === normalizedValue
-    )?.label ?? value
-  );
-}
 
 function CalendarIcon() {
   return (
@@ -197,37 +179,17 @@ export function JaarkalenderInteractiveCalendar({
   const [isOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<FilterModalMode>("city");
   const [today, setToday] = useState(() => new Date());
-  const [defaultMonth] = useState(() => getCurrentLocalMonth());
-  // This is the only month state. The input, URL, heading and calendar grid
-  // deliberately all derive from it so they cannot display different months.
-  const [selectedMonth, setSelectedMonth] = useState(() =>
-    getMonthFromUrl(
-      initialFilters.date ??
-        (typeof window === "undefined"
-          ? null
-          : new URLSearchParams(window.location.search).get("date")),
-      getCurrentLocalMonth()
-    )
-  );
-  const [selectedCity, setSelectedCity] = useState<string | null>(() =>
-    getCityLabelFromUrl(
-      initialFilters.city ??
-        (typeof window === "undefined"
-          ? null
-          : new URLSearchParams(window.location.search).get("city"))
-    )
-  );
-  const [selectedCategory, setSelectedCategory] =
-    useState<JaarkalenderCategoryKey | null>(() => {
-      const category =
-        initialFilters.category ??
-        (typeof window === "undefined"
-          ? null
-          : new URLSearchParams(window.location.search).get("category"));
-      return category && category in jaarkalenderCategoryMeta
-        ? (category as JaarkalenderCategoryKey)
-        : null;
-    });
+  const {
+    selectedMonth,
+    selectedCity,
+    selectedCategory,
+    hasActiveFilters,
+    setMonthFilter,
+    applyMonthInputValue,
+    setCityFilter,
+    setCategoryFilter,
+    clearFilters,
+  } = useJaarkalenderFilterUrlState(initialFilters);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const cityComboboxRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -236,48 +198,6 @@ export function JaarkalenderInteractiveCalendar({
   const [cityQuery, setCityQuery] = useState("");
   const [isCityMenuOpen, setIsCityMenuOpen] = useState(false);
   const [activeCityIndex, setActiveCityIndex] = useState(-1);
-
-  const syncFilterParams = (
-    city: string | null,
-    category: JaarkalenderCategoryKey | null,
-    month: Date
-  ) => {
-    if (typeof window === "undefined") return;
-
-    const url = new URL(window.location.href);
-    const isDefaultMonth = getMonthInputValue(month) === getMonthInputValue(defaultMonth);
-
-    if (city) url.searchParams.set("city", normalizeCitySlug(city));
-    else url.searchParams.delete("city");
-
-    if (category) url.searchParams.set("category", category);
-    else url.searchParams.delete("category");
-
-    if (isDefaultMonth) url.searchParams.delete("date");
-    else url.searchParams.set("date", getMonthInputValue(month));
-
-    const nextHref = `${url.pathname}${url.search}${url.hash}`;
-    const currentHref = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-
-    if (nextHref !== currentHref) {
-      window.history.pushState(null, "", nextHref);
-    }
-  };
-
-  const setMonthFilter = (month: Date) => {
-    const normalizedMonth = getMonthFromInputValue(getMonthInputValue(month));
-    if (!normalizedMonth) return;
-
-    setSelectedMonth(normalizedMonth);
-    syncFilterParams(selectedCity, selectedCategory, normalizedMonth);
-  };
-
-  const applyMonthInputValue = (value: string) => {
-    const month = getMonthFromInputValue(value);
-    if (month) {
-      setMonthFilter(month);
-    }
-  };
 
   const handleFilterSubmit = (event: ReactFormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -291,49 +211,6 @@ export function JaarkalenderInteractiveCalendar({
       .getElementById("jaarkalender-overzicht")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  const setCityFilter = (city: string | null) => {
-    setSelectedCity(city);
-    syncFilterParams(city, selectedCategory, selectedMonth);
-  };
-
-  const setCategoryFilter = (category: JaarkalenderCategoryKey | null) => {
-    setSelectedCategory(category);
-    syncFilterParams(selectedCity, category, selectedMonth);
-  };
-
-  const clearFilters = () => {
-    setSelectedCity(null);
-    setSelectedCategory(null);
-    setSelectedMonth(defaultMonth);
-    syncFilterParams(null, null, defaultMonth);
-  };
-
-  const hasActiveFilters =
-    selectedCity !== null ||
-    selectedCategory !== null ||
-    getMonthInputValue(selectedMonth) !== getMonthInputValue(defaultMonth);
-
-  useEffect(() => {
-    const syncStateFromUrl = () => {
-      const params = new URLSearchParams(window.location.search);
-      const category = params.get("category");
-
-      setSelectedCity(getCityLabelFromUrl(params.get("city")));
-      setSelectedCategory(
-        category && category in jaarkalenderCategoryMeta
-          ? (category as JaarkalenderCategoryKey)
-          : null
-      );
-      setSelectedMonth(getMonthFromUrl(params.get("date"), defaultMonth));
-    };
-
-    // Client components hydrate from the server-rendered fallback, so also
-    // apply the URL once after hydration (not only on back/forward).
-    syncStateFromUrl();
-    window.addEventListener("popstate", syncStateFromUrl);
-    return () => window.removeEventListener("popstate", syncStateFromUrl);
-  }, [defaultMonth]);
 
   const cityOptions = useMemo(() => {
     const cities = jaarkalenderDays.flatMap((day) =>

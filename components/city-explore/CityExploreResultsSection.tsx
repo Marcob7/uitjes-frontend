@@ -4,7 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
 
 import DiscoverResultsList from "./DiscoverResultsList";
+import DiscoverResultsEmptyState from "./DiscoverResultsEmptyState";
+import DiscoverResultsFilterDialog from "./DiscoverResultsFilterDialog";
 import DiscoverResultsMap from "./DiscoverResultsMap";
+import DiscoverResultsMobileMapDialog from "./DiscoverResultsMobileMapDialog";
+import DiscoverResultsPagination from "./DiscoverResultsPagination";
 import DiscoverResultsToolbar from "./DiscoverResultsToolbar";
 import type {
   ExploreCard,
@@ -15,7 +19,6 @@ import type {
   ResultFilterKey,
 } from "./types";
 import type { DiscoverView } from "./discoverUrl";
-import { RESULT_FILTER_OPTIONS } from "./utils";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname } from "@/lib/i18n/config";
 
@@ -51,24 +54,6 @@ type ActiveFilter = {
   icon: (props: { className?: string }) => ReactElement;
   editStep?: number;
 };
-
-function CloseIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.85"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 6l12 12" />
-      <path d="M18 6 6 18" />
-    </svg>
-  );
-}
 
 function CalendarIcon({ className }: { className?: string }) {
   return (
@@ -134,24 +119,6 @@ function PinIcon({ className }: { className?: string }) {
     >
       <path d="M12 20s6-5.33 6-10a6 6 0 1 0-12 0c0 4.67 6 10 6 10Z" />
       <circle cx="12" cy="10" r="2.5" />
-    </svg>
-  );
-}
-
-function ArrowLeftIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M19 12H5" />
-      <path d="m11 18-6-6 6-6" />
     </svg>
   );
 }
@@ -274,7 +241,6 @@ export default function CityExploreResultsSection({
   const [draftResultFilters, setDraftResultFilters] =
     useState<ResultFilterKey[]>(resultFilters);
   const filterButtonRef = useRef<HTMLButtonElement | null>(null);
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const activeFilters = buildActiveFilters(
     cityLabel,
     plannerSelections,
@@ -326,20 +292,6 @@ export default function CityExploreResultsSection({
       };
     });
   }, [resultSetKey]);
-
-  useEffect(() => {
-    if (!isFilterModalOpen) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeButtonRef.current?.focus();
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isFilterModalOpen]);
 
   useEffect(() => {
     setLocalView(view);
@@ -425,12 +377,6 @@ export default function CityExploreResultsSection({
     onClearResultFilters();
   }
 
-  function handleFilterModalKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
-      closeFilters();
-    }
-  }
-
   return (
     <section ref={sectionRef} className="relative mt-3 scroll-mt-32 bg-[#F6F5F0] sm:mt-4 lg:scroll-mt-48">
       <div className="mx-auto max-w-[1800px] px-4 pb-20 pt-4 sm:px-6 lg:px-8 xl:px-10">
@@ -447,108 +393,17 @@ export default function CityExploreResultsSection({
           onOpenMap={() => changeView("map")}
         />
 
-        {isFilterModalOpen ? (
-          <div
-            className="fixed inset-0 z-[1200] flex items-center justify-center p-4"
-            onKeyDown={handleFilterModalKeyDown}
-          >
-            <button
-              type="button"
-              aria-label={t("discover.closeFilters")}
-              className="absolute inset-0 bg-black/40"
-              onClick={closeFilters}
-            />
-
-            <div
-              id={filterModalId}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={filterTitleId}
-              className="relative z-10 w-full max-w-md overflow-y-auto rounded-3xl border border-[#dfd4c6] bg-[#fffaf2] p-5 text-[#171511] shadow-xl sm:p-6"
-              style={{ maxHeight: "calc(100dvh - 2rem)" }}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3
-                    id={filterTitleId}
-                    className="text-2xl font-semibold leading-none tracking-[-0.03em] text-[#171511]"
-                  >
-                    {t("search.filters")}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-[#665d54]">
-                    {t("discover.filterIntro", { city: cityLabel })}
-                  </p>
-                </div>
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  onClick={closeFilters}
-                  aria-label={t("discover.closeFilters")}
-                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#dfd4c6] bg-white/72 text-[#4b3a28] shadow-[0_10px_22px_rgba(83,65,45,0.08)] transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449]"
-                >
-                  <CloseIcon className="h-5 w-5" />
-                </button>
-              </div>
-
-              <fieldset className="mt-6 space-y-3">
-                <legend className="text-sm font-semibold text-[#4b3a28]">
-                  {t("discover.filterOptions")}
-                </legend>
-                {RESULT_FILTER_OPTIONS.map((filter) => {
-                  const checked = draftResultFilters.includes(filter.id);
-
-                  return (
-                    <label
-                      key={filter.id}
-                      className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 text-left shadow-[0_10px_22px_rgba(83,65,45,0.05)] transition ${
-                        checked
-                          ? "border-[#b8df71] bg-[#e8f6cf] text-[#344125]"
-                          : "border-[#dfd4c6] bg-white/68 text-[#4b3a28] hover:bg-white"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => handleDraftFilterToggle(filter.id)}
-                        className="mt-1 h-4 w-4 rounded border-[#b8aa98] accent-[#405028] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449]"
-                      />
-                      <span className="min-w-0">
-                        <span className="flex items-center gap-2 text-sm font-semibold">
-                          <span>{filter.label}</span>
-                          {checked ? (
-                            <span className="rounded-full bg-[#405028] px-2 py-0.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white">
-                              {t("discover.active")}
-                            </span>
-                          ) : null}
-                        </span>
-                        <span className="mt-1 block text-xs leading-5 text-[#665d54]">
-                          {filter.description}
-                        </span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </fieldset>
-
-              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#d6c9b8] bg-white/68 px-5 py-2.5 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
-                >
-                  {t("common.clear")}
-                </button>
-                <button
-                  type="button"
-                  onClick={applyFilters}
-                  className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#cfe2a6] bg-[#e8f2d0] px-5 py-2.5 text-sm font-semibold text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
-                >
-                  {t("discover.apply")}
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : null}
+        <DiscoverResultsFilterDialog
+          open={isFilterModalOpen}
+          cityLabel={cityLabel}
+          filters={draftResultFilters}
+          dialogId={filterModalId}
+          titleId={filterTitleId}
+          onChange={handleDraftFilterToggle}
+          onApply={applyFilters}
+          onReset={clearFilters}
+          onClose={closeFilters}
+        />
 
         <div className="mt-5 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(470px,0.82fr)] lg:items-start lg:gap-8 xl:gap-10">
           <div>
@@ -560,59 +415,23 @@ export default function CityExploreResultsSection({
               loadingLabel={t("discover.loadingResults")}
             />
 
-        {hasExpandableResults && !hasNoResults && !isLoadingResults ? (
-          <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-[#786d63]">
-              {t("discover.visibleCount", { visible: visibleResultCount, total: filteredCards.length })}
-            </p>
-            {hasMoreResults ? (
-              <button
-                type="button"
-                onClick={handleShowMoreResults}
-                className="inline-flex w-full items-center justify-center rounded-full border border-[#d6c9b8] bg-white/68 px-4 py-2.5 text-sm font-medium text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:w-auto"
-              >
-                {t("discover.showMore")}
-              </button>
-            ) : (
-              <p className="text-sm font-medium text-[#786d63]">
-                {t("discover.allShown")}
-              </p>
-            )}
-          </div>
-        ) : null}
+            {hasExpandableResults && !hasNoResults && !isLoadingResults ? (
+              <DiscoverResultsPagination
+                visibleResultCount={visibleResultCount}
+                totalResultCount={filteredCards.length}
+                hasMoreResults={hasMoreResults}
+                onShowMore={handleShowMoreResults}
+              />
+            ) : null}
 
-        {hasNoResults && !isLoadingResults ? (
-          <div className="mt-8 rounded-[2rem] border border-[#d5e1bd] bg-white/78 p-6 text-[#171511] shadow-[0_18px_42px_rgba(75,92,52,0.08)] backdrop-blur-xl sm:p-8">
-           
-            <h3 className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#171511]">
-              {hasActiveFilters
-                ? t("discover.noResultsFiltered", { city: cityLabel })
-                : t("discover.noResults", { city: cityLabel })}
-            </h3>
-            <p className="mt-3 max-w-[40rem] text-sm leading-7 text-[#665d54] sm:text-base">
-              {hasActiveFilters
-                ? t("discover.noResultsFilteredIntro", { city: cityLabel })
-                : t("discover.noResultsIntro", { city: cityLabel })}
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              {hasActiveFilters ? (
-                <button
-                  type="button"
-                  onClick={onClearAllFilters}
-                  className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#cfe2a6] bg-[#e8f2d0] px-5 py-2.5 text-sm font-semibold text-[#162016] shadow-[0_12px_28px_rgba(109,144,51,0.12)] transition hover:-translate-y-0.5 hover:bg-[#f1f7df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
-                >
-                  {t("discover.allCityResults", { city: cityLabel })}
-                </button>
-              ) : null}
-              <a
-                href={localePathname("/ontdek", locale)}
-                className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#d6c9b8] bg-white/68 px-5 py-2.5 text-sm font-semibold text-[#4b3a28] shadow-[0_12px_28px_rgba(83,65,45,0.08)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8aa449] sm:rounded-full"
-              >
-                {t("discover.chooseCity")}
-              </a>
-            </div>
-          </div>
-        ) : null}
+            {hasNoResults && !isLoadingResults ? (
+              <DiscoverResultsEmptyState
+                cityLabel={cityLabel}
+                hasActiveFilters={hasActiveFilters}
+                chooseCityHref={localePathname("/ontdek", locale)}
+                onClearAllFilters={onClearAllFilters}
+              />
+            ) : null}
           </div>
 
           <aside className="hidden lg:block">
@@ -627,34 +446,14 @@ export default function CityExploreResultsSection({
           </aside>
         </div>
 
-        {isMobileMapOpen ? (
-          <div
-            className="fixed inset-0 z-[1200] bg-[#F6F5F0] px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("discover.mapOf", { city: cityLabel })}
-          >
-            <div className="mb-3 flex flex-col items-start gap-4 px-1">
-              <button
-                type="button"
-                onClick={() => changeView("list")}
-                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#B7C7BE] bg-[#FFFEFA] px-4 py-2.5 text-sm font-bold text-[#1D5A46] shadow-[0_8px_20px_rgba(29,90,70,0.18)] transition hover:bg-[#F1F7F2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
-              >
-                <ArrowLeftIcon className="h-4 w-4 shrink-0" />
-                <span>{t("discover.backToList")}</span>
-              </button>
-              <h2 className="px-1 text-sm font-semibold text-[#526159]">{t("discover.onMap", { city: cityLabel })}</h2>
-            </div>
-            <div className="h-[calc(100dvh-7.25rem-max(0px,env(safe-area-inset-top)))]">
-              <DiscoverResultsMap
-                cityLabel={cityLabel}
-                cards={contextualDisplayedCards}
-                selectedId={selectedId}
-                onSelectCard={onMapSelectCard ?? onSelectCard}
-              />
-            </div>
-          </div>
-        ) : null}
+        <DiscoverResultsMobileMapDialog
+          open={isMobileMapOpen}
+          cityLabel={cityLabel}
+          cards={contextualDisplayedCards}
+          selectedId={selectedId}
+          onSelectCard={onMapSelectCard ?? onSelectCard}
+          onBackToList={() => changeView("list")}
+        />
       </div>
     </section>
   );
