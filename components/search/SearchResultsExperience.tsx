@@ -12,9 +12,15 @@ import type { GeneralSearchResult } from "@/lib/search/searchResults";
 import {
   type SearchResultsFilterKey,
   type SearchResultsFilterState,
-  type SearchResultsSortOption,
   useSearchResultsUrlState,
 } from "./useSearchResultsUrlState";
+import {
+  SEARCH_CATEGORY_FILTER_OPTIONS,
+  SEARCH_SORT_OPTIONS,
+  SEARCH_WHEN_FILTER_OPTIONS,
+  type SearchFixedFilterOption,
+  type SearchResultsSortOption,
+} from "./searchFilterConfig";
 
 
 type SearchResultsExperienceProps = {
@@ -23,18 +29,6 @@ type SearchResultsExperienceProps = {
   error?: boolean;
   partial?: boolean;
 };
-
-const CATEGORY_OPTIONS = [
-  { value: "buiten", label: "Buiten", terms: ["buiten", "natuur", "park", "wandeling", "route"] },
-  { value: "binnen", label: "Binnen", terms: ["binnen", "museum", "cultuur", "workshop", "overdekt"] },
-  { value: "met-kinderen", label: "Met kinderen", terms: ["met-kinderen", "kinderen", "gezin", "familie", "kids"] },
-  { value: "eten-drinken", label: "Eten & drinken", terms: ["eten-drinken", "eten", "drinken", "restaurant", "horeca"] },
-];
-
-const WHEN_OPTIONS = [
-  { value: "today", label: "Vandaag", terms: ["vandaag", "nu", "doorlopend", "actueel"] },
-  { value: "weekend", label: "Dit weekend", terms: ["weekend", "zaterdag", "zondag"] },
-];
 
 function normalize(value: string) {
   return value
@@ -72,12 +66,14 @@ function matchesFilterState(
   if (filters.rating && (result.ratingValue ?? 0) < Number(filters.rating)) return false;
 
   if (filters.when) {
-    const when = WHEN_OPTIONS.find((option) => option.value === filters.when);
+    const when = SEARCH_WHEN_FILTER_OPTIONS.find((option) => option.value === filters.when);
     if (when && !when.terms.some((term) => text.includes(normalize(term)))) return false;
   }
 
   if (filters.category) {
-    const category = CATEGORY_OPTIONS.find((option) => option.value === filters.category);
+    const category = SEARCH_CATEGORY_FILTER_OPTIONS.find(
+      (option) => option.value === filters.category
+    );
     if (category && !category.terms.some((term) => text.includes(normalize(term)))) return false;
   }
 
@@ -89,14 +85,13 @@ function getCityLabel(citySlug: string, results: GeneralSearchResult[]) {
   return matchingResult?.city ?? citySlug.replace(/-/g, " ");
 }
 
-function getCategoryLabel(value: string, t: (key: string) => string) {
-  const key = { buiten: "search.categoryOutdoor", binnen: "search.categoryIndoor", "met-kinderen": "search.categoryChildren", "eten-drinken": "search.categoryFood" }[value];
-  return key ? t(key) : value;
-}
-
-function getWhenLabel(value: string, t: (key: string) => string) {
-  const key = { today: "search.whenToday", weekend: "search.whenWeekend" }[value];
-  return key ? t(key) : value;
+function getFixedFilterLabel(
+  value: string,
+  options: readonly SearchFixedFilterOption[],
+  t: (key: string) => string
+) {
+  const option = options.find((item) => item.value === value);
+  return option ? t(option.labelKey) : value;
 }
 
 function formatPriceLabel(value?: string) {
@@ -201,11 +196,14 @@ export default function SearchResultsExperience({ query, results, error = false,
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const filterButtonRef = useRef<HTMLButtonElement>(null);
   const resultsMatchActiveQuery = activeQuery === query;
-  const categoryOptions = CATEGORY_OPTIONS.map((option) => ({
+  const categoryOptions = SEARCH_CATEGORY_FILTER_OPTIONS.map((option) => ({
     ...option,
-    label: getCategoryLabel(option.value, t),
+    label: t(option.labelKey),
   }));
-  const whenOptions = WHEN_OPTIONS.map((option) => ({ ...option, label: getWhenLabel(option.value, t) }));
+  const whenOptions = SEARCH_WHEN_FILTER_OPTIONS.map((option) => ({
+    ...option,
+    label: t(option.labelKey),
+  }));
   const shortcuts = [
     { label: t("search.whenToday"), href: `${localePathname("/zoeken", locale)}?query=vandaag&when=today` },
     { label: t("search.whenWeekend"), href: `${localePathname("/zoeken", locale)}?query=weekend&when=weekend` },
@@ -226,8 +224,14 @@ export default function SearchResultsExperience({ query, results, error = false,
   const activeFilters = useMemo(() => {
     const active: Array<{ key: SearchResultsFilterKey; label: string }> = [];
     if (filters.city) active.push({ key: "city", label: getCityLabel(filters.city, results) });
-    if (filters.when) active.push({ key: "when", label: getWhenLabel(filters.when, t) });
-    if (filters.category) active.push({ key: "category", label: getCategoryLabel(filters.category, t) });
+    if (filters.when) active.push({
+      key: "when",
+      label: getFixedFilterLabel(filters.when, SEARCH_WHEN_FILTER_OPTIONS, t),
+    });
+    if (filters.category) active.push({
+      key: "category",
+      label: getFixedFilterLabel(filters.category, SEARCH_CATEGORY_FILTER_OPTIONS, t),
+    });
     if (filters.free) active.push({ key: "free", label: t("search.free") });
     if (filters.rating) active.push({ key: "rating", label: t("search.stars", { rating: filters.rating }) });
     return active;
@@ -348,10 +352,11 @@ export default function SearchResultsExperience({ query, results, error = false,
                 className="min-h-11 min-w-[10.5rem] appearance-none rounded-full border border-[#d4ddd5] bg-white py-2 pl-4 pr-10 text-sm font-semibold text-[#31483a] outline-none transition hover:border-[#9eb9a5] focus-visible:ring-2 focus-visible:ring-[#005fcc]"
                 aria-label={t("search.sort")}
               >
-                <option value="match">{t("search.bestMatch")}</option>
-                <option value="rating">{t("search.highestRated")}</option>
-                <option value="price">{t("search.priceLowHigh")}</option>
-                <option value="recent">{t("search.recent")}</option>
+                {SEARCH_SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {t(option.labelKey)}
+                  </option>
+                ))}
               </select>
               <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#53645a]"><ChevronDownIcon /></span>
             </span>

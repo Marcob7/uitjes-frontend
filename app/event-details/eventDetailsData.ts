@@ -28,12 +28,28 @@ export type Category = {
   className: string;
 };
 
-export type UpcomingMoment = EventDateRange & {
+export type UpcomingMoment = Omit<EventDateRange, "startAt" | "endAt"> & {
+  startAt: string;
+  endAt?: string;
   title: string;
   location: string;
   image: string;
-  calendar?: CalendarEventInput;
+  calendar?: Pick<CalendarEventInput, "description" | "url" | "uid"> & {
+    location?: CalendarEventInput["location"];
+  };
 };
+
+export function getUpcomingMomentCalendar(moment: UpcomingMoment): CalendarEventInput | undefined {
+  if (!moment.calendar) return undefined;
+
+  return {
+    title: moment.title,
+    startAt: moment.startAt,
+    endAt: moment.endAt,
+    ...moment.calendar,
+    location: moment.calendar.location ?? moment.location,
+  };
+}
 
 export const weekendEvents: WeekendEvent[] = [
   {
@@ -182,10 +198,6 @@ export const upcomingMoments: UpcomingMoment[] = [
     image:
       "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1100&q=88",
     calendar: {
-      title: "Open Monumentendag",
-      startAt: "2026-09-12",
-      endAt: "2026-09-13",
-      location: "Door heel Nederland",
       description: "Open Monumentendag · 12–13 september 2026",
       url: "/ontdek/open-monumentendag",
       uid: "event-details-open-monumentendag-2026@uitjes-nl.local",
@@ -199,10 +211,6 @@ export const upcomingMoments: UpcomingMoment[] = [
     image:
       "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1100&q=88",
     calendar: {
-      title: "Nederlands Film Festival",
-      startAt: "2026-09-25",
-      endAt: "2026-10-02",
-      location: "Utrecht",
       description: "Nederlands Film Festival · 25 september–2 oktober 2026",
       url: "/ontdek/nederlands-film-festival",
       uid: "event-details-nederlands-film-festival-2026@uitjes-nl.local",
@@ -216,10 +224,6 @@ export const upcomingMoments: UpcomingMoment[] = [
     image:
       "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1100&q=88",
     calendar: {
-      title: "Dutch Design Week",
-      startAt: "2026-10-17",
-      endAt: "2026-10-25",
-      location: "Eindhoven",
       description: "Dutch Design Week · 17–25 oktober 2026",
       url: "/ontdek/dutch-design-week",
       uid: "event-details-dutch-design-week-2026@uitjes-nl.local",
@@ -233,10 +237,6 @@ export const upcomingMoments: UpcomingMoment[] = [
     image:
       "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1100&q=88",
     calendar: {
-      title: "Amsterdam Dance Event",
-      startAt: "2026-10-21",
-      endAt: "2026-10-25",
-      location: "Amsterdam",
       description: "Amsterdam Dance Event · 21–25 oktober 2026",
       url: "/ontdek/amsterdam-dance-event",
       uid: "event-details-amsterdam-dance-event-2026@uitjes-nl.local",
@@ -249,8 +249,6 @@ export const upcomingMoments: UpcomingMoment[] = [
     image:
       "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=1100&q=88",
     calendar: {
-      title: "Museumnacht Amsterdam",
-      startAt: "2026-11-07",
       location: "Amsterdam",
       description: "Museumnacht Amsterdam · 7 november 2026 · 19:00–02:00",
       url: "/ontdek/museumnacht-amsterdam",
@@ -265,9 +263,6 @@ export const upcomingMoments: UpcomingMoment[] = [
     image:
       "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1100&q=88",
     calendar: {
-      title: "Amsterdam Light Festival",
-      startAt: "2026-11-26",
-      endAt: "2027-01-17",
       location: "Grachten, Amsterdam",
       description: "Amsterdam Light Festival · 26 november 2026–17 januari 2027",
       url: "/ontdek/amsterdam-light-festival",

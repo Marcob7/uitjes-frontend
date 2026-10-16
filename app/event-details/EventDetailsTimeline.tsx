@@ -7,36 +7,20 @@ import { getRelativeEventLabel } from "@/lib/eventDateLabels";
 
 import { EventDetailsActions } from "./EventDetailsActions";
 import { ArrowIcon, PinIcon } from "./EventDetailsIcons";
-import type { UpcomingMoment } from "./eventDetailsData";
-
-type Direction = "left" | "right";
+import { EventDetailsRailButton, type EventDetailsRailDirection } from "./EventDetailsRailButton";
+import { getUpcomingMomentCalendar, type UpcomingMoment } from "./eventDetailsData";
 
 type EventDetailsTimelineProps = {
   moments: UpcomingMoment[];
   now?: Date;
   railRef: RefObject<HTMLDivElement | null>;
-  onScroll: (direction: Direction) => void;
+  onScroll: (direction: EventDetailsRailDirection) => void;
 };
-
-function RailButton({
-  label,
-  direction,
-  onClick,
-}: {
-  label: string;
-  direction: Direction;
-  onClick: () => void;
-}) {
-  return (
-    <button type="button" aria-label={label} onClick={onClick} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#bdc6b9] bg-[#f7f5ee] text-[#263329] transition hover:border-[#263329] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a05c3a] focus-visible:ring-offset-2 active:scale-95">
-      <ArrowIcon direction={direction} />
-    </button>
-  );
-}
 
 function TimelineCard({ moment, now }: { moment: UpcomingMoment; now?: Date }) {
   const { locale } = useLocale();
   const dateLabel = getRelativeEventLabel(moment, now, locale);
+  const calendar = getUpcomingMomentCalendar(moment);
 
   return (
     <article className="relative min-w-[17.5rem] snap-start overflow-hidden rounded-[1.6rem] border border-[#d7d8cc] bg-[#fbfaf4]/95 shadow-[0_16px_38px_rgba(45,53,42,0.09)] backdrop-blur-sm sm:min-w-[20rem]">
@@ -48,7 +32,7 @@ function TimelineCard({ moment, now }: { moment: UpcomingMoment; now?: Date }) {
         <p className="text-sm font-medium leading-5 tracking-normal text-[#a05c3a]">{dateLabel}</p>
         <h3 className="mt-3 text-[1.45rem] font-medium leading-[0.98] tracking-[-0.045em] text-[#1e2b21]">{moment.title}</h3>
         <p className="mt-3 inline-flex items-center gap-2 text-sm text-[#6d776b]"><PinIcon /> {moment.location}</p>
-        {moment.calendar ? <EventDetailsActions calendar={moment.calendar} title={moment.title} /> : null}
+        {calendar ? <EventDetailsActions calendar={calendar} title={moment.title} /> : null}
       </div>
     </article>
   );
@@ -85,8 +69,8 @@ export function EventDetailsTimeline({
             ))}
           </div>
           <div className="mt-5 flex justify-between gap-4 sm:mt-7"><div className="flex gap-2">
-            <RailButton label={t("events.scrollCalendarPrevious")} direction="left" onClick={() => onScroll("left")} />
-            <RailButton label={t("events.scrollCalendarNext")} direction="right" onClick={() => onScroll("right")} />
+            <EventDetailsRailButton label={t("events.scrollCalendarPrevious")} direction="left" onClick={() => onScroll("left")} />
+            <EventDetailsRailButton label={t("events.scrollCalendarNext")} direction="right" onClick={() => onScroll("right")} />
           </div></div>
         </div>
         <div className="mt-14 flex flex-col items-start justify-between gap-5 border-t border-[#b9c9b4] pt-6 sm:mt-20 sm:flex-row sm:items-center">

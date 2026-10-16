@@ -5,8 +5,13 @@ import { useTransition } from "react";
 
 import { localePathname, type Locale } from "@/lib/i18n/config";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
+import {
+  DEFAULT_SEARCH_RESULTS_SORT,
+  parseSearchResultsSort,
+  type SearchResultsSortOption,
+} from "./searchFilterConfig";
 
-export type SearchResultsSortOption = "match" | "rating" | "price" | "recent";
+export type { SearchResultsSortOption } from "./searchFilterConfig";
 
 export type SearchResultsFilterKey =
   | "city"
@@ -39,11 +44,7 @@ function readFilters(params: SearchParamsLike): SearchResultsFilterState {
 }
 
 function getSort(params: SearchParamsLike): SearchResultsSortOption {
-  const value = params.get("sort");
-
-  return value === "rating" || value === "price" || value === "recent"
-    ? value
-    : "match";
+  return parseSearchResultsSort(params.get("sort"));
 }
 
 export function useSearchResultsUrlState(locale: Locale) {
@@ -75,8 +76,8 @@ export function useSearchResultsUrlState(locale: Locale) {
     if (merged.rating) next.set("rating", merged.rating);
     else next.delete("rating");
 
-    if (nextSort && nextSort !== "match") next.set("sort", nextSort);
-    else if (nextSort === "match") next.delete("sort");
+    if (nextSort && nextSort !== DEFAULT_SEARCH_RESULTS_SORT) next.set("sort", nextSort);
+    else if (nextSort === DEFAULT_SEARCH_RESULTS_SORT) next.delete("sort");
 
     const queryString = next.toString();
     const searchPath = localePathname("/zoeken", locale);

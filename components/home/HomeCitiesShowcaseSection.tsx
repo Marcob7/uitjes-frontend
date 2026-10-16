@@ -10,6 +10,7 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname } from "@/lib/i18n/config";
+import { cityOptions } from "@/lib/cityConfig";
 
 type ShowcaseCity = {
   name: string;
@@ -19,63 +20,65 @@ type ShowcaseCity = {
   preserveSourceColors?: boolean;
 };
 
-const showcaseCities: ShowcaseCity[] = [
+type ShowcaseCityDefinition = Omit<ShowcaseCity, "name">;
+
+const HOME_SHOWCASE_CITY_DEFINITIONS = [
   {
-    name: "Apeldoorn",
     slug: "apeldoorn",
     logo: "/municipalities/apeldoorn.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Deventer",
     slug: "deventer",
     logo: "/municipalities/deventer.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Amsterdam",
     slug: "amsterdam",
     logo: "/municipalities/amsterdam.svg",
     logoClassName: "h-[5.4rem] w-[4.7rem]",
     preserveSourceColors: true,
   },
   {
-    name: "Leeuwarden",
     slug: "leeuwarden",
     logo: "/municipalities/leeuwarden.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Rotterdam",
     slug: "rotterdam",
     logo: "/municipalities/rotterdam.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Eindhoven",
     slug: "eindhoven",
     logo: "/municipalities/eindhoven.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Enschede",
     slug: "enschede",
     logo: "/municipalities/enschede.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Delft",
     slug: "delft",
     logo: "/municipalities/delft.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
   {
-    name: "Breda",
     slug: "breda",
     logo: "/municipalities/breda.svg",
     logoClassName: "h-[5.4rem] w-[10.5rem]",
   },
-];
+] as const satisfies ReadonlyArray<ShowcaseCityDefinition>;
+
+const showcaseCities: ShowcaseCity[] = HOME_SHOWCASE_CITY_DEFINITIONS.map(
+  (definition) => ({
+    ...definition,
+    name:
+      cityOptions.find((city) => city.value === definition.slug)?.label ??
+      definition.slug,
+  })
+);
 
 const carouselTransition = {
   duration: 0.7,
