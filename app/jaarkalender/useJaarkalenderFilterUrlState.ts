@@ -11,7 +11,7 @@ import {
   getMonthInputValue,
 } from "./calendarUtils";
 import {
-  jaarkalenderCategoryMeta,
+  isJaarkalenderCategory,
   type JaarkalenderCategoryKey,
 } from "./data";
 
@@ -64,8 +64,8 @@ export function useJaarkalenderFilterUrlState(
   const [selectedCategory, setSelectedCategory] =
     useState<JaarkalenderCategoryKey | null>(() => {
       const category = getInitialSearchParam(initialFilters.category, "category");
-      return category && category in jaarkalenderCategoryMeta
-        ? (category as JaarkalenderCategoryKey)
+      return isJaarkalenderCategory(category)
+        ? category
         : null;
     });
 
@@ -134,8 +134,8 @@ export function useJaarkalenderFilterUrlState(
 
       setSelectedCity(getCityLabelFromUrl(params.get("city")));
       setSelectedCategory(
-        category && category in jaarkalenderCategoryMeta
-          ? (category as JaarkalenderCategoryKey)
+        isJaarkalenderCategory(category)
+          ? category
           : null,
       );
       setSelectedMonth(getMonthFromUrl(params.get("date"), defaultMonth));

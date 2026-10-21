@@ -2,6 +2,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PageContainer, PageEyebrow } from "@/components/ui";
+import { AppInput, AppTextarea } from "@/components/ui/app";
 import { apiFetchAuth } from "@/lib/api";
 
 type ApiError =
@@ -81,13 +83,11 @@ export default function FeedbackPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f5f0] px-4 py-6 text-[#171717] sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl">
+    <main className="min-h-screen bg-[#f7f5f0] py-6 text-[#171717]">
+      <PageContainer size="narrow">
         <section className="rounded-[2rem] border border-[#e7e0d5] bg-white px-5 py-6 shadow-[0_18px_40px_rgba(57,43,27,0.05)] sm:px-8 sm:py-8">
           <div className="max-w-2xl">
-            <div className="inline-flex rounded-2xl bg-[#eef5df] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#50672f] sm:rounded-full">
-              Feedback
-            </div>
+            <PageEyebrow>Feedback</PageEyebrow>
             <h1 className="mt-5 text-[clamp(2.2rem,6vw,3.6rem)] leading-[0.95] tracking-[-0.06em] text-[#171717]">
               Wat kunnen we op mobiel beter maken?
             </h1>
@@ -119,42 +119,35 @@ export default function FeedbackPage() {
           ) : null}
 
           <form onSubmit={onSubmit} className="mt-8 grid gap-5">
-            <label className="grid gap-2">
-              <div className="text-sm font-semibold text-[#171717]">
-                Jouw suggestie (verplicht)
-              </div>
+            <AppTextarea
+              id="feedback-message"
+              label="Jouw suggestie (verplicht)"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              rows={6}
+              required
+              aria-invalid={messageTooShort || Boolean(errorText)}
+              aria-describedby={errorText ? "feedback-error feedback-message-helper" : "feedback-message-helper"}
+              placeholder="Bijvoorbeeld: ik wil kunnen filteren op binnen of buiten."
+              hint={<>Minimaal 10 tekens.{messageTooShort ? " Je zit er nog onder." : ""}</>}
+              showRequiredIndicator={false}
+              labelClassName="text-[#171717]"
+              hintClassName="text-xs leading-normal text-[#6e6458]"
+              className="min-h-[160px] w-full rounded-[1.5rem] border border-[#ddd6cb] bg-[#fcfaf7] px-4 py-3 text-base text-[#171717] shadow-none outline-none transition focus:border-[#bfb3a4] focus:bg-[#fcfaf7] focus:ring-0 sm:text-base"
+            />
 
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={6}
-                required
-                aria-invalid={messageTooShort || Boolean(errorText)}
-                aria-describedby={errorText ? "feedback-error feedback-message-help" : "feedback-message-help"}
-                placeholder="Bijvoorbeeld: ik wil kunnen filteren op binnen of buiten."
-                className="min-h-[160px] w-full rounded-[1.5rem] border border-[#ddd6cb] bg-[#fcfaf7] px-4 py-3 text-base text-[#171717] outline-none transition focus:border-[#bfb3a4]"
-              />
-
-              <div id="feedback-message-help" className="text-xs text-[#6e6458]">
-                Minimaal 10 tekens.
-                {messageTooShort ? " Je zit er nog onder." : ""}
-              </div>
-            </label>
-
-            <label className="grid gap-2">
-              <div className="text-sm font-semibold text-[#171717]">
-                Email (optioneel)
-              </div>
-
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="jij@voorbeeld.nl"
-                type="email"
-                autoComplete="email"
-                className="min-h-12 w-full rounded-2xl border border-[#ddd6cb] bg-[#fcfaf7] px-4 text-base text-[#171717] outline-none transition focus:border-[#bfb3a4] sm:rounded-full"
-              />
-            </label>
+            <AppInput
+              id="feedback-email"
+              label="Email (optioneel)"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="jij@voorbeeld.nl"
+              type="email"
+              autoComplete="email"
+              showRequiredIndicator={false}
+              labelClassName="text-[#171717]"
+              className="min-h-12 w-full rounded-2xl border border-[#ddd6cb] bg-[#fcfaf7] px-4 text-base text-[#171717] shadow-none outline-none transition focus:border-[#bfb3a4] focus:bg-[#fcfaf7] focus:ring-0 sm:rounded-full sm:text-base"
+            />
 
             <input
               type="text"
@@ -180,7 +173,7 @@ export default function FeedbackPage() {
             </div>
           </form>
         </section>
-      </div>
+      </PageContainer>
     </main>
   );
 }

@@ -11,6 +11,7 @@ import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 import { festivalDetails, getFestivalDetailHref, type FestivalDetail } from "@/app/festivals/data";
+import { getInspirationDetailHref } from "@/lib/inspiration/href";
 import { getSupportedCitySlug } from "@/lib/searchIntent";
 
 export type GeneralSearchResult = {
@@ -192,7 +193,7 @@ function mapInspirationResult(
     id: `inspiration:${result.category}:${result.slug}`,
     title: result.title,
     description: result.description,
-    href: `/inspiratie/${result.category}/${result.slug}`,
+    href: getInspirationDetailHref(result.category, result.slug),
     image: unwrapCssImageUrl(result.image),
     imageAlt: result.title,
     badge: result.categoryLabel,

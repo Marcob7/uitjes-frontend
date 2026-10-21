@@ -15,11 +15,11 @@ import { formatDate } from "@/lib/i18n/format";
 import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
 import {
   generateJaarkalenderEventStaticParams,
+  getJaarkalenderCategory,
+  getJaarkalenderCategoryFromText,
   getJaarkalenderEventBySlug,
   getJaarkalenderEventEntriesForDay,
   getJaarkalenderEventHref,
-  jaarkalenderCategoryMeta,
-  type JaarkalenderCategoryKey,
   type JaarkalenderEventEntry,
   type TimelineCard,
 } from "../../data";
@@ -71,14 +71,6 @@ function SparkIcon() { return <svg className="h-5 w-5" viewBox="0 0 20 20" fill=
 function RouteIcon() { return <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.25 15.9c2.1-5.4 4.4-7.58 7.02-7.58 2.03 0 2.77 1.42 4.15 1.42 1.12 0 1.82-.77 2.33-2.18" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /><circle cx="3.25" cy="15.9" r="1.25" stroke="currentColor" strokeWidth="1.2" /><circle cx="16.75" cy="7.56" r="1.25" stroke="currentColor" strokeWidth="1.2" /></svg>; }
 function FeatureIcon({ name }: { name: FeatureIconName }) { const icons = { calendar: <CalendarIcon />, clock: <ClockIcon />, pin: <PinIcon />, ticket: <TicketIcon />, group: <GroupIcon />, spark: <SparkIcon />, route: <RouteIcon /> }; return <>{icons[name]}</>; }
 
-function getCategoryKey(card: TimelineCard): JaarkalenderCategoryKey {
-  const text = `${card.category} ${card.title} ${card.description}`.toLowerCase();
-  if (text.includes("music") || text.includes("concert") || text.includes("jazz")) return "muziek";
-  if (text.includes("food") || text.includes("culin") || text.includes("proef")) return "culinair";
-  if (text.includes("festival") || text.includes("parade")) return "festival";
-  if (text.includes("sport") || text.includes("run") || text.includes("wandel")) return "natuur";
-  return "cultuur";
-}
 function getEventImage(card: TimelineCard) {
   return resolveActivityImage({
     image: card.image,
@@ -114,8 +106,8 @@ function buildJaarkalenderDate(entry: JaarkalenderEventEntry) {
 }
 function buildEventViewModel(entry: JaarkalenderEventEntry): EventViewModel {
   const cityLabel = getCityLabel(entry.card);
-  const categoryKey = getCategoryKey(entry.card);
-  const categoryLabel = jaarkalenderCategoryMeta[categoryKey].label;
+  const categoryKey = getJaarkalenderCategoryFromText(`${entry.card.category} ${entry.card.title} ${entry.card.description}`);
+  const categoryLabel = getJaarkalenderCategory(categoryKey).label;
   const dateLabel = `${entry.day.weekdayDisplay} ${entry.day.dayNumber} ${entry.day.monthDisplay} ${entry.day.year}`;
   const timeLabel = getTimeLabel(entry);
   if (entry.card.title === "Night Glow Parade") return {
@@ -138,11 +130,12 @@ function ImageSurface({ image, className, priority = false, children }: { image:
   return <div className={className} style={{ backgroundImage: `linear-gradient(180deg, rgba(29,40,31,0.02), rgba(29,40,31,0.22)), ${optimizeCssBackground(image, { width: priority ? 1600 : 960, quality: priority ? 70 : 60 })}`, backgroundPosition: "center", backgroundSize: "cover" }}>{children}</div>;
 }
 function SimilarEventCard({ entry }: { entry: JaarkalenderEventEntry }) {
-  const category = jaarkalenderCategoryMeta[getCategoryKey(entry.card)];
+  const categoryKey = getJaarkalenderCategoryFromText(`${entry.card.category} ${entry.card.title} ${entry.card.description}`);
+  const category = getJaarkalenderCategory(categoryKey);
   const image = getEventImage(entry.card);
   const href = getJaarkalenderEventHref(entry.day.slug, entry.eventSlug);
   const saveItem = { id: `jaarkalender:${entry.day.slug}/${entry.eventSlug}`, title: entry.card.title, href, meta: `${getCityLabel(entry.card)} · ${category.label}`, image };
-  return <article className="group min-w-0"><Link href={href} className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1f5c43]"><ImageSurface image={image} className="relative aspect-[1.06] overflow-hidden rounded-[1.35rem] bg-[#e5e7df] transition duration-500 group-hover:scale-[0.985]"><span className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.13em] ${category.badgeClass}`}>{category.label}</span></ImageSurface></Link><div className="mt-4 flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs font-medium text-[#74766e]">{getCityLabel(entry.card)}</p><Link href={href} className="mt-1 block text-[1.12rem] font-semibold leading-tight tracking-[-0.035em] text-[#203329] transition group-hover:text-[#1f5c43] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]">{entry.card.title}</Link><p className="mt-2 text-sm font-semibold text-[#345846]">{getCategoryKey(entry.card) === "festival" ? "Vanaf € 12" : "Vanaf € 15"}</p></div><SavePlaceButton item={saveItem} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d9dfd6] bg-white text-[#345846] transition hover:border-[#345846] hover:bg-[#edf4e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]" savedClassName="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#345846] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]" savedChildren={<><HeartIcon filled /><span className="sr-only">Verwijder uit bewaard</span></>}><HeartIcon /><span className="sr-only">Bewaar {entry.card.title}</span></SavePlaceButton></div></article>;
+  return <article className="group min-w-0"><Link href={href} className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1f5c43]"><ImageSurface image={image} className="relative aspect-[1.06] overflow-hidden rounded-[1.35rem] bg-[#e5e7df] transition duration-500 group-hover:scale-[0.985]"><span className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.13em] ${category.badgeClass}`}>{category.label}</span></ImageSurface></Link><div className="mt-4 flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs font-medium text-[#74766e]">{getCityLabel(entry.card)}</p><Link href={href} className="mt-1 block text-[1.12rem] font-semibold leading-tight tracking-[-0.035em] text-[#203329] transition group-hover:text-[#1f5c43] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]">{entry.card.title}</Link><p className="mt-2 text-sm font-semibold text-[#345846]">{categoryKey === "festival" ? "Vanaf € 12" : "Vanaf € 15"}</p></div><SavePlaceButton item={saveItem} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d9dfd6] bg-white text-[#345846] transition hover:border-[#345846] hover:bg-[#edf4e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]" savedClassName="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#345846] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f5c43]" savedChildren={<><HeartIcon filled /><span className="sr-only">Verwijder uit bewaard</span></>}><HeartIcon /><span className="sr-only">Bewaar {entry.card.title}</span></SavePlaceButton></div></article>;
 }
 function VisitAccordion({ icon, title, rows }: { icon: FeatureIconName; title: string; rows: Array<[string, string]> }) {
   return <details open className="group overflow-hidden rounded-[1.05rem] border border-[#dce1d9] bg-[#fdfdf9] [&_summary::-webkit-details-marker]:hidden"><summary className="flex min-h-[4.5rem] cursor-pointer list-none items-center justify-between gap-4 px-4 py-3.5 sm:px-5"><span className="flex items-center gap-3.5 text-[1.02rem] font-semibold tracking-[-0.025em] text-[#25382e]"><span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#f0f3ed] text-[#365846]"><FeatureIcon name={icon} /></span>{title}</span><svg className="h-4 w-4 text-[#59685d] transition duration-300 group-open:rotate-180" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 9.5 4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><dl className="border-t border-[#e2e5df]">{rows.map(([label, value]) => <div key={label} className="grid gap-1 border-b border-[#e2e5df] px-4 py-3.5 last:border-0 sm:grid-cols-[minmax(9rem,1fr)_minmax(0,1fr)] sm:gap-6 sm:px-5"><dt className="text-sm text-[#70776f]">{label}</dt><dd className="text-sm font-semibold leading-6 text-[#25382e]">{value}</dd></div>)}</dl></details>;
@@ -152,8 +145,8 @@ export default function JaarkalenderEventPage({ params }: PageProps) {
   const eventEntry = getJaarkalenderEventBySlug(params.daySlug, params.event);
   if (!eventEntry) notFound();
   const viewModel = buildEventViewModel(eventEntry);
-  const categoryKey = getCategoryKey(eventEntry.card);
-  const categoryMeta = jaarkalenderCategoryMeta[categoryKey];
+  const categoryKey = getJaarkalenderCategoryFromText(`${eventEntry.card.category} ${eventEntry.card.title} ${eventEntry.card.description}`);
+  const categoryMeta = getJaarkalenderCategory(categoryKey);
   const heroImage = getEventImage(eventEntry.card);
   const nearbyEvents = getJaarkalenderEventEntriesForDay(eventEntry.day).filter((entry) => entry.eventSlug !== eventEntry.eventSlug).slice(0, 4);
   const calendarStart = buildJaarkalenderDate(eventEntry);

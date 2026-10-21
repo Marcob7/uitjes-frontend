@@ -28,46 +28,110 @@ const weekdayNames = [
   "zaterdag",
 ];
 
-export const jaarkalenderCategoryMeta = {
-  cultuur: {
+export type JaarkalenderCategoryKey =
+  | "cultuur"
+  | "muziek"
+  | "culinair"
+  | "festival"
+  | "natuur"
+  | "familie";
+
+export type JaarkalenderCategoryDefinition = {
+  value: JaarkalenderCategoryKey;
+  label: string;
+  badgeClass: string;
+  dotClass: string;
+  surfaceClass: string;
+  timelineAccent: "lime" | "red";
+  titleOptions: readonly string[];
+  matcherTerms: readonly string[];
+};
+
+export const jaarkalenderCategoryDefinitions: readonly JaarkalenderCategoryDefinition[] = [
+  {
+    value: "cultuur",
     label: "Cultuur",
     badgeClass: "bg-[#f4dfd1] text-[#7b4330]",
     dotClass: "bg-[#d97a54]",
     surfaceClass: "bg-[#f5e5da]",
+    timelineAccent: "lime",
+    titleOptions: ["Open atelier avond", "Fotografie route", "Museum late session", "Kunst in de stad"],
+    matcherTerms: [],
   },
-  muziek: {
+  {
+    value: "muziek",
     label: "Muziek",
     badgeClass: "bg-[#dfe4fb] text-[#4150a7]",
     dotClass: "bg-[#6880ea]",
     surfaceClass: "bg-[#e5e9fb]",
+    timelineAccent: "lime",
+    titleOptions: ["Live sessie in de stad", "Akoestische avond", "Kleine zaal concert", "DJ set aan het water"],
+    matcherTerms: ["music", "concert", "jazz"],
   },
-  culinair: {
+  {
+    value: "culinair",
     label: "Culinair",
     badgeClass: "bg-[#fde4bf] text-[#8a4d15]",
     dotClass: "bg-[#ee9927]",
     surfaceClass: "bg-[#f8e6c9]",
+    timelineAccent: "lime",
+    titleOptions: ["Proefmarkt in het centrum", "Shared dining route", "Streetfood avond", "Lokale makers lunch"],
+    matcherTerms: ["food", "culin", "proef"],
   },
-  festival: {
+  {
+    value: "festival",
     label: "Festival",
     badgeClass: "bg-[#f7d8df] text-[#8e3552]",
     dotClass: "bg-[#d65a84]",
     surfaceClass: "bg-[#f3dfe4]",
+    timelineAccent: "red",
+    titleOptions: ["Stadsfestival met licht", "Weekend vol optredens", "Cultureel pleinprogramma", "Seizoensopening festival"],
+    matcherTerms: ["festival", "parade"],
   },
-  natuur: {
+  {
+    value: "natuur",
     label: "Natuur",
     badgeClass: "bg-[#deefcf] text-[#365f29]",
     dotClass: "bg-[#6ca449]",
     surfaceClass: "bg-[#e3efd8]",
+    timelineAccent: "lime",
+    titleOptions: ["Boswandeling met gids", "Zonsopkomst in het park", "Stilte route langs het water", "Natuuratelier buiten"],
+    matcherTerms: ["sport", "run", "wandel"],
   },
-  familie: {
+  {
+    value: "familie",
     label: "Familie",
     badgeClass: "bg-[#d8f0eb] text-[#24655a]",
     dotClass: "bg-[#2fa48f]",
     surfaceClass: "bg-[#dff1ec]",
+    timelineAccent: "lime",
+    titleOptions: ["Familieprogramma in de stad", "Kinderroute met workshops", "Speelmiddag buiten", "Creatief uitje voor iedereen"],
+    matcherTerms: [],
   },
-} as const;
+];
 
-export type JaarkalenderCategoryKey = keyof typeof jaarkalenderCategoryMeta;
+const jaarkalenderCategoryByKey = Object.fromEntries(
+  jaarkalenderCategoryDefinitions.map((category) => [category.value, category]),
+) as Record<JaarkalenderCategoryKey, JaarkalenderCategoryDefinition>;
+
+export function getJaarkalenderCategory(category: JaarkalenderCategoryKey) {
+  return jaarkalenderCategoryByKey[category];
+}
+
+export function isJaarkalenderCategory(
+  value: string | null | undefined,
+): value is JaarkalenderCategoryKey {
+  return typeof value === "string" && value in jaarkalenderCategoryByKey;
+}
+
+export function getJaarkalenderCategoryFromText(text: string) {
+  const normalizedText = text.toLowerCase();
+  return (
+    jaarkalenderCategoryDefinitions.find((category) =>
+      category.matcherTerms.some((term) => normalizedText.includes(term)),
+    )?.value ?? "cultuur"
+  );
+}
 
 export type JaarkalenderCalendarItem = {
   title: string;
@@ -89,15 +153,6 @@ export type JaarkalenderCalendarSummary = {
   text: string;
   categories: JaarkalenderCategoryKey[];
 };
-
-const calendarCategoryRotation: JaarkalenderCategoryKey[] = [
-  "cultuur",
-  "muziek",
-  "culinair",
-  "festival",
-  "natuur",
-  "familie",
-];
 
 const calendarLocations = [
   { venue: "Westergas", city: "Amsterdam" },
@@ -135,45 +190,6 @@ const calendarVibes = [
   "Ontspannen",
   "Avontuurlijk",
 ];
-
-const calendarTitles: Record<JaarkalenderCategoryKey, string[]> = {
-  cultuur: [
-    "Open atelier avond",
-    "Fotografie route",
-    "Museum late session",
-    "Kunst in de stad",
-  ],
-  muziek: [
-    "Live sessie in de stad",
-    "Akoestische avond",
-    "Kleine zaal concert",
-    "DJ set aan het water",
-  ],
-  culinair: [
-    "Proefmarkt in het centrum",
-    "Shared dining route",
-    "Streetfood avond",
-    "Lokale makers lunch",
-  ],
-  festival: [
-    "Stadsfestival met licht",
-    "Weekend vol optredens",
-    "Cultureel pleinprogramma",
-    "Seizoensopening festival",
-  ],
-  natuur: [
-    "Boswandeling met gids",
-    "Zonsopkomst in het park",
-    "Stilte route langs het water",
-    "Natuuratelier buiten",
-  ],
-  familie: [
-    "Familieprogramma in de stad",
-    "Kinderroute met workshops",
-    "Speelmiddag buiten",
-    "Creatief uitje voor iedereen",
-  ],
-};
 
 export type TimelineCardTone = "peach" | "mint" | "sand" | "dark" | "light";
 
@@ -266,13 +282,13 @@ function buildCalendarItems(dayNumber: number): JaarkalenderCalendarItem[] {
 
   return Array.from({ length: itemCount }, (_, index) => {
     const category =
-      calendarCategoryRotation[
-        (dayNumber + index) % calendarCategoryRotation.length
-      ];
+      jaarkalenderCategoryDefinitions[
+        (dayNumber + index) % jaarkalenderCategoryDefinitions.length
+      ].value;
     const location =
       calendarLocations[(dayNumber * 2 + index) % calendarLocations.length];
     const gratis = (dayNumber + index) % 4 === 0;
-    const titleOptions = calendarTitles[category];
+    const titleOptions = getJaarkalenderCategory(category).titleOptions;
 
     return {
       title: titleOptions[(dayNumber + index) % titleOptions.length],
@@ -330,11 +346,11 @@ function buildCalendarTimeline(
 
   return calendarItems.map((item, index) => ({
     time: item.startAt.match(/T(\d{2}:\d{2})/)?.[1] ?? "De hele dag",
-    accent: item.categorie === "festival" ? "red" : "lime",
+    accent: getJaarkalenderCategory(item.categorie).timelineAccent,
     display: "grid",
     cards: [
       {
-        category: jaarkalenderCategoryMeta[item.categorie].label,
+        category: getJaarkalenderCategory(item.categorie).label,
         venue: item.locatie,
         title: item.title,
         description: [item.binnenBuiten, item.sfeer, item.metWie]

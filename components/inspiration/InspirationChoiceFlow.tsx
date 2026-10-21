@@ -21,6 +21,7 @@ import {
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
 import { getInspirationFlowResults } from "@/lib/inspiration/cityContentMapper";
+import { getInspirationDetailHref } from "@/lib/inspiration/href";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import InspirationChoiceStep from "./InspirationChoiceStep";
 import InspirationCityStep from "./InspirationCityStep";
@@ -267,7 +268,7 @@ function toExploreCard(result: InspirationResult, index: number): ExploreCard {
     time: result.openingHours,
     location: result.location,
     image: null,
-    href: result.href ?? `/inspiratie/${result.category}/${result.slug}`,
+    href: result.href ?? getInspirationDetailHref(result.category, result.slug),
     description: result.description,
     price: result.price,
     ratingValue: result.ratingValue,

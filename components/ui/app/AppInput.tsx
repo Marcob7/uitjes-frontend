@@ -9,6 +9,9 @@ export type AppInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   hint?: string;
   wrapperClassName?: string;
+  labelClassName?: string;
+  hintClassName?: string;
+  showRequiredIndicator?: boolean;
 };
 
 export const AppInput = React.forwardRef<HTMLInputElement, AppInputProps>(
@@ -20,6 +23,9 @@ export const AppInput = React.forwardRef<HTMLInputElement, AppInputProps>(
       hint,
       className,
       wrapperClassName,
+      labelClassName,
+      hintClassName,
+      showRequiredIndicator = true,
       disabled,
       required,
       ...props
@@ -35,10 +41,10 @@ export const AppInput = React.forwardRef<HTMLInputElement, AppInputProps>(
         {label ? (
           <label
             htmlFor={inputId}
-            className="text-sm font-semibold text-[#27231f]"
+            className={cn("text-sm font-semibold text-[#27231f]", labelClassName)}
           >
             {label}
-            {required ? <span className="text-[#9b3c2e]"> *</span> : null}
+            {required && showRequiredIndicator ? <span className="text-[#9b3c2e]"> *</span> : null}
           </label>
         ) : null}
 
@@ -58,7 +64,7 @@ export const AppInput = React.forwardRef<HTMLInputElement, AppInputProps>(
         />
 
         {hint && !error ? (
-          <p id={helperId} className="text-xs leading-5 text-[#71675d]">
+          <p id={helperId} className={cn("text-xs leading-5 text-[#71675d]", hintClassName)}>
             {hint}
           </p>
         ) : null}

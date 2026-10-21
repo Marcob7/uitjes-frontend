@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { useFavorites } from "@/components/FavouritesProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { PageContainer } from "@/components/ui";
 import { AppFilterChip } from "@/components/ui/app/AppFilterChip";
 import type { FavoriteItem } from "@/lib/favorites";
 import { localePathname, localeToIntl } from "@/lib/i18n/config";
@@ -188,8 +189,8 @@ export default function SavedFavoritesPage() {
   const hasSavedItems = favorites.length > 0 || savedPlaces.length > 0;
 
   return (
-    <main className="min-h-screen bg-[#f7f5f0] px-4 py-8 text-[#171717] sm:px-6 lg:px-8 mt-28">
-      <div className="mx-auto max-w-5xl">
+    <main className="mt-28 min-h-screen bg-[#f7f5f0] py-8 text-[#171717]">
+      <PageContainer>
         <div className="mb-8 max-w-2xl">
 
           <h1 className="mt-2 text-[clamp(2.2rem,6vw,3.8rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-[#171511]">
@@ -426,7 +427,7 @@ export default function SavedFavoritesPage() {
             ) : null}
           </div>
         )}
-      </div>
+      </PageContainer>
     </main>
   );
 }

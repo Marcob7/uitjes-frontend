@@ -15,7 +15,7 @@ import { isCityContentCity } from "@/lib/cityContentCities";
 import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
 import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
-import { localePathname } from "@/lib/i18n/config";
+import { buildSearchHref } from "@/lib/search/searchHref";
 
 type OntdekPageProps = {
   searchParams?: {
@@ -169,7 +169,7 @@ export default function OntdekPage({ searchParams }: OntdekPageProps) {
   const cityFromQuery = getCitySlugFromQuery(query);
 
   if (query && !searchParams?.city && !cityFromQuery) {
-    redirect(`${localePathname("/zoeken", getRequestLocale())}?query=${encodeURIComponent(query)}`);
+    redirect(buildSearchHref(getRequestLocale(), { query }));
   }
 
   const city = normalizeCity(searchParams?.city ?? cityFromQuery ?? undefined);

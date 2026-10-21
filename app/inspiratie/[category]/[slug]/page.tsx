@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SavePlaceButton from "@/components/SavePlaceButton";
 import ShareAction from "@/components/ShareAction";
+import { ActionGroup, MetaRow } from "@/components/ui";
 import { buildActionSearchHref, buildMapsSearchHref } from "@/lib/actionLinks";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
+import { getInspirationDetailHref } from "@/lib/inspiration/href";
 import {
   getInspirationDetailStaticParams,
   getInspirationResultBySlug,
@@ -260,15 +262,7 @@ function DetailGroup({
 
       <dl className="border-t border-[#e2e5df]">
         {rows.map(([label, value]) => (
-          <div
-            key={label}
-            className="grid gap-1 border-b border-[#e2e5df] px-5 py-3.5 last:border-0 sm:grid-cols-[9rem_1fr] sm:gap-6"
-          >
-            <dt className="text-sm text-[#70776f]">{label}</dt>
-            <dd className="text-sm font-semibold leading-6 text-[#25382e]">
-              {value}
-            </dd>
-          </div>
+          <MetaRow key={label} label={label} value={value} />
         ))}
       </dl>
     </details>
@@ -304,7 +298,7 @@ export default function InspirationDetailPage({
     inspirationCategoryLabels[activeCategory];
 
   const detailHref = withContext(
-    `/inspiratie/${params.category}/${params.slug}`,
+    getInspirationDetailHref(params.category, params.slug),
     query
   );
 
@@ -414,7 +408,7 @@ export default function InspirationDetailPage({
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <ActionGroup className="mt-8">
                 <a
                   href={searchHref}
                   target="_blank"
@@ -440,7 +434,7 @@ export default function InspirationDetailPage({
                   text={`Bekijk “${result.title}” op Uitjes.`}
                   url={canonicalDetailPath}
                 />
-              </div>
+              </ActionGroup>
             </div>
           </div>
 
@@ -602,11 +596,12 @@ export default function InspirationDetailPage({
                   key={item.slug}
                   item={item}
                   href={withContext(
-                    `/inspiratie/${
+                    getInspirationDetailHref(
                       item.categories.includes(activeCategory)
                         ? activeCategory
-                        : item.category
-                    }/${item.slug}`,
+                        : item.category,
+                      item.slug
+                    ),
                     query
                   )}
                 />

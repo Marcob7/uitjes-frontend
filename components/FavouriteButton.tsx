@@ -5,6 +5,7 @@ import { useState, type MouseEvent } from "react";
 import { useFavorites } from "@/components/FavouritesProvider";
 import { useSaveAuthentication } from "@/components/useSaveAuthentication";
 import { useSaveFeedback } from "@/components/SaveFeedbackProvider";
+import SaveToggleButton from "@/components/SaveToggleButton";
 import { getCommonMessages } from "@/lib/i18n/messages";
 
 type FavouriteButtonProps = {
@@ -107,13 +108,13 @@ export default function FavouriteButton({
   }
 
   const button = (
-    <button
-      type="button"
+    <SaveToggleButton
+      saved={saved}
       onClick={handleClick}
       disabled={isLoading || busy}
-      aria-pressed={saved}
-      aria-label={saved ? copy.ariaRemove : copy.ariaSave}
-      className={saved ? savedButtonClassName : buttonClassName}
+      ariaLabel={saved ? copy.ariaRemove : copy.ariaSave}
+      className={buttonClassName}
+      savedClassName={savedButtonClassName}
     >
       {isCompact ? (
         <>
@@ -129,7 +130,7 @@ export default function FavouriteButton({
       ) : (
         copy.save
       )}
-    </button>
+    </SaveToggleButton>
   );
 
   return message ? (

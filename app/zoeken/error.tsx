@@ -1,6 +1,7 @@
 "use client";
 
 import SearchForm from "@/components/search/SearchForm";
+import SearchErrorState from "@/components/search/SearchErrorState";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 
@@ -23,22 +24,20 @@ export default function SearchError({ reset }: { error: Error & { digest?: strin
       </section>
 
       <section className="mx-auto max-w-[1214px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8">
-        <div className="search-empty-state max-w-2xl" role="alert" aria-labelledby="search-error-heading">
-      
-          <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">
-            {t("search.errorTitle")}
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">
-            {t("search.errorIntro")}
-          </p>
-          <button
-            type="button"
-            onClick={reset}
-            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#1d5a46] px-5 text-sm font-semibold text-white outline-none transition hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc]"
-          >
-            {t("common.retry")}
-          </button>
-        </div>
+        <SearchErrorState
+          headingId="search-error-heading"
+          title={t("search.errorTitle")}
+          description={t("search.errorIntro")}
+          action={
+            <button
+              type="button"
+              onClick={reset}
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1d5a46] px-5 text-sm font-semibold text-white outline-none transition hover:bg-[#164a3a] focus-visible:ring-2 focus-visible:ring-[#005fcc]"
+            >
+              {t("common.retry")}
+            </button>
+          }
+        />
       </section>
     </main>
   );

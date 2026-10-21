@@ -4,17 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname } from "@/lib/i18n/config";
+import {
+  footerPrimaryNavigationItems,
+  footerSecondaryNavigationItems,
+} from "@/lib/navigation/siteNavigation";
 
 export default function FooterSection() {
   const { locale, t } = useLocale();
   const footerLinks = [
-    { name: t("navigation.explore"), href: "/ontdek" },
-    { name: t("navigation.calendar"), href: "/jaarkalender" },
-    { name: t("navigation.festivals"), href: "/festivals/kalender" },
-    { name: t("navigation.inspiration"), href: "/inspiratie" },
-    { name: t("footer.news"), href: "/nieuws" },
-    { name: t("navigation.faq"), href: "/faq" },
-    { name: t("navigation.saved"), href: "/saved" },
+    ...footerPrimaryNavigationItems.map((item) => ({
+      id: item.id,
+      name: t(item.labelKey),
+      href: item.href,
+    })),
+    { id: "news", name: t("footer.news"), href: "/nieuws" },
+    ...footerSecondaryNavigationItems.map((item) => ({
+      id: item.id,
+      name: t(item.labelKey),
+      href: item.href,
+    })),
   ];
   return (
     <footer className="border-t border-[#193528]/10 bg-[#fbfaf7] text-[#173024]">
@@ -80,7 +88,7 @@ export default function FooterSection() {
             <nav aria-label={t("footer.navigation")} className="lg:pt-2">
               <ul className="grid grid-cols-2 gap-x-10 gap-y-4 text-sm font-semibold sm:flex sm:flex-wrap sm:items-center sm:gap-x-12 sm:gap-y-5">
                 {footerLinks.map((link) => (
-                  <li key={link.name}>
+                  <li key={link.id}>
                     <Link
                       href={localePathname(link.href, locale)}
                       className="transition hover:text-[#2f9f6c]"

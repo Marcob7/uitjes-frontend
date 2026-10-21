@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 import { AppButton } from "./AppButton";
+import { IconButton } from "../IconButton";
 
 export type AppSearchSuggestion = {
   label: string;
@@ -103,14 +104,13 @@ export function AppSearchInput({
             )}
           />
           {value ? (
-            <button
-              type="button"
+            <IconButton
               onClick={() => onClear?.() ?? onChange("")}
-              className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg text-[#756b61] transition hover:bg-[#f7f3ef] hover:text-[#211d19] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005fcc]"
+              className="-mr-2 rounded-full text-lg text-[#756b61] transition hover:bg-[#f7f3ef] hover:text-[#211d19] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005fcc]"
               aria-label={t("common.clear")}
             >
               <span aria-hidden="true">×</span>
-            </button>
+            </IconButton>
           ) : null}
         </div>
 

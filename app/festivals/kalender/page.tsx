@@ -8,6 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FestivalHero from "@/components/FestivalHero";
 import FestivalPageScenery from "@/components/festivals/FestivalPageScenery";
 import { NewsLetterSection } from "@/components/NewsLetterSection";
+import { IconButton } from "@/components/ui";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 import FestivalGenreFilters, {
   DEFAULT_FESTIVAL_GENRE,
@@ -296,23 +297,21 @@ function FestivalsCalendarContent() {
           }
           controls={
             <>
-              <button
-                type="button"
+              <IconButton
                 onClick={() => setCurrentMonth((month) => addMonths(month, -1))}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
+                className="rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
                 aria-label={t("festival.previousMonth")}
               >
                 <ArrowLeftIcon />
-              </button>
+              </IconButton>
               <span className="text-lg font-medium text-white">{monthTitle}</span>
-              <button
-                type="button"
+              <IconButton
                 onClick={() => setCurrentMonth((month) => addMonths(month, 1))}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
+                className="rounded-full border border-white/24 bg-white/14 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8f2d0]"
                 aria-label={t("festival.nextMonth")}
               >
                 <ArrowRightIcon />
-              </button>
+              </IconButton>
             </>
           }
         />

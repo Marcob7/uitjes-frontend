@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { AppInput } from "@/components/ui/app";
 
 export default function JwtLoginForm() {
   const { login } = useAuth();
@@ -29,45 +30,35 @@ export default function JwtLoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
-      <div>
-        <label
-          htmlFor="jwt-identifier"
-          className="text-sm font-semibold text-neutral-900"
-        >
-          {t("auth.identifier")}
-        </label>
-        <input
+      <AppInput
           id="jwt-identifier"
           name="identifier"
+          label={t("auth.identifier")}
+          labelClassName="text-neutral-900"
+          showRequiredIndicator={false}
           type="text"
           autoComplete="username"
           value={identifier}
           onChange={(event) => setIdentifier(event.target.value)}
           disabled={loading}
           required
-          className="mt-2 min-h-12 w-full rounded-2xl border border-neutral-200 bg-white px-4 text-base text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition focus:border-lime-500 focus:ring-4 focus:ring-lime-500/15 disabled:bg-neutral-100"
+          className="min-h-12 w-full rounded-2xl border border-neutral-200 bg-white px-4 text-base text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition focus:border-lime-500 focus:ring-4 focus:ring-lime-500/15 focus:bg-white disabled:bg-neutral-100 disabled:text-neutral-950 sm:text-base"
         />
-      </div>
 
-      <div>
-        <label
-          htmlFor="jwt-password"
-          className="text-sm font-semibold text-neutral-900"
-        >
-          {t("auth.password")}
-        </label>
-        <input
+      <AppInput
           id="jwt-password"
           name="password"
+          label={t("auth.password")}
+          labelClassName="text-neutral-900"
+          showRequiredIndicator={false}
           type="password"
           autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           disabled={loading}
           required
-          className="mt-2 min-h-12 w-full rounded-2xl border border-neutral-200 bg-white px-4 text-base text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition focus:border-lime-500 focus:ring-4 focus:ring-lime-500/15 disabled:bg-neutral-100"
+          className="min-h-12 w-full rounded-2xl border border-neutral-200 bg-white px-4 text-base text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition focus:border-lime-500 focus:ring-4 focus:ring-lime-500/15 focus:bg-white disabled:bg-neutral-100 disabled:text-neutral-950 sm:text-base"
         />
-      </div>
 
       {error ? (
         <p

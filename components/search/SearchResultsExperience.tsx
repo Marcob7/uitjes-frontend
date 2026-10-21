@@ -5,9 +5,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import SavePlaceButton from "@/components/SavePlaceButton";
 import SearchRetryButton from "@/components/search/SearchRetryButton";
+import SearchErrorState from "@/components/search/SearchErrorState";
+import { IconButton } from "@/components/ui";
 import ResultCard from "@/components/ui/ResultCard";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname, localeToIntl } from "@/lib/i18n/config";
+import { buildSearchHref } from "@/lib/search/searchHref";
 import type { GeneralSearchResult } from "@/lib/search/searchResults";
 import {
   type SearchResultsFilterKey,
@@ -131,10 +134,11 @@ function HeartIcon({ filled = false }: { filled?: boolean }) {
 function SearchResultCard({ result, index }: { result: GeneralSearchResult; index: number }) {
   const { locale, t } = useLocale();
   const priceLabel = formatPriceLabel(result.priceLabel);
+  const detailHref = localePathname(result.href, locale);
 
   return (
     <ResultCard
-      href={localePathname(result.href, locale)}
+      href={detailHref}
       title={result.title}
       image={result.image}
       imageAlt={result.imageAlt}
@@ -147,7 +151,7 @@ function SearchResultCard({ result, index }: { result: GeneralSearchResult; inde
       reviewsHref={result.reviewsHref}
       priority={index < 3}
       variant="compact"
-      favoriteAction={<SavePlaceButton item={{ id: result.id, title: result.title, href: localePathname(result.href, locale), meta: result.location, image: result.image }} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#D5DED6] bg-white px-3 text-xs font-semibold text-[#31483A] transition hover:border-[#8FAA94] hover:bg-[#F7FAF6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70" savedClassName="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#B9D7B7] bg-[#EEF6EA] px-3 text-xs font-semibold text-[#285239] transition hover:bg-[#E5F0E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70" savedChildren={<><HeartIcon filled /><span aria-hidden="true">{t("discover.saved")}</span><span className="sr-only">{t("search.removeSaved")}</span></>}><HeartIcon /><span aria-hidden="true">{t("discover.save")}</span><span className="sr-only">{t("search.save", { title: result.title })}</span></SavePlaceButton>}
+      favoriteAction={<SavePlaceButton item={{ id: result.id, title: result.title, href: detailHref, meta: result.location, image: result.image }} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#D5DED6] bg-white px-3 text-xs font-semibold text-[#31483A] transition hover:border-[#8FAA94] hover:bg-[#F7FAF6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70" savedClassName="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#B9D7B7] bg-[#EEF6EA] px-3 text-xs font-semibold text-[#285239] transition hover:bg-[#E5F0E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70" savedChildren={<><HeartIcon filled /><span aria-hidden="true">{t("discover.saved")}</span><span className="sr-only">{t("search.removeSaved")}</span></>}><HeartIcon /><span aria-hidden="true">{t("discover.save")}</span><span className="sr-only">{t("search.save", { title: result.title })}</span></SavePlaceButton>}
     />
   );
 }
@@ -205,11 +209,11 @@ export default function SearchResultsExperience({ query, results, error = false,
     label: t(option.labelKey),
   }));
   const shortcuts = [
-    { label: t("search.whenToday"), href: `${localePathname("/zoeken", locale)}?query=vandaag&when=today` },
-    { label: t("search.whenWeekend"), href: `${localePathname("/zoeken", locale)}?query=weekend&when=weekend` },
-    { label: t("search.free"), href: `${localePathname("/zoeken", locale)}?query=gratis&free=1` },
-    { label: t("search.categoryChildren"), href: `${localePathname("/zoeken", locale)}?query=kinderen&category=met-kinderen` },
-    { label: t("search.categoryOutdoor"), href: `${localePathname("/zoeken", locale)}?query=buiten&category=buiten` },
+    { label: t("search.whenToday"), href: buildSearchHref(locale, { query: "vandaag", when: "today" }) },
+    { label: t("search.whenWeekend"), href: buildSearchHref(locale, { query: "weekend", when: "weekend" }) },
+    { label: t("search.free"), href: buildSearchHref(locale, { query: "gratis", free: true }) },
+    { label: t("search.categoryChildren"), href: buildSearchHref(locale, { query: "kinderen", category: "met-kinderen" }) },
+    { label: t("search.categoryOutdoor"), href: buildSearchHref(locale, { query: "buiten", category: "buiten" }) },
     { label: t("search.nearby"), href: localePathname("/ontdek", locale) },
   ];
 
@@ -308,12 +312,12 @@ export default function SearchResultsExperience({ query, results, error = false,
   if (error) {
     return (
       <section className="mx-auto max-w-[1214px] px-4 pb-20 pt-7 sm:px-6 sm:pt-9 lg:px-8" aria-labelledby="search-error-heading">
-        <div className="search-empty-state max-w-2xl" role="alert">
-        
-          <h2 id="search-error-heading" className="mt-3 font-heading text-[clamp(2rem,4vw,3.3rem)] leading-[0.98] tracking-[-0.055em] text-[#22312a]">{t("search.errorTitle")}</h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-[#68746d] sm:text-base">{t("search.errorIntro")}</p>
-          <div className="mt-6"><SearchRetryButton /></div>
-        </div>
+        <SearchErrorState
+          headingId="search-error-heading"
+          title={t("search.errorTitle")}
+          description={t("search.errorIntro")}
+          action={<SearchRetryButton />}
+        />
       </section>
     );
   }
@@ -461,7 +465,7 @@ export default function SearchResultsExperience({ query, results, error = false,
                 <h2 id="filter-sheet-title" className="mt-2 font-heading text-3xl leading-none tracking-[-0.05em] text-[#22312a]">{t("search.filters")}</h2>
                 <p className="mt-2 text-sm text-[#68746d]">{t("search.filterIntro")}</p>
               </div>
-              <button ref={closeButtonRef} type="button" onClick={() => setSheetOpen(false)} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d1dbd2] bg-white text-[#33483b] outline-none transition hover:border-[#1d5a46] focus-visible:ring-2 focus-visible:ring-[#005fcc]" aria-label={t("search.closeFilters")}><CloseIcon /></button>
+              <IconButton ref={closeButtonRef} size="sm" onClick={() => setSheetOpen(false)} className="h-10 w-10 rounded-full border border-[#d1dbd2] bg-white text-[#33483b] outline-none transition hover:border-[#1d5a46] focus-visible:ring-2 focus-visible:ring-[#005fcc]" aria-label={t("search.closeFilters")}><CloseIcon /></IconButton>
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6 sm:px-7">

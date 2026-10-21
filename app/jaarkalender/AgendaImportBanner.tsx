@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { buildGoogleCalendarHref, buildOutlookCalendarHref, downloadCalendarFile, isCalendarExportable as hasStructuredCalendarDate, type CalendarEvent } from "@/lib/calendarIntegration";
-import { jaarkalenderCategoryMeta } from "./data";
+import { getJaarkalenderCategory } from "./data";
 import type { JaarkalenderCalendarItem } from "./data";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
@@ -21,7 +21,7 @@ function normalizeEvent(event: AgendaImportEvent, index: number): CalendarEvent 
   const time = event.item.datum.match(/(\d{1,2}):(\d{2})/);
   const [year, month, day] = event.dayIsoDate.split("-").map(Number);
   const start = new Date(year, month - 1, day, time ? Number(time[1]) : 0, time ? Number(time[2]) : 0);
-  return { title: event.item.title, start, end: time ? new Date(start.getTime() + 2 * 60 * 60 * 1000) : undefined, isAllDay: !time, location: event.item.locatie || undefined, description: [`Categorie: ${jaarkalenderCategoryMeta[event.item.categorie].label}`, `Voor: ${event.item.metWie}`, `Prijs: ${event.item.prijs}`, `Sfeer: ${event.item.sfeer}`].filter(Boolean).join("\n"), url: new URL(`/jaarkalender/${event.daySlug}`, window.location.origin).toString(), uid: `jaarkalender-${event.daySlug}-${index}@uitjes-nl.local` };
+  return { title: event.item.title, start, end: time ? new Date(start.getTime() + 2 * 60 * 60 * 1000) : undefined, isAllDay: !time, location: event.item.locatie || undefined, description: [`Categorie: ${getJaarkalenderCategory(event.item.categorie).label}`, `Voor: ${event.item.metWie}`, `Prijs: ${event.item.prijs}`, `Sfeer: ${event.item.sfeer}`].filter(Boolean).join("\n"), url: new URL(`/jaarkalender/${event.daySlug}`, window.location.origin).toString(), uid: `jaarkalender-${event.daySlug}-${index}@uitjes-nl.local` };
 }
 
 export function AgendaImportBanner({ events }: { events: AgendaImportEvent[] }) {

@@ -1,6 +1,7 @@
 import CalendarActions from "@/components/calendar/CalendarActions";
 import ShareAction from "@/components/ShareAction";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { ActionGroup } from "@/components/ui";
 import type { CalendarEventInput } from "@/lib/calendarIntegration";
 
 type EventDetailsActionsProps = {
@@ -15,13 +16,13 @@ export function EventDetailsActions({
   const { t } = useLocale();
 
   return (
-    <div className="mt-5 flex flex-wrap gap-2">
+    <ActionGroup className="mt-5 gap-2">
       <CalendarActions event={calendar} />
       <ShareAction
         title={title}
         text={t("events.shareText", { title })}
         url={calendar.url || "/event-details"}
       />
-    </div>
+    </ActionGroup>
   );
 }

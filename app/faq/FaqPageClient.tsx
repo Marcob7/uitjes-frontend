@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type ReactNode,
 } from "react";
 
 import {
@@ -15,6 +16,7 @@ import {
   type FaqCategorySlug,
 } from "@/lib/faq";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { IconButton } from "@/components/ui";
 
 type ActiveCategory = "alle" | FaqCategorySlug;
 
@@ -159,6 +161,25 @@ function PlusIcon({ open }: { open: boolean }) {
   );
 }
 
+function FaqSectionIntro({
+  title,
+  children,
+}: {
+  title: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export default function FaqPageClient() {
   const { locale, t } = useLocale();
   const { categories: faqCategories, items: faqItems } = useMemo(
@@ -291,14 +312,14 @@ export default function FaqPageClient() {
                 className="min-w-0 flex-1 bg-transparent text-base text-[#202d29] outline-none placeholder:text-[#8b958e]"
               />
               {query ? (
-                <button
-                  type="button"
+                <IconButton
+                  size="sm"
                   onClick={clearSearch}
                   aria-label={t("faq.clearSearch")}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl text-[#637169] transition hover:bg-[#f1f5ec] hover:text-[#202d29] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc]"
+                  className="h-10 w-10 rounded-full text-xl text-[#637169] transition hover:bg-[#f1f5ec] hover:text-[#202d29] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc]"
                 >
                   <span aria-hidden="true">×</span>
-                </button>
+                </IconButton>
               ) : null}
             </div>
             <button
@@ -320,17 +341,11 @@ export default function FaqPageClient() {
         className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-      
-              <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
-                {t("faq.categoryTitle")}
-              </h2>
-            </div>
+          <FaqSectionIntro title={t("faq.categoryTitle")}>
             <p className="max-w-[28rem] text-sm leading-7 text-[#65736c] sm:text-right">
               {t("faq.categoryIntro")}
             </p>
-          </div>
+          </FaqSectionIntro>
 
           <div className="mt-9 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {faqCategories.map((category) => {
@@ -380,20 +395,14 @@ export default function FaqPageClient() {
         className="scroll-mt-6 border-y border-[#e2e5de] bg-[#fffdf8] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
       >
         <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-            
-              <h2 className="max-w-[16ch] text-[clamp(2.25rem,4.6vw,3.8rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[#202d29]">
-                {t("faq.answersTitle")}
-              </h2>
-            </div>
+          <FaqSectionIntro title={t("faq.answersTitle")}>
             <p
               aria-live="polite"
               className="text-sm font-semibold text-[#65736c] sm:pb-1"
             >
               {filteredItems.length} {resultLabel}
             </p>
-          </div>
+          </FaqSectionIntro>
 
           <div
             role="tablist"

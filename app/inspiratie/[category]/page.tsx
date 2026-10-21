@@ -12,6 +12,7 @@ import {
   isInspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
+import { getInspirationDetailHref } from "@/lib/inspiration/href";
 
 type PageProps = {
   params: { category: string };
@@ -209,7 +210,7 @@ export default function InspirationCategoryPage({
                 key={item.slug}
                 item={item}
                 href={withContext(
-                  `/inspiratie/${item.category}/${item.slug}`,
+                  getInspirationDetailHref(item.category, item.slug),
                   query
                 )}
               />

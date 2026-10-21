@@ -32,7 +32,8 @@ import { JaarkalenderMonthNavigation } from "./JaarkalenderMonthNavigation";
 import { JaarkalenderGrid, type MonthCalendarCell } from "./JaarkalenderGrid";
 import { JaarkalenderFilterDialog } from "./JaarkalenderFilterDialog";
 import {
-  jaarkalenderCategoryMeta,
+  getJaarkalenderCategory,
+  jaarkalenderCategoryDefinitions,
   jaarkalenderDays,
   getJaarkalenderCalendarItemsForDate,
   type JaarkalenderDay,
@@ -238,9 +239,7 @@ export function JaarkalenderInteractiveCalendar({
     );
   }, [cityOptions, cityQuery]);
 
-  const categoryOptions = Object.keys(
-    jaarkalenderCategoryMeta
-  ) as JaarkalenderCategoryKey[];
+  const categoryOptions = jaarkalenderCategoryDefinitions;
 
   const daysByNumber = useMemo(
     () => new Map(jaarkalenderDays.map((day) => [day.dayNumber, day])),
@@ -512,7 +511,7 @@ export function JaarkalenderInteractiveCalendar({
           className="group min-h-[4.25rem] min-w-0 rounded-[1.1rem] px-3 text-left hover:bg-[#f0f3ed] focus-visible:outline-[#00784a] sm:px-4 lg:border-r lg:border-[#e2dfd6]"
           leadingIcon={<span className="text-[#00784a]"><FilterIcon /></span>}
           label={<span className="text-xs font-medium text-[#716e66]">{t("yearCalendar.category")}</span>}
-          value={<span className="text-sm font-semibold text-[#292e2a]">{selectedCategory ? jaarkalenderCategoryMeta[selectedCategory].label : t("yearCalendar.allEvents")}</span>}
+          value={<span className="text-sm font-semibold text-[#292e2a]">{selectedCategory ? getJaarkalenderCategory(selectedCategory).label : t("yearCalendar.allEvents")}</span>}
           trailingIcon={<span className="text-[#8d938e] group-hover:text-[#00733d]"><ChevronDownIcon /></span>}
         />
 
@@ -709,18 +708,18 @@ export function JaarkalenderInteractiveCalendar({
                     Alle categorieen
                   </button>
                   {categoryOptions.map((category) => {
-                    const meta = jaarkalenderCategoryMeta[category];
+                    const meta = category;
 
                     return (
                       <button
-                        key={category}
+                        key={category.value}
                         type="button"
                         onClick={() => {
-                          setCategoryFilter(category);
+                          setCategoryFilter(category.value);
                           closeModal();
                         }}
                         className={`min-h-12 rounded-full border px-5 text-left text-sm font-semibold transition ${
-                          selectedCategory === category
+                          selectedCategory === category.value
                             ? "border-[#b8df71] bg-[#f3fadf] text-[#2c381d]"
                             : `${meta.badgeClass} border-transparent hover:opacity-90`
                         }`}

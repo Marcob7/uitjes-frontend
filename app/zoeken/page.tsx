@@ -4,6 +4,7 @@ import Link from "next/link";
 import SearchForm from "@/components/search/SearchForm";
 import SearchResultsExperience from "@/components/search/SearchResultsExperience";
 import { getGeneralSearchResults } from "@/lib/search/searchResults";
+import { buildSearchHref } from "@/lib/search/searchHref";
 import { normalizeSearchQuery } from "@/lib/searchIntent";
 import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
 import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
@@ -49,8 +50,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     { label: t("search.popularOutdoor"), query: "buiten" },
   ];
   const discoveryLinks = [
-    { eyebrow: t("search.linkTodayEyebrow"), title: t("search.linkTodayTitle"), description: t("search.linkTodayDescription"), href: `${localePathname("/zoeken", locale)}?query=vandaag&when=today` },
-    { eyebrow: t("search.linkFamilyEyebrow"), title: t("search.linkFamilyTitle"), description: t("search.linkFamilyDescription"), href: `${localePathname("/zoeken", locale)}?query=kinderen&category=met-kinderen` },
+    { eyebrow: t("search.linkTodayEyebrow"), title: t("search.linkTodayTitle"), description: t("search.linkTodayDescription"), href: buildSearchHref(locale, { query: "vandaag", when: "today" }) },
+    { eyebrow: t("search.linkFamilyEyebrow"), title: t("search.linkFamilyTitle"), description: t("search.linkFamilyDescription"), href: buildSearchHref(locale, { query: "kinderen", category: "met-kinderen" }) },
     { eyebrow: t("search.linkCityEyebrow"), title: t("search.linkCityTitle"), description: t("search.linkCityDescription"), href: localePathname("/ontdek", locale) },
   ];
   const searchState = query
@@ -78,7 +79,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               {popularSearches.map((item) => (
                 <Link
                   key={item.query}
-                  href={`${localePathname("/zoeken", locale)}?query=${encodeURIComponent(item.query)}`}
+                  href={buildSearchHref(locale, { query: item.query })}
                   className="rounded-full border border-[#d7e0d7] bg-white/75 px-3 py-1.5 transition hover:border-[#1d5a46] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005fcc]"
                 >
                   {item.label}

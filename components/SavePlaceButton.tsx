@@ -4,6 +4,7 @@ import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
 import { useSaveAuthentication } from "@/components/useSaveAuthentication";
 import { useSaveFeedback } from "@/components/SaveFeedbackProvider";
+import SaveToggleButton from "@/components/SaveToggleButton";
 import {
   isPlaceSaved,
   SAVED_PLACES_CHANGE_EVENT,
@@ -60,14 +61,15 @@ export default function SavePlaceButton({
   }
 
   return (
-    <button
-      type="button"
+    <SaveToggleButton
+      saved={isAuthenticated && saved}
       onClick={handleClick}
       disabled={isChecking}
-      aria-pressed={isAuthenticated && saved}
-      className={isAuthenticated && saved ? savedClassName ?? className : className}
+      className={className}
+      savedClassName={savedClassName}
+      savedChildren={savedChildren}
     >
-      {isAuthenticated && saved ? savedChildren ?? children : children}
-    </button>
+      {children}
+    </SaveToggleButton>
   );
 }

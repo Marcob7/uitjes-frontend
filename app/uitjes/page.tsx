@@ -4,6 +4,7 @@ import {
   inspirationCategoryLabels,
   inspirationResults,
 } from "@/lib/dummy/inspirationResults";
+import { getInspirationDetailHref } from "@/lib/inspiration/href";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 
 export const metadata = {
@@ -121,7 +122,7 @@ export default function UitjesPage({ searchParams }: UitjesPageProps) {
                 title={result.title}
                 description={result.description}
                 image={getCardImageUrl(result.image)}
-                href={`/inspiratie/${result.category}/${result.slug}`}
+                href={getInspirationDetailHref(result.category, result.slug)}
                 badge={result.categoryLabel}
                 tags={[result.city, result.price, ...result.tags.slice(0, 3)]}
                 meta={`${result.type} - ${result.location}`}

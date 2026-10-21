@@ -9,12 +9,12 @@ import { useAuth } from "@/components/AuthProvider";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname, withoutLocalePrefix } from "@/lib/i18n/config";
-
-type NavigationItem = {
-  href: string;
-  label: string;
-  icon?: "search";
-};
+import {
+  loginNavigationItem,
+  mainNavigationItems,
+  savedNavigationItem,
+  searchNavigationItem,
+} from "@/lib/navigation/siteNavigation";
 
 type NavBarProps = {
   position?: "absolute" | "fixed";
@@ -54,24 +54,9 @@ function SearchIcon() {
 export default function NavBar({ position = "absolute" }: NavBarProps) {
   const pathname = usePathname();
   const unlocalizedPathname = withoutLocalePrefix(pathname);
-  const { locale, messages } = useLocale();
+  const { locale, messages, t } = useLocale();
   const { isAuthenticated, status } = useAuth();
-  const searchNavigationItem: NavigationItem = {
-    href: "/zoeken",
-    label: messages.navigation.search,
-    icon: "search",
-  };
-  const navigationItems: NavigationItem[] = [
-    { href: "/", label: messages.navigation.home },
-    { href: "/ontdek", label: messages.navigation.explore },
-    searchNavigationItem,
-    { href: "/event-details", label: messages.navigation.events },
-    { href: "/inspiratie", label: messages.navigation.inspiration },
-    { href: "/jaarkalender", label: messages.navigation.calendar },
-    { href: "/festivals/kalender", label: messages.navigation.festivals },
-    { href: "/faq", label: messages.navigation.faq },
-  ];
-  const desktopNavigationItems = navigationItems.filter(
+  const desktopNavigationItems = mainNavigationItems.filter(
     (item) => item.href !== searchNavigationItem.href,
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -230,8 +215,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
                           : "text-[#171b1c]/72 hover:text-[#171b1c] focus-visible:ring-[#171b1c]/70"
                     }`}
                   >
-                    {item.icon === "search" ? <SearchIcon /> : null}
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 </li>
               );
@@ -259,16 +243,25 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
             }`}
           >
             <SearchIcon />
-            {searchNavigationItem.label}
+            {t(searchNavigationItem.labelKey)}
           </Link>
 
           <Link
-            href={localePathname(isAuthenticated ? "/saved" : "/login", locale)}
+            href={localePathname(
+              isAuthenticated ? savedNavigationItem.href : loginNavigationItem.href,
+              locale,
+            )}
             onClick={closeMobileMenu}
-            aria-current={isAuthenticated && unlocalizedPathname === "/saved" ? "page" : undefined}
+            aria-current={
+              isAuthenticated && unlocalizedPathname === savedNavigationItem.href
+                ? "page"
+                : undefined
+            }
             className="inline-flex h-[38px] items-center justify-center rounded-full bg-[#f1f2f2] px-4 text-[13px] font-semibold text-[#131719] shadow-[0_8px_22px_rgba(0,0,0,0.13)] outline-none transition duration-200 hover:bg-white hover:shadow-[0_10px_28px_rgba(0,0,0,0.19)] focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           >
-            {status === "checking" || !isAuthenticated ? messages.navigation.login : messages.navigation.saved}
+            {status === "checking" || !isAuthenticated
+              ? t(loginNavigationItem.labelKey)
+              : t(savedNavigationItem.labelKey)}
           </Link>
 
           <div className={isOnDark ? "text-white" : "text-[#171b1c]"}>
@@ -330,7 +323,7 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
         >
           <nav aria-label={messages.navigation.mobileMain}>
             <ul className="grid gap-1">
-              {navigationItems.map((item) => {
+              {mainNavigationItems.map((item) => {
                 const active = isCurrentPath(unlocalizedPathname, item.href);
 
                 return (
@@ -345,8 +338,8 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
                           : "text-white/82 hover:bg-white/10 hover:text-white"
                       }`}
                     >
-                      {item.icon === "search" ? <SearchIcon /> : null}
-                      {item.label}
+                      {item.id === "search" ? <SearchIcon /> : null}
+                      {t(item.labelKey)}
                     </Link>
                   </li>
                 );
