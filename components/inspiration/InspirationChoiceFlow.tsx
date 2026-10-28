@@ -13,7 +13,7 @@ import type { ExploreCard, ResultFilterKey } from "@/components/city-explore/typ
 import { filterCardsByResultFilters } from "@/components/city-explore/utils";
 import { getCityContentByCity, type CityContentItem } from "@/lib/api/cityContent";
 import { CITY_CONTENT_CITY_SLUGS, isCityContentCity } from "@/lib/cityContentCities";
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { findCity, normalizeCitySlug } from "@/lib/cityConfig";
 import {
   featuredInspirationCities,
   resolveNearestInspirationCityFromCoordinates,
@@ -152,7 +152,7 @@ const supportedCitySlugs = new Set<string>([
 /** The existing city config remains the source for labels and slug normalization. */
 const supportedInspirationCities: CityOption[] = Array.from(supportedCitySlugs)
   .map((value) => {
-    const configuredCity = cityOptions.find((city) => city.value === value);
+    const configuredCity = findCity(value);
     const featuredCity = featuredInspirationCities.find((city) => city.value === value);
     return configuredCity ?? featuredCity;
   })

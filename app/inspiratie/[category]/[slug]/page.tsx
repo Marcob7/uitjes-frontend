@@ -8,7 +8,10 @@ import { ActionGroup, MetaRow } from "@/components/ui";
 import { buildActionSearchHref, buildMapsSearchHref } from "@/lib/actionLinks";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { optimizeCssBackground } from "@/lib/remoteImage";
-import { getInspirationDetailHref } from "@/lib/inspiration/href";
+import {
+  getInspirationDetailHref,
+  withInspirationContext,
+} from "@/lib/inspiration/href";
 import {
   getInspirationDetailStaticParams,
   getInspirationResultBySlug,
@@ -31,24 +34,6 @@ type PageProps = {
 
 export const dynamicParams = false;
 export const runtime = "edge";
-
-function buildContextQuery(searchParams?: PageProps["searchParams"]) {
-  const params = new URLSearchParams();
-
-  if (searchParams?.location) {
-    params.set("location", searchParams.location);
-  }
-
-  if (searchParams?.nearbyCity) {
-    params.set("nearbyCity", searchParams.nearbyCity);
-  }
-
-  return params.toString();
-}
-
-function withContext(href: string, query: string) {
-  return query ? `${href}?${query}` : href;
-}
 
 export function generateStaticParams() {
   return getInspirationDetailStaticParams();
@@ -288,8 +273,6 @@ export default function InspirationDetailPage({
     notFound();
   }
 
-  const query = buildContextQuery(searchParams);
-
   // Context parameters tailor the surrounding inspiration journey, but they
   // are not part of the public detail URL someone should receive when sharing.
   const canonicalDetailPath = `/inspiratie/${encodeURIComponent(params.category)}/${encodeURIComponent(params.slug)}`;
@@ -297,9 +280,9 @@ export default function InspirationDetailPage({
   const categoryLabel =
     inspirationCategoryLabels[activeCategory];
 
-  const detailHref = withContext(
+  const detailHref = withInspirationContext(
     getInspirationDetailHref(params.category, params.slug),
-    query
+    searchParams
   );
 
   const savedPlace = {
@@ -339,9 +322,9 @@ export default function InspirationDetailPage({
             },
             {
               label: categoryLabel,
-              href: withContext(
+              href: withInspirationContext(
                 `/inspiratie/${params.category}`,
-                query
+                searchParams
               ),
             },
             {
@@ -579,9 +562,9 @@ export default function InspirationDetailPage({
               </div>
 
               <Link
-                href={withContext(
+                href={withInspirationContext(
                   `/inspiratie/${activeCategory}`,
-                  query
+                  searchParams
                 )}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#315c43]"
               >
@@ -595,14 +578,14 @@ export default function InspirationDetailPage({
                 <SimilarItem
                   key={item.slug}
                   item={item}
-                  href={withContext(
+                  href={withInspirationContext(
                     getInspirationDetailHref(
                       item.categories.includes(activeCategory)
                         ? activeCategory
                         : item.category,
                       item.slug
                     ),
-                    query
+                    searchParams
                   )}
                 />
               ))}

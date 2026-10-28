@@ -4,7 +4,7 @@ import * as React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { AppButton, AppInput } from "@/components/ui/app";
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { findCity, getCityLabel, cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
 import {
   getInspirationCityLabel,
   resolveNearestInspirationCityFromCoordinates,
@@ -32,22 +32,12 @@ const locationOptions = [
   },
 ];
 
-function findCity(input: string) {
-  const normalized = normalizeCitySlug(input);
-
-  return cityOptions.find(
-    (city) =>
-      city.value === normalized ||
-      normalizeCitySlug(city.label) === normalized
-  );
-}
-
 function getInitialCity(location: string | null) {
   if (!location || location === "nearby" || location === "surprise") {
     return "";
   }
 
-  return cityOptions.find((city) => city.value === location)?.label ?? location;
+  return getCityLabel(location) ?? location;
 }
 
 export function InspirationLocationContext({

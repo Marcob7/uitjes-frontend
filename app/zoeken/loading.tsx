@@ -13,8 +13,8 @@ export default function SearchLoading() {
 
   return (
     <main className="min-h-screen bg-[#f7faf6] text-[#22312a]">
-      <section className="search-hero">
-        <div className="mx-auto max-w-[1214px] px-4 pb-7 pt-5 sm:px-6 sm:pb-9 sm:pt-7 lg:px-8 lg:pb-10 lg:pt-24">
+      <section className="search-hero" data-navbar-contrast="on-light">
+        <div className="site-header-content-safe mx-auto max-w-[1214px] px-4 pb-7 sm:px-6 sm:pb-9 lg:px-8 lg:pb-10">
           <div className="max-w-5xl">
             <h1 className="font-heading text-[clamp(2.3rem,4vw,3.75rem)] leading-[0.92] tracking-[-0.06em] text-[#22312a]">{t("search.title")}</h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#68746d] sm:text-base">{t("search.intro")}</p>

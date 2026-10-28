@@ -10,7 +10,7 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname } from "@/lib/i18n/config";
-import { cityOptions } from "@/lib/cityConfig";
+import { getCityLabel } from "@/lib/cityConfig";
 
 type ShowcaseCity = {
   name: string;
@@ -75,8 +75,7 @@ const showcaseCities: ShowcaseCity[] = HOME_SHOWCASE_CITY_DEFINITIONS.map(
   (definition) => ({
     ...definition,
     name:
-      cityOptions.find((city) => city.value === definition.slug)?.label ??
-      definition.slug,
+      getCityLabel(definition.slug) ?? definition.slug,
   })
 );
 

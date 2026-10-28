@@ -5,24 +5,27 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { AppInput } from "@/components/ui/app";
+import LoginErrorAlert from "@/components/LoginErrorAlert";
+import { getLoginErrorCode, type LoginErrorCode } from "@/lib/authErrors";
 
-export default function JwtLoginForm() {
+export default function JwtLoginForm({ onLoginAttempt }: { onLoginAttempt?: () => void }) {
   const { login } = useAuth();
   const { t } = useLocale();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<LoginErrorCode | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError("");
+    onLoginAttempt?.();
+    setError(null);
     setLoading(true);
 
     try {
       await login(identifier, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Inloggen is niet gelukt.");
+      setError(getLoginErrorCode(err));
     } finally {
       setLoading(false);
     }
@@ -60,14 +63,7 @@ export default function JwtLoginForm() {
           className="min-h-12 w-full rounded-2xl border border-neutral-200 bg-white px-4 text-base text-neutral-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition focus:border-lime-500 focus:ring-4 focus:ring-lime-500/15 focus:bg-white disabled:bg-neutral-100 disabled:text-neutral-950 sm:text-base"
         />
 
-      {error ? (
-        <p
-          className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800"
-          role="alert"
-        >
-          {error}
-        </p>
-      ) : null}
+      {error ? <LoginErrorAlert code={error} /> : null}
 
       <button
         type="submit"

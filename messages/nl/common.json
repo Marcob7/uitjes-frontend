@@ -128,6 +128,13 @@
     "googleLogin": "Inloggen met Google",
     "googleIntro": "Gebruik je Google-account om in te loggen.",
     "googleButton": "Inloggen met Google",
+    "errors": {
+      "invalidCredentials": "De opgegeven inloggegevens zijn niet correct.",
+      "network": "We kunnen momenteel geen verbinding maken. Probeer het opnieuw.",
+      "server": "Inloggen is momenteel niet beschikbaar. Probeer het later opnieuw.",
+      "google": "Inloggen met Google is niet gelukt. Probeer het opnieuw.",
+      "generic": "Inloggen is niet gelukt. Probeer het opnieuw."
+    },
     "profile": "Jouw profiel",
     "profileIntro": "Bekijk je loginstatus en ga snel door naar de plekken die je voor later hebt bewaard.",
     "loadingAccount": "Account laden…",

@@ -1,5 +1,5 @@
 import type { CityContentItem } from "@/lib/api/cityContent";
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { getCityLabel, normalizeCitySlug } from "@/lib/cityConfig";
 import { resolveActivityImage, toCssImageUrl } from "@/lib/activityImages";
 import {
   inspirationCategoryLabels,
@@ -24,11 +24,9 @@ function includesAny(text: string, terms: string[]) {
   return terms.some((term) => text.includes(term));
 }
 
-function getCityLabel(item: CityContentItem) {
+function getCityContentLabel(item: CityContentItem) {
   const rawCity = item.cityName ?? item.city ?? "Nederland";
-  const citySlug = normalizeCitySlug(rawCity);
-
-  return cityOptions.find((city) => city.value === citySlug)?.label ?? rawCity;
+  return getCityLabel(rawCity) ?? rawCity;
 }
 
 function getCitySlug(item: CityContentItem) {
@@ -207,7 +205,7 @@ export function mapCityContentToInspirationResult(
 
   const categories = getCityContentCategories(item);
   const primaryCategory = getPrimaryCategory(categories);
-  const city = getCityLabel(item);
+  const city = getCityContentLabel(item);
   const location = item.venue ?? item.address ?? item.venueAddress ?? city;
   const description =
     item.summary ??

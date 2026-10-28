@@ -12,7 +12,7 @@ import {
   type CityContentItem,
 } from "@/lib/api/cityContent";
 import { isCityContentCity } from "@/lib/cityContentCities";
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { findCity, getCityLabel, normalizeCitySlug } from "@/lib/cityConfig";
 import { getRequestLocale, getRequestPathname } from "@/lib/i18n/request";
 import { getLocaleAlternates, getLocaleOpenGraph } from "@/lib/i18n/seo";
 import { buildSearchHref } from "@/lib/search/searchHref";
@@ -25,10 +25,7 @@ type OntdekPageProps = {
 };
 
 function getDisplayCity(city: string) {
-  const normalizedCity = normalizeCitySlug(city);
-  const matchedCity = cityOptions.find((option) => option.value === normalizedCity);
-
-  return matchedCity?.label ?? "Nederland";
+  return getCityLabel(city) ?? "Nederland";
 }
 
 export function generateMetadata({ searchParams }: OntdekPageProps): Metadata {
@@ -79,13 +76,7 @@ function getCitySlugFromQuery(query: string | undefined) {
   const normalizedQuery = normalizeCitySlug(query);
   if (!normalizedQuery) return null;
 
-  const matchedCity = cityOptions.find(
-    (city) =>
-      city.value === normalizedQuery ||
-      normalizeCitySlug(city.label) === normalizedQuery
-  );
-
-  return matchedCity?.value ?? null;
+  return findCity(normalizedQuery)?.value ?? null;
 }
 
 function logCityContentFallback(city: string, error: unknown) {

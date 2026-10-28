@@ -21,7 +21,8 @@ export default function AppFrame({ children }: AppFrameProps) {
     routePathname === "/" ||
     routePathname === "/ontdek" ||
     routePathname === "/inspiratie" ||
-    routePathname === "/jaarkalender";
+    routePathname === "/jaarkalender" ||
+    routePathname === "/zoeken";
 
   return (
     <div className="flex min-h-screen flex-col">

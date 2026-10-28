@@ -12,7 +12,10 @@ import {
   isInspirationCategorySlug,
   type InspirationResult,
 } from "@/lib/dummy/inspirationResults";
-import { getInspirationDetailHref } from "@/lib/inspiration/href";
+import {
+  getInspirationDetailHref,
+  withInspirationContext,
+} from "@/lib/inspiration/href";
 
 type PageProps = {
   params: { category: string };
@@ -67,24 +70,6 @@ function getRouteCategory(category: string) {
   return undefined;
 }
 
-function buildContextQuery(searchParams?: PageProps["searchParams"]) {
-  const params = new URLSearchParams();
-
-  if (searchParams?.location) {
-    params.set("location", searchParams.location);
-  }
-
-  if (searchParams?.nearbyCity) {
-    params.set("nearbyCity", searchParams.nearbyCity);
-  }
-
-  return params.toString();
-}
-
-function withContext(href: string, query: string) {
-  return query ? `${href}?${query}` : href;
-}
-
 export function generateStaticParams() {
   return [
     ...getInspirationStaticParams(),
@@ -137,8 +122,6 @@ export default function InspirationCategoryPage({
   if (!results.length) {
     notFound();
   }
-
-  const query = buildContextQuery(searchParams);
 
   const locationMode = getInspirationLocationMode(searchParams?.location);
 
@@ -197,7 +180,7 @@ export default function InspirationCategoryPage({
             </div>
 
             <Link
-              href={withContext("/inspiratie", query)}
+              href={withInspirationContext("/inspiratie", searchParams)}
               className="min-h-11 shrink-0 rounded-full border border-[#DCE1DC] bg-white px-4 py-2.5 text-sm font-semibold text-[#355E7A] transition hover:border-[#355E7A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC]"
             >
               Keuzehulp
@@ -209,9 +192,9 @@ export default function InspirationCategoryPage({
               <ResultRow
                 key={item.slug}
                 item={item}
-                href={withContext(
+                href={withInspirationContext(
                   getInspirationDetailHref(item.category, item.slug),
-                  query
+                  searchParams
                 )}
               />
             ))}

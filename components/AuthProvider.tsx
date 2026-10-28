@@ -20,6 +20,7 @@ import {
   type JwtTokens,
   type JwtUser,
 } from "@/lib/jwtAuth";
+import { LoginError } from "@/lib/authErrors";
 
 type AuthStatus = "checking" | "authenticated" | "logged_out";
 
@@ -145,8 +146,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [clearAuth]);
 
   const login = useCallback(async (identifier: string, password: string) => {
-    setStatus("checking");
-
     try {
       const nextTokens = await loginWithJwt(identifier, password);
       setStoredTokens(nextTokens);
@@ -155,7 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const nextUser = await getCurrentUser(nextTokens.access);
       if (!nextUser) {
         clearAuth();
-        throw new Error("Inloggen lukte, maar je account kon niet worden opgehaald.");
+        throw new LoginError("server");
       }
 
       setUser(nextUser);

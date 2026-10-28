@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { getCityLabel, normalizeCitySlug } from "@/lib/cityConfig";
 
 import {
   getCurrentLocalMonth,
@@ -24,14 +24,7 @@ export type JaarkalenderInitialFilters = {
 function getCityLabelFromUrl(value: string | null) {
   if (!value) return null;
 
-  const normalizedValue = normalizeCitySlug(value);
-  return (
-    cityOptions.find(
-      (city) =>
-        city.value === normalizedValue ||
-        normalizeCitySlug(city.label) === normalizedValue,
-    )?.label ?? value
-  );
+  return getCityLabel(value) ?? value;
 }
 
 function getInitialSearchParam(

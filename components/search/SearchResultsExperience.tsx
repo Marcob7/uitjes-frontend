@@ -13,6 +13,10 @@ import { localePathname, localeToIntl } from "@/lib/i18n/config";
 import { buildSearchHref } from "@/lib/search/searchHref";
 import type { GeneralSearchResult } from "@/lib/search/searchResults";
 import {
+  filterSearchResults,
+  sortSearchResults,
+} from "@/lib/search/searchSelectors";
+import {
   type SearchResultsFilterKey,
   type SearchResultsFilterState,
   useSearchResultsUrlState,
@@ -32,56 +36,6 @@ type SearchResultsExperienceProps = {
   error?: boolean;
   partial?: boolean;
 };
-
-function normalize(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
-function resultSearchText(result: GeneralSearchResult) {
-  return normalize(
-    [
-      result.title,
-      result.badge,
-      result.categorySlug,
-      result.city,
-      result.location,
-      result.priceLabel,
-      result.dateLabel,
-      result.kind,
-      ...result.tags,
-    ]
-      .filter(Boolean)
-      .join(" "),
-  );
-}
-
-function matchesFilterState(
-  result: GeneralSearchResult,
-  filters: SearchResultsFilterState
-) {
-  const text = resultSearchText(result);
-  if (filters.city && result.citySlug !== filters.city) return false;
-  if (filters.free && !result.isFree && !text.includes("gratis")) return false;
-  if (filters.rating && (result.ratingValue ?? 0) < Number(filters.rating)) return false;
-
-  if (filters.when) {
-    const when = SEARCH_WHEN_FILTER_OPTIONS.find((option) => option.value === filters.when);
-    if (when && !when.terms.some((term) => text.includes(normalize(term)))) return false;
-  }
-
-  if (filters.category) {
-    const category = SEARCH_CATEGORY_FILTER_OPTIONS.find(
-      (option) => option.value === filters.category
-    );
-    if (category && !category.terms.some((term) => text.includes(normalize(term)))) return false;
-  }
-
-  return true;
-}
 
 function getCityLabel(citySlug: string, results: GeneralSearchResult[]) {
   const matchingResult = results.find((result) => result.citySlug === citySlug);
@@ -242,30 +196,18 @@ export default function SearchResultsExperience({ query, results, error = false,
   }, [filters, results, t]);
 
   const filteredResults = useMemo(() => {
-    return results.filter((result) => matchesFilterState(result, filters));
+    return filterSearchResults(results, filters);
   }, [filters, results]);
 
   const sortedResults = useMemo(() => {
-    const next = [...filteredResults];
-    if (sort === "rating") {
-      next.sort((a, b) => (b.ratingValue ?? -1) - (a.ratingValue ?? -1) || a.title.localeCompare(b.title, localeToIntl[locale]));
-    } else if (sort === "price") {
-      next.sort((a, b) => (a.priceMin ?? Number.POSITIVE_INFINITY) - (b.priceMin ?? Number.POSITIVE_INFINITY) || a.title.localeCompare(b.title, localeToIntl[locale]));
-    } else if (sort === "recent") {
-      next.sort((a, b) => {
-        const aTime = a.startAt ? new Date(a.startAt).getTime() : 0;
-        const bTime = b.startAt ? new Date(b.startAt).getTime() : 0;
-        return bTime - aTime || a.title.localeCompare(b.title, localeToIntl[locale]);
-      });
-    }
-    return next;
+    return sortSearchResults(filteredResults, sort, locale);
   }, [filteredResults, locale, sort]);
 
   const visibleResults = sortedResults.slice(0, visibleCount);
   const hasMore = visibleResults.length < sortedResults.length;
   const hasAnyFilters = activeFilters.length > 0;
   const draftResultCount = useMemo(
-    () => results.filter((result) => matchesFilterState(result, draftFilters)).length,
+    () => filterSearchResults(results, draftFilters).length,
     [draftFilters, results],
   );
 

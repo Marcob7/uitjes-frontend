@@ -1,4 +1,5 @@
 import { getApiBase } from "@/lib/config";
+import { LoginError, loginErrorCodeForStatus } from "@/lib/authErrors";
 
 export type JwtTokens = {
   access: string;
@@ -75,13 +76,13 @@ export async function loginWithJwt(identifier: string, password: string): Promis
       body: JSON.stringify(payload),
     });
   } catch {
-    throw new Error("Kan de backend nu niet bereiken. Probeer het straks opnieuw.");
+    throw new LoginError("network");
   }
 
   const data = await readJsonResponse(res);
 
   if (!res.ok || !data?.access || !data?.refresh) {
-    throw new Error(data?.detail || "Inloggen is niet gelukt. Controleer je gegevens.");
+    throw new LoginError(loginErrorCodeForStatus(res.status));
   }
 
   return {

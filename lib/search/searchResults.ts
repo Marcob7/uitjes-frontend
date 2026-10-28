@@ -7,7 +7,7 @@ import {
   searchCityContent,
   type CityContentItem,
 } from "@/lib/api/cityContent";
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { getCityLabel, normalizeCitySlug } from "@/lib/cityConfig";
 import { resolveActivityImage } from "@/lib/activityImages";
 import { unwrapCssImageUrl } from "@/lib/remoteImage";
 import { festivalDetails, getFestivalDetailHref, type FestivalDetail } from "@/app/festivals/data";
@@ -51,6 +51,7 @@ type SearchTerms = {
   direct: string[];
   related: string[];
   all: string[];
+  tokens: string[];
 };
 
 const queryAliases: Record<string, string[]> = {
@@ -95,7 +96,7 @@ function compactStrings(values: Array<string | null | undefined>) {
 
 function getSearchTerms(query: string): SearchTerms {
   const normalizedQuery = normalize(query);
-  if (!normalizedQuery) return { direct: [], related: [], all: [] };
+  if (!normalizedQuery) return { direct: [], related: [], all: [], tokens: [] };
 
   const direct = new Set([normalizedQuery]);
   const related = new Set<string>();
@@ -114,7 +115,12 @@ function getSearchTerms(query: string): SearchTerms {
   }
 
   related.forEach((term) => direct.delete(term));
-  return { direct: [...direct], related: [...related], all: [...direct, ...related] };
+  return {
+    direct: [...direct],
+    related: [...related],
+    all: [...direct, ...related],
+    tokens: queryParts,
+  };
 }
 
 function fieldMatch(value: string, terms: string[], allowCompound = false) {
@@ -127,7 +133,14 @@ function fieldMatch(value: string, terms: string[], allowCompound = false) {
       : normalizedValue.includes(` ${normalizedTerm} `);
   });
 
-  return match ? { exact: normalized === match, term: match } : null;
+  if (!match) return null;
+
+  const normalizedMatch = match.replace(/[^\p{L}\p{N}]+/gu, " ");
+  return {
+    exact: normalized === normalizedMatch,
+    startsWith: normalized.startsWith(`${normalizedMatch} `),
+    term: match,
+  };
 }
 
 // Search relevance is deliberately decided here, in one place. The API only
@@ -137,21 +150,62 @@ function scoreFields(fields: {
   title: string;
   category: string;
   tags: string;
+  city: string;
+  venue: string;
   slug: string;
   description: string;
 }, terms: SearchTerms) {
   const directTitle = fieldMatch(fields.title, terms.direct, true);
-  if (directTitle) return directTitle.exact ? 1_000 : 900;
-  if (fieldMatch(fields.title, terms.related, true)) return 850;
-  if (fieldMatch(fields.category, terms.direct, true)) return 800;
-  if (fieldMatch(fields.category, terms.related, true)) return 740;
-  if (fieldMatch(fields.tags, terms.direct, true)) return 720;
-  if (fieldMatch(fields.tags, terms.related, true)) return 680;
-  if (fieldMatch(fields.slug, terms.direct, true)) return 640;
-  if (fieldMatch(fields.slug, terms.related, true)) return 580;
-  if (fieldMatch(fields.description, terms.direct)) return 260;
-  if (fieldMatch(fields.description, terms.related)) return 220;
-  return 0;
+  let score = 0;
+
+  if (directTitle) {
+    score = directTitle.exact ? 1_000 : directTitle.startsWith ? 950 : 900;
+  } else if (fieldMatch(fields.title, terms.related, true)) {
+    score = 850;
+  } else if (fieldMatch(fields.category, terms.direct, true)) {
+    score = 800;
+  } else if (fieldMatch(fields.category, terms.related, true)) {
+    score = 740;
+  } else if (fieldMatch(fields.tags, terms.direct, true)) {
+    score = 720;
+  } else if (fieldMatch(fields.tags, terms.related, true)) {
+    score = 680;
+  } else if (fieldMatch(fields.city, terms.direct, true)) {
+    score = 660;
+  } else if (fieldMatch(fields.city, terms.related, true)) {
+    score = 620;
+  } else if (fieldMatch(fields.venue, terms.direct, true)) {
+    score = 640;
+  } else if (fieldMatch(fields.venue, terms.related, true)) {
+    score = 600;
+  } else if (fieldMatch(fields.slug, terms.direct, true)) {
+    score = 580;
+  } else if (fieldMatch(fields.slug, terms.related, true)) {
+    score = 540;
+  } else if (fieldMatch(fields.description, terms.direct)) {
+    score = 260;
+  } else if (fieldMatch(fields.description, terms.related)) {
+    score = 220;
+  }
+
+  if (!score) return 0;
+
+  // For combined searches, reward a direct match for more than one query
+  // token across the high-signal fields. This makes "museum utrecht" prefer
+  // a museum in Utrecht without letting a description-only mention dominate.
+  const primaryText = [
+    fields.title,
+    fields.category,
+    fields.tags,
+    fields.city,
+    fields.venue,
+    fields.slug,
+  ].join(" ");
+  const matchedTokenCount = terms.tokens.filter((term) =>
+    Boolean(fieldMatch(primaryText, [term], true)),
+  ).length;
+
+  return score + (matchedTokenCount > 1 ? Math.min(matchedTokenCount, 3) * 30 : 0);
 }
 
 function mapInspirationResult(
@@ -162,8 +216,6 @@ function mapInspirationResult(
     result.category,
     result.categoryLabel,
     result.type,
-    result.city,
-    result.location,
     ...result.categories,
   ].join(" ");
   const descriptionText = [
@@ -178,12 +230,14 @@ function mapInspirationResult(
       category: categoryText,
       description: descriptionText,
       tags: result.tags.join(" "),
+      city: [result.city, result.location].join(" "),
+      venue: result.location,
       slug: result.slug,
     },
     terms
   );
 
-  if (score < 500) return null;
+  if (!score) return null;
 
   const numericRating = result.ratingValue;
   const priceIsFree = normalize(result.price).includes("gratis") || normalize(result.price).includes("0");
@@ -227,8 +281,7 @@ function formatPrice(item: CityContentItem) {
 }
 
 function getCityDisplayLabel(value: string) {
-  const normalizedValue = normalizeCitySlug(value);
-  return cityOptions.find((city) => city.value === normalizedValue)?.label ?? value;
+  return getCityLabel(value) ?? value;
 }
 
 function getCityContentHref(item: CityContentItem) {
@@ -248,8 +301,6 @@ function mapCityContentResult(
   const categoryText = compactStrings([
     item.category,
     item.kind,
-    item.cityName,
-    item.city,
   ]).join(" ");
   const descriptionText = compactStrings([
     item.summary,
@@ -265,12 +316,14 @@ function mapCityContentResult(
       category: categoryText,
       description: descriptionText,
       tags: item.tags.join(" "),
+      city: compactStrings([item.cityName, item.city]).join(" "),
+      venue: compactStrings([item.venue, item.venueAddress, item.address]).join(" "),
       slug: item.slug ?? "",
     },
     terms
   );
 
-  if (score < 500) return null;
+  if (!score) return null;
 
   const cityLabel = getCityDisplayLabel(item.cityName ?? item.city ?? "Nederland");
   const citySlug = normalizeCitySlug(item.city ?? item.cityName ?? "");
@@ -327,13 +380,15 @@ function mapFestivalResult(
       title: festival.name,
       category: ["festival", "event", "evenement", ...festival.genres].join(" "),
       tags: tags.join(" "),
+      city: festival.locationLabel,
+      venue: festival.locationLabel,
       slug: festival.slug,
       description,
     },
     terms,
   );
 
-  if (score < 500) return null;
+  if (!score) return null;
 
   const firstTicket = festival.ticketTiers[0]?.priceLabel;
   return {

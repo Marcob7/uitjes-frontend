@@ -1,4 +1,4 @@
-import { cityOptions, normalizeCitySlug } from "@/lib/cityConfig";
+import { findCity, normalizeCitySlug } from "@/lib/cityConfig";
 
 export type SearchIntent = "festival" | "zoeken" | "stad" | "onbekend";
 
@@ -70,13 +70,7 @@ export function getSupportedCitySlug(
 
   if (!normalizedQuery) return null;
 
-  return (
-    cityOptions.find(
-      (city) =>
-        city.value === normalizedQuery ||
-        normalizeCitySlug(city.label) === normalizedQuery,
-    )?.value ?? null
-  );
+  return findCity(normalizedQuery)?.value ?? null;
 }
 
 export function detectSearchIntent(query: string | null | undefined): SearchIntent {

@@ -1,20 +1,34 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname } from "@/lib/i18n/config";
 import JwtLoginForm from "@/components/JwtLoginForm";
 import LoginWithGoogle from "@/components/LoginWithGoogle";
+import LoginErrorAlert from "@/components/LoginErrorAlert";
+import { oauthLoginErrorCode, type LoginErrorCode } from "@/lib/authErrors";
 
 export default function LoginPage() {
   const { isAuthenticated, logout, status, user } = useAuth();
   const { locale, t } = useLocale();
+  const searchParams = useSearchParams();
+  const [oauthError, setOauthError] = useState<LoginErrorCode | null>(null);
+
+  useEffect(() => {
+    const callbackError =
+      searchParams.get("auth_error") ??
+      searchParams.get("oauth_error") ??
+      searchParams.get("error");
+    setOauthError(oauthLoginErrorCode(callbackError));
+  }, [searchParams]);
 
   return (
-    <main className="min-h-screen bg-[#f7f5f0] text-neutral-950">
-      <div className="site-header-content-safe px-4 pb-8 sm:px-6 lg:px-8">
+    <main className="site-header-content-safe min-h-screen bg-[#f7f5f0] text-neutral-950">
+      <div className="px-4 pb-8 sm:px-6 lg:px-8">
         <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
         <section className="pt-4 lg:pt-10">
        
@@ -68,12 +82,13 @@ export default function LoginPage() {
             </div>
           ) : (
             <div className="grid gap-7">
+              {oauthError ? <LoginErrorAlert code={oauthError} /> : null}
               <div>
                 <h2 className="text-2xl font-semibold tracking-[-0.03em] text-neutral-950">
                   {t("auth.emailLogin")}
                 </h2>
                 <div className="mt-5">
-                  <JwtLoginForm />
+                  <JwtLoginForm onLoginAttempt={() => setOauthError(null)} />
                 </div>
               </div>
 
@@ -86,7 +101,7 @@ export default function LoginPage() {
                    {t("auth.googleIntro")}
                   </p>
                 </div>
-                <LoginWithGoogle />
+                <LoginWithGoogle onLoginAttempt={() => setOauthError(null)} />
               </div>
             </div>
           )}
