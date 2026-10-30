@@ -8,64 +8,36 @@ import type {
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
-  cityOptions as sharedCityOptions,
   normalizeCitySlug,
 } from "@/lib/cityConfig";
-import { isCityContentCity } from "@/lib/cityContentCities";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { FilterButton } from "@/components/ui";
 import { formatDate } from "@/lib/i18n/format";
 import {
   addMonths,
-  filterCalendarItems,
-  getCityFromLocation,
-  getJaarkalenderDayForDate,
-  getMonthGrid,
   getMonthInputValue,
-  hasJaarkalenderDataForMonth,
-  isSameDay,
-  isSameMonth,
 } from "./calendarUtils";
 
-import type { AgendaImportEvent } from "./AgendaImportBanner";
 import { JaarkalenderMonthNavigation } from "./JaarkalenderMonthNavigation";
-import { JaarkalenderGrid, type MonthCalendarCell } from "./JaarkalenderGrid";
+import { JaarkalenderGrid } from "./JaarkalenderGrid";
 import { JaarkalenderFilterDialog } from "./JaarkalenderFilterDialog";
 import {
   getJaarkalenderCategory,
   jaarkalenderCategoryDefinitions,
-  jaarkalenderDays,
-  getJaarkalenderCalendarItemsForDate,
-  type JaarkalenderDay,
   type JaarkalenderCategoryKey,
 } from "./data";
+import {
+  buildMonthCalendarCells,
+  calendarCityOptions,
+  type CalendarCityOption,
+  getVisibleCalendarImportEvents,
+} from "./calendarSelectors";
 import {
   useJaarkalenderFilterUrlState,
   type JaarkalenderInitialFilters,
 } from "./useJaarkalenderFilterUrlState";
 
 type FilterModalMode = "city" | "category";
-
-type JaarkalenderCityOption = {
-  label: string;
-  hasCalendarItems: boolean;
-  hasBackendContent: boolean;
-};
-
-const MONTH_SHORT_NAMES = [
-  "jan",
-  "feb",
-  "mrt",
-  "apr",
-  "mei",
-  "jun",
-  "jul",
-  "aug",
-  "sep",
-  "okt",
-  "nov",
-  "dec",
-];
 
 function CalendarIcon() {
   return (
@@ -213,20 +185,6 @@ export function JaarkalenderInteractiveCalendar({
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const cityOptions = useMemo(() => {
-    const cities = jaarkalenderDays.flatMap((day) =>
-      day.calendarItems.map((item) => getCityFromLocation(item.locatie))
-    );
-
-    const calendarCities = new Set(cities);
-
-    return sharedCityOptions.map<JaarkalenderCityOption>((city) => ({
-      label: city.label,
-      hasCalendarItems: calendarCities.has(city.label),
-      hasBackendContent: isCityContentCity(city.value),
-    }));
-  }, []);
-
   const matchingCityOptions = useMemo(() => {
     const normalizedQuery = normalizeCitySlug(cityQuery);
 
@@ -234,78 +192,22 @@ export function JaarkalenderInteractiveCalendar({
       return [];
     }
 
-    return cityOptions.filter((city) =>
+    return calendarCityOptions.filter((city) =>
       normalizeCitySlug(city.label).includes(normalizedQuery)
     );
-  }, [cityOptions, cityQuery]);
+  }, [cityQuery]);
 
   const categoryOptions = jaarkalenderCategoryDefinitions;
 
-  const daysByNumber = useMemo(
-    () => new Map(jaarkalenderDays.map((day) => [day.dayNumber, day])),
-    []
+  const monthCalendarCells = useMemo(
+    () => buildMonthCalendarCells(selectedMonth, today, { selectedCity, selectedCategory }),
+    [selectedCategory, selectedCity, selectedMonth, today]
   );
 
-  const monthCalendarCells = useMemo<MonthCalendarCell[]>(
-    () =>
-      getMonthGrid(selectedMonth).map((date) => {
-        const isCurrentMonth = isSameMonth(date, selectedMonth);
-        const isToday = isCurrentMonth && isSameDay(date, today);
-        const day = getJaarkalenderDayForDate(date, daysByNumber);
-
-        if (!isCurrentMonth || !day) {
-          return {
-            key: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
-            day: String(date.getDate()),
-            dayNumber: isCurrentMonth ? date.getDate() : undefined,
-            monthLabel: isCurrentMonth
-              ? undefined
-              : MONTH_SHORT_NAMES[date.getMonth()],
-            muted: !isCurrentMonth,
-            isToday,
-          };
-        }
-
-        const filteredItems = filterCalendarItems(
-          getJaarkalenderCalendarItemsForDate(date),
-          selectedCity,
-          selectedCategory
-        );
-
-        return {
-          key: `day-${day.dayNumber}`,
-          day: String(day.dayNumber),
-          dayNumber: day.dayNumber,
-          href: `/jaarkalender/${day.slug}`,
-          eventCount: filteredItems.length,
-          eventLabels: filteredItems.slice(0, 2).map((item) => item.title),
-          isToday,
-        };
-      }),
-    [daysByNumber, selectedCategory, selectedCity, selectedMonth, today]
+  const visibleImportEvents = useMemo(
+    () => getVisibleCalendarImportEvents(selectedMonth, { selectedCity, selectedCategory }),
+    [selectedCategory, selectedCity, selectedMonth]
   );
-
-  const visibleImportEvents = useMemo<AgendaImportEvent[]>(() => {
-    if (!hasJaarkalenderDataForMonth(selectedMonth)) {
-      return [];
-    }
-
-    return jaarkalenderDays.flatMap((day) => {
-      const filteredItems = filterCalendarItems(
-        getJaarkalenderCalendarItemsForDate(
-          new Date(`${day.isoDate}T12:00:00`)
-        ),
-        selectedCity,
-        selectedCategory
-      );
-
-      return filteredItems.map((item) => ({
-        dayIsoDate: day.isoDate,
-        daySlug: day.slug,
-        item,
-      }));
-    });
-  }, [selectedCategory, selectedCity, selectedMonth]);
 
   const totalVisibleItems = useMemo(
     () =>
@@ -408,7 +310,7 @@ export function JaarkalenderInteractiveCalendar({
     setIsOpen(true);
   };
 
-  const selectCity = (city: JaarkalenderCityOption) => {
+  const selectCity = (city: CalendarCityOption) => {
     setCityFilter(city.label);
     setCityQuery("");
     setActiveCityIndex(-1);

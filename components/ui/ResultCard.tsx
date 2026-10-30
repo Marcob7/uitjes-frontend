@@ -23,7 +23,6 @@ type ResultCardProps = {
   className?: string;
   priority?: boolean;
   variant?: "tile" | "compact";
-  isSelected?: boolean;
   onMouseEnter?: () => void;
   viewLabel?: string;
   viewAriaLabel?: string;
@@ -61,7 +60,6 @@ export default function ResultCard({
   className = "",
   priority = false,
   variant = "tile",
-  isSelected = false,
   onMouseEnter,
   viewLabel,
   viewAriaLabel,
@@ -78,7 +76,6 @@ export default function ResultCard({
     return (
       <CompactResultCardFrame
         className={className}
-        isSelected={isSelected}
         onMouseEnter={onMouseEnter}
         action={
           <>

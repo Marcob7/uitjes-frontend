@@ -192,7 +192,7 @@ export default function DiscoverFlow({
             {visiblePreviewCards.length ? (
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
                 {visiblePreviewCards.map((card) => (
-                  <ExploreCardItem key={card.id} card={card} variant="flow" isSelected={false} onSelect={() => undefined} />
+                  <ExploreCardItem key={card.id} card={card} />
                 ))}
               </div>
             ) : (

@@ -5,7 +5,6 @@ import type { ExploreCard } from "./types";
 
 type DiscoverResultsListProps = {
   cards: ExploreCard[];
-  selectedId: number | null;
   isLoading: boolean;
   onSelectCard: (id: number) => void;
   loadingLabel: string;
@@ -14,7 +13,6 @@ type DiscoverResultsListProps = {
 /** Presentational list for the existing /ontdek result-card family. */
 export default function DiscoverResultsList({
   cards,
-  selectedId,
   isLoading,
   onSelectCard,
   loadingLabel,
@@ -33,9 +31,7 @@ export default function DiscoverResultsList({
         <ExploreCardItem
           key={card.id}
           card={card}
-          isSelected={selectedId === card.id}
           onSelect={() => onSelectCard(card.id)}
-          variant="flow"
         />
       ))}
     </div>

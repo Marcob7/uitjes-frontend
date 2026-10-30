@@ -271,7 +271,7 @@ export function normalizeCityContentItem(
   };
 }
 
-function buildCityContentUrl(params: CityContentParams = {}) {
+export function buildCityContentQuery(params: CityContentParams = {}) {
   const searchParams = new URLSearchParams();
 
   if (params.city) searchParams.set("city", params.city);
@@ -281,24 +281,17 @@ function buildCityContentUrl(params: CityContentParams = {}) {
   if (typeof params.limit === "number") searchParams.set("limit", String(params.limit));
   if (typeof params.offset === "number") searchParams.set("offset", String(params.offset));
 
-  const queryString = searchParams.toString();
-  const path = queryString ? `/api/city-content/?${queryString}` : "/api/city-content/";
-
-  return `${getApiBase()}${path}`;
+  return searchParams.toString();
 }
 
 function buildCityContentPath(params: CityContentParams = {}) {
-  const searchParams = new URLSearchParams();
+  const queryString = buildCityContentQuery(params);
 
-  if (params.city) searchParams.set("city", params.city);
-  if (params.type) searchParams.set("type", params.type);
-  if (params.query) searchParams.set("query", params.query);
-  if (params.terms?.length) searchParams.set("terms", params.terms.join(","));
-  if (typeof params.limit === "number") searchParams.set("limit", String(params.limit));
-  if (typeof params.offset === "number") searchParams.set("offset", String(params.offset));
-
-  const queryString = searchParams.toString();
   return queryString ? `/api/city-content/?${queryString}` : "/api/city-content/";
+}
+
+function buildCityContentUrl(params: CityContentParams = {}) {
+  return `${getApiBase()}${buildCityContentPath(params)}`;
 }
 
 function getCityContentRequestUrls(params: CityContentParams = {}) {

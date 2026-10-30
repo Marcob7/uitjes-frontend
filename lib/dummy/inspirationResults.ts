@@ -40,14 +40,14 @@ export type InspirationResult = {
   longitude?: number | null;
 };
 
-export type InspirationResultQuery = {
+type InspirationResultQuery = {
   location?: string;
   nearbyCity?: string;
   category?: string;
   limit?: number;
 };
 
-export type InspirationCoordinates = {
+type InspirationCoordinates = {
   latitude: number;
   longitude: number;
 };
@@ -88,7 +88,7 @@ export const featuredInspirationCities = [
   { label: "Amersfoort", value: "amersfoort" },
 ];
 
-export const nearbyFallbackCitySlug = "apeldoorn";
+const nearbyFallbackCitySlug = "apeldoorn";
 
 const dummyInspirationCityCoordinates: Record<string, InspirationCoordinates> = {
   apeldoorn: { latitude: 52.2112, longitude: 5.9699 },
@@ -480,7 +480,7 @@ export function resolveNearestInspirationCityFromCoordinates({
   ).citySlug;
 }
 
-export function getNearbyInspirationCitySlug(nearbyCity?: string) {
+function getNearbyInspirationCitySlug(nearbyCity?: string) {
   return featuredInspirationCities.some((city) => city.value === nearbyCity)
     ? nearbyCity
     : nearbyFallbackCitySlug;
@@ -533,10 +533,6 @@ export function getInspirationResults({
   });
 
   return typeof limit === "number" ? sorted.slice(0, limit) : sorted;
-}
-
-export function getInspirationResultsByCity(citySlug: string) {
-  return getInspirationResults({ location: citySlug });
 }
 
 export function getInspirationResultsByCategory(

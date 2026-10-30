@@ -37,7 +37,7 @@ export default function InspirationResultsPreview({
       ) : previewCards.length ? (
         <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
           {previewCards.map((card) => (
-            <ExploreCardItem key={card.href} card={card} variant="flow" isSelected={false} onSelect={() => undefined} />
+            <ExploreCardItem key={card.href} card={card} />
           ))}
         </div>
       ) : (

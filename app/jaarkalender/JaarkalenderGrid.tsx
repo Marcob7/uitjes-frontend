@@ -3,8 +3,7 @@ import Link from "next/link";
 import { normalizeCitySlug } from "@/lib/cityConfig";
 
 import { getJaarkalenderCategory, type JaarkalenderCategoryKey } from "./data";
-
-export type MonthCalendarCell = { key: string; day: string; dayNumber?: number; monthLabel?: string; muted?: boolean; href?: string; eventCount?: number; eventLabels?: string[]; isToday?: boolean };
+import type { MonthCalendarCell } from "./calendarSelectors";
 
 type Props = { cells: MonthCalendarCell[]; totalVisibleItems: number; selectedCity: string | null; selectedCategory: JaarkalenderCategoryKey | null; monthTitle: string };
 

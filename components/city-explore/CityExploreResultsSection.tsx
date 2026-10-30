@@ -409,7 +409,6 @@ export default function CityExploreResultsSection({
           <div>
             <DiscoverResultsList
               cards={contextualDisplayedCards}
-              selectedId={selectedId}
               isLoading={isLoadingResults}
               onSelectCard={onSelectCard}
               loadingLabel={t("discover.loadingResults")}

@@ -9,9 +9,7 @@ import type { ExploreCard } from "./types";
 
 type ExploreCardItemProps = {
   card: ExploreCard;
-  isSelected: boolean;
-  onSelect: () => void;
-  variant?: "default" | "flow";
+  onSelect?: () => void;
 };
 
 function HeartIcon({ filled = false }: { filled?: boolean }) {
@@ -35,7 +33,7 @@ const savedButtonClassName =
   "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-[#B9D7B7] bg-[#EEF6EA] px-3 text-xs font-semibold text-[#285239] transition hover:bg-[#E5F0E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005FCC] disabled:cursor-not-allowed disabled:opacity-70";
 
 /** The /ontdek adapter for the shared, scan-first result-card family. */
-export default function ExploreCardItem({ card, isSelected, onSelect }: ExploreCardItemProps) {
+export default function ExploreCardItem({ card, onSelect }: ExploreCardItemProps) {
   const { t } = useLocale();
   const eventId = typeof card.eventId === "number" && card.eventId > 0 ? card.eventId : null;
   const fallbackSaveItem = {
@@ -84,7 +82,6 @@ export default function ExploreCardItem({ card, isSelected, onSelect }: ExploreC
       favoriteAction={favoriteAction}
       onSelect={onSelect}
       onMouseEnter={onSelect}
-      isSelected={isSelected}
       variant="compact"
       viewLabel={t("discover.view")}
       viewAriaLabel={t("discover.viewItem", { title: card.title })}
