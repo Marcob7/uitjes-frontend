@@ -164,6 +164,8 @@ export default function ExploreMap({
   const mapRef = useRef<MapLibreMap | null>(null);
   const maplibreRef = useRef<typeof import("maplibre-gl") | null>(null);
   const markersRef = useRef<Record<number, MapLibreMarker>>({});
+  const isMapLoadingRef = useRef(false);
+  const isMountedRef = useRef(true);
   const [mapReadyToken, setMapReadyToken] = useState(0);
 
   const mapPlaces = useMemo<MapPlace[]>(() => {
@@ -196,22 +198,26 @@ export default function ExploreMap({
   }, [events, cityLabel]);
 
   useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current || mapPlaces.length === 0) {
+    if (
+      !mapContainerRef.current ||
+      mapRef.current ||
+      isMapLoadingRef.current ||
+      mapPlaces.length === 0
+    ) {
       return;
     }
 
     const firstPlace = mapPlaces[0];
-    let map: MapLibreMap | null = null;
-    let cancelled = false;
+    isMapLoadingRef.current = true;
 
     void import("maplibre-gl")
       .then((maplibregl) => {
-        if (cancelled || !mapContainerRef.current) {
+        if (!isMountedRef.current || !mapContainerRef.current) {
           return;
         }
 
         maplibreRef.current = maplibregl;
-        map = new maplibregl.Map({
+        mapRef.current = new maplibregl.Map({
           container: mapContainerRef.current,
           style: "https://tiles.openfreemap.org/styles/bright",
           center: [firstPlace.longitude, firstPlace.latitude],
@@ -219,23 +225,29 @@ export default function ExploreMap({
           attributionControl: false,
         });
 
-        mapRef.current = map;
         setMapReadyToken((current) => current + 1);
       })
       .catch((error: unknown) => {
-        if (!cancelled) {
+        if (isMountedRef.current) {
           console.error("De kaart kon niet worden geladen.", error);
         }
+      })
+      .finally(() => {
+        isMapLoadingRef.current = false;
       });
+  }, [mapPlaces]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
 
     return () => {
-      cancelled = true;
+      isMountedRef.current = false;
       Object.values(markersRef.current).forEach((marker) => marker.remove());
       markersRef.current = {};
-      map?.remove();
+      mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [mapPlaces]);
+  }, []);
 
   useEffect(() => {
     const map = mapRef.current;

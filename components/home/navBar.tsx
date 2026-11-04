@@ -3,12 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname, withoutLocalePrefix } from "@/lib/i18n/config";
+import { getFocusTrapTarget } from "@/lib/a11y/focusTrap";
 import {
   loginNavigationItem,
   mainNavigationItems,
@@ -60,6 +61,8 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
     (item) => item.href !== searchNavigationItem.href,
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
   const routeDefaultContrast = getRouteDefaultContrast(unlocalizedPathname);
   const [detectedContrast, setDetectedContrast] = useState<{
@@ -78,6 +81,78 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
   useEffect(() => {
     closeMobileMenu();
   }, [closeMobileMenu, pathname]);
+
+  // The menu is an overlay on narrow screens. Keep the page still while it is
+  // open and make the same Escape behaviour available to keyboard users.
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMobileMenu();
+        window.setTimeout(() => menuTriggerRef.current?.focus(), 0);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = Array.from(
+        mobileMenuRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      const first = focusableElements[0];
+      const last = focusableElements.at(-1);
+
+      if (!first || !last) return;
+      const focusTarget = getFocusTrapTarget({
+        focusIsWithinDialog: mobileMenuRef.current?.contains(document.activeElement) ?? false,
+        focusIsFirst: document.activeElement === first,
+        focusIsLast: document.activeElement === last,
+        shiftKey: event.shiftKey,
+      });
+
+      if (focusTarget === "first") {
+        event.preventDefault();
+        first.focus();
+      } else if (focusTarget === "last") {
+        event.preventDefault();
+        last.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    window.setTimeout(() =>
+      mobileMenuRef.current
+        ?.querySelector<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        )
+        ?.focus(),
+    0);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeMobileMenu, mobileMenuOpen]);
+
+  // The menu is hidden at the desktop breakpoint. Close it there as well so
+  // its narrow-screen scroll lock cannot survive a live resize.
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const desktopMediaQuery = window.matchMedia("(min-width: 1024px)");
+    const closeAtDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) closeMobileMenu();
+    };
+
+    if (desktopMediaQuery.matches) closeMobileMenu();
+    desktopMediaQuery.addEventListener("change", closeAtDesktop);
+    return () => desktopMediaQuery.removeEventListener("change", closeAtDesktop);
+  }, [closeMobileMenu, mobileMenuOpen]);
 
   useEffect(() => {
     const defaultContrast = getRouteDefaultContrast(unlocalizedPathname);
@@ -269,12 +344,20 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
           </div>
 
           <button
+            ref={menuTriggerRef}
             type="button"
-            onClick={() => setMobileMenuOpen((open) => !open)}
+            onClick={() => {
+              setMobileMenuOpen((open) => {
+                if (open) {
+                  window.setTimeout(() => menuTriggerRef.current?.focus(), 0);
+                }
+                return !open;
+              });
+            }}
             aria-label={mobileMenuOpen ? messages.navigation.closeMenu : messages.navigation.openMenu}
             aria-expanded={mobileMenuOpen}
             aria-controls="home-navigation-menu"
-            className={`inline-flex h-[38px] w-[38px] items-center justify-center rounded-full border outline-none backdrop-blur-sm transition focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent lg:hidden ${
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-full border outline-none backdrop-blur-sm transition focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent lg:hidden ${
               isOnDark
                 ? "border-white/28 bg-white/10 text-white hover:bg-white/18 focus-visible:ring-white/90"
                 : "border-[#171b1c]/14 bg-white/72 text-[#171b1c] hover:bg-white focus-visible:ring-[#171b1c]/70"
@@ -318,7 +401,12 @@ export default function NavBar({ position = "absolute" }: NavBarProps) {
 
       {mobileMenuOpen ? (
         <div
+          ref={mobileMenuRef}
           id="home-navigation-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label={messages.navigation.mobileMain}
+          tabIndex={-1}
           className="mx-auto mt-3 max-w-[1150px] rounded-[1.35rem] border border-white/15 bg-[#061218]/78 p-2 shadow-[0_18px_44px_rgba(0,0,0,0.24)] backdrop-blur-xl lg:hidden"
         >
           <nav aria-label={messages.navigation.mobileMain}>

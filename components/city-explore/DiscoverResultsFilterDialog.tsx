@@ -6,6 +6,7 @@ import type { ResultFilterKey } from "./types";
 import { RESULT_FILTER_OPTIONS } from "./utils";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { DialogShell, IconButton } from "@/components/ui";
+import { getFocusTrapTarget } from "@/lib/a11y/focusTrap";
 
 type DiscoverResultsFilterDialogProps = {
   open: boolean;
@@ -49,6 +50,7 @@ export default function DiscoverResultsFilterDialog({
   onClose,
 }: DiscoverResultsFilterDialogProps) {
   const { t } = useLocale();
+  const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -65,6 +67,47 @@ export default function DiscoverResultsFilterDialog({
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      const first = focusableElements[0];
+      const last = focusableElements.at(-1);
+
+      if (!first || !last) return;
+      const focusTarget = getFocusTrapTarget({
+        focusIsWithinDialog: dialogRef.current?.contains(document.activeElement) ?? false,
+        focusIsFirst: document.activeElement === first,
+        focusIsLast: document.activeElement === last,
+        shiftKey: event.shiftKey,
+      });
+
+      if (focusTarget === "first") {
+        event.preventDefault();
+        first.focus();
+      } else if (focusTarget === "last") {
+        event.preventDefault();
+        last.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose, open]);
+
   if (!open) {
     return null;
   }
@@ -72,11 +115,6 @@ export default function DiscoverResultsFilterDialog({
   return (
     <div
       className="fixed inset-0 z-[1200] flex items-center justify-center p-4"
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          onClose();
-        }
-      }}
     >
       <button
         type="button"
@@ -86,6 +124,7 @@ export default function DiscoverResultsFilterDialog({
       />
 
       <DialogShell
+        ref={dialogRef}
         id={dialogId}
         labelledBy={titleId}
         className="relative z-10 w-full max-w-md overflow-y-auto rounded-3xl border border-[#dfd4c6] bg-[#fffaf2] p-5 text-[#171511] shadow-xl sm:p-6"

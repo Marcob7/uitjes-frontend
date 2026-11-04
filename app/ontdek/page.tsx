@@ -79,12 +79,6 @@ function getCitySlugFromQuery(query: string | undefined) {
   return findCity(normalizedQuery)?.value ?? null;
 }
 
-function logCityContentFallback(city: string, error: unknown) {
-  if (process.env.NODE_ENV !== "production") {
-    console.warn(`${city} city-content fallback gebruikt:`, error);
-  }
-}
-
 function mapCityContentToBackendEvent(
   item: CityContentItem,
   fallbackCity: string
@@ -129,14 +123,12 @@ function mapCityContentToBackendEvent(
 }
 
 async function getCityContentEvents(city: string): Promise<BackendEvent[]> {
-  try {
-    const cityContent = await getCityContentByCity(city);
+  // An empty response is a valid empty state. A failed, timed-out, or invalid
+  // response is not: letting it reach the route error boundary keeps those
+  // two situations distinct and makes the existing retry control useful.
+  const cityContent = await getCityContentByCity(city, { throwOnError: true });
 
-    return cityContent.map((item) => mapCityContentToBackendEvent(item, city));
-  } catch (error) {
-    logCityContentFallback(city, error);
-    return [];
-  }
+  return cityContent.map((item) => mapCityContentToBackendEvent(item, city));
 }
 
 async function BackendCityExplorePage({

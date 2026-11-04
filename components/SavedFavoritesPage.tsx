@@ -104,7 +104,7 @@ function SavedPlaceCard({
 export default function SavedFavoritesPage() {
   const { isAuthenticated, status } = useAuth();
   const { locale, t } = useLocale();
-  const { favorites, loading, remove } = useFavorites();
+  const { favorites, loading, error: favoritesError, remove, refresh } = useFavorites();
   const [removingId, setRemovingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -188,6 +188,26 @@ export default function SavedFavoritesPage() {
 
   const hasSavedItems = favorites.length > 0 || savedPlaces.length > 0;
 
+  function retryFavorites() {
+    if (!loading) void refresh();
+  }
+
+  const favoritesErrorState = favoritesError ? (
+    <div role="alert" aria-live="assertive" className="rounded-[1.7rem] border border-[#f0d1c5] bg-[#fff7f0] p-5 text-[#3f3429] sm:p-6">
+      <p className="max-w-xl text-sm leading-6 text-[#6d6458]">
+        {t("search.errorIntro")}
+      </p>
+      <button
+        type="button"
+        onClick={retryFavorites}
+        disabled={loading}
+        className="mt-5 inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 disabled:cursor-wait disabled:opacity-60"
+      >
+        {loading ? t("common.loading") : t("common.retry")}
+      </button>
+    </div>
+  ) : null;
+
   return (
     <main className="mt-28 min-h-screen bg-[#f7f5f0] py-8 text-[#171717]">
       <PageContainer>
@@ -215,9 +235,11 @@ export default function SavedFavoritesPage() {
             </Link>
           </div>
         ) : loading && savedPlaces.length === 0 ? (
-          <div className="rounded-[1.7rem] border border-[#e6e0d8] bg-[#fffdf9] p-5 text-sm text-[#6d6458]">
+          <div role="status" aria-live="polite" className="rounded-[1.7rem] border border-[#e6e0d8] bg-[#fffdf9] p-5 text-sm text-[#6d6458]">
             {t("saved.loading")}
           </div>
+        ) : favoritesError && savedPlaces.length === 0 ? (
+          favoritesErrorState
         ) : !hasSavedItems ? (
           <div className="rounded-[1.7rem] border border-white/70 bg-white/65 p-5 text-[#3f3429] shadow-[0_18px_42px_rgba(66,49,31,0.08)] backdrop-blur-xl sm:p-6">
 
@@ -234,6 +256,7 @@ export default function SavedFavoritesPage() {
           </div>
         ) : (
           <div className="grid gap-4">
+            {favoritesErrorState}
             {error ? (
               <p role="alert" className="rounded-[1.2rem] border border-[#f0d1c5] bg-[#fff7f0] px-4 py-3 text-sm leading-7 text-[#8a3f2d]">
                 {error}

@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -26,6 +27,7 @@ type FavoriteActionResult = {
 
 type FavoritesContextValue = {
   loading: boolean;
+  error: boolean;
   favorites: FavoriteItem[];
   isFavorite: (eventId: number) => boolean;
   add: (eventId: number) => Promise<FavoriteActionResult>;
@@ -38,7 +40,10 @@ const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const auth = useAuth();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
+  const refreshInFlight = useRef(false);
+  const refreshVersion = useRef(0);
 
   async function refresh() {
     if (auth.status === "checking") {
@@ -47,15 +52,43 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     }
 
     if (!auth.user) {
+      refreshVersion.current += 1;
       setFavorites([]);
+      setError(false);
       setLoading(false);
       return;
     }
 
+    if (refreshInFlight.current) return;
+
+    refreshInFlight.current = true;
+    const requestVersion = ++refreshVersion.current;
     setLoading(true);
-    const nextFavorites = await getFavorites();
-    setFavorites(nextFavorites ?? []);
-    setLoading(false);
+    setError(false);
+
+    try {
+      const result = await getFavorites();
+
+      if (requestVersion !== refreshVersion.current) return;
+
+      if (result.status === "unauthorized") {
+        auth.logout();
+        return;
+      }
+
+      setFavorites(result.favorites);
+    } catch {
+      if (requestVersion === refreshVersion.current) {
+        // Preserve any already rendered favorites; only an actual successful
+        // response is allowed to replace the list with an empty one.
+        setError(true);
+      }
+    } finally {
+      refreshInFlight.current = false;
+      if (requestVersion === refreshVersion.current) {
+        setLoading(false);
+      }
+    }
   }
 
   useEffect(() => {
@@ -70,6 +103,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const value = useMemo<FavoritesContextValue>(() => {
     return {
       loading,
+      error,
       favorites,
       isFavorite: (eventId: number) => favoriteIds.has(eventId),
       add: async (eventId: number) => {
@@ -112,7 +146,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       },
       refresh,
     };
-  }, [auth.user, favoriteIds, favorites, loading]);
+  }, [auth.user, error, favoriteIds, favorites, loading]);
 
   return (
     <FavoritesContext.Provider value={value}>

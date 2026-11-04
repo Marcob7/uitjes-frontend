@@ -15,9 +15,22 @@ export type FavoriteItem = {
   created_at: string;
 };
 
-export async function getFavorites(): Promise<FavoriteItem[] | null> {
+export type FavoritesLoadResult =
+  | { status: "success"; favorites: FavoriteItem[] }
+  | { status: "unauthorized" };
+
+export async function getFavorites(): Promise<FavoritesLoadResult> {
   const data = await apiGetAuth("/api/favorites/");
-  return Array.isArray(data) ? data : null;
+
+  if (data === null) {
+    return { status: "unauthorized" };
+  }
+
+  if (!Array.isArray(data)) {
+    throw new Error("GET /api/favorites/ returned an invalid response");
+  }
+
+  return { status: "success", favorites: data };
 }
 
 export async function addFavorite(eventId: number) {
@@ -34,6 +47,6 @@ export async function removeFavorite(eventId: number) {
 }
 
 export async function isFavorite(eventId: number): Promise<boolean> {
-  const favorites = await getFavorites();
-  return favorites?.some((favorite) => favorite.event_id === eventId) ?? false;
+  const result = await getFavorites();
+  return result.status === "success" && result.favorites.some((favorite) => favorite.event_id === eventId);
 }

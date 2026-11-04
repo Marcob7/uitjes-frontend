@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
+import dynamic from "next/dynamic";
 
 import DiscoverResultsList from "./DiscoverResultsList";
 import DiscoverResultsEmptyState from "./DiscoverResultsEmptyState";
 import DiscoverResultsFilterDialog from "./DiscoverResultsFilterDialog";
-import DiscoverResultsMap from "./DiscoverResultsMap";
 import DiscoverResultsMobileMapDialog from "./DiscoverResultsMobileMapDialog";
 import DiscoverResultsPagination from "./DiscoverResultsPagination";
 import DiscoverResultsToolbar from "./DiscoverResultsToolbar";
@@ -24,6 +24,9 @@ import { localePathname } from "@/lib/i18n/config";
 
 const INITIAL_VISIBLE_RESULTS = 6;
 const RESULTS_INCREMENT = 6;
+const DiscoverResultsMap = dynamic(() => import("./DiscoverResultsMap"), {
+  ssr: false,
+});
 
 type CityExploreResultsSectionProps = {
   cityLabel: string;
@@ -240,7 +243,9 @@ export default function CityExploreResultsSection({
   const [localView, setLocalView] = useState<DiscoverView>(view);
   const [draftResultFilters, setDraftResultFilters] =
     useState<ResultFilterKey[]>(resultFilters);
+  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
   const filterButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mapButtonRef = useRef<HTMLButtonElement | null>(null);
   const activeFilters = buildActiveFilters(
     cityLabel,
     plannerSelections,
@@ -297,12 +302,27 @@ export default function CityExploreResultsSection({
     setLocalView(view);
   }, [view]);
 
+  // A CSS-hidden desktop map still creates a MapLibre instance on phones.
+  // Mount it only when the desktop layout is actually active.
+  useEffect(() => {
+    const desktopMediaQuery = window.matchMedia("(min-width: 1024px)");
+    const syncViewport = () => setIsDesktopViewport(desktopMediaQuery.matches);
+
+    syncViewport();
+    desktopMediaQuery.addEventListener("change", syncViewport);
+    return () => desktopMediaQuery.removeEventListener("change", syncViewport);
+  }, []);
+
   const activeView = localView;
   const isMobileMapOpen = activeView === "map";
 
   function changeView(nextView: DiscoverView) {
     setLocalView(nextView);
     onViewChange?.(nextView);
+
+    if (nextView === "list") {
+      window.setTimeout(() => mapButtonRef.current?.focus(), 0);
+    }
   }
 
   useEffect(() => {
@@ -386,6 +406,7 @@ export default function CityExploreResultsSection({
           selectionLabels={selectionLabels}
           activeFilterCount={resultFilters.length}
           filterButtonRef={filterButtonRef}
+          mapButtonRef={mapButtonRef}
           filterModalId={filterModalId}
           isFilterModalOpen={isFilterModalOpen}
           onEditChoices={() => onEditSelection(1)}
@@ -434,14 +455,16 @@ export default function CityExploreResultsSection({
           </div>
 
           <aside className="hidden lg:block">
-            <div className="sticky top-40 h-[min(760px,calc(100dvh-10rem))] min-h-[560px]">
-              <DiscoverResultsMap
-                cityLabel={cityLabel}
-                cards={contextualDisplayedCards}
-                selectedId={selectedId}
-                onSelectCard={onMapSelectCard ?? onSelectCard}
-              />
-            </div>
+            {isDesktopViewport ? (
+              <div className="sticky top-40 h-[min(760px,calc(100dvh-10rem))] min-h-[560px]">
+                <DiscoverResultsMap
+                  cityLabel={cityLabel}
+                  cards={contextualDisplayedCards}
+                  selectedId={selectedId}
+                  onSelectCard={onMapSelectCard ?? onSelectCard}
+                />
+              </div>
+            ) : null}
           </aside>
         </div>
 
