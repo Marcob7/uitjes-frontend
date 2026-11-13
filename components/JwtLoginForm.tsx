@@ -8,7 +8,13 @@ import { AppInput } from "@/components/ui/app";
 import LoginErrorAlert from "@/components/LoginErrorAlert";
 import { getLoginErrorCode, type LoginErrorCode } from "@/lib/authErrors";
 
-export default function JwtLoginForm({ onLoginAttempt }: { onLoginAttempt?: () => void }) {
+export default function JwtLoginForm({
+  onLoginAttempt,
+  onLoginSuccess,
+}: {
+  onLoginAttempt?: () => void;
+  onLoginSuccess?: () => void;
+}) {
   const { login } = useAuth();
   const { t } = useLocale();
   const [identifier, setIdentifier] = useState("");
@@ -24,6 +30,7 @@ export default function JwtLoginForm({ onLoginAttempt }: { onLoginAttempt?: () =
 
     try {
       await login(identifier, password);
+      onLoginSuccess?.();
     } catch (err) {
       setError(getLoginErrorCode(err));
     } finally {

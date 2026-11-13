@@ -26,9 +26,16 @@ export default function AppFrame({ children }: AppFrameProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a
+        href="#app-shell-content"
+        className="sr-only fixed left-4 top-4 z-[1300] rounded-full bg-[#171511] px-4 py-3 text-sm font-semibold text-white shadow-lg focus:not-sr-only focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#005FCC]"
+      >
+        Ga naar hoofdinhoud
+      </a>
       <SiteHeader />
       <div
         id="app-shell-content"
+        tabIndex={-1}
         className={`flex-1${hasImmersiveFlow ? " app-shell-content--immersive" : ""}`}
       >
         {children}

@@ -90,6 +90,15 @@ function normalize(value: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+export function isPriceLabelFree(value: string) {
+  const normalized = normalize(value);
+
+  return (
+    /\b(gratis|free)\b/.test(normalized) ||
+    /(?:^|[^\d])0(?:[,.]0{1,2})?(?=$|[^\d])/.test(normalized)
+  );
+}
+
 function compactStrings(values: Array<string | null | undefined>) {
   return values.filter((value): value is string => Boolean(value?.trim()));
 }
@@ -240,7 +249,7 @@ function mapInspirationResult(
   if (!score) return null;
 
   const numericRating = result.ratingValue;
-  const priceIsFree = normalize(result.price).includes("gratis") || normalize(result.price).includes("0");
+  const priceIsFree = isPriceLabelFree(result.price);
   const citySlug = normalizeCitySlug(result.city);
 
   return {

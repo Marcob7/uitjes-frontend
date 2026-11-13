@@ -227,8 +227,8 @@ export default function SavedFavoritesPage() {
             <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d6458]">
               {t("saved.loginIntro")}
             </p>
-            <Link
-              href={localePathname("/login", locale)}
+              <Link
+                href={`${localePathname("/login", locale)}?returnTo=${encodeURIComponent(localePathname("/saved", locale))}`}
               className="mt-5 inline-flex min-h-11 items-center rounded-full bg-neutral-950 px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
             >
               {t("auth.login")}

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import type { SearchResultsFilterState } from "@/components/search/useSearchResultsUrlState";
-import type { GeneralSearchResult } from "./searchResults";
+import { isPriceLabelFree, type GeneralSearchResult } from "./searchResults";
 import {
   filterSearchResults,
   getSearchResultText,
@@ -86,4 +86,46 @@ test("search selectors keep match order and sort deterministic ties", () => {
     ).map((result) => result.title),
     ["Alfa", "Zebra"],
   );
+});
+
+test("search selectors apply city, time, category, price and rating as one result set", () => {
+  const matching = {
+    ...results[0],
+    dateLabel: "Dit weekend",
+    ratingValue: 4.8,
+  };
+
+  assert.deepEqual(
+    filterSearchResults([matching, results[1]], {
+      ...noFilters,
+      city: "utrecht",
+      when: "weekend",
+      category: "cultuur",
+      free: true,
+      rating: "4",
+    }),
+    [matching],
+  );
+});
+
+test("search sorting keeps unknown price and date values behind known values", () => {
+  const dated = { ...results[0], id: "dated", title: "Zebra", priceMin: 12, startAt: "2026-10-31T12:00:00.000Z" };
+  const newest = { ...results[1], id: "newest", title: "Alfa", priceMin: 8, startAt: "2026-11-01T12:00:00.000Z" };
+  const unknown = { ...results[1], id: "unknown", title: "Museum", priceMin: null, startAt: null };
+
+  assert.deepEqual(
+    sortSearchResults([unknown, dated, newest], "price", "nl").map((result) => result.id),
+    ["newest", "dated", "unknown"],
+  );
+  assert.deepEqual(
+    sortSearchResults([unknown, dated, newest], "recent", "nl").map((result) => result.id),
+    ["newest", "dated", "unknown"],
+  );
+});
+
+test("only explicit free price labels match the free filter", () => {
+  assert.equal(isPriceLabelFree("Gratis"), true);
+  assert.equal(isPriceLabelFree("Vanaf EUR 0"), true);
+  assert.equal(isPriceLabelFree("EUR 10 - EUR 35"), false);
+  assert.equal(isPriceLabelFree("EUR 100"), false);
 });

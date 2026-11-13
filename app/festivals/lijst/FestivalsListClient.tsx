@@ -292,12 +292,6 @@ export default function FestivalsPage({ searchParams }: FestivalsPageProps) {
                 >
                   Open festivalkalender
                 </Link>
-                <Link
-                  href="/festivals/kalender"
-                  className="inline-flex min-h-10 items-center justify-center rounded-2xl border border-[#d7cfbf] bg-white px-4 text-xs font-semibold text-[#3f362f] transition hover:bg-[#f8f5f3] sm:rounded-full"
-                >
-                  Open festivalkalender
-                </Link>
               </div>
             </div>
           ) : null}

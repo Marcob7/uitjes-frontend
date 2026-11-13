@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -11,12 +11,16 @@ import JwtLoginForm from "@/components/JwtLoginForm";
 import LoginWithGoogle from "@/components/LoginWithGoogle";
 import LoginErrorAlert from "@/components/LoginErrorAlert";
 import { oauthLoginErrorCode, type LoginErrorCode } from "@/lib/authErrors";
+import { getPostLoginDestination, getSafeReturnTo } from "@/lib/authReturnTo";
 
 export default function LoginPage() {
   const { isAuthenticated, logout, status, user } = useAuth();
   const { locale, t } = useLocale();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [oauthError, setOauthError] = useState<LoginErrorCode | null>(null);
+  const rawReturnTo = searchParams.get("returnTo");
+  const returnTo = getSafeReturnTo(rawReturnTo);
 
   useEffect(() => {
     const callbackError =
@@ -25,6 +29,14 @@ export default function LoginPage() {
       searchParams.get("error");
     setOauthError(oauthLoginErrorCode(callbackError));
   }, [searchParams]);
+
+  const finishJwtLogin = useCallback(() => {
+    const destination = getPostLoginDestination(
+      rawReturnTo,
+      localePathname("/", locale),
+    );
+    if (destination) router.replace(destination);
+  }, [locale, rawReturnTo, returnTo, router]);
 
   return (
     <main className="site-header-content-safe min-h-screen bg-[#f7f5f0] text-neutral-950">
@@ -88,7 +100,10 @@ export default function LoginPage() {
                   {t("auth.emailLogin")}
                 </h2>
                 <div className="mt-5">
-                  <JwtLoginForm onLoginAttempt={() => setOauthError(null)} />
+                  <JwtLoginForm
+                    onLoginAttempt={() => setOauthError(null)}
+                    onLoginSuccess={finishJwtLogin}
+                  />
                 </div>
               </div>
 
@@ -101,7 +116,10 @@ export default function LoginPage() {
                    {t("auth.googleIntro")}
                   </p>
                 </div>
-                <LoginWithGoogle onLoginAttempt={() => setOauthError(null)} />
+                <LoginWithGoogle
+                  onLoginAttempt={() => setOauthError(null)}
+                  returnTo={returnTo}
+                />
               </div>
             </div>
           )}

@@ -40,7 +40,6 @@ export default function ContactPage() {
               type="text"
               autoComplete="name"
               required
-              showRequiredIndicator={false}
               labelClassName={contactLabelClassName}
               hintClassName={contactHintClassName}
               className={contactInputClassName}
@@ -54,7 +53,6 @@ export default function ContactPage() {
               type="email"
               autoComplete="email"
               required
-              showRequiredIndicator={false}
               labelClassName={contactLabelClassName}
               hintClassName={contactHintClassName}
               className={contactInputClassName}
@@ -67,7 +65,6 @@ export default function ContactPage() {
               hint="Bijvoorbeeld een vraag, tip of samenwerking."
               type="text"
               required
-              showRequiredIndicator={false}
               labelClassName={contactLabelClassName}
               hintClassName={contactHintClassName}
               className={contactInputClassName}
@@ -80,7 +77,6 @@ export default function ContactPage() {
               hint="Schrijf kort wat je wilt delen. We lezen ieder bericht."
               rows={6}
               required
-              showRequiredIndicator={false}
               labelClassName={contactLabelClassName}
               hintClassName={contactHintClassName}
               className={contactTextareaClassName}

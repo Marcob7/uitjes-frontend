@@ -314,7 +314,10 @@ export default function CityExploreResultsSection({
   }, []);
 
   const activeView = localView;
-  const isMobileMapOpen = activeView === "map";
+  // The map view is an overlay only below the desktop breakpoint. Keep its
+  // dialog and scroll-lock lifecycle aligned with the visible mobile control
+  // when a user resizes while the map view is active.
+  const isMobileMapOpen = activeView === "map" && !isDesktopViewport;
 
   function changeView(nextView: DiscoverView) {
     setLocalView(nextView);
@@ -334,7 +337,7 @@ export default function CityExploreResultsSection({
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [isMobileMapOpen]);
+  }, [isDesktopViewport, isMobileMapOpen]);
 
   useEffect(() => {
     if (!isFilterModalOpen) {

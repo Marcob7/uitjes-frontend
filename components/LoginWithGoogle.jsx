@@ -2,6 +2,7 @@
 
 import { getApiBase } from "@/lib/api";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { getGoogleLoginHref } from "@/lib/authReturnTo";
 
 function GoogleIcon() {
   return (
@@ -31,11 +32,11 @@ function GoogleIcon() {
   );
 }
 
-export default function LoginWithGoogle({ onLoginAttempt }) {
+export default function LoginWithGoogle({ onLoginAttempt, returnTo }) {
   const { t } = useLocale();
   function handleLogin() {
     onLoginAttempt?.();
-    window.location.href = `${getApiBase()}/accounts/google/login/?process=login`;
+    window.location.href = getGoogleLoginHref(getApiBase(), window.location.origin, returnTo);
   }
 
   return (

@@ -7,6 +7,7 @@ import SavePlaceButton from "@/components/SavePlaceButton";
 import SearchRetryButton from "@/components/search/SearchRetryButton";
 import SearchErrorState from "@/components/search/SearchErrorState";
 import { IconButton } from "@/components/ui";
+import { getFocusTrapTarget } from "@/lib/a11y/focusTrap";
 import ResultCard from "@/components/ui/ResultCard";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { localePathname, localeToIntl } from "@/lib/i18n/config";
@@ -153,6 +154,7 @@ export default function SearchResultsExperience({ query, results, error = false,
   const [visibleCount, setVisibleCount] = useState(12);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const filterButtonRef = useRef<HTMLButtonElement>(null);
+  const filterSheetRef = useRef<HTMLDivElement>(null);
   const resultsMatchActiveQuery = activeQuery === query;
   const categoryOptions = SEARCH_CATEGORY_FILTER_OPTIONS.map((option) => ({
     ...option,
@@ -220,7 +222,37 @@ export default function SearchResultsExperience({ query, results, error = false,
 
     const previousActiveElement = document.activeElement as HTMLElement | null;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSheetOpen(false);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSheetOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = Array.from(
+        filterSheetRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      const first = focusableElements[0];
+      const last = focusableElements.at(-1);
+
+      if (!first || !last) return;
+      const focusTarget = getFocusTrapTarget({
+        focusIsWithinDialog: filterSheetRef.current?.contains(document.activeElement) ?? false,
+        focusIsFirst: document.activeElement === first,
+        focusIsLast: document.activeElement === last,
+        shiftKey: event.shiftKey,
+      });
+
+      if (focusTarget === "first") {
+        event.preventDefault();
+        first.focus();
+      } else if (focusTarget === "last") {
+        event.preventDefault();
+        last.focus();
+      }
     };
 
     document.body.style.overflow = "hidden";
@@ -395,6 +427,7 @@ export default function SearchResultsExperience({ query, results, error = false,
       {sheetOpen ? (
         <div className="fixed inset-0 z-[1200] bg-[#12231b]/35 backdrop-blur-[2px]" onMouseDown={() => setSheetOpen(false)}>
           <div
+            ref={filterSheetRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="filter-sheet-title"

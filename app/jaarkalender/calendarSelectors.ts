@@ -23,6 +23,7 @@ export type MonthCalendarCell = {
   monthLabel?: string;
   muted?: boolean;
   href?: string;
+  accessibleLabel?: string;
   eventCount?: number;
   eventLabels?: string[];
   isToday?: boolean;
@@ -107,6 +108,11 @@ export function buildMonthCalendarCells(
       day: String(day.dayNumber),
       dayNumber: day.dayNumber,
       href: `/jaarkalender/${day.slug}`,
+      accessibleLabel: `Bekijk activiteiten op ${new Intl.DateTimeFormat("nl-NL", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      }).format(date)}`,
       eventCount: filteredItems.length,
       eventLabels: filteredItems.slice(0, 2).map((item) => item.title),
       isToday,

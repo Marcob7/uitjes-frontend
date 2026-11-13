@@ -17,6 +17,7 @@ test("buildMonthCalendarCells keeps the unfiltered October grid and event previe
   assert.equal(firstDay?.eventCount, 7);
   assert.equal(firstDay?.eventLabels?.length, 2);
   assert.match(firstDay?.href ?? "", /^\/jaarkalender\//);
+  assert.match(firstDay?.accessibleLabel ?? "", /dinsdag 1 oktober/);
 });
 
 test("buildMonthCalendarCells applies city and category filters independently", () => {
