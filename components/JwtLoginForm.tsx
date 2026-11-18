@@ -45,7 +45,6 @@ export default function JwtLoginForm({
           name="identifier"
           label={t("auth.identifier")}
           labelClassName="text-neutral-900"
-          showRequiredIndicator={false}
           type="text"
           autoComplete="username"
           value={identifier}
@@ -60,7 +59,6 @@ export default function JwtLoginForm({
           name="password"
           label={t("auth.password")}
           labelClassName="text-neutral-900"
-          showRequiredIndicator={false}
           type="password"
           autoComplete="current-password"
           value={password}

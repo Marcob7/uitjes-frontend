@@ -124,9 +124,14 @@ export default function InspirationCityStep({
             ) : null}
           </div>
           <p className="sr-only" aria-live="polite">{matchingCities.length === 1 ? t("inspiration.cityFound", { count: matchingCities.length }) : t("inspiration.citiesFound", { count: matchingCities.length })}</p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-            <button type="button" onClick={onRequestLocation} disabled={isResolvingLocation} className="min-h-11 text-sm font-semibold text-[#355E7A] underline decoration-[#B8C5BE] underline-offset-4 transition hover:text-[#173F31] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] disabled:cursor-wait disabled:opacity-70">{isResolvingLocation ? t("inspiration.locating") : t("inspiration.useLocation")}</button>
-            {cityError ? <p className="text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
+          <div className="mt-3">
+            <p id="inspiration-location-help" className="text-sm leading-6 text-[#65736C]">
+              {t("inspiration.locationHelp")}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <button type="button" onClick={onRequestLocation} disabled={isResolvingLocation} aria-describedby="inspiration-location-help" className="min-h-11 text-sm font-semibold text-[#355E7A] underline decoration-[#B8C5BE] underline-offset-4 transition hover:text-[#173F31] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005FCC] disabled:cursor-wait disabled:opacity-70">{isResolvingLocation ? t("inspiration.locating") : t("inspiration.useLocation")}</button>
+              {cityError ? <p className="text-sm font-medium text-[#875B2A]" role="alert">{cityError}</p> : null}
+            </div>
           </div>
         </div>
         {selectedCity ? (

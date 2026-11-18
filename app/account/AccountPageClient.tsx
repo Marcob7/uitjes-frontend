@@ -67,7 +67,7 @@ export default function AccountPageClient() {
                   </dl>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-3">
                   <Link
                     href={localePathname("/saved", locale)}
                     className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-neutral-950 px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(23,23,23,0.18)] transition hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
@@ -79,6 +79,12 @@ export default function AccountPageClient() {
                     className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-neutral-200 bg-white/72 px-5 text-sm font-semibold text-neutral-800 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
                   >
                     {t("auth.goToFaq")}
+                  </Link>
+                  <Link
+                    href={localePathname("/contact", locale)}
+                    className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-neutral-200 bg-white/72 px-5 text-sm font-semibold text-neutral-800 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+                  >
+                    {t("auth.contactSupport")}
                   </Link>
                 </div>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { getApiBase } from "@/lib/api";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getGoogleLoginHref } from "@/lib/authReturnTo";
@@ -34,7 +36,12 @@ function GoogleIcon() {
 
 export default function LoginWithGoogle({ onLoginAttempt, returnTo }) {
   const { t } = useLocale();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   function handleLogin() {
+    if (isRedirecting) return;
+
+    setIsRedirecting(true);
     onLoginAttempt?.();
     window.location.href = getGoogleLoginHref(getApiBase(), window.location.origin, returnTo);
   }
@@ -43,10 +50,12 @@ export default function LoginWithGoogle({ onLoginAttempt, returnTo }) {
     <button
       type="button"
       onClick={handleLogin}
-      className="inline-flex min-h-12 items-center justify-center gap-3 rounded-2xl border border-neutral-200 bg-white px-5 text-sm font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] transition hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70"
+      disabled={isRedirecting}
+      aria-busy={isRedirecting}
+      className="inline-flex min-h-12 items-center justify-center gap-3 rounded-2xl border border-neutral-200 bg-white px-5 text-sm font-semibold text-neutral-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] transition hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-500/70 disabled:cursor-wait disabled:opacity-65"
     >
       <GoogleIcon />
-      {t("auth.googleButton")}
+      {isRedirecting ? t("common.loading") : t("auth.googleButton")}
     </button>
   );
 }

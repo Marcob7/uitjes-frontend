@@ -14,7 +14,9 @@ export type IconButtonProps = Omit<
 };
 
 const sizeClasses: Record<IconButtonSize, string> = {
-  sm: "h-9 w-9",
+  // Icon-only controls are frequently used to close a sheet or clear a field.
+  // Keep even the compact variant comfortably touchable on a phone.
+  sm: "h-11 w-11",
   md: "h-11 w-11",
   lg: "h-12 w-12",
 };

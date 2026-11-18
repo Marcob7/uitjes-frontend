@@ -5,15 +5,7 @@ import { useEffect, useState } from "react";
 import { PageContainer, PageEyebrow } from "@/components/ui";
 import { AppInput, AppTextarea } from "@/components/ui/app";
 import { apiFetchAuth } from "@/lib/api";
-
-type ApiError =
-  | {
-      message?: string[];
-      email?: string[];
-      page_url?: string[];
-      detail?: string;
-    }
-  | string;
+import { getFeedbackSubmitError } from "@/lib/feedback";
 
 export default function FeedbackPage() {
   const [message, setMessage] = useState("");
@@ -66,8 +58,7 @@ export default function FeedbackPage() {
       });
 
       if (!r.ok) {
-        setErrorText(formatApiError(r.data as ApiError));
-        setLoading(false);
+        setErrorText(getFeedbackSubmitError(r.status));
         return;
       }
 
@@ -75,8 +66,8 @@ export default function FeedbackPage() {
       setMessage("");
       setEmail("");
       setWebsite("");
-    } catch (err: any) {
-      setErrorText(`Netwerkfout: ${err?.message ?? "Onbekende fout"}`);
+    } catch {
+      setErrorText(getFeedbackSubmitError(0));
     } finally {
       setLoading(false);
     }
@@ -126,8 +117,8 @@ export default function FeedbackPage() {
               onChange={(event) => setMessage(event.target.value)}
               rows={6}
               required
-              aria-invalid={messageTooShort || Boolean(errorText)}
-              aria-describedby={errorText ? "feedback-error feedback-message-helper" : "feedback-message-helper"}
+              aria-invalid={messageTooShort || undefined}
+              aria-describedby="feedback-message-helper"
               placeholder="Bijvoorbeeld: ik wil kunnen filteren op binnen of buiten."
               hint={<>Minimaal 10 tekens.{messageTooShort ? " Je zit er nog onder." : ""}</>}
               showRequiredIndicator={false}
@@ -176,20 +167,4 @@ export default function FeedbackPage() {
       </PageContainer>
     </main>
   );
-}
-
-function formatApiError(data: ApiError): string {
-  if (!data) return "Er ging iets mis.";
-  if (typeof data === "string") return data;
-
-  const parts: string[] = [];
-
-  if (data.detail) parts.push(data.detail);
-  if (data.message?.length) parts.push(`Bericht: ${data.message.join(", ")}`);
-  if (data.email?.length) parts.push(`Email: ${data.email.join(", ")}`);
-  if (data.page_url?.length) parts.push(`Pagina: ${data.page_url.join(", ")}`);
-
-  if (parts.length === 0) return JSON.stringify(data);
-
-  return parts.join("\n");
 }

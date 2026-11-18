@@ -99,12 +99,12 @@ export default function DiscoverResultsMobileMapDialog({
   return (
     <div
       ref={dialogRef}
-      className="fixed inset-0 z-[1200] bg-[#F6F5F0] px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:hidden"
+      className="fixed inset-0 z-[1200] flex h-[100dvh] flex-col bg-[#F6F5F0] px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby="discover-mobile-map-title"
     >
-      <div className="mb-3 flex flex-col items-start gap-4 px-1">
+      <div className="mb-3 flex shrink-0 flex-col items-start gap-4 px-1">
         <button
           ref={backButtonRef}
           type="button"
@@ -118,7 +118,7 @@ export default function DiscoverResultsMobileMapDialog({
           {t("discover.onMap", { city: cityLabel })}
         </h2>
       </div>
-      <div className="h-[calc(100dvh-7.25rem-max(0px,env(safe-area-inset-top)))]">
+      <div className="min-h-0 flex-1">
         <DiscoverResultsMap
           cityLabel={cityLabel}
           cards={cards}

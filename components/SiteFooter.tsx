@@ -116,12 +116,12 @@ export default function FooterSection() {
               <Link href={localePathname("/privacy", locale)} className="transition hover:text-[#2f9f6c]">
                 {t("footer.privacy")}
               </Link>
-              <a
-                href="mailto:uitjesnl@events.nl"
+              <Link
+                href={localePathname("/contact", locale)}
                 className="transition hover:text-[#2f9f6c]"
               >
                 {t("footer.contact")}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

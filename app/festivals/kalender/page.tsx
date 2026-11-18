@@ -88,7 +88,7 @@ function ArrowRightIcon() {
 
 function CalendarPill({ event }: { event: FestivalCalendarEvent }) {
   const { t } = useLocale();
-  const classes = `block truncate rounded-full px-3 py-1 text-[11px] font-semibold ${FESTIVAL_CALENDAR_TONE_CLASSES[event.tone]}`;
+  const classes = `inline-flex min-h-11 items-center truncate rounded-full px-3 py-1 text-[11px] font-semibold sm:min-h-0 ${FESTIVAL_CALENDAR_TONE_CLASSES[event.tone]}`;
 
   if (event.href) {
     return (

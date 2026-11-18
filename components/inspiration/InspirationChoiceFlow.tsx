@@ -306,6 +306,8 @@ export function InspirationChoiceFlow({
   const [activeCityIndex, setActiveCityIndex] = useState(-1);
   const [isResolvingLocation, setIsResolvingLocation] = useState(false);
   const cityInputRef = useRef<HTMLInputElement | null>(null);
+  const locationRequestId = useRef(0);
+  const isLocationRequestPending = useRef(false);
   // A new flow starts with no substantive answers. A city from the URL is the
   // sole persisted initial selection; answers remain in state for editing and
   // back navigation within this mounted flow.
@@ -416,7 +418,14 @@ export function InspirationChoiceFlow({
     router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   }
 
-  function selectCity(city: CityOption) {
+  function cancelLocationRequest() {
+    locationRequestId.current += 1;
+    isLocationRequestPending.current = false;
+    setIsResolvingLocation(false);
+  }
+
+  function selectCity(city: CityOption, fromLocation = false) {
+    if (!fromLocation) cancelLocationRequest();
     setSelectedCity(city.value);
     setCityInput(city.label);
     setCityError(null);
@@ -435,6 +444,7 @@ export function InspirationChoiceFlow({
   }
 
   function clearCity() {
+    cancelLocationRequest();
     setSelectedCity(undefined);
     setCityInput("");
     setCityError(null);
@@ -445,25 +455,40 @@ export function InspirationChoiceFlow({
   }
 
   function requestLocation() {
+    if (isLocationRequestPending.current) return;
+
     setCityError(null);
     if (!("geolocation" in navigator)) {
       setCityError(t("inspiration.locationUnavailable"));
       return;
     }
 
+    const requestId = locationRequestId.current + 1;
+    locationRequestId.current = requestId;
+    isLocationRequestPending.current = true;
     setIsResolvingLocation(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        if (requestId !== locationRequestId.current) return;
+
+        isLocationRequestPending.current = false;
         const city = findSupportedCity(resolveNearestInspirationCityFromCoordinates({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         }));
         setIsResolvingLocation(false);
-        if (city) selectCity(city);
+        if (city) selectCity(city, true);
       },
-      () => {
+      (error) => {
+        if (requestId !== locationRequestId.current) return;
+
+        isLocationRequestPending.current = false;
         setIsResolvingLocation(false);
-        setCityError(t("inspiration.locationUnavailable"));
+        setCityError(
+          error.code === error.PERMISSION_DENIED
+            ? t("inspiration.locationPermissionDenied")
+            : t("inspiration.locationUnavailable"),
+        );
       },
       { enableHighAccuracy: false, maximumAge: 5 * 60 * 1000, timeout: 10000 }
     );
@@ -603,6 +628,7 @@ export function InspirationChoiceFlow({
                   audienceOptions={audienceOptions}
                   selectedAudience={selectedAudience}
                   onCityInputChange={(nextInput) => {
+                    cancelLocationRequest();
                     setCityInput(nextInput);
                     setCityError(null);
                     setIsCityListOpen(true);
